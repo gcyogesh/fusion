@@ -13,7 +13,7 @@ interface HeroData {
   bannerImage: string;
 }
 const HeroSection = ({ herodata }: { herodata: HeroData }) => {
-  const { title, description, buttonText, buttonLink, bannerImage } = herodata;
+  const { title, description, buttonText, bannerImage } = herodata;
   const isGif = bannerImage.toLowerCase().endsWith('.gif');
 
   return (

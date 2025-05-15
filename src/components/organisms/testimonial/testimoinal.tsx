@@ -4,7 +4,6 @@
 import React from "react";
 import { FaStar } from "react-icons/fa";
 import TextHeader from "../../atoms/headings";
-import ArrowIcon from "@/components/atoms/arrowIcon";
 import TextDescription from "@/components/atoms/description";
 
 
@@ -48,6 +47,7 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({ message, name, positi
       <div className="text-yellow-500 flex  mb-3">
         {Array(5)
           .fill(0)
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           .map((_, i) => (
             <FaStar key={rating} />
           ))}

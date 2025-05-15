@@ -2,6 +2,7 @@ import Cookies from "js-cookie";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://198.211.104.173/api";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 interface FetchAPIOptions<T = any> {
   endpoint: string;
   method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
@@ -10,6 +11,7 @@ interface FetchAPIOptions<T = any> {
   slug?: string;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const fetchAPI = async <T = any>({
   endpoint="",
   method = "GET",

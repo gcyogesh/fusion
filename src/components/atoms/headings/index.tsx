@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useRef, useState, useEffect } from 'react';
-import { motion, useInView, useMotionValue, useTransform, animate } from 'framer-motion';
+import { motion, useInView, useMotionValue, animate } from 'framer-motion';
 import Button from '../button';
 
 type TextAlign = 'left' | 'center' | 'right' | 'justify' | 'start' | 'end';
@@ -80,7 +80,6 @@ const TextHeader = <TSpecialIndices extends string = string>({
   const isNumberText = !isNaN(Number(text)) && text.trim() !== '';
   const [displayNumber, setDisplayNumber] = useState(0);
   const motionValue = useMotionValue(0);
-  const rounded = useTransform(motionValue, (latest) => Math.floor(latest));
 
   useEffect(() => {
     if (isInView && isNumberText) {
