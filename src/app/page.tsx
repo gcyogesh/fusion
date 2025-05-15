@@ -1,0 +1,451 @@
+import Image from "next/image";
+import { FaMapMarkerAlt } from 'react-icons/fa';
+import { HiOutlineClock } from 'react-icons/hi';
+import HeroSection from "@/components/organisms/HeroSection";
+import { FaHiking } from 'react-icons/fa';
+// Atom Components
+import ImageDisplay from "@/components/atoms/ImageCard";
+import Button from "@/components/atoms/button";
+import TextHeader from "@/components/atoms/headings";
+import { fetchAPI } from "@/utils/apiService";
+
+import PartnerSection from "@/components/organisms/partners";
+import { CiLocationOn } from "react-icons/ci";
+import { FaUsers, FaLeaf, FaMountain, FaCompass } from "react-icons/fa";
+
+import TestimonialCarousel from "@/components/organisms/testimonial/testimoinal";
+import { FaTrophy, FaStar, FaGlobe  } from "react-icons/fa";
+import TextDescription from "@/components/atoms/description";
+const imageCards = [
+  {
+    src: "/image.png",
+    title: "Dreamy Beach Escape",
+    variant: "square",
+    snippet: "Popular",
+    snippetPosition: "start",
+  },
+  {
+    src: "/image.png",
+    title: "Mountain Adventure",
+    variant: "square",
+    snippet: "Top Pick",
+    snippetPosition: "start",
+  },
+  {
+    src: "/image.png",
+    title: "City Lights Weekend",
+    variant: "square",
+    snippet: "Limited Time",
+    snippetPosition: "start",
+  },  {
+    src: "/image.png",
+    title: "Mountain Adventure",
+    variant: "square",
+    snippet: "Top Pick",
+    snippetPosition: "start",
+  },
+  {
+    src: "/image.png",
+    title: "City Lights Weekend",
+    variant: "square",
+    snippet: "Limited Time",
+    snippetPosition: "start",
+  },
+
+
+];
+
+
+const topcategories = [
+  {
+    src: "/image.png",
+    title: "Trekking the Himalayas",
+    subtitle: "Walk among the giants",
+    description: "Explore world-renowned trails like Everest Base Camp, Annapurna Circuit, and Langtang Valley with expert local guides.",
+    variant: "square",
+    snippet: "Popular",
+    snippetPosition: "start",
+  },
+  {
+    src: "/image.png",
+    title: "Trekking the Himalayas",
+    subtitle: "Walk among the giants",
+    description: "explore world-renowned trails like Everest Base Camp, Annapurna Circuit, and Langtang Valley with expert local guides.",
+    variant: "square",
+    snippet: "Popular",
+    snippetPosition: "start",
+  },
+  {
+    src: "/image.png",
+    title: "Trekking the Himalayas",
+    subtitle: "Walk among the giants",
+    description: "Explore world-renowned trails like Everest Base Camp, Annapurna Circuit, and Langtang Valley with expert local guides.",
+    variant: "square",
+    snippet: "Popular",
+    snippetPosition: "start",
+  },
+]
+interface DestinationCard {
+  imageUrl: string;
+  tags: string[];
+  location: string;
+  duration: number;
+  title: string;
+  priceMin: number;
+  priceMax: number;
+}
+
+interface DestinationData {
+  data: DestinationCard[];
+}
+
+
+const stats = [
+  {
+    icon: <FaTrophy className="text-4xl text-[#002B45]" />,
+    title: "18+",
+    subtitle: "Years of Experience",
+    description: "Seasoned in travel excellence since day one.",
+  },
+  {
+    icon: <FaStar className="text-4xl text-[#002B45]" />,
+    title: "2750+",
+    subtitle: "TripAdvisor Reviews",
+    description: "Loved and trusted by thousands of travelers.",
+  },
+  {
+    icon: <FaGlobe className="text-4xl text-[#002B45]" />,
+    title: "116+",
+    subtitle: "Cultural Tours",
+    description: "Experience the heart of tradition and heritage with us.",
+  },
+  {
+    icon: <FaHiking className="text-4xl text-[#002B45]" />,
+    title: "106+",
+    subtitle: "Adventure Activities",
+    description: "Thrills, treks, and unforgettable adrenaline rushes.",
+  },
+];
+const values = [
+  {
+    icon: <FaUsers className="text-3xl text-yellow-700 " />,
+    title: "Customer-Centric",
+    description:
+      "Your experience is at the heart of everything we do. We listen, care, and curate every trip based on what matters most to you — making your travel seamless and memorable.",
+  },
+  {
+    icon: <FaLeaf className="text-3xl text-green-700" />,
+    title: "Sustainable Travel",
+    description:
+      "We believe in preserving the beauty of Nepal for generations to come. Our trips focus on eco-conscious travel, supporting local communities, and minimizing our environmental impact.",
+  },
+  {
+    icon: <FaMountain className="text-3xl text-purple-700" />,
+    title: "Authentic Experiences",
+    description:
+      "Go beyond the ordinary. We craft journeys that connect you deeply with Nepal’s rich culture, warm people, and breathtaking landscapes — experiences that leave a lasting impact.",
+  },
+  {
+    icon: <FaCompass className="text-3xl text-blue-700" />,
+    title: "Expert Local Guides",
+    description:
+      "Explore Nepal with passionate, knowledgeable local experts who bring destinations to life and ensure your safety, comfort, and enjoyment every step of the way.",
+  },
+];
+export default async function Home() {
+  const partnersdata = await fetchAPI({ endpoint: "partners" });
+  const blogsdata = await fetchAPI({ endpoint: "blogs" });
+  const destinationdata = await fetchAPI({ endpoint: "destinations" });
+  const testimoinaldata = await fetchAPI({ endpoint: "testimonials" });
+const herosectiondata = await fetchAPI({ endpoint: "herobanner/home" });
+  return (
+   <>
+   
+   <HeroSection herodata={herosectiondata.data}/>
+  
+    <div className="bg-[#FCE1AC] py-16 px-6 md:px-20">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-30">
+          {/* Left Section */}
+          <div className="md:w-5/12">
+          <TextHeader
+          text="Our true values for your unforgettable journey"
+          specialWordsIndices="[1,2]"
+          align="left"
+          width="622px"
+          buttonText="Why Fusion Expedition"
+        />
+        <div className="flex flex-col justify-end h-100">
+            <p className="mt-10 text-gray-700 text-base leading-relaxed">
+        
+            </p>
+            <TextDescription text="      Our values are more than promises – they’re the soul of every adventure we offer.
+              Rooted in sustainability, authenticity, and guest-first service, we ensure that your
+              journey through Nepal is meaningful and truly one of a kind." />
+            </div>
+          </div>
+  
+          {/* Right Section */}
+          <div className="md:w-5/10 space-y-3 mt-14">
+            {values.map((value, index) => (
+              <div
+                key={index}
+                className="flex items-center bg-[#FEF2D6] shadow-sm rounded-xl p-2 pb-[-5] border border-black"
+              >
+                <div className="mb-10 mr-4  border boder-black rounded-full p-3 ">{value.icon}</div>
+                <div>
+                  <h3 className="text-lg font-semibold mb-1">{value.title}</h3>
+                  <p className="text-sm text-gray-600">{value.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+      {/* Best Destination */}
+      
+      <section className="max-w-7xl mx-auto mb-16 px-10">
+  <TextHeader
+    text="Where Dreams Meet Destinations"
+    buttonText="Popular Tour"
+    specialWordsIndices="3"
+    size="medium"
+    width={622}
+    align="center"
+    className="mb-8" // Increased spacing for better visual balance
+
+  
+  />
+
+  <div className="grid grid-cols-1 md:grid-cols-3 gap-10"> {/* Consistent gap */}
+   
+
+    {(destinationdata as DestinationData)?.data.map((card, index) => (
+      <div key={index} className="flex flex-col gap-4">
+        <div className="aspect-video">
+          <ImageDisplay
+            src={card.imageUrl}
+            variant="square"
+            snippet={card.tags[0]}
+            snippetPosition="start"
+          />
+        </div>
+
+        <div className="flex flex-col gap-3"> {/* Add consistent internal gap */}
+          <div className="flex justify-between text-sm text-gray-600">
+            <span className="flex items-center gap-1">
+              <CiLocationOn className="w-5 h-5" />
+              {card.location}
+            </span>
+            <span className="flex items-center gap-1">
+              <HiOutlineClock className="w-5 h-5" />
+              {card.duration} days
+            </span>
+          </div>
+
+          <TextHeader text={card.title} size="small" align="left" width={460} />
+
+          <div className="w-full h-[1.5px] bg-[#C2C2C2]" /> {/* Consistent thickness and color */}
+
+          <div className="text-lg font-semibold mt-2">
+            Start From <span className="ml-10 text-orange-500 ">${card.priceMin}-${card.priceMax}</span>
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
+</section>
+<section className="max-w-7xl mx-auto px-6 mb-16">
+  <TextHeader
+    text="Unforgettable Experiences Await"
+    align="left"
+    width="500px"
+    specialWordsIndices="1"
+    buttonText="Tour Categories"
+    className="mb-8"
+  />
+
+  <div className="grid grid-cols-1 md:grid-cols-3 gap-10    ">
+    {topcategories.map((card, index) => (
+      <div key={index} className="flex flex-col gap-2">
+        <div className="aspect-square">
+          <ImageDisplay
+            src={card.src}
+            variant="square"
+            snippet={card.snippet}  
+            snippetPosition="start"
+           
+          />
+        </div>
+        <div className="px-2 flex flex-col">
+          <TextHeader text={card?.title} size="small" align="left" />
+          <h2 className="text-lg font-semibold">{card.subtitle}</h2>
+          <p className="text-gray-600 text-justify">
+            {card.description}
+          </p>
+        </div>
+      </div>
+    ))}
+  </div>
+</section>
+<section className="mb-16 px-6">
+  <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 text-center">
+    {stats.map((stat, index) => (
+      <div key={index} className="space-y-2">
+        <div className="flex items-center justify-center space-x-2">
+          {stat.icon}
+          <TextHeader
+            text={stat.title}
+       
+            size="medium"
+            align="left"
+           
+            width="auto"
+          />
+        </div>
+        <TextHeader
+          text={stat.subtitle}
+          size="small"
+          align="center"
+          width="100%"
+          className="text-gray-600"
+        />
+        <TextDescription
+          text={stat.description}
+          className="text-gray-600"/>
+      </div>
+    ))}
+  </div>
+</section>
+<section>
+
+  
+</section>
+<PartnerSection partnersdata={partnersdata.data} />
+      {/* Everest Section */}
+      <section className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20 mb-16 rounded-lg overflow-hidden bg-orange-50">
+  <div className="absolute inset-0">
+    <Image
+      src="/images/EverestBackground.png"
+      alt="Everest Background"
+      fill
+      className="object-cover"
+    />
+  </div>
+
+  <div className="relative z-10 flex flex-col justify-center items-center text-center">
+    <div className="w-full max-w-3xl px-4">
+      <TextHeader
+        text="Our Everest Base Camp Trek is loved worldwide"
+        align="center"
+        width="100%" // let it be full width and responsive
+        className=""
+      />
+  
+      <TextDescription
+        text="Everest Base Camp Trek is a world-renowned adventure that takes you deep into the heart of the Himalayas. Experience breathtaking views."
+        className="mt-4 "/>
+      <div className="flex flex-col sm:flex-row justify-center gap-4 sm:gap-6 mt-6">
+        <div className="flex items-center justify-center gap-2 text-sm sm:text-base">
+          <HiOutlineClock className="w-5 h-5 sm:w-6 sm:h-6" />
+          <span>12-14 Days</span>
+        </div>
+        <div className="flex items-center justify-center gap-2 text-sm sm:text-base">
+          <FaMapMarkerAlt className="w-5 h-5 sm:w-6 sm:h-6" />
+          <span>Everest (Khumbu), Nepal</span>
+        </div>
+        <div className="flex items-center justify-center gap-2 text-sm sm:text-base">
+          <FaHiking className="w-5 h-5 sm:w-6 sm:h-6" />
+          <span>Moderate to Challenging</span>
+        </div>
+      </div>
+      <Button 
+        text="Start Your Adventure" 
+        variant="primary" 
+        className="mt-8 mx-auto" 
+      />
+    </div>
+  </div>
+</section>
+
+
+   
+      <section className="max-w-7xl mx-auto px-6  mb-16">
+  <TextHeader
+    text="Adventure Awaits: Travel Stories & Tips"
+    buttonText="From the Blogs"
+  className="mb-8"
+    type="main"
+    specialWordsIndices="2"
+    width={500}
+
+  />
+
+  <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+    {/* Left Side: Large Blog Post */}
+    <div className="lg:col-span-2 flex flex-col">
+      <div className="aspect-video w-full">
+        <ImageDisplay src={blogsdata.data[0].imageUrl} variant="rectangle" />
+      </div>
+      <div className="mt-4">
+        <h3 className="text-xl font-bold">{blogsdata.data[0].title}</h3>
+        <p className="mt-2 text-gray-600">{blogsdata.data[0].subtitle}</p>
+      </div>
+    </div>
+
+    {/* Right Side: Two Small Blog Posts */}
+    <div className="flex flex-col   ">
+      {blogsdata.data.slice(1, 3).map((card: { id: string; imageUrl: string; title: string; description: string }) => (
+        <div key={card.id} className="flex flex-col">
+          <div className="">
+        <ImageDisplay src={card.imageUrl} variant="smallrectangle" />
+          </div>
+          <div className="mt-4">
+        <h3 className="text-lg font-semibold">{card.title}</h3>
+        <TextDescription text={card.description} className="text-justify" />
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<section className="max-w-7xl mx-auto mb-16 px-6">
+  <TextHeader
+    text="Adventure Awaits: Travel Stories "
+    buttonText="From the Blogs"
+    className="mb-8"
+    specialWordsIndices="2"
+    width={500}
+  />
+
+  {/* First Row */}
+  <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
+    {/* Rectangle Image (spans 2 columns) */}
+    <div className="lg:col-span-2">
+      <ImageDisplay src={imageCards[0].src} variant="rectangle" width={840} height={430} />
+    </div>
+
+    {/* Square Image */}
+    <div>
+      <ImageDisplay src={imageCards[1].src} variant="square" />
+    </div>
+  </div>
+
+  {/* Second Row with 3 Square Images */}
+  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    {imageCards.slice(2, 5).map((card , index) => (
+      <div key={index}>
+        <ImageDisplay src={card.src} variant="square" alt="Pashpati" snippet="popular" />
+      </div>
+    ))}
+  </div>
+<section>
+  <TestimonialCarousel testimoinaldata={testimoinaldata}/>
+  </section>
+</section>
+
+
+
+   </>
+  );
+}

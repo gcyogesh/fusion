@@ -1,0 +1,62 @@
+
+import React from 'react';
+import Image from 'next/image';
+import TextHeader from '@/components/atoms/headings';
+import Button from '@/components/atoms/button';
+
+interface HeroData {
+  title: string;
+  subTitle?: string;
+  description: string;
+  buttonText: string;
+  buttonLink: string;
+  bannerImage: string;
+}
+const HeroSection = ({ herodata }: { herodata: HeroData }) => {
+  const { title, description, buttonText, buttonLink, bannerImage } = herodata;
+  const isGif = bannerImage.toLowerCase().endsWith('.gif');
+
+  return (
+    <div className="mx-auto relative w-full h-screen overflow-hidden">
+      {isGif ? (
+        <img
+          src={bannerImage}
+          alt="Hero Background"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+      ) : (
+        <Image
+          src={bannerImage}
+          alt="Hero Background"
+          layout="fill"
+          objectFit="cover"
+          priority
+        />
+      )}
+
+      <TextHeader
+        text={title}
+        specialWordsIndices="2"
+        align="center"
+        width="100%"
+        textcolor="white"
+        className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+      />
+
+      <div className="absolute top-[80%] left-1/2 transform -translate-x-1/2 w-full max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-6 md:gap-20 mb-10 text-center md:text-left">
+        <p className="text-white text-base md:text-lg max-w-xl">
+          {description}
+        </p>
+        <div className="pl-100 justify-center items-center gap-4 md:flex hidden">
+          <Button
+            text={buttonText}
+            variant="secondary"
+            textColor="text-white"
+            className="border border-white mt-4 md:mt-0"
+          />
+        </div>
+      </div>
+    </div>
+  );
+};
+export default HeroSection;
