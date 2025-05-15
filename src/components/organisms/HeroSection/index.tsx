@@ -2,7 +2,7 @@
 import React from 'react';
 import Image from 'next/image';
 import TextHeader from '@/components/atoms/headings';
-import Button from '@/components/atoms/button';
+import Button from '@/components/atoms/button';  //Image good one next image
 
 interface HeroData {
   title: string;
