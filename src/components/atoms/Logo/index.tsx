@@ -17,7 +17,7 @@ const Logo = () => {
   useEffect(() => {
     const fetchLogo = async () => {
       try {
-        const response = await fetch("http://198.211.104.173/api/logo");
+        const response = await fetch("https://yogeshbhai.ddns.net/api/logo");
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
