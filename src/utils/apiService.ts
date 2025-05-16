@@ -1,6 +1,6 @@
 import Cookies from "js-cookie";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://198.211.104.173/api";
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "https://yogeshbhai.ddns.net/api";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 interface FetchAPIOptions<T = any> {
