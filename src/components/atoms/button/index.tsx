@@ -59,7 +59,7 @@ const Button = <T,>({
       {leftIcon && (
         <span className="mr-2">
           {typeof leftIcon === "string" ? (
-            <img src={leftIcon} alt="left-icon" className="w-5 h-5" />  //cgbasdf asfs
+            <img src={leftIcon} alt="left-icon" className="w-5 h-5" />  //cgbasdf asfs asdf
           ) : (
             leftIcon
           )}
