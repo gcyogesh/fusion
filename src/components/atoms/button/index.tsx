@@ -9,7 +9,7 @@ interface ButtonProps<T = unknown> {
   extraData?: T;
   className?: string;
   borderColor?: string; // Accept Tailwind or custom border classes like "border-red-500"
-  textColor?: string;   // Accept Tailwind or custom text classes like "text-blue-600"
+  textColor?: string;   // Accept Tailwind or custom text classes like "text-blue-600" alright
 }
 
 const Button = <T,>({
