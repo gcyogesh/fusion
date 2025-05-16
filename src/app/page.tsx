@@ -3,6 +3,8 @@ import { FaMapMarkerAlt } from 'react-icons/fa';
 import { HiOutlineClock } from 'react-icons/hi';
 import HeroSection from "@/components/organisms/HeroSection";
 import { FaHiking } from 'react-icons/fa';
+import { HiOutlineCurrencyDollar } from 'react-icons/hi';
+import { FaCloudSun } from 'react-icons/fa'
 // Atom Components
 import ImageDisplay from "@/components/atoms/ImageCard";
 import Button from "@/components/atoms/button";
@@ -86,6 +88,7 @@ const topcategories = [
   },
 ]
 interface DestinationCard {
+  subtitle: string;
   imageUrl: string;
   tags: string[];
   location: string;
@@ -242,7 +245,7 @@ const herosectiondata = await fetchAPI({ endpoint: "herobanner/home" });
             </span>
           </div>
 
-          <TextHeader text={card.title} size="small" align="left" width={460} />
+          <TextHeader text={card?.subtitle} size="small" align="left" width={410} />
 
           <div className="w-full h-[1.5px] bg-[#C2C2C2]" /> {/* Consistent thickness and color */}
 
@@ -254,6 +257,70 @@ const herosectiondata = await fetchAPI({ endpoint: "herobanner/home" });
     ))}
   </div>
 </section>
+
+<section className="relative w-full ">
+  {/* Background Image */}
+   <Image
+    src="/images/flight.png"
+    alt="flight background"
+    width={600}
+    height={877}
+    layout="responsive"
+    className="mx-auto"
+  />
+
+  {/* Overlay Content */}
+  <div className="absolute inset-0 ">
+    <div className="max-w-7xl mx-auto h-full flex flex-col md:flex-row items-center justify-between px-4 md:px-8 py-6 gap-8">
+      {/* Left Content */}
+      <div className="text-white space-y-4  w-full md:w-1/2">
+        <div className="flex flex-row items-start gap-2 ">
+          <FaCloudSun className="w-6 h-6 text-orange-400" />
+          <h1 className="text-white max-w-xl md:text-2xl"> Feel the freedom in the sky</h1>
+        </div>
+        <TextHeader
+          text="Pokhara Ultralight Flight Adventure"
+          specialWordsIndices="1"
+          align="left"
+          size="medium"
+          width="500px"
+          textcolor="white"
+          
+        />
+        <div className="h-px bg-gray-400 "></div>
+       <div className="flex flex-row gap-20">
+        <div className="space-y-2">
+          
+          <div className="flex flex-col sm:flex-row sm:justify-between gap-2">
+            <HiOutlineClock className="w-5 h-5" />
+            <span>30 Minutes – 90 Minutes</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <HiOutlineCurrencyDollar className="w-5 h-5" />
+            <span>Start From <span className="text-orange-400 font-semibold">$120 – $250</span></span>
+          </div>
+          
+        </div>
+       
+        <Button text="BOOK NOW" variant="primary" className=""  />
+        
+      </div>
+    </div>
+      
+      <div className="rounded-3xl shadow-2xl overflow-hidden border-8 border-gray-600 bg-white/10 backdrop-blur-md">
+        <ImageDisplay
+          src="/images/moutain2.png" 
+          alt="Ultralight Flight"
+          variant="smallsquare"
+          width={468}
+          height={399}
+          className="object-cover"
+        />
+      </div>
+    </div>
+  </div>
+</section>
+
 <section className="max-w-7xl mx-auto px-6 mb-16">
   <TextHeader
     text="Unforgettable Experiences Await"
@@ -287,7 +354,7 @@ const herosectiondata = await fetchAPI({ endpoint: "herobanner/home" });
     ))}
   </div>
 </section>
-<section className="mb-16 px-6">
+<section >
   <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 text-center">
     {stats.map((stat, index) => (
       <div key={index} className="space-y-2">
@@ -312,6 +379,7 @@ const herosectiondata = await fetchAPI({ endpoint: "herobanner/home" });
         <TextDescription
           text={stat.description}
           className="text-gray-600"/>
+          
       </div>
     ))}
   </div>

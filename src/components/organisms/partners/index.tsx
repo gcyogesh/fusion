@@ -12,7 +12,7 @@ interface PartnerSectionProps {
 
 const PartnerSection = ({ partnersdata }: PartnerSectionProps) => {
   return (
-    <section >
+    <section className='mb-20' >
       <TextHeader
         text="Proudly Partnered With"
         specialWordsIndices="1"
@@ -32,7 +32,7 @@ const PartnerSection = ({ partnersdata }: PartnerSectionProps) => {
             <img
               src={partner.image}
               alt={`${partner.title} logo`}
-              className="h-16 object-contain grayscale hover:grayscale-0 transition duration-300"
+              className="h-16 object-contain  hover:grayscale-0 transition duration-300"
             />
           </a>
         ))}
