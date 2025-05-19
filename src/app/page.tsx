@@ -181,7 +181,7 @@ const herosectiondata = await fetchAPI({ endpoint: "herobanner/home" });
             <p className="mt-10 text-gray-700 text-base leading-relaxed">
         
             </p>
-            <TextDescription text="      Our values are more than promises – they’re the soul of every adventure we offer.
+            <TextDescription text="Our values are more than promises – they’re the soul of every adventure we offer.
               Rooted in sustainability, authenticity, and guest-first service, we ensure that your
               journey through Nepal is meaningful and truly one of a kind." />
             </div>
@@ -219,7 +219,7 @@ const herosectiondata = await fetchAPI({ endpoint: "herobanner/home" });
   
   />
 
-  <div className="grid grid-cols-1 md:grid-cols-3 gap-10"> {/* Consistent gap */}
+  <div className="grid grid-cols-1 md:grid-cols-3 gap-10 "> {/* Consistent gap */}
    
 
     {(destinationdata as DestinationData)?.data.map((card, index) => (
@@ -260,66 +260,86 @@ const herosectiondata = await fetchAPI({ endpoint: "herobanner/home" });
 
 <section className="relative w-full ">
   {/* Background Image */}
-   <Image
+  <Image
     src="/images/flight.png"
     alt="flight background"
     width={600}
-    height={877}
+    height={677}
     layout="responsive"
-    className="mx-auto"
+    className="w-full object-cover min-h-[320px] sm:min-h-[470px] md:min-h-[677px]  pb-8 sm:pt-6 "
   />
 
   {/* Overlay Content */}
-  <div className="absolute inset-0 ">
-    <div className="max-w-7xl mx-auto h-full flex flex-col md:flex-row items-center justify-between px-4 md:px-8 py-6 gap-8">
-      {/* Left Content */}
-      <div className="text-white space-y-4  w-full md:w-1/2">
-        <div className="flex flex-row items-start gap-2 ">
-          <FaCloudSun className="w-6 h-6 text-orange-400" />
-          <h1 className="text-white max-w-xl md:text-2xl"> Feel the freedom in the sky</h1>
-        </div>
-        <TextHeader
-          text="Pokhara Ultralight Flight Adventure"
-          specialWordsIndices="1"
-          align="left"
-          size="medium"
-          width="500px"
-          textcolor="white"
+  <div className="absolute inset-0 flex items-center justify-center ">
+    <div className="w-full max-w-7xl mx-auto py-6 sm:py-0">
+      {/* Scale wrapper for responsiveness */}
+      <div className="transform origin-top scale-[0.85] sm:scale-100">
+        <div className="grid grid-cols-2 items-center  max-w-full">
           
-        />
-        <div className="h-px bg-gray-400 "></div>
-       <div className="flex flex-row gap-20">
-        <div className="space-y-2">
-          
-          <div className="flex flex-col sm:flex-row sm:justify-between gap-2">
-            <HiOutlineClock className="w-5 h-5" />
-            <span>30 Minutes – 90 Minutes</span>
+          {/* Left Content */}
+          <div className="text-white space-y-1 md:space-y-6 text-xs  md:text-base">
+            <div className="space-y-2 sm:space-y-1">
+              <div className="flex items-center gap-3">
+                <FaCloudSun className="w-4 h-4 sm:w-5 sm:h-5 text-orange-400" />
+                <h1 className="text-white text-base md:text-2xl font-semibold">
+                  Feel the freedom<br />in the sky
+                </h1>
+              </div>
+
+              <TextHeader
+                text="Pokhara Ultralight Flight Adventure"
+                specialWordsIndices="1"
+                align="left"
+                size="medium"
+                textcolor="white"
+                className="w-[250px]  md:w-[400px] "
+              />
+            </div>
+
+            <div className="w-full h-px bg-white/30 mb-3 sm:mb-1 md:mb-3" />
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6 sm:mt-1 md:mt-6 ">
+              <div className="space-y-0 md:space-y-4 text-base md:text-base sm:text-sm">
+                <div className="flex items-center gap-2">
+                  <HiOutlineClock className="w-4 h-4 sm:w-5 sm:h-5" />
+                  <span>30 Minutes – 90 Minutes</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <HiOutlineCurrencyDollar className="w-4 h-4 sm:w-5 sm:h-5" />
+                  <span className="flex items-center gap-x-2 md:gap-x-4">
+                     Start From <span className="text-orange-400 font-semibold">$120 – $250</span>
+                  </span>
+
+                </div>
+              </div>
+
+              <div className="flex justify-start sm:justify-end items-end">
+                <Button text="BOOK NOW" variant="primary" className="text-xs sm:text-sm" />
+              </div>
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            <HiOutlineCurrencyDollar className="w-5 h-5" />
-            <span>Start From <span className="text-orange-400 font-semibold">$120 – $250</span></span>
+
+          {/* Right Side Image */}
+          <div className="w-full flex flex-row justify-end  pl-6 md:pl-0 lg:pl-0">
+            <div className="rounded-xl shadow-md  border border-gray-400  backdrop-blur-md p-3 overflow-hidden">
+              <ImageDisplay
+                src="/images/pokharaflight.png"
+                alt="Ultralight Flight"
+                variant="smallsquare"
+                width={450}
+                height={350}
+                className="object-cover w-full h-auto "
+              />
+            </div>
           </div>
-          
         </div>
-       
-        <Button text="BOOK NOW" variant="primary" className=""  />
-        
-      </div>
-    </div>
-      
-      <div className="rounded-3xl shadow-2xl overflow-hidden border-8 border-gray-600 bg-white/10 backdrop-blur-md">
-        <ImageDisplay
-          src="/images/moutain2.png" 
-          alt="Ultralight Flight"
-          variant="smallsquare"
-          width={468}
-          height={399}
-          className="object-cover"
-        />
       </div>
     </div>
   </div>
 </section>
+
+
+
 
 <section className="max-w-7xl mx-auto px-6 mb-16">
   <TextHeader
@@ -362,10 +382,8 @@ const herosectiondata = await fetchAPI({ endpoint: "herobanner/home" });
           {stat.icon}
           <TextHeader
             text={stat.title}
-       
             size="medium"
             align="left"
-           
             width="auto"
           />
         </div>

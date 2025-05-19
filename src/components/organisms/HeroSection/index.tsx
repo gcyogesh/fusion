@@ -43,19 +43,27 @@ const HeroSection = ({ herodata }: { herodata: HeroData }) => {
         className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
       />
 
-      <div className="absolute top-[80%] left-1/2 transform -translate-x-1/2 w-full max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-6 md:gap-20 mb-10 text-center md:text-left">
-        <p className="text-white text-base md:text-lg max-w-xl">
-          {description}
-        </p>
-        <div className="pl-100 justify-center items-center gap-4 md:flex hidden">
-          <Button
-            text={buttonText}
-            variant="secondary"
-            textColor="text-white"
-            className="border border-white mt-4 md:mt-0"
-          />
-        </div>
-      </div>
+      <div className="absolute top-[70%] md:top-[80%] lg:top-[80%] left-1/2 transform -translate-x-1/2 w-full max-w-7xl mx-auto px-6">
+  <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-4 md:gap-10 text-center md:text-left mb-10">
+    
+    {/* Left: Description */}
+    <p className="text-white text-base md:text-lg max-w-xl mx-auto md:mx-0">
+      {description}
+    </p>
+
+    {/* Right: Button */}
+    <div className="flex justify-center md:justify-end">
+      <Button
+        text={buttonText}
+        variant="secondary"
+        textColor="text-white"
+        className="border border-white mt-4 md:mt-0"
+      />
+    </div>
+    
+  </div>
+</div>
+
     </div>
   );
 };
