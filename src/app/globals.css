@@ -64,3 +64,6 @@ section {
     padding-bottom: 32px;
   }
 }
+body {
+  background-color: #fef9ee !important;
+}

@@ -19,6 +19,7 @@ import { FaUsers, FaLeaf, FaMountain, FaCompass } from "react-icons/fa";
 import TestimonialCarousel from "@/components/organisms/testimonial/testimoinal";
 import { FaTrophy, FaStar, FaGlobe  } from "react-icons/fa";
 import TextDescription from "@/components/atoms/description";
+import { data } from "framer-motion/client";
 const imageCards = [
   {
     src: "/image.png",
@@ -319,7 +320,8 @@ const herosectiondata = await fetchAPI({ endpoint: "herobanner/home" });
             variant="square"
             snippet={card.tags[0]}
             snippetPosition="start"
-          />
+            title={card.title} 
+            description={card.subtitle}         />
         </div>
 
         <div className="flex flex-col gap-3"> {/* Add consistent internal gap */}
@@ -449,7 +451,9 @@ const herosectiondata = await fetchAPI({ endpoint: "herobanner/home" });
             variant="square"
             snippet={card.snippet}  
             snippetPosition="start"
-           
+            title={card.title} 
+            description={card.subtitle}  
+
           />
         </div>
         <div className="px-2 flex flex-col">
@@ -559,7 +563,8 @@ const herosectiondata = await fetchAPI({ endpoint: "herobanner/home" });
     {/* Left Side: Large Blog Post */}
     <div className="lg:col-span-2 flex flex-col">
       <div className="aspect-video w-full">
-        <ImageDisplay src={blogsdata.data[0].imageUrl} variant="rectangle" />
+        <ImageDisplay src={blogsdata.data[0].imageUrl} variant="rectangle" title={blogsdata.data[0].title} 
+            description={blogsdata.data[0].subtitle} />
       </div>
       <div className="mt-4">
         <h3 className="text-xl font-bold">{blogsdata.data[0].title}</h3>
@@ -572,7 +577,7 @@ const herosectiondata = await fetchAPI({ endpoint: "herobanner/home" });
       {blogsdata.data.slice(1, 3).map((card: { id: string; imageUrl: string; title: string; description: string }) => (
         <div key={card.id} className="flex flex-col">
           <div className="">
-        <ImageDisplay src={card.imageUrl} variant="smallrectangle" />
+        <ImageDisplay src={card.imageUrl} variant="smallrectangle"  title={card.title} description={card.description}   />
           </div>
           <div className="mt-4">
         <h3 className="text-lg font-semibold">{card.title}</h3>
@@ -597,12 +602,12 @@ const herosectiondata = await fetchAPI({ endpoint: "herobanner/home" });
   <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
     {/* Rectangle Image (spans 2 columns) */}
     <div className="lg:col-span-2">
-      <ImageDisplay src={imageCards[0].src} variant="rectangle" width={840} height={430} />
+      <ImageDisplay src={imageCards[0].src} variant="rectangle" width={840} height={430} title={imageCards[0].title}  />
     </div>
 
     {/* Square Image */}
     <div>
-      <ImageDisplay src={imageCards[1].src} variant="square" />
+      <ImageDisplay src={imageCards[1].src} variant="square" title={imageCards[1].title}/>
     </div>
   </div>
 
@@ -610,7 +615,7 @@ const herosectiondata = await fetchAPI({ endpoint: "herobanner/home" });
   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
     {imageCards.slice(2, 5).map((card , index) => (
       <div key={index}>
-        <ImageDisplay src={card.src} variant="square" alt="Pashpati" snippet="popular" />
+        <ImageDisplay src={card.src} variant="square" alt="Pashpati" snippet="popular" title={card.title} />
       </div>
     ))}
   </div>

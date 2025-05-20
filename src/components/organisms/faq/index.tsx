@@ -1,4 +1,4 @@
-'use client';
+    'use client';
 
 import { useState } from 'react';
 import { Minus, Plus } from 'lucide-react';
@@ -77,11 +77,11 @@ export default function FAQSection() {
                 <span className="text-lg font-semibold">
                   {faq.question}
                 </span>
-                <span className="ml-4">
+                <span className="ml-6">
                   {isOpen ? (
-                    <Minus className="w-8 h-8 text-white bg-orange-200 rounded" />
+                    <Minus className="w-8 h-8 text-white bg-primary rounded cursor-pointer" />
                   ) : (
-                    <Plus className="w-8 h-8 text-white bg-orange-200 rounded" />
+                    <Plus className="w-8 h-8 text-white bg-primary rounded cursor-pointer" />
                   )}
                 </span>
               </button>

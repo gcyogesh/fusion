@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
@@ -18,13 +18,16 @@ interface ImageDisplayProps<T = string> {
   snippetPosition?: SnippetPosition;
   secondSnippet?: React.ReactNode;
   secondSnippetPosition?: SnippetPosition;
+  title?: string;
+  description?: string;
+  showOverlayContent?: boolean;
 }
 
 const aspectRatios = {
-  rectangle: 820 / 590,   // ≈ 1.39
-  square: 408 / 430,      // ≈ 0.95
+  rectangle: 820 / 590,
+  square: 408 / 430,
   smallsquare: 1,
-  smallrectangle: 408 / 236 // ≈ 1.73
+  smallrectangle: 408 / 236,
 };
 
 const getSnippetPositionClasses = (position: SnippetPosition) => {
@@ -51,6 +54,9 @@ const ImageDisplay = <T extends string>({
   snippetPosition = 'start',
   secondSnippet,
   secondSnippetPosition = 'end',
+  title,
+  description,
+  showOverlayContent = true,
 }: ImageDisplayProps<T>) => {
   const [isError, setIsError] = useState(false);
   const shouldShowPlaceholder = isError || !src;
@@ -60,11 +66,11 @@ const ImageDisplay = <T extends string>({
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.6, ease: 'easeOut' }}
-      className={`relative overflow-hidden rounded-xl w-full ${className}`}
+      className={`relative overflow-hidden rounded-xl group w-full ${className}`}
       style={{
         aspectRatio: `${aspectRatios[variant].toFixed(3)}`,
         maxWidth: width || '100%',
-        maxHeight: height || 'none'
+        maxHeight: height || 'none',
       }}
     >
       {shouldShowPlaceholder ? (
@@ -83,9 +89,23 @@ const ImageDisplay = <T extends string>({
         <img
           src={src}
           alt={alt}
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           onError={() => setIsError(true)}
         />
+      )}
+
+      {showOverlayContent && (
+        <div className="absolute inset-0 bg-black/50 flex flex-col justify-center items-center text-white opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+          {title && <h3 className="text-lg font-semibold">{title}</h3>}
+          {description && (
+            <p className="text-sm text-center mt-1 px-4">
+              {description}
+            </p>
+          )}
+          <div className="mt-4 w-8 h-8 flex items-center justify-center rounded-full bg-orange-500">
+            <span className="text-white text-sm">↗</span>
+          </div>
+        </div>
       )}
 
       {snippet && (
