@@ -19,7 +19,7 @@ import { FaUsers, FaLeaf, FaMountain, FaCompass } from "react-icons/fa";
 import TestimonialCarousel from "@/components/organisms/testimonial/testimoinal";
 import { FaTrophy, FaStar, FaGlobe  } from "react-icons/fa";
 import TextDescription from "@/components/atoms/description";
-import { data } from "framer-motion/client";
+
 const imageCards = [
   {
     src: "/image.png",
