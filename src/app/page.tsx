@@ -626,7 +626,7 @@ const herosectiondata = await fetchAPI({ endpoint: "herobanner/home" });
 
 {/* Share the joy of your journey */}
       <section className=" bg-blue-950 ">
-        <div className="max-w-7xl mx-auto text-white space-y-4">
+        <div className="max-w-7xl mx-auto text-white space-y-4 md:px-0 px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-6">
   {/* Left Side: Header and Paragraph */}
      <div className="flex flex-col items-start space-y-4">
@@ -637,9 +637,8 @@ const herosectiondata = await fetchAPI({ endpoint: "herobanner/home" });
       width="400px"
       textcolor="white"
     />
-    <p className="text-base text-white w-[500px] sm:[300px]">
-      Join our community of travelers and share your unforgettable experiences with us. Your stories inspire others to explore the world.
-    </p>
+   
+    <TextDescription text="  Join our community of travelers and share your unforgettable experiences with us. Your stories inspire others to explore the world." className="w-[200px] md:w-[500px] "  />
   </div>
 
   {/* Right Side: Social Links */}
@@ -667,6 +666,7 @@ const herosectiondata = await fetchAPI({ endpoint: "herobanner/home" });
                       text={card.title}
                       size="small"
                       align="end"
+                      className="md:show hidden"
                       textcolor="white"
                      / >
                   }
