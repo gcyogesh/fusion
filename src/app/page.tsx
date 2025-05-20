@@ -1,5 +1,6 @@
 import Image from "next/image";
-import { FaMapMarkerAlt } from 'react-icons/fa';
+import { FaMapMarkerAlt, FaCalendarAlt, FaDollarSign, FaSearch } from 'react-icons/fa';
+import { FaInstagram, FaFacebookF, FaYoutube } from "react-icons/fa";
 import { HiOutlineClock } from 'react-icons/hi';
 import HeroSection from "@/components/organisms/HeroSection";
 import { FaHiking } from 'react-icons/fa';
@@ -155,6 +156,37 @@ const values = [
       "Explore Nepal with passionate, knowledgeable local experts who bring destinations to life and ensure your safety, comfort, and enjoyment every step of the way.",
   },
 ];
+
+const journeyCards = [
+  {
+    src: "/images/Journey.png",
+    title: "@jane87",
+    variant: "smallsquare",
+  },
+  {
+    src: "/images/Journey.png",
+    title: "@jane87",
+    variant: "smallsquare",
+  },
+  {
+    src: "/images/Journey.png",
+    title: "@jane87",
+    variant: "smallsquare",
+
+  },
+  {
+    src: "/images/Journey.png",
+    title: "@jane87",
+    variant: "smallsquare",
+  },
+];
+
+const socialLinks = [
+  { icon: <FaInstagram className="text-white backdrop-blur-[12.6px] border border-white/16 bg-white/15 p-2 rounded-xl w-10 h-10"/>, link: "#" },
+  { icon: <FaFacebookF className="text-white backdrop-blur-[12.6px] border border-white/16 bg-white/15 p-2 rounded-xl w-10 h-10 "/>, link: "#" },
+  { icon: <FaYoutube className="text-white backdrop-blur-[12.6px] border border-white/16 bg-white/15 p-2 rounded-xl w-10 h-10 "/>, link: "#" },
+];
+
 export default async function Home() {
   const partnersdata = await fetchAPI({ endpoint: "partners" });
   const blogsdata = await fetchAPI({ endpoint: "blogs" });
@@ -165,8 +197,65 @@ const herosectiondata = await fetchAPI({ endpoint: "herobanner/home" });
    <>
    
    <HeroSection herodata={herosectiondata.data}/>
+ <div className="absolute w-full max-w-[1100px] mx-auto left-0 right-0 top-[105%] md:top-[96%] lg:top-[95%] px-2">
+  <div className="flex items-center justify-between bg-white rounded-full px-2 sm:px-4 py-2 sm:py-3 shadow-lg gap-2 overflow-x-auto">
+
+    {/* Location */}
+    <div className="flex items-center space-x-1 flex-shrink-0 min-w-[100px] sm:min-w-[160px] md:min-w-[200px]">
+      <span className="bg-[#FEF2D6] p-1 md:p-4 rounded-full">
+        <FaMapMarkerAlt className="text-[#0E334F] text-xs md:text-2xl" />
+      </span>
+      <div className="flex flex-col text-[10px] sm:text-sm md:text-base w-full truncate">
+        <span className="font-bold">Location</span>
+        <span className="text-gray-500 truncate">Enter your destination</span>
+      </div>
+    </div>
+
+    {/* Date */}
+    <div className="flex items-center space-x-1 flex-shrink-0 min-w-[100px] sm:min-w-[160px] md:min-w-[200px]">
+      <span className="bg-[#FEF2D6] p-1 md:p-4 rounded-full">
+        <FaCalendarAlt className="text-[#0E334F] text-xs md:text-2xl" />
+      </span>
+      <div className="flex flex-col text-[10px] sm:text-sm md:text-base w-full truncate">
+        <span className="font-bold">Date</span>
+        <span className="text-gray-500 truncate">Choose your dates</span>
+      </div>
+    </div>
+
+    {/* Price */}
+    <div className="flex items-center space-x-1 flex-shrink-0 min-w-[100px] sm:min-w-[160px] md:min-w-[200px]">
+      <span className="bg-[#FEF2D6] p-1 md:p-4 rounded-full">
+        <FaDollarSign className="text-[#0E334F] text-xs md:text-2xl" />
+      </span>
+      <div className="flex flex-col text-[10px] sm:text-sm md:text-base w-full truncate">
+        <span className="font-bold ">Price</span>
+        <span className="text-gray-500 truncate">Enter your budget</span>
+      </div>
+    </div>
+
+    {/* Button */}
+    <div className="flex flex-shrink-0">
+      <button className="flex items-center bg-[#0E334F] text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-medium hover:bg-blue-800 transition whitespace-nowrap text-xs sm:text-sm md:text-base">
+        {/* Icon only on small screen */}
+        <span className="block sm:hidden">
+          <FaSearch className="text-white text-sm" />
+        </span>
+        {/* Text + icon on sm and above */}
+        <span className="hidden sm:flex items-center">
+          Find My Adventure
+          <span className="ml-2 bg-white p-4 rounded-full">
+            <FaSearch className="text-[#0E334F] text-sm" />
+          </span>
+        </span>
+      </button>
+    </div>
+
+  </div>
+</div>
+
+
   
-    <div className="bg-[#FCE1AC] py-16 px-6 md:px-20">
+    <div className="bg-[#FCE1AC] py-25 px-6 ">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-30">
           {/* Left Section */}
           <div className="md:w-5/12">
@@ -530,7 +619,59 @@ const herosectiondata = await fetchAPI({ endpoint: "herobanner/home" });
   </section>
 </section>
 
+{/* Share the joy of your journey */}
+      <section className=" bg-blue-950 ">
+        <div className="max-w-7xl mx-auto text-white space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-6">
+  {/* Left Side: Header and Paragraph */}
+     <div className="flex flex-col items-start space-y-4">
+      <TextHeader
+      text="Share the joy of your journey"
+      specialWordsIndices="2"
+      align="start"
+      width="400px"
+      textcolor="white"
+    />
+    <p className="text-base text-white w-[500px] sm:[300px]">
+      Join our community of travelers and share your unforgettable experiences with us. Your stories inspire others to explore the world.
+    </p>
+  </div>
 
+  {/* Right Side: Social Links */}
+  <div className="flex justify-end space-x-4 mt-12 ">
+    {socialLinks.map((link, index) => (
+      <a key={index} href={link.link} className="hover:scale-110 transition-transform">
+        <span>{link.icon}</span>
+      </a>
+    ))}
+  </div>
+    </div>
+
+          
+          
+           
+          <div className=" flex flex-cols-1 gap-2 m-2 md:m-0 lgm-0 md:gap-6 lg:gap-6">
+      
+            {journeyCards.map((card, index) => (
+              <div key={index} className="flex flex-col items-center  ">
+                <ImageDisplay
+                  src={card.src}
+                  variant="smallsquare"
+                  secondSnippet={
+                    <TextHeader 
+                      text={card.title}
+                      size="small"
+                      align="end"
+                      textcolor="white"
+                     / >
+                  }
+                />
+              </div>
+            ))}
+
+          </div>
+        </div>
+      </section>
 
    </>
   );
