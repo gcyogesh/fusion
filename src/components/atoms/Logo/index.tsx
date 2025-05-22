@@ -49,7 +49,7 @@ const Logo = () => {
       <img
         src={`${logo?.url}`}
         alt={logo?.alt}
-        width={150}
+        width={180}
         height={logo?.height}
         className="h-auto"
       />

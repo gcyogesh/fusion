@@ -133,25 +133,25 @@ const stats = [
 ];
 const values = [
   {
-    icon: <FaUsers className="text-3xl text-yellow-700 " />,
+    icon: <FaUsers className="text-4xl text-[#002B45] " />,
     title: "Customer-Centric",
     description:
       "Your experience is at the heart of everything we do. We listen, care, and curate every trip based on what matters most to you — making your travel seamless and memorable.",
   },
   {
-    icon: <FaLeaf className="text-3xl text-green-700" />,
+    icon: <FaLeaf className="text-4xl text-[#002B45]" />,
     title: "Sustainable Travel",
     description:
       "We believe in preserving the beauty of Nepal for generations to come. Our trips focus on eco-conscious travel, supporting local communities, and minimizing our environmental impact.",
   },
   {
-    icon: <FaMountain className="text-3xl text-purple-700" />,
+    icon: <FaMountain className="text-4xl text-[#002B45]" />,
     title: "Authentic Experiences",
     description:
       "Go beyond the ordinary. We craft journeys that connect you deeply with Nepal’s rich culture, warm people, and breathtaking landscapes — experiences that leave a lasting impact.",
   },
   {
-    icon: <FaCompass className="text-3xl text-blue-700" />,
+    icon: <FaCompass className="text-4xl text-[#002B45]" />,
     title: "Expert Local Guides",
     description:
       "Explore Nepal with passionate, knowledgeable local experts who bring destinations to life and ensure your safety, comfort, and enjoyment every step of the way.",
@@ -198,113 +198,58 @@ const herosectiondata = await fetchAPI({ endpoint: "herobanner/home" });
    <>
    
    <HeroSection herodata={herosectiondata.data}/>
- <div className="absolute w-full max-w-[1100px] mx-auto left-0 right-0 top-[105%] md:top-[96%] lg:top-[95%] px-2">
-  <div className="flex items-center justify-between bg-white rounded-full px-2 sm:px-4 py-2 sm:py-3 shadow-lg gap-2 overflow-x-auto">
-
-    {/* Location */}
-    <div className="flex items-center space-x-1 flex-shrink-0 min-w-[100px] sm:min-w-[160px] md:min-w-[200px]">
-      <span className="bg-[#FEF2D6] p-1 md:p-4 rounded-full">
-        <FaMapMarkerAlt className="text-[#0E334F] text-xs md:text-2xl" />
-      </span>
-      <div className="flex flex-col text-[10px] sm:text-sm md:text-base w-full truncate">
-        <span className="font-bold">Location</span>
-        <span className="text-gray-500 truncate">Enter your destination</span>
+   
+ 
+  
+    <div className="relative z-10 bg-[#FCE1AC] py-30 ">
+  <div className="max-w-7xl mx-auto flex flex-col gap-10 md:flex-row justify-between items-start md:items-center ">
+    
+    {/* Left Section */}
+    <div className="w-full md:w-5/12 ">
+      <TextHeader
+        text="Our true values for your unforgettable journey"
+        specialWordsIndices="[1,2]"
+        align="left"
+        width="622px"
+        buttonText="Why Fusion Expedition"
+      />
+      <div className="flex flex-col justify-end h-full mt-10 md:mt-80 lg:mt-80">
+        <TextDescription text="Our values are more than promises – they’re the soul of every adventure we offer.
+          Rooted in sustainability, authenticity, and guest-first service, we ensure that your
+          journey through Nepal is meaningful and truly one of a kind." />
       </div>
     </div>
 
-    {/* Date */}
-    <div className="flex items-center space-x-1 flex-shrink-0 min-w-[100px] sm:min-w-[160px] md:min-w-[200px]">
-      <span className="bg-[#FEF2D6] p-1 md:p-4 rounded-full">
-        <FaCalendarAlt className="text-[#0E334F] text-xs md:text-2xl" />
-      </span>
-      <div className="flex flex-col text-[10px] sm:text-sm md:text-base w-full truncate">
-        <span className="font-bold">Date</span>
-        <span className="text-gray-500 truncate">Choose your dates</span>
-      </div>
-    </div>
-
-    {/* Price */}
-    <div className="flex items-center space-x-1 flex-shrink-0 min-w-[100px] sm:min-w-[160px] md:min-w-[200px]">
-      <span className="bg-[#FEF2D6] p-1 md:p-4 rounded-full">
-        <FaDollarSign className="text-[#0E334F] text-xs md:text-2xl" />
-      </span>
-      <div className="flex flex-col text-[10px] sm:text-sm md:text-base w-full truncate">
-        <span className="font-bold ">Price</span>
-        <span className="text-gray-500 truncate">Enter your budget</span>
-      </div>
-    </div>
-
-    {/* Button */}
-    <div className="flex flex-shrink-0">
-      <button className="flex items-center bg-[#0E334F] text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-medium hover:bg-blue-800 transition whitespace-nowrap text-xs sm:text-sm md:text-base">
-        {/* Icon only on small screen */}
-        <span className="block sm:hidden">
-          <FaSearch className="text-white text-sm" />
-        </span>
-        {/* Text + icon on sm and above */}
-        <span className="hidden sm:flex items-center">
-          Find My Adventure
-          <span className="ml-2 bg-white p-4 rounded-full">
-            <FaSearch className="text-[#0E334F] text-sm" />
-          </span>
-        </span>
-      </button>
+    {/* Right Section */}
+    <div className="w-full md:w-[42%] space-y-3.5  ">
+      {values.map((value, index) => (
+        <div
+          key={index}
+          className="flex items-center bg-[#FEF2D6] shadow-sm rounded-xl p-3 border border-black"
+        >
+          <div className="mr-4 border border-black rounded-full p-3">{value.icon}</div>
+          <div>
+            <h3 className="text-xl font-semibold mb-1">{value.title}</h3>
+            <p className="text-sm m-1">{value.description}</p>
+          </div>
+        </div>
+      ))}
     </div>
 
   </div>
 </div>
 
-
-  
-    <div className="bg-[#FCE1AC] py-25 px-6 ">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-30">
-          {/* Left Section */}
-          <div className="md:w-5/12">
-          <TextHeader
-          text="Our true values for your unforgettable journey"
-          specialWordsIndices="[1,2]"
-          align="left"
-          width="622px"
-          buttonText="Why Fusion Expedition"
-        />
-        <div className="flex flex-col justify-end h-100">
-            <p className="mt-10 text-gray-700 text-base leading-relaxed">
-        
-            </p>
-            <TextDescription text="Our values are more than promises – they’re the soul of every adventure we offer.
-              Rooted in sustainability, authenticity, and guest-first service, we ensure that your
-              journey through Nepal is meaningful and truly one of a kind." />
-            </div>
-          </div>
-  
-          {/* Right Section */}
-          <div className="md:w-5/10 space-y-3 mt-14">
-            {values.map((value, index) => (
-              <div
-                key={index}
-                className="flex items-center bg-[#FEF2D6] shadow-sm rounded-xl p-2 pb-[-5] border border-black"
-              >
-                <div className="mb-10 mr-4  border boder-black rounded-full p-3 ">{value.icon}</div>
-                <div>
-                  <h3 className="text-lg font-semibold mb-1">{value.title}</h3>
-                  <p className="text-sm text-gray-600">{value.description}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-      {/* Best Destination */}
+      {/*Featured Experience */}
       
-      <section className="max-w-7xl mx-auto mb-16 px-10">
+      <section className="max-w-7xl mx-auto ">
   <TextHeader
     text="Where Dreams Meet Destinations"
-    buttonText="Popular Tour"
+    buttonText="Featured Experience"
     specialWordsIndices="3"
     size="medium"
     width={622}
     align="center"
-    className="mb-8" // Increased spacing for better visual balance
+    className="mb-4" // Increased spacing for better visual balance
 
   
   />
@@ -349,6 +294,8 @@ const herosectiondata = await fetchAPI({ endpoint: "herobanner/home" });
   </div>
 </section>
 
+{/*Flight Advanture */}
+
 <section className="relative w-full ">
   {/* Background Image */}
   <Image
@@ -368,11 +315,17 @@ const herosectiondata = await fetchAPI({ endpoint: "herobanner/home" });
         <div className="grid grid-cols-2 items-center  max-w-full">
           
           {/* Left Content */}
-          <div className="text-white space-y-1 md:space-y-6 text-xs  md:text-base">
+          <div className="text-white space-y-3 md:space-y-6 text-xs  md:text-base">
             <div className="space-y-2 sm:space-y-1">
               <div className="flex items-center gap-3">
-                <FaCloudSun className="w-4 h-4 sm:w-5 sm:h-5 text-orange-400" />
-                <h1 className="text-white text-base md:text-2xl font-semibold">
+                <Image
+                           src="/images/ph_cloud-sun-duotone.svg" 
+                           alt="Search Icon"
+                           width={40}
+                            height={40}
+                            
+                            />  
+                <h1 className="text-white opacity-70 text-base md:text-2xl font-semibold">
                   Feel the freedom<br />in the sky
                 </h1>
               </div>
@@ -383,14 +336,14 @@ const herosectiondata = await fetchAPI({ endpoint: "herobanner/home" });
                 align="left"
                 size="medium"
                 textcolor="white"
-                className="w-[250px]  md:w-[400px] "
+                className="w-[250px]  md:w-[400px]  mt-2"
               />
             </div>
 
-            <div className="w-full h-px bg-white/30 mb-3 sm:mb-1 md:mb-3" />
+            <div className="w-auto md:w-[530px] h-px bg-white/30 mb-3 sm:mb-1 md:mb-3" />
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6 sm:mt-1 md:mt-6 ">
-              <div className="space-y-0 md:space-y-4 text-base md:text-base sm:text-sm">
+            <div className="grid grid-cols-1 sm:grid-cols-2 w-[530px] gap-4 mt-6 sm:mt-1 md:mt-6 ">
+              <div className="space-y-0 md:space-y-4 text-sm md:text-xl lg:text-xl ">
                 <div className="flex items-center gap-2">
                   <HiOutlineClock className="w-4 h-4 sm:w-5 sm:h-5" />
                   <span>30 Minutes – 90 Minutes</span>
@@ -405,21 +358,21 @@ const herosectiondata = await fetchAPI({ endpoint: "herobanner/home" });
               </div>
 
               <div className="flex justify-start sm:justify-end items-end">
-                <Button text="BOOK NOW" variant="primary" className="text-xs sm:text-sm" />
+                <Button text="Book Now" variant="primary" className="text-xs flex  sm:text-sm " />
               </div>
             </div>
           </div>
 
           {/* Right Side Image */}
-          <div className="w-full flex flex-row justify-end  pl-6 md:pl-0 lg:pl-0">
-            <div className="rounded-xl shadow-md  border border-gray-400  backdrop-blur-md p-3 overflow-hidden">
+          <div className="w-full flex flex-row justify-end  pl-10 md:pl-0 lg:pl-0">
+            <div className="rounded-xl shadow-md  border border-gray-400  backdrop-blur-md p-3 ">
               <ImageDisplay
                 src="/images/pokharaflight.png"
                 alt="Ultralight Flight"
                 variant="smallsquare"
-                width={450}
-                height={350}
-                className="object-cover w-full h-auto "
+                width={455}
+                height={400}
+                className="object-fill"
               />
             </div>
           </div>
@@ -429,44 +382,7 @@ const herosectiondata = await fetchAPI({ endpoint: "herobanner/home" });
   </div>
 </section>
 
-
-
-
-<section className="max-w-7xl mx-auto px-6 mb-16">
-  <TextHeader
-    text="Unforgettable Experiences Await"
-    align="left"
-    width="500px"
-    specialWordsIndices="1"
-    buttonText="Tour Categories"
-    className="mb-8"
-  />
-
-  <div className="grid grid-cols-1 md:grid-cols-3 gap-10    ">
-    {topcategories.map((card, index) => (
-      <div key={index} className="flex flex-col gap-2">
-        <div className="aspect-square">
-          <ImageDisplay
-            src={card.src}
-            variant="square"
-            snippet={card.snippet}  
-            snippetPosition="start"
-            title={card.title} 
-            description={card.subtitle}  
-
-          />
-        </div>
-        <div className="px-2 flex flex-col">
-          <TextHeader text={card?.title} size="small" align="left" />
-          <h2 className="text-lg font-semibold">{card.subtitle}</h2>
-          <p className="text-gray-600 text-justify">
-            {card.description}
-          </p>
-        </div>
-      </div>
-    ))}
-  </div>
-</section>
+{/*ranks */}
 <section >
   <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 text-center">
     {stats.map((stat, index) => (
@@ -495,48 +411,130 @@ const herosectiondata = await fetchAPI({ endpoint: "herobanner/home" });
     ))}
   </div>
 </section>
-<section>
 
-  
+
+
+{/*Best destination */}
+
+<section className="max-w-7xl mx-auto ">
+  <TextHeader
+    text="Top Picks for Your Next Adventure"
+    buttonText="Best Destinations"
+    className="mb-5"
+    specialWordsIndices="5"
+    width={500}
+  />
+
+  {/* First Row */}
+  <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
+    {/* Rectangle Image (spans 2 columns) */}
+    <div className="lg:col-span-2">
+      <ImageDisplay src={imageCards[0].src} variant="rectangle" width={840} height={430} title={imageCards[0].title}  />
+    </div>
+
+    {/* Square Image */}
+    <div>
+      <ImageDisplay src={imageCards[1].src} variant="square" title={imageCards[1].title}/>
+    </div>
+  </div>
+
+  {/* Second Row with 3 Square Images */}
+  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    {imageCards.slice(2, 5).map((card , index) => (
+      <div key={index}>
+        <ImageDisplay src={card.src} variant="square" alt="Pashpati" snippet="popular" title={card.title} />
+      </div>
+    ))}
+  </div>
+
 </section>
-<PartnerSection partnersdata={partnersdata.data} />
-      {/* Everest Section */}
-      <section className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20 mb-16 rounded-lg overflow-hidden bg-orange-50">
-  <div className="absolute inset-0">
+
+{/*Tour Categories */}
+
+<section className="max-w-7xl mx-auto">
+  <TextHeader
+    text="Unforgettable Experiences Await"
+    align="left"
+    width="500px"
+    specialWordsIndices="1"
+    buttonText="Tour Categories"
+    className="mb-6"
+  />
+
+  <div className="grid grid-cols-1 md:grid-cols-3 gap-10 ">
+    {topcategories.map((card, index) => (
+      <div key={index} className="flex flex-col gap-2">
+        <div className="aspect-square">
+          <ImageDisplay
+            src={card.src}
+            variant="square"
+            snippet={card.snippet}  
+            snippetPosition="start"
+            title={card.title} 
+            description={card.subtitle}  
+
+          />
+        </div>
+        <div className="px-2 flex flex-col">
+          <TextHeader text={card?.title} size="small" align="left" />
+          <h2 className="text-lg font-semibold">{card.subtitle}</h2>
+          <p className="text-gray-600 text-justify">
+            {card.description}
+          </p>
+        </div>
+      </div>
+    ))}
+  </div>
+</section>
+
+  {/* Everest Section */}
+<section className="relative z-0 max-w-7xl mx-auto mt-20 rounded-lg overflow-hidden">
+  {/* Background Image */}
+<div className="absolute inset-0">
     <Image
-      src="/images/EverestBackground.png"
+      src="/images/EverestBG.png"
       alt="Everest Background"
       fill
       className="object-cover"
     />
   </div>
 
-  <div className="relative z-10 flex flex-col justify-center items-center text-center">
-    <div className="w-full max-w-3xl px-4">
+  {/* Foreground Content */}
+  <div className="relative z-10 flex flex-col justify-center items-center text-center px-4 py-4 mb-8">
+    <div className="w-full max-w-3xl">
+      
+      {/* Heading */}
       <TextHeader
         text="Our Everest Base Camp Trek is loved worldwide"
         align="center"
-        width="100%" // let it be full width and responsive
-        className=""
+        width="92%"
+        specialWordsIndices="7" // Assuming your component uses this to style "worldwide"
+        className="text-3xl sm:text-4xl font-bold text-gray-900 leading-tight"
       />
-  
+
+      {/* Description */}
       <TextDescription
         text="Everest Base Camp Trek is a world-renowned adventure that takes you deep into the heart of the Himalayas. Experience breathtaking views."
-        className="mt-4 "/>
-      <div className="flex flex-col sm:flex-row justify-center gap-4 sm:gap-6 mt-6">
-        <div className="flex items-center justify-center gap-2 text-sm sm:text-base">
+        className="mt-4 text-base w-[300px] md:w-[450px]  mx-auto"
+      />
+
+      {/* Info Row */}
+      <div className="flex flex-col sm:flex-row justify-center gap-4 sm:gap-6 mt-6 font-semibold">
+        <div className="flex items-center justify-center gap-2 text-sm md:text-base ">
           <HiOutlineClock className="w-5 h-5 sm:w-6 sm:h-6" />
-          <span>12-14 Days</span>
+          <span>12–14 Days</span>
         </div>
-        <div className="flex items-center justify-center gap-2 text-sm sm:text-base">
+        <div className="flex items-center justify-center gap-2 text-sm md:text-base">
           <FaMapMarkerAlt className="w-5 h-5 sm:w-6 sm:h-6" />
           <span>Everest (Khumbu), Nepal</span>
         </div>
-        <div className="flex items-center justify-center gap-2 text-sm sm:text-base">
+        <div className="flex items-center justify-center gap-2 text-sm md:text-base">
           <FaHiking className="w-5 h-5 sm:w-6 sm:h-6" />
           <span>Moderate to Challenging</span>
         </div>
       </div>
+
+      {/* CTA Button */}
       <Button 
         text="Start Your Adventure" 
         variant="primary" 
@@ -547,6 +545,13 @@ const herosectiondata = await fetchAPI({ endpoint: "herobanner/home" });
 </section>
 
 
+
+
+{/*PartnerSection*/}
+<section><PartnerSection partnersdata={partnersdata.data} /></section>
+
+
+    
    
       <section className="max-w-7xl mx-auto px-6  mb-16">
   <TextHeader
@@ -589,41 +594,11 @@ const herosectiondata = await fetchAPI({ endpoint: "herobanner/home" });
   </div>
 </section>
 
-<section className="max-w-7xl mx-auto mb-16 px-6">
-  <TextHeader
-    text="Adventure Awaits: Travel Stories "
-    buttonText="From the Blogs"
-    className="mb-8"
-    specialWordsIndices="2"
-    width={500}
-  />
 
-  {/* First Row */}
-  <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
-    {/* Rectangle Image (spans 2 columns) */}
-    <div className="lg:col-span-2">
-      <ImageDisplay src={imageCards[0].src} variant="rectangle" width={840} height={430} title={imageCards[0].title}  />
-    </div>
-
-    {/* Square Image */}
-    <div>
-      <ImageDisplay src={imageCards[1].src} variant="square" title={imageCards[1].title}/>
-    </div>
-  </div>
-
-  {/* Second Row with 3 Square Images */}
-  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-    {imageCards.slice(2, 5).map((card , index) => (
-      <div key={index}>
-        <ImageDisplay src={card.src} variant="square" alt="Pashpati" snippet="popular" title={card.title} />
-      </div>
-    ))}
-  </div>
 <section>
   <TestimonialCarousel testimoinaldata={testimoinaldata}/>
-  </section>
 </section>
-
+  
 {/* Share the joy of your journey */}
       <section className=" bg-blue-950 ">
         <div className="max-w-7xl mx-auto text-white space-y-4 md:px-0 px-6">

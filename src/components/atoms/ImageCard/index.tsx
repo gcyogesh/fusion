@@ -26,7 +26,7 @@ interface ImageDisplayProps<T = string> {
 const aspectRatios = {
   rectangle: 820 / 590,
   square: 408 / 430,
-  smallsquare: 1,
+  smallsquare: 454 / 400,
   smallrectangle: 408 / 236,
 };
 
