@@ -19,6 +19,7 @@ import { FaUsers, FaLeaf, FaMountain, FaCompass } from "react-icons/fa";
 import TestimonialCarousel from "@/components/organisms/testimonial/testimoinal";
 import { FaTrophy, FaStar, FaGlobe  } from "react-icons/fa";
 import TextDescription from "@/components/atoms/description";
+import Link from "next/link";
 
 const imageCards = [
   {
@@ -90,6 +91,7 @@ const topcategories = [
   },
 ]
 interface DestinationCard {
+  slug: any;
   subtitle: string;
   imageUrl: string;
   tags: string[];
@@ -157,7 +159,6 @@ const values = [
       "Explore Nepal with passionate, knowledgeable local experts who bring destinations to life and ensure your safety, comfort, and enjoyment every step of the way.",
   },
 ];
-
 const journeyCards = [
   {
     src: "/images/Journey.png",
@@ -255,42 +256,44 @@ const herosectiondata = await fetchAPI({ endpoint: "herobanner/home" });
   />
 
   <div className="grid grid-cols-1 md:grid-cols-3 gap-10 "> {/* Consistent gap */}
-   
 
-    {(destinationdata as DestinationData)?.data.map((card, index) => (
-      <div key={index} className="flex flex-col gap-4">
-        <div className="aspect-video">
-          <ImageDisplay
-            src={card.imageUrl}
-            variant="square"
-            snippet={card.tags[0]}
-            snippetPosition="start"
-            title={card.title} 
-            description={card.subtitle}         />
-        </div>
 
-        <div className="flex flex-col gap-3"> {/* Add consistent internal gap */}
-          <div className="flex justify-between text-sm text-gray-600">
-            <span className="flex items-center gap-1">
-              <CiLocationOn className="w-5 h-5" />
-              {card.location}
-            </span>
-            <span className="flex items-center gap-1">
-              <HiOutlineClock className="w-5 h-5" />
-              {card.duration} days
-            </span>
-          </div>
+{(destinationdata as DestinationData)?.data.map((card, index) => (
+  <Link href={`/destinations/${card.slug}`} key={index} className="flex flex-col gap-4">
+    <div className="aspect-video">
+      <ImageDisplay
+        src={card.imageUrl}
+        variant="square"
+        snippet={card.tags[0]}
+        snippetPosition="start"
+        title={card.title}
+        description={card.subtitle}
+      />
+    </div>
 
-          <TextHeader text={card?.subtitle} size="small" align="left" width={410} />
-
-          <div className="w-full h-[1.5px] bg-[#C2C2C2]" /> {/* Consistent thickness and color */}
-
-          <div className="text-lg font-semibold mt-2">
-            Start From <span className="ml-10 text-orange-500 ">${card.priceMin}-${card.priceMax}</span>
-          </div>
-        </div>
+    <div className="flex flex-col gap-3">
+      <div className="flex justify-between text-sm text-gray-600">
+        <span className="flex items-center gap-1">
+          <CiLocationOn className="w-5 h-5" />
+          {card.location}
+        </span>
+        <span className="flex items-center gap-1">
+          <HiOutlineClock className="w-5 h-5" />
+          {card.duration} days
+        </span>
       </div>
-    ))}
+
+      <TextHeader text={card?.subtitle} size="small" align="left" width={410} />
+
+      <div className="w-full h-[1 .5px] bg-[#C2C2C2]" />
+
+      <div className="text-lg font-semibold mt-2">
+        Start From <span className="ml-10 text-orange-500 ">${card.priceMin}-${card.priceMax}</span>
+      </div>
+    </div>
+  </Link>
+))}
+
   </div>
 </section>
 
@@ -439,7 +442,7 @@ const herosectiondata = await fetchAPI({ endpoint: "herobanner/home" });
   </div>
 
   {/* Second Row with 3 Square Images */}
-  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">                                                                                                                                                
     {imageCards.slice(2, 5).map((card , index) => (
       <div key={index}>
         <ImageDisplay src={card.src} variant="square" alt="Pashpati" snippet="popular" title={card.title} />
