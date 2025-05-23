@@ -550,10 +550,68 @@ const herosectiondata = await fetchAPI({ endpoint: "herobanner/home" });
 {/*PartnerSection*/}
 <section><PartnerSection partnersdata={partnersdata.data} /></section>
 
-
+{/*Testimonial */}
+<section>
+  <TestimonialCarousel testimoinaldata={testimoinaldata}/>
+</section>
     
+
+
+    {/* Share the joy of your journey */}
+      <section className=" bg-[#0E334F] ">
+        <div className="max-w-7xl mx-auto text-white space-y-4 md:px-0 px-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 items-end mb-15">
+  {/* Left Side: Header and Paragraph */}
+     <div className="flex flex-col items-start space-y-2">
+      <TextHeader
+      text="Share the joy of your journey"
+      specialWordsIndices="2"
+      align="start"
+      width="400px"
+      textcolor="white"
+    />
    
-      <section className="max-w-7xl mx-auto px-6  mb-16">
+    <TextDescription text="Show us your #BestFamilyMoments by tagging us @Fusion Expeditions for a chance to be featured!" className="w-[300px] md:w-[400px] lg:w-[400px] "  />
+  </div>
+
+  {/* Right Side: Social Links */}
+  <div className="flex justify-end  space-x-3  ">
+    {socialLinks.map((link, index) => (
+      <a key={index} href={link.link} className="hover:scale-110 transition-transform">
+        <span>{link.icon}</span>
+      </a>
+    ))}
+  </div>
+    </div>
+
+          
+          
+           
+          <div className=" flex flex-cols-1 gap-2 m-2 md:mb-10 lg:m-0 md:gap-6 lg:gap-6 ">
+      
+            {journeyCards.map((card, index) => (
+              <div key={index} className="flex flex-col items-center  ">
+                <ImageDisplay
+                  src={card.src}
+                  variant="smallsquare"
+                  secondSnippet={
+                    <TextHeader 
+                      text={card.title}
+                      size="small"
+                      align="end"
+                      className="md:show hidden"
+                      textcolor="white"
+                     / >
+                  }
+                />
+              </div>
+            ))}
+
+          </div>
+        </div>
+      </section>
+   
+      <section className="max-w-7xl mx-auto px-6 ">
   <TextHeader
     text="Adventure Awaits: Travel Stories & Tips"
     buttonText="From the Blogs"
@@ -595,63 +653,8 @@ const herosectiondata = await fetchAPI({ endpoint: "herobanner/home" });
 </section>
 
 
-<section>
-  <TestimonialCarousel testimoinaldata={testimoinaldata}/>
-</section>
   
-{/* Share the joy of your journey */}
-      <section className=" bg-blue-950 ">
-        <div className="max-w-7xl mx-auto text-white space-y-4 md:px-0 px-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-6">
-  {/* Left Side: Header and Paragraph */}
-     <div className="flex flex-col items-start space-y-4">
-      <TextHeader
-      text="Share the joy of your journey"
-      specialWordsIndices="2"
-      align="start"
-      width="400px"
-      textcolor="white"
-    />
-   
-    <TextDescription text="  Join our community of travelers and share your unforgettable experiences with us. Your stories inspire others to explore the world." className="w-[200px] md:w-[500px] "  />
-  </div>
 
-  {/* Right Side: Social Links */}
-  <div className="flex justify-end space-x-4 mt-12 ">
-    {socialLinks.map((link, index) => (
-      <a key={index} href={link.link} className="hover:scale-110 transition-transform">
-        <span>{link.icon}</span>
-      </a>
-    ))}
-  </div>
-    </div>
-
-          
-          
-           
-          <div className=" flex flex-cols-1 gap-2 m-2 md:m-0 lgm-0 md:gap-6 lg:gap-6">
-      
-            {journeyCards.map((card, index) => (
-              <div key={index} className="flex flex-col items-center  ">
-                <ImageDisplay
-                  src={card.src}
-                  variant="smallsquare"
-                  secondSnippet={
-                    <TextHeader 
-                      text={card.title}
-                      size="small"
-                      align="end"
-                      className="md:show hidden"
-                      textcolor="white"
-                     / >
-                  }
-                />
-              </div>
-            ))}
-
-          </div>
-        </div>
-      </section>
 
    </>
   );

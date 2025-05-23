@@ -67,7 +67,7 @@ export default function FAQSection() {
             <div
               key={faq.id}
               className={`rounded-xl p-6 text-black border border-gray-200 shadow-sm transition-all duration-300 ease-in-out ${
-                isOpen ? 'bg-orange-200' : ''
+                isOpen ? 'bg-[#FCE1AC]' : ''
               }`}
             >
               <button

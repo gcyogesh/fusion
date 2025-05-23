@@ -1,7 +1,7 @@
 'use client';
 
 import React from "react";
-import { FaStar } from "react-icons/fa";
+import { FaStar, FaQuoteRight } from "react-icons/fa";
 import TextHeader from "../../atoms/headings";
 import TextDescription from "@/components/atoms/description";
 
@@ -15,7 +15,11 @@ interface TestimonialCardProps {
 
 const TestimonialCard: React.FC<TestimonialCardProps> = ({ message, name, position, profileImage, rating }) => {
   return (
-    <div className="min-w-[320px] max-w-[400px] sm:max-w-[360px] h-[250px] bg-orange-200 rounded-xl p-6 snap-center flex-shrink-0 shadow-md">
+    <div className="flex flex-col min-w-[320px] max-w-[320px] md:max-w-[360px] h-[235px] md:h-[236px]   bg-orange-200 rounded-xl p-3  snap-center flex-shrink-0 shadow-md">
+     
+      {/* Testimonial Icon */}
+  <FaQuoteRight className="absolute top-50 md:top-60 lg:top-60 right-4 text-blue text-2xl opacity-40" />
+
       <div className="text-yellow-500 flex mb-3">
         {Array(rating)
           .fill(0)
@@ -23,11 +27,12 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({ message, name, positi
             <FaStar key={i} />
           ))}
       </div>
-      <TextDescription text={message} />
-
-      <div className="flex items-start gap-3 mt-4">
+      <TextDescription text={message} className="w-full h-[150px]" />
+       
+    <div className="flex flex-row items-center  gap-6 mb-auto  ">
+      
         <img src={profileImage} className="w-10 h-10 rounded-full object-cover" alt={name} />
-        <div className="flex flex-col justify-start">
+        <div className="flex flex-col justify-start ">
           <p className="font-semibold text-[#2C2727] font-dmSans">{name}</p>
           <p className="text-gray-600 font-dmSans">{position}</p>
         </div>
@@ -44,16 +49,16 @@ const TestimonialCarousel: React.FC<TestimonialCarouselProps> = ({ testimoinalda
   return (
     <div className="relative max-w-7xl mx-auto px-4 py-10">
       <TextHeader
-        text="Hear from Our Travelers: Testimonials & Stories"
-        specialWordsIndices="4"
+        text="Memorable Journeys, Happy Clients"
+        specialWordsIndices="1"
         align="center"
-        width="760px"
-        buttonText="What They Say"
+        width="500px"
+        buttonText="Testimonials"
         className="mb-8"
       />
 
       {/* Scrollable Container */}
-      <div className="flex overflow-x-auto snap-x snap-mandatory gap-6 px-1 py-6 scrollbar-hide sm:justify-center sm:flex-wrap bg-[linear-gradient(90deg,_#FEF9EE_0.88%,_#1C9ADB_32.63%,_#0F7BBA_70.26%,_#FEF9EE_100%)]"
+      <div className="flex overflow-x-auto snap-x snap-mandatory gap-6 px-1 py-6 scrollbar-hide sm:justify-center sm:flex-wrap bg-[linear-gradient(90deg,_#FEF9EE_0.88%,_#1C9ADB_32.63%,_#0F7BBA_70.26%,_#FEF9EE_100%)]  sm:bg-[linear-gradient(90deg,_#FEF9EE_0.88%,_#0F7BBA_50%,_#FEF9EE_100%)]  md:bg-[linear-gradient(90deg,_#FEF9EE,_#1C9ADB,_#FEF9EE)]"
         style={{
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
