@@ -12,7 +12,7 @@ interface PartnerSectionProps {
 
 const PartnerSection = ({ partnersdata }: PartnerSectionProps) => {
   return (
-    <section className='mb-20' >
+    <section>
       <TextHeader
         text="Proudly Partnered With"
         specialWordsIndices="1"
