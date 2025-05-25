@@ -149,7 +149,7 @@ export default function Footer() {
 </ul>
 
           {/* Payment Logos */}
-          <div className="mt-6 ml-12">
+          <div className="mt-6 ">
             <p className="text-2xl font-bold">We Accept</p>
             <div className="flex gap-4 mt-2">
             <FaCcVisa className="w-[80px] h-[80px] text-[#1A1F71]" />

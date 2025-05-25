@@ -15,7 +15,7 @@ interface TestimonialCardProps {
 
 const TestimonialCard: React.FC<TestimonialCardProps> = ({ message, name, position, profileImage, rating }) => {
   return (
-    <div className="flex flex-col min-w-[320px] max-w-[320px] md:max-w-[360px] h-[235px] md:h-[236px]   bg-orange-200 rounded-xl p-3  snap-center flex-shrink-0 shadow-md">
+    <div className="flex flex-col min-w-[320px] max-w-[320px] md:max-w-[360px] h-[235px] md:h-[236px]   bg-[#FCE1AC] rounded-xl p-3.5  snap-center flex-shrink-0 shadow-md">
      
       {/* Testimonial Icon */}
   <FaQuoteRight className="absolute top-50 md:top-60 lg:top-60 right-4 text-blue text-2xl opacity-40" />
@@ -27,7 +27,7 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({ message, name, positi
             <FaStar key={i} />
           ))}
       </div>
-      <TextDescription text={message} className="w-full h-[150px]" />
+      <TextDescription text={message} className="w-full h-[150px] text-bold" />
        
     <div className="flex flex-row items-center  gap-6 mb-auto  ">
       
