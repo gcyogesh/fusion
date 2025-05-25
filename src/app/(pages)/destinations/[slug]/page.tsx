@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
       description: "Destination page not found.",
     };
   }
-
+  
   return {
     title: destinationdata.title,
     description: destinationdata.subtitle,
@@ -47,7 +47,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
           {destinationdata.location}
         </span>
  
-        <TextHeader text={destinationdata?.subtitle} align="start" width={'100%'} />
+        <TextHeader text={destinationdata?.subtitle} align="start" width={2000} />
 
         <div className="grid grid-cols-1 lg:grid-cols-3   gap-4">
           <div className="lg:col-span-2 flex flex-col">
@@ -68,3 +68,4 @@ export default async function Page({ params }: { params: { slug: string } }) {
     </>
   );
 }
+                                                          

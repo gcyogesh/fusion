@@ -12,7 +12,7 @@ const tabs = [
   "Reviews",
 ];
 
-const TourNavbar = () => {
+const MidNavbar = () => {
   const [activeTab, setActiveTab] = useState("Overview");
 
   return (
@@ -42,4 +42,4 @@ const TourNavbar = () => {
   );
 };
 
-export default TourNavbar;
+export default MidNavbar;
