@@ -3,6 +3,9 @@ import Link from 'next/link'
 import { useState } from 'react'
 import Logo from '@/components/atoms/Logo'
 import { ChevronDown } from 'lucide-react'
+import { IoMdClose } from 'react-icons/io'
+
+import { FiMenu } from 'react-icons/fi'
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
@@ -43,19 +46,23 @@ export default function Navbar() {
     </ul>
 
     {/* CTA and Toggle Button */}
-    <div className="flex items-center gap-4">
+    <div className="flex items-center justify-center gap-4 ">
       <Link href="/plan-trip">
-        <button className="hidden lg:block bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium  h-[46px] w-[160px] rounded-full transition">
+        <button className="hidden lg:block bg-gradient-to-r from-[#F28A15] to-[#E47312] hover:from-[#0f7bba] hover:to-[#0f7bba] text-white text-sm font-medium  h-[46px] w-[160px] rounded-full transition">
           Plan Your Trip
         </button>
       </Link>
       <button
-        className="text-white text-3xl"
-        onClick={toggleMenu}
-        aria-label="Toggle Menu"
-      >
-        {isMenuOpen ? '✕' : '☰'}
-      </button>
+  className="text-white text-5xl"
+  onClick={toggleMenu}
+  aria-label="Toggle Menu"
+>
+  {isMenuOpen ? (
+    <IoMdClose className="text-white text-4xl transition-transform duration-300 rotate-90" />
+  ) : (
+     <FiMenu className="text-white transition-transform p-1 duration-250" />
+  )}
+</button>
     </div>
   </div>
 </nav>

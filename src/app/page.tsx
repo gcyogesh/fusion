@@ -133,25 +133,25 @@ const stats = [
 ];
 const values = [
   {
-    icon: <FaUsers className="text-4xl text-[#002B45] " />,
+    icon: <FaUsers className="text-3xl text-[#002B45] " />,
     title: "Customer-Centric",
     description:
       "Your experience is at the heart of everything we do. We listen, care, and curate every trip based on what matters most to you — making your travel seamless and memorable.",
   },
   {
-    icon: <FaLeaf className="text-4xl text-[#002B45]" />,
+    icon: <FaLeaf className="text-3xl text-[#002B45]" />,
     title: "Sustainable Travel",
     description:
       "We believe in preserving the beauty of Nepal for generations to come. Our trips focus on eco-conscious travel, supporting local communities, and minimizing our environmental impact.",
   },
   {
-    icon: <FaMountain className="text-4xl text-[#002B45]" />,
+    icon: <FaMountain className="text-3xl text-[#002B45]" />,
     title: "Authentic Experiences",
     description:
       "Go beyond the ordinary. We craft journeys that connect you deeply with Nepal’s rich culture, warm people, and breathtaking landscapes — experiences that leave a lasting impact.",
   },
   {
-    icon: <FaCompass className="text-4xl text-[#002B45]" />,
+    icon: <FaCompass className="text-3xl text-[#002B45]" />,
     title: "Expert Local Guides",
     description:
       "Explore Nepal with passionate, knowledgeable local experts who bring destinations to life and ensure your safety, comfort, and enjoyment every step of the way.",
@@ -183,9 +183,9 @@ const journeyCards = [
 ];
 
 const socialLinks = [
-  { icon: <FaInstagram className="text-white backdrop-blur-[12.6px] border border-white/16 bg-white/15 p-2 rounded-xl w-10 h-10"/>, link: "#" },
-  { icon: <FaFacebookF className="text-white backdrop-blur-[12.6px] border border-white/16 bg-white/15 p-2 rounded-xl w-10 h-10 "/>, link: "#" },
-  { icon: <FaYoutube className="text-white backdrop-blur-[12.6px] border border-white/16 bg-white/15 p-2 rounded-xl w-10 h-10 "/>, link: "#" },
+  { icon: <FaInstagram className="text-white backdrop-blur-[12.6px] border border-white/16 bg-white/15 p-2 rounded-xl w-9.5 h-9.5"/>, link: "#" },
+  { icon: <FaFacebookF className="text-white backdrop-blur-[12.6px] border border-white/16 bg-white/15 p-2 rounded-xl w-9.5 h-9.5 "/>, link: "#" },
+  { icon: <FaYoutube className="text-white backdrop-blur-[12.6px] border border-white/16 bg-white/15 p-2 rounded-xl w-9.5 h-9.5 "/>, link: "#" },
 ];
 
 export default async function Home() {
@@ -208,7 +208,7 @@ const herosectiondata = await fetchAPI({ endpoint: "herobanner/home" });
     <div className="w-full md:w-5/12 ">
       <TextHeader
         text="Our true values for your unforgettable journey"
-        specialWordsIndices="[1,2]"
+        specialWordsIndices="1,2"
         align="left"
         width="622px"
         buttonText="Why Fusion Expedition"
@@ -225,12 +225,12 @@ const herosectiondata = await fetchAPI({ endpoint: "herobanner/home" });
       {values.map((value, index) => (
         <div
           key={index}
-          className="flex items-center bg-[#FEF2D6] shadow-sm rounded-xl p-3 border border-black"
+          className="flex items-center bg-[#FEF2D6] shadow-sm rounded-xl p-4 border border-black"
         >
-          <div className="mr-4 border border-black rounded-full p-3">{value.icon}</div>
+          <div className="mr-2 ml-1.5 mb-4 border border-black rounded-full p-3">{value.icon}</div>
           <div>
-            <h3 className="text-xl font-semibold mb-1">{value.title}</h3>
-            <p className="text-sm m-1">{value.description}</p>
+            <h3 className="text-xl  font-semibold mb-1">{value.title}</h3>
+            <p className="text-sm  m-1">{value.description}</p>
           </div>
         </div>
       ))}
@@ -507,6 +507,7 @@ const herosectiondata = await fetchAPI({ endpoint: "herobanner/home" });
       <TextHeader
         text="Our Everest Base Camp Trek is loved worldwide"
         align="center"
+        size="medium"
         width="92%"
         specialWordsIndices="7" // Assuming your component uses this to style "worldwide"
         className="text-3xl sm:text-4xl font-bold text-gray-900 leading-tight"
@@ -519,18 +520,18 @@ const herosectiondata = await fetchAPI({ endpoint: "herobanner/home" });
       />
 
       {/* Info Row */}
-      <div className="flex flex-col sm:flex-row justify-center gap-4 sm:gap-6 mt-6 font-semibold">
+      <div className="flex flex-col sm:flex-row justify-center  gap-4 sm:gap-6 mt-6 text-semibold">
         <div className="flex items-center justify-center gap-2 text-sm md:text-base ">
-          <HiOutlineClock className="w-5 h-5 sm:w-6 sm:h-6" />
+          <HiOutlineClock/>
           <span>12–14 Days</span>
         </div>
-        <div className="flex items-center justify-center gap-2 text-sm md:text-base">
-          <FaMapMarkerAlt className="w-5 h-5 sm:w-6 sm:h-6" />
-          <span>Everest (Khumbu), Nepal</span>
+        <div className="flex items-center justify-center gap-2  text-sm md:text-base">
+          <FaMapMarkerAlt/>
+          <h1>Everest (Khumbu), Nepal</h1>
         </div>
-        <div className="flex items-center justify-center gap-2 text-sm md:text-base">
-          <FaHiking className="w-5 h-5 sm:w-6 sm:h-6" />
-          <span>Moderate to Challenging</span>
+        <div className="flex items-center justify-center gap-2  text-sm md:text-base">
+          <FaHiking />
+          <h1>Moderate to Challenging</h1>
         </div>
       </div>
 
@@ -544,9 +545,6 @@ const herosectiondata = await fetchAPI({ endpoint: "herobanner/home" });
   </div>
 </section>
 
-
-
-
 {/*PartnerSection*/}
 <section><PartnerSection partnersdata={partnersdata.data} /></section>
 
@@ -558,9 +556,9 @@ const herosectiondata = await fetchAPI({ endpoint: "herobanner/home" });
 
 
     {/* Share the joy of your journey */}
-      <section className=" bg-[#0E334F] ">
-        <div className="max-w-7xl mx-auto text-white space-y-4 md:px-0 px-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 items-end mb-15">
+      <section className=" bg-[#0e334f]">
+        <div className="max-w-7xl mx-auto text-white space-y-4 md:px-0 px-6 mb-12 mt-3.5">
+          <div className="grid grid-cols-1 md:grid-cols-2 items-end mb-10 ">
   {/* Left Side: Header and Paragraph */}
      <div className="flex flex-col items-start space-y-2">
       <TextHeader
@@ -587,7 +585,7 @@ const herosectiondata = await fetchAPI({ endpoint: "herobanner/home" });
           
           
            
-          <div className=" flex flex-cols-1 gap-2 m-2 md:mb-10 lg:m-0 md:gap-6 lg:gap-6 ">
+          <div className=" flex flex-cols-1 gap-2 m-2 md:gap-6 lg:gap-6 ">
       
             {journeyCards.map((card, index) => (
               <div key={index} className="flex flex-col items-center  ">
@@ -619,17 +617,16 @@ const herosectiondata = await fetchAPI({ endpoint: "herobanner/home" });
     type="main"
     specialWordsIndices="2"
     width={500}
-
   />
 
-  <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
     {/* Left Side: Large Blog Post */}
     <div className="lg:col-span-2 flex flex-col">
       <div className="aspect-video w-full">
         <ImageDisplay src={blogsdata.data[0].imageUrl} variant="rectangle" title={blogsdata.data[0].title} 
             description={blogsdata.data[0].subtitle} />
       </div>
-      <div className="mt-4">
+      <div className="mt-3">
         <h3 className="text-xl font-bold">{blogsdata.data[0].title}</h3>
         <p className="mt-2 text-gray-600">{blogsdata.data[0].subtitle}</p>
       </div>
@@ -644,7 +641,7 @@ const herosectiondata = await fetchAPI({ endpoint: "herobanner/home" });
           </div>
           <div className="mt-4">
         <h3 className="text-lg font-semibold">{card.title}</h3>
-        <TextDescription text={card.description} className="text-justify" />
+        <TextDescription text={card.description} className="text-justify mb-[24px]" />
           </div>
         </div>
       ))}
