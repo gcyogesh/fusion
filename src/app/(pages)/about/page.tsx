@@ -4,6 +4,7 @@ import { fetchAPI } from "@/utils/apiService";
 import TextHeader from "@/components/atoms/headings";
 import TextDescription from "@/components/atoms/description";
 
+import TopCategoriesSection from "@/components/molecules/TopCategoriesSection/tourcategories";
 
 
 
@@ -134,6 +135,10 @@ export default async function About() {
    </div>
           </div>
       </section>
+
+      <TopCategoriesSection
+      buttonText="What We Offer"
+    />
     
 
 

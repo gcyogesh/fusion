@@ -21,6 +21,9 @@ import { FaTrophy, FaStar, FaGlobe  } from "react-icons/fa";
 import TextDescription from "@/components/atoms/description";
 import Link from "next/link";
 
+//molecules components
+import TopCategoriesSection from "@/components/molecules/TopCategoriesSection/tourcategories";
+
 const imageCards = [
   {
     src: "/image.png",
@@ -240,7 +243,7 @@ const herosectiondata = await fetchAPI({ endpoint: "herobanner/home" });
   </div>
 </div>
 
-      {/*Featured Experience */}
+      {/*Featured Experience: destination */}
       
       <section className="max-w-7xl mx-auto ">
   <TextHeader
@@ -453,42 +456,11 @@ const herosectiondata = await fetchAPI({ endpoint: "herobanner/home" });
 </section>
 
 {/*Tour Categories */}
+<TopCategoriesSection
+    
+      buttonText="Tour Categories"
+    />
 
-<section className="max-w-7xl mx-auto">
-  <TextHeader
-    text="Unforgettable Experiences Await"
-    align="left"
-    width="500px"
-    specialWordsIndices="1"
-    buttonText="Tour Categories"
-    className="mb-6"
-  />
-
-  <div className="grid grid-cols-1 md:grid-cols-3 gap-10 ">
-    {topcategories.map((card, index) => (
-      <div key={index} className="flex flex-col gap-2">
-        <div className="aspect-square">
-          <ImageDisplay
-            src={card.src}
-            variant="square"
-            snippet={card.snippet}  
-            snippetPosition="start"
-            title={card.title} 
-            description={card.subtitle}  
-
-          />
-        </div>
-        <div className="px-2 flex flex-col">
-          <TextHeader text={card?.title} size="small" align="left" />
-          <h2 className="text-lg font-semibold">{card.subtitle}</h2>
-          <p className="text-gray-600 text-justify">
-            {card.description}
-          </p>
-        </div>
-      </div>
-    ))}
-  </div>
-</section>
 
   {/* Everest Section */}
 <section className="relative z-0 max-w-7xl mx-auto mt-20 rounded-lg overflow-hidden">
