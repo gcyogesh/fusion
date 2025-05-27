@@ -493,7 +493,7 @@ const herosectiondata = await fetchAPI({ endpoint: "herobanner/home" });
   {/* Everest Section */}
 <section className="relative z-0 max-w-7xl mx-auto mt-20 rounded-lg overflow-hidden">
   {/* Background Image */}
-<div className="absolute inset-0">
+<div className="absolute inset-0 ">
     <Image
       src="/images/EverestBG.png"
       alt="Everest Background"
@@ -523,7 +523,7 @@ const herosectiondata = await fetchAPI({ endpoint: "herobanner/home" });
       />
 
       {/* Info Row */}
-      <div className="flex flex-col sm:flex-row justify-center  gap-4 sm:gap-6 mt-6 text-semibold">
+      <div className="flex flex-col sm:flex-row justify-center  gap-4 sm:gap-6 mt-6 font-semibold">
         <div className="flex items-center justify-center gap-2 text-sm md:text-base ">
           <HiOutlineClock/>
           <span>12–14 Days</span>
@@ -534,7 +534,7 @@ const herosectiondata = await fetchAPI({ endpoint: "herobanner/home" });
         </div>
         <div className="flex items-center justify-center gap-2  text-sm md:text-base">
           <FaHiking />
-          <h1>Moderate to Challenging</h1>
+          <h1 className="font-sans">Moderate to Challenging</h1>
         </div>
       </div>
 

@@ -5,7 +5,7 @@ import { motion, useInView, useMotionValue, animate } from 'framer-motion';
 import Button from '../button';
 
 type TextAlign = 'left' | 'center' | 'right' | 'justify' | 'start' | 'end';
-type TextSize = 'medium' | 'small';
+type TextSize = 'medium' | 'small' | 'large';
 type TextHeaderType = 'main' | 'default';
 
 interface TextHeaderProps<TSpecialIndices = string> {
@@ -48,6 +48,10 @@ const TextHeader = <TSpecialIndices extends string = string>({
       fontSize: 'clamp(1.125rem, 2.5vw, 1.5rem)',
       lineHeight: 1.6,
     },
+    large: {
+      fontSize: 'clamp(1.75rem, 3vw, 2rem)', // ~28px to 32px
+      lineHeight: 1.3 
+  },
   };
 
   const baseStyle: React.CSSProperties = {

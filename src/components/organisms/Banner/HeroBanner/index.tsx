@@ -1,7 +1,7 @@
 import React from 'react';
 import TextHeader from '@/components/atoms/headings';
 import Image from 'next/image';
-const HeroBanner = ({herodata}) => {
+const  HeroBanner = ({herodata}) => {
   return (
     <section className="relative w-full h-[400px] md:h-[500px] lg:h-[600px]">
       {/* Background Image */}
