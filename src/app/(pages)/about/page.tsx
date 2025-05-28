@@ -3,9 +3,41 @@ import HeroBanner from "@/components/organisms/Banner/HeroBanner";
 import { fetchAPI } from "@/utils/apiService";
 import TextHeader from "@/components/atoms/headings";
 import TextDescription from "@/components/atoms/description";
+import TopCategoriesSection from "@/components/molecules/TopCategoriesSection";
+import ValuesSection from "@/components/molecules/ValueSection";
 
-
-
+const profile= [
+  {
+    name: "Suraj Pantha",
+    role: "Managing Director",
+    image: "/images/Suraj Pantha.png",
+  },
+  {
+    name: "John Doe",
+    role: "Adventure Guide",
+    image: "/images/Suraj Pantha.png",
+  },
+  {
+    name: "John Doe",
+    role: "Adventure Guide",
+    image: "/images/Suraj Pantha.png",
+  },
+    {
+    name: "John Doe",
+    role: "Adventure Guide",
+    image: "/images/Suraj Pantha.png",
+  },
+  {
+    name: "John Doe",
+    role: "Adventure Guide",
+    image: "/images/Suraj Pantha.png",
+  },
+  {
+    name: "John Doe",
+    role: "Adventure Guide",
+    image: "/images/Suraj Pantha.png",
+  },
+]
 
 export default async function About() {
   const herodata = await fetchAPI({ endpoint: "herobanner/about" });
@@ -15,7 +47,7 @@ export default async function About() {
 
   return (
     <>
-
+      
       <HeroBanner herodata={herodata.data} />
 
       <section>
@@ -81,60 +113,114 @@ export default async function About() {
 
       <section className="bg-[#0e334f] w-full h-[504px]">
         <div className="max-w-7xl mx-auto flex flex-row items-center justify-center h-full  text-white gap-6">
-         
-       <div className="relative h-auto  ">
-  <Image
-    src="/images/Mission.svg"
-    alt="Hikers on a trail"
-    width={561}
-    height={325}
-    className="w-[560px] h-[325px] "
-  />
-  
-  <div className="absolute inset-0  h-[200px] w-[580px] mt-20 p-6">
-    <TextHeader
-      text="Adventure with a Purpose"
-      specialWordsIndices=""
-      align="left"
-      size="large"
-      width="auto"
-      textcolor="white"
-      buttonText="Our Mission"
-      
-    />
-    
-    <TextDescription text=" Our mission is to uncover new touristic gems and craft thrilling, memory-rich experiences for adventure seekers across the globe. From adrenaline-pumping climbs to serene cultural walks — we cater to all."  className=" text-white " />
-              </div>
-   </div>
 
-           <div className="relative h-auto  ">
-  <Image
-    src="/images/Mission.svg"
-    alt="Hikers on a trail"
-    width={561}
-    height={325}
-    className="w-[560px] h-[325px] "
-  />
-  
-  <div className="absolute inset-0  h-[200px] w-[550px] mt-20 p-6">
-    <TextHeader
-      text="Inspiring Transformative Travel"
-      specialWordsIndices=""
-      align="left"
-      size="large"
-      width="auto"
-      textcolor="white"
-      buttonText="Our Vision"
-      
-      
-    />
-    
-    <TextDescription text=" To become a leading name in sustainable and immersive travel experiences in Nepal — where every journey fosters deep cultural connection, environmental respect, and unforgettable discovery."  className=" text-white " />
-              </div>
-   </div>
+          <div className="relative h-auto  ">
+            <Image
+              src="/images/Mission.svg"
+              alt="Hikers on a trail"
+              width={561}
+              height={325}
+              className="w-[560px] h-[325px] "
+            />
+
+            <div className="absolute inset-0  h-[200px] w-[580px] mt-20 p-6">
+              <TextHeader
+                text="Adventure with a Purpose"
+                specialWordsIndices=""
+                align="left"
+                size="large"
+                width="auto"
+                textcolor="white"
+                buttonText="Our Mission"
+
+              />
+
+              <TextDescription text=" Our mission is to uncover new touristic gems and craft thrilling, memory-rich experiences for adventure seekers across the globe. From adrenaline-pumping climbs to serene cultural walks — we cater to all." className=" text-white " />
+            </div>
           </div>
+
+          <div className="relative h-auto  ">
+            <Image
+              src="/images/Mission.svg"
+              alt="Hikers on a trail"
+              width={561}
+              height={325}
+              className="w-[560px] h-[325px] "
+            />
+
+            <div className="absolute inset-0  h-[200px] w-[550px] mt-20 p-6">
+              <TextHeader
+                text="Inspiring Transformative Travel"
+                specialWordsIndices=""
+                align="left"
+                size="large"
+                width="auto"
+                textcolor="white"
+                buttonText="Our Vision"
+
+              />
+
+              <TextDescription text=" To become a leading name in sustainable and immersive travel experiences in Nepal — where every journey fosters deep cultural connection, environmental respect, and unforgettable discovery." className=" text-white " />
+            </div>
+          </div>
+        </div>
       </section>
-    
+
+      <TopCategoriesSection
+        buttonText="What We Offer"
+      />
+
+     <section>
+      <ValuesSection />
+     </section>
+
+     <section className=" max-w-7xl mx-auto">
+       <div className="flex flex-col ">
+                <TextHeader
+                  text="Fusion Expeditions – Crafted in the Heart of Nepal"
+                  specialWordsIndices=""
+                  align="center"
+                  size="large"
+                  width="420px"
+                  textcolor="Black"
+                  buttonText="Company Overview"
+
+
+                />
+               
+                <TextDescription text="Short bios or rotating carousel of your expert guides, local partners, and past travelers sharing experiences."  className="text-[#535556] items-center text-center  w-[420px] mx-auto " />
+                 
+              </div>
+              
+            
+            <div className=" grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 ">
+  {profile.map((item, index) => (
+    <div key={index} className="text-center relative">
+      {/* Card Background */}
+      <div className="bg-gradient-to-b from-[#D4E7EA] to-[#1891D1] h-[370px] w-[300px] rounded-[80px] overflow-hidden flex items-center justify-center mx-auto">
+        {/* Leader Image */}
+        <Image
+          src={item.image}
+          alt={item.name}
+          width={0}
+          height={0}
+          sizes="100vw"
+          className="w-full h-[270px] object-contain  relative -bottom-13"
+        />
+      </div>
+
+      {/* Name & Role */}
+      <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 z-20 bg-orange-400 w-[215px] h-[70px] px-4 py-1 rounded-full text-white font-semibold text-sm shadow-md ">
+        <h1 className="font-semibold text-[24px] ">{item.name}</h1>
+        <h1 className=" text-[20px] opacity-[80%]">{item.role}</h1>
+      </div>
+    </div>
+  ))}
+</div>
+
+
+     </section>
+
 
 
     </>
