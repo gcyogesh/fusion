@@ -6,6 +6,17 @@ import { ChevronDown } from 'lucide-react'
 import { IoMdClose } from 'react-icons/io'
 
 import { FiMenu } from 'react-icons/fi'
+
+
+
+const navLinks = [
+  { name: "Home", href: "/", hasDropdown: false },
+  { name: "Destinations", href: "/destinations", hasDropdown: true },
+  { name: "Activities", href: "/activities", hasDropdown: true },
+  { name: "About", href: "/about", hasDropdown: true },
+];
+
+
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
@@ -24,25 +35,13 @@ export default function Navbar() {
    <Logo />
 
     {/* Nav Links (Desktop) */}
-    <ul className="hidden md:flex gap-8 text-white font-medium text-base">
-      <li>
-        <Link href="/">Home</Link>
-      </li>
-
-      <li className="flex items-center gap-1 cursor-pointer">
-        <Link href="/destinations">Destinations</Link>
-        <ChevronDown className="w-4 h-4 mt-[2px]" />
-      </li>
-
-      <li className="flex items-center gap-1 cursor-pointer">
-        <Link href="/activities">Activities</Link>
-        <ChevronDown className="w-4 h-4 mt-[2px]" />
-      </li>
-
-      <li className="flex items-center gap-1 cursor-pointer">
-        <Link href="/about">About</Link>
-        <ChevronDown className="w-4 h-4 mt-[2px]" />
-      </li>
+   <ul className="hidden md:flex gap-8 text-white font-medium text-base">
+      {navLinks.map((link) => (
+        <li key={link.name} className="flex items-center gap-1 cursor-pointer">
+          <Link href={link.href}>{link.name}</Link>
+          {link.hasDropdown && <ChevronDown className="w-4 h-4 mt-[2px]" />}
+        </li>
+      ))}
     </ul>
 
     {/* CTA and Toggle Button */}

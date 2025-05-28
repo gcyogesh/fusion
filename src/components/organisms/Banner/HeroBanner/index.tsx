@@ -16,9 +16,9 @@ const  HeroBanner = ({herodata}) => {
 
 
       {/* Content */}
-      <div className="relative z-10 flex items-center justify-center h-full px-4 text-center">
+      <div className="relative z-10 flex items-center justify-center h-full px-4 text-center text-white">
         <div>
-     <TextHeader text={herodata.title} width={200} specialWordsIndices='3' />
+     <TextHeader text={herodata.title} textcolor='white' width={450} specialWordsIndices='4' />
           
         </div>
       </div>
