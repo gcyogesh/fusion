@@ -3,7 +3,7 @@ import { MdCall, MdEmail, MdLocationOn } from "react-icons/md";
 import { FaInstagram, FaFacebookF, FaYoutube } from "react-icons/fa";
 import Logo from "@/components/atoms/Logo";
 import { FaCcVisa, FaCcMastercard, FaCcAmex } from "react-icons/fa";
-
+import ContactDetails from "../ContactDetails";
 const socialLinks = [
   { icon: <FaInstagram className="text-white bg-[#F7941D] p-2 rounded-xl w-10 h-10"/>, link: "#" },
   { icon: <FaFacebookF className="text-white bg-[#F7941D] p-2 rounded-xl w-10 h-10"/>, link: "#" },
@@ -135,17 +135,8 @@ export default function Footer() {
         <div className="flex flex-col space-y-4">
           <h3 className="text-2xl font-semibold">Contact Detail</h3>
           <ul className="space-y-3 ">
-           {contactDetails.map((item, index) => (
-           <li key={index} className="flex items-center space-x-3">
-          <div>{item.icon}</div>
-          <div>
-        {item.title && <span className="font-bold">{item.title}</span>}
-        <div>
-        <span className="whitespace-nowrap">{item.text}</span>
-        </div>
-      </div>
-    </li>
-  ))}
+            <ContactDetails/>
+        
 </ul>
 
           {/* Payment Logos */}

@@ -602,7 +602,7 @@ const herosectiondata = await fetchAPI({ endpoint: "herobanner/home" });
                       align="end"
                       className="md:show hidden"
                       textcolor="white"
-                     / >
+                     />
                   }
                 />
               </div>
