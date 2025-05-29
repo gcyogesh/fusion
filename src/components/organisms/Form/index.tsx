@@ -15,7 +15,6 @@ type ContactFormProps = {
 
 const ContactForm: React.FC<ContactFormProps> = ({
   padding = 30,
-  width = "full",
   formTitle,
 
 }) => {
@@ -23,6 +22,7 @@ const ContactForm: React.FC<ContactFormProps> = ({
     Name: "",
     email: "",
     phone: "",
+    country: "",
     message: "",
   });
 
@@ -34,11 +34,10 @@ const ContactForm: React.FC<ContactFormProps> = ({
     e.preventDefault();
     console.log("Form Submitted:", formData);
   };
-
-  const nameFields = [
-
-    { name: "Name", label: "Name", placeholder: "Enter your full name" },
-  ];
+ const phoneField = [
+    { name: "Phone", label: "Phone Number", placeholder: "+977" },
+    { name: "Country", label: "Country", placeholder: "Country" },
+  ]
 
   return (
     <form onSubmit={handleSubmit}>
@@ -55,23 +54,21 @@ const ContactForm: React.FC<ContactFormProps> = ({
           )}
 
           {/* Name */}
-          <div className="w-full flex flex-col md:flex-row gap-6">
-            {nameFields.map(({ name, label, placeholder }) => (
-              <div key={name} className="flex flex-col w-full">
-                <label className="text-sm text-white  font-medium mb-1">
-                  {label}
+          <div className="w-full flex flex-col">
+                <label className="text-sm text-white font-medium mb-1">
+                  name
                 </label>
                 <input
                   required
                   type="text"
-                  placeholder={placeholder}
-                  value={(formData as never)[name]}
-                  onChange={(e) => handleChange(name, e.target.value)}
-                  className="border border-white opacity-30 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus: ring-white  placeholder:text-white placeholder:opacity-30"
+                  placeholder="Your Name"
+                  value={formData.Name}
+                  onChange={(e) => handleChange("Name", e.target.value)}
+                  className="border border-white rounded-md px-4 py-2 focus:outline-none focus:ring-2  focus:ring-white  placeholder:text-white placeholder:opacity-30"
                 />
               </div>
-            ))}
-          </div>
+         
+          
 
            {/* Email */}
           <div className="flex flex-col">
@@ -90,20 +87,23 @@ const ContactForm: React.FC<ContactFormProps> = ({
 
 
           {/* Phone */}
-          <div className="flex flex-col">
+          <div className="flex flex-col md:flex-row gap-6">
+                        {phoneField.map(({ name, label, placeholder }) => (
+              <div key={name} className="flex flex-col w-full">
             <label className="text-sm text-white font-medium mb-1">
-              Phone 
+             {label}
             </label>
             <input
               required
               type="tel"
-              placeholder="+977-"
-              value={formData.phone}
+              placeholder={placeholder}
+              value={(formData as never)[name]}
               onChange={(e) => handleChange("phone", e.target.value)}
               className="border border-white opacity-30 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-white placeholder:text-white placeholder:opacity-30 "
             />
           </div>
-
+    ))}
+          </div>
          
           {/* Additional Info */}
           <div className="flex flex-col">
@@ -125,11 +125,9 @@ const ContactForm: React.FC<ContactFormProps> = ({
             onClick={() => console.log("Primary Button Clicked")}
         />
         </div>
-
-      
-        
-      </div>
+        </div>
     </form>
+    
   );
 };
 
