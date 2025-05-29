@@ -16,6 +16,7 @@ const MidNavbar = () => {
   const [activeTab, setActiveTab] = useState("Overview");
 
   return (
+  
     <div className="bg-[#FDE3B0] border-b border-[#DEBC7E] ">
       <div className="max-w-7xl mx-auto relative flex items-center py-2 ">
         {/* Tabs on the left */}
@@ -39,6 +40,7 @@ const MidNavbar = () => {
      
       </div>
     </div>
+    
   );
 };
 
