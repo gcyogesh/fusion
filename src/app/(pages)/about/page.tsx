@@ -5,6 +5,9 @@ import TextHeader from "@/components/atoms/headings";
 import TextDescription from "@/components/atoms/description";
 import TopCategoriesSection from "@/components/molecules/TopCategoriesSection";
 import ValuesSection from "@/components/molecules/ValueSection";
+import Breadcrumb from "@/components/atoms/breadcrumb";
+import PartnerSection from "@/components/organisms/partners";
+
 
 const profile= [
   {
@@ -41,18 +44,19 @@ const profile= [
 
 export default async function About() {
   const herodata = await fetchAPI({ endpoint: "herobanner/about" });
+  const partnersdata = await fetchAPI({ endpoint: "partners" });
 
 
 
 
   return (
     <>
-      
+      <Breadcrumb currentnavlink="About" />
       <HeroBanner herodata={herodata.data} />
 
-      <section>
-        <div className="max-w-7xl mx-auto">
-          <div className=" w-[1300px] h-[600px] bg-[#FEF2D6] rounded-3xl p-10 ">
+      <section className="h-[580px]">
+        <div className="relative top-1 max-w-7xl mx-auto ">
+          <div className=" w-[1300px] h-[555px] bg-[#FEF2D6] rounded-3xl p-10 ">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-70 justify-center items-center">
               <div className="flex flex-col ">
                 <TextHeader
@@ -71,7 +75,7 @@ export default async function About() {
      the company was born out of a shared passion for exploration and a deep love for the unparalleled beauty and cultural richness of Nepal. Our founders envisioned a travel company that would not only deliver exciting and authentic adventures but also foster meaningful connections between travelers and the places they visit."  className=" text-[#535556] w-[530px] h-[200px] font-semi-bold" />
               </div>
 
-              <div className="w-full max-w-[500px] bg-white p-4 rounded-md shadow-sm">
+              <div className="w-full max-w-[500px]">
                 {/* Top large image */}
                 <div className=" mb-4 rounded-md overflow-hidden">
                   <Image
@@ -220,7 +224,11 @@ export default async function About() {
 
 
      </section>
+     <section className="bg-[#FCE1AC] max-w-7xl mx-auto mt-10">   
+      <PartnerSection partnersdata={partnersdata.data} />
+     </section>
 
+     
 
 
     </>
