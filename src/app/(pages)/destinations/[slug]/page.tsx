@@ -8,7 +8,7 @@ import TextDescription from "@/components/atoms/description";
 // featuresData.ts
 const features = [
   { icon: "👥", title: "Min 2", subtitle: "Group Size" },
-  { icon: "🕒", title:         "14 Days", subtitle: "Trip Durations" },
+  { icon: "🕒", title: "14 Days", subtitle: "Trip Durations" },
   { icon: "📊", title: "Moderate", subtitle: "Trip Difficulty" },
   { icon: "🍽️", title: "Breakfast", subtitle: "Meals" },
   { icon: "🥾", title: "Trekking, Walking", subtitle: "Activities" },

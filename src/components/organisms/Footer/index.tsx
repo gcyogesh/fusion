@@ -21,30 +21,7 @@ const destinations = [
 
 const companyLinks = ["About Us", "Contact Us", "Blog", "Terms and Conditions"];
 
-const contactDetails = [
-    {
-      icon: <MdCall  className="text-white bg-orange-500 rounded-full text-xl p-2 w-[34px] h-[34px] " />,
-      title: "",
-      text: (
-        <>
-          <span>+977 985167629</span>
-          <br />
-          <span>+977 9851342767</span>
-        </>
-      ),
-    },
-    {
-      icon: <MdEmail className="text-white bg-orange-500 rounded-full text-xl p-2 w-[34px] h-[34px]" />,
-      title: "Email",
-      text: "fusionexpeditions@gmail.com",
-    },
-    {
-      icon: <MdLocationOn className="text-white bg-orange-500 rounded-full text-xl p-2 w-[34px] h-[34px]" />,
-      title: "Address",
-      text: "Saatghumti, Thamel, Kathmandu, Nepal",
-    },
-  ];
-  
+
 
 export default function Footer() {
   return (
@@ -134,10 +111,9 @@ export default function Footer() {
         {/* Contact Details */}
         <div className="flex flex-col space-y-4">
           <h3 className="text-2xl font-semibold">Contact Detail</h3>
-          <ul className="space-y-3 ">
-            <ContactDetails/>
-        
-</ul>
+          <ul className="space-y-3">
+            <ContactDetails showDivider={false}/>
+        </ul>
 
           {/* Payment Logos */}
           <div className="mt-6 ">
