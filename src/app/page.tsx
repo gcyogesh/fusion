@@ -323,7 +323,7 @@ export default async function Home() {
               />
               <TextDescription
                 text={stat.description}
-                className="text-gray-600" />
+                className="" />
 
             </div>
           ))}
@@ -490,6 +490,7 @@ export default async function Home() {
                   }
                 />
               </div>
+              
             ))}
 
           </div>
