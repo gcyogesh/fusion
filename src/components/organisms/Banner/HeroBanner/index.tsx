@@ -3,7 +3,7 @@ import TextHeader from '@/components/atoms/headings';
 import Image from 'next/image';
 const  HeroBanner = ({herodata}) => {
   return (
-    <section className="relative z-0  w-full h-[500px] md:h-[720px] lg:h-[720px]">
+    <div className=" relative z-30 top-6  w-full h-[500px] md:h-[610px] lg:h-[610px]">
       {/* Background Image */}
       <img
         src={herodata.bannerImage}
@@ -22,7 +22,7 @@ const  HeroBanner = ({herodata}) => {
           
         </div>
       </div>
-    </section>
+    </div>
   );
 };
 

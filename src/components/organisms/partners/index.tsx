@@ -12,7 +12,7 @@ interface PartnerSectionProps {
 
 const PartnerSection = ({ partnersdata }: PartnerSectionProps) => {
   return (
-    <section>
+    <div>
       <TextHeader
         text="Proudly Partnered With"
         specialWordsIndices="1"
@@ -37,7 +37,7 @@ const PartnerSection = ({ partnersdata }: PartnerSectionProps) => {
           </a>
         ))}
       </div>
-    </section>
+    </div>
   );
 };
 

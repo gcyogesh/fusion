@@ -14,10 +14,12 @@ const herodata =  await fetchAPI({ endpoint: "herobanner/blog   " });
   return (
     <>
     
-        <Breadcrumb currentnavlink="Blogs" />
-       
+      <Breadcrumb currentnavlink="Blogs" />
+      
       <HeroBanner herodata={herodata?.data} />
-    <MidNavbar />
+      <section className="relative z-10 top-[-40]" >
+     <MidNavbar />
+     </section>
       <section className="max-w-7xl mx-auto px-4 ">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 ">
           {/* Left Side: First 3 Rectangle Blogs */}

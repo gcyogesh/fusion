@@ -6,6 +6,8 @@ import ContactDetails from "@/components/organisms/ContactDetails";
 import TextHeader from "@/components/atoms/headings";
 import TextDescription from "@/components/atoms/description";
 import Breadcrumb from "@/components/atoms/breadcrumb";
+import ContactForm from "@/components/organisms/Form";
+
 
 export default async function contact() {
 
@@ -43,6 +45,37 @@ export default async function contact() {
             />
           </div>
         </div>
+        </section>
+
+
+        <section>
+          <div className="grid grid-cols-2 items-center max-w-full ">
+          {/* Left Side form */}
+          <div>
+          <TextHeader
+              text="Leave a quick message"
+              align="left"
+              size="large"
+              width="auto"
+              textcolor="black"
+              className="mb-2"
+            />
+          <ContactForm />
+          </div>
+         <div>
+            <TextHeader
+              text="Let's Start a Conversation"
+              align="left"
+              size="large"
+              width="auto"
+              textcolor="black"
+            />
+            <TextDescription text=" Have a question, idea, or just want to say hello? We’re here to help! Fill out the form and one of our team members will get back to you as soon as possible." className=" text-[#535556] w-[495px]" />
+            </div>
+
+          
+
+          </div>
         </section>
   
           {/* Google Map Section */}  
