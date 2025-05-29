@@ -347,20 +347,20 @@ export default async function Home() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
           {/* Rectangle Image (spans 2 columns) */}
           <div className="lg:col-span-2">
-            <ImageDisplay src={imageCards[0].src} variant="rectangle" width={840} height={430} title={imageCards[0].title} />
+            <ImageDisplay src={destinationdata.data[0].imageUrl} variant="rectangle" width={840} height={430} title={destinationdata.data[0].title} />
           </div>
 
           {/* Square Image */}
           <div>
-            <ImageDisplay src={imageCards[1].src} variant="square" title={imageCards[1].title} />
+            <ImageDisplay src={destinationdata.data[1].src} variant="square" title={destinationdata.data[1].title} />
           </div>
         </div>
 
         {/* Second Row with 3 Square Images */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {imageCards.slice(2, 5).map((card, index) => (
+          {destinationdata.data.slice(2, 5).map((card, index) => (
             <div key={index}>
-              <ImageDisplay src={card.src} variant="square" alt="Pashpati" snippet="popular" title={card.title} />
+              <ImageDisplay src={card.Image} variant="square" alt="Pashpati" snippet="popular" title={card.title} />
             </div>
           ))}
         </div>
@@ -490,7 +490,7 @@ export default async function Home() {
                   }
                 />
               </div>
-              
+
             ))}
 
           </div>

@@ -42,6 +42,12 @@ const getSnippetPositionClasses = (position: SnippetPosition) => {
   }
 };
 
+const containerVariants = {
+  hidden: { opacity: 0, y: 30, scale: 0.95 },
+  visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } },
+  exit: { opacity: 0, y: 20, scale: 0.95, transition: { duration: 0.3 } },
+};
+
 const ImageDisplay = <T extends string>({
   src,
   alt = 'Image',
@@ -63,9 +69,11 @@ const ImageDisplay = <T extends string>({
 
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.6, ease: 'easeOut' }}
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+      exit="exit"
+      whileHover={{ scale: 1.02 }}
       className={`relative overflow-hidden rounded-xl group w-full ${className}`}
       style={{
         aspectRatio: `${aspectRatios[variant].toFixed(3)}`,
@@ -95,7 +103,12 @@ const ImageDisplay = <T extends string>({
       )}
 
       {showOverlayContent && (
-        <div className="absolute inset-0 bg-black/50 flex flex-col justify-center items-center text-white opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileHover={{ opacity: 1 }}
+          transition={{ duration: 0.4 }}
+          className="absolute inset-0 bg-black/50 flex flex-col justify-center items-center text-white opacity-0 group-hover:opacity-100"
+        >
           {title && <h3 className="text-lg font-semibold">{title}</h3>}
           {description && (
             <p className="text-sm text-center mt-1 px-4">
@@ -105,7 +118,7 @@ const ImageDisplay = <T extends string>({
           <div className="mt-4 w-8 h-8 flex items-center justify-center rounded-full bg-orange-500">
             <span className="text-white text-sm">↗</span>
           </div>
-        </div>
+        </motion.div>
       )}
 
       {snippet && (

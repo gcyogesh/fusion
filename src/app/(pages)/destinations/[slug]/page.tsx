@@ -58,7 +58,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
       <div className="mx-auto max-w-7xl py-16">
         <span className="flex items-center gap-1">
           <CiLocationOn className="w-5 h-5" />
-          {destinationdata.location}
+          {destinationdata.destination.location}
         </span>
  
         <TextHeader text={destinationdata?.destination.subtitle} align="start" width={2000} />

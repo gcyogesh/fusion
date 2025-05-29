@@ -6,45 +6,13 @@ import TextDescription from "@/components/atoms/description";
 import TopCategoriesSection from "@/components/molecules/TopCategoriesSection";
 import ValuesSection from "@/components/molecules/ValueSection";
 
-const profile= [
-  {
-    name: "Suraj Pantha",
-    role: "Managing Director",
-    image: "/images/Suraj Pantha.png",
-  },
-  {
-    name: "John Doe",
-    role: "Adventure Guide",
-    image: "/images/Suraj Pantha.png",
-  },
-  {
-    name: "John Doe",
-    role: "Adventure Guide",
-    image: "/images/Suraj Pantha.png",
-  },
-    {
-    name: "John Doe",
-    role: "Adventure Guide",
-    image: "/images/Suraj Pantha.png",
-  },
-  {
-    name: "John Doe",
-    role: "Adventure Guide",
-    image: "/images/Suraj Pantha.png",
-  },
-  {
-    name: "John Doe",
-    role: "Adventure Guide",
-    image: "/images/Suraj Pantha.png",
-  },
-]
 
 export default async function About() {
   const herodata = await fetchAPI({ endpoint: "herobanner/about" });
 
+ const teamsdata = await fetchAPI({ endpoint: "teams" });
 
-
-
+const profile = teamsdata.data;
   return (
     <>
       
@@ -199,20 +167,13 @@ export default async function About() {
       {/* Card Background */}
       <div className="bg-gradient-to-b from-[#D4E7EA] to-[#1891D1] h-[370px] w-[300px] rounded-[80px] overflow-hidden flex items-center justify-center mx-auto">
         {/* Leader Image */}
-        <Image
-          src={item.image}
-          alt={item.name}
-          width={0}
-          height={0}
-          sizes="100vw"
-          className="w-full h-[270px] object-contain  relative -bottom-13"
-        />
+   
       </div>
 
       {/* Name & Role */}
       <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 z-20 bg-orange-400 w-[215px] h-[70px] px-4 py-1 rounded-full text-white font-semibold text-sm shadow-md ">
         <h1 className="font-semibold text-[24px] ">{item.name}</h1>
-        <h1 className=" text-[20px] opacity-[80%]">{item.role}</h1>
+        <h1 className=" text-[20px] opacity-[80%]">{item.postion}</h1>
       </div>
     </div>
   ))}
