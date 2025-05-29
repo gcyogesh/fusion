@@ -496,7 +496,7 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="max-w-7xl mx-auto px-6 ">
+      <section className="max-w-7xl mx-auto px-4 ">
         <TextHeader
           text="Adventure Awaits: Travel Stories & Tips"
           buttonText="From the Blogs"
@@ -506,7 +506,7 @@ export default async function Home() {
           width={500}
         />
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Side: Large Blog Post */}
           <div className="lg:col-span-2 flex flex-col">
             <div className="aspect-video w-full">
@@ -515,20 +515,20 @@ export default async function Home() {
             </div>
             <div className="mt-3">
               <h3 className="text-xl font-bold">{blogsdata.data[0].title}</h3>
-              <p className="mt-2 text-gray-600">{blogsdata.data[0].subtitle}</p>
+              <p className="mt-2 h-[155px]">{blogsdata.data[0].subtitle}</p>
             </div>
           </div>
 
           {/* Right Side: Two Small Blog Posts */}
-          <div className="flex flex-col   ">
+          <div className="flex flex-col gap-y-[25px] ">
             {blogsdata.data.slice(1, 3).map((card: { id: string; imageUrl: string; title: string; description: string }) => (
               <div key={card.id} className="flex flex-col">
                 <div className="">
                   <ImageDisplay src={card.imageUrl} variant="smallrectangle" title={card.title} description={card.description} />
                 </div>
-                <div className="mt-4">
+                <div className="mt-4 h-[150px] ">
                   <h3 className="text-lg font-semibold">{card.title}</h3>
-                  <TextDescription text={card.description} className="text-justify mb-[24px]" />
+                  <TextDescription text={card.description} className="text-justify " />
                 </div>
               </div>
             ))}

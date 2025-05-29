@@ -32,10 +32,13 @@ export default function Navbar() {
 
   return (
     <>
-     <nav className={`absolute top-0 left-1/2 transform -translate-x-1/2 w-full z-50 flex items-center justify-center ${
-        isHome ? 'bg-white/15 backdrop-blur-lg' : 'bg-[#0F7BBA]'
-      }`}>
-  <div className="w-full max-w-7xl flex justify-between items-center px-6 py-2">
+     <nav
+      className={`${
+        isHome ? 'absolute' : 'fixed'
+      } top-0 left-1/2 transform -translate-x-1/2 w-full z-50 flex items-center justify-center h-20 
+      ${isHome ? 'bg-white/15 backdrop-blur-lg' : 'bg-[#0F7BBA]'}`}
+    >
+  <div className="w-full max-w-7xl flex justify-between items-center  py-2">
     {/* Logo & Brand */}
    <Logo />
 
@@ -45,7 +48,7 @@ export default function Navbar() {
       {navLinks.map((link) => (
         <li key={link.name} className="flex items-center gap-1 cursor-pointer">
           <Link href={link.href}>{link.name}</Link>
-          {link.hasDropdown && <ChevronDown className="w-4 h-4 mt-[2px]" />}
+          {link.hasDropdown && <ChevronDown className="w-3 h-4 mt-[2px]" />}
         </li>
       ))}
     </ul>

@@ -5,6 +5,7 @@ import HeroBanner from "@/components/organisms/Banner/HeroBanner";
 import ContactDetails from "@/components/organisms/ContactDetails";
 import TextHeader from "@/components/atoms/headings";
 import TextDescription from "@/components/atoms/description";
+import Breadcrumb from "@/components/atoms/breadcrumb";
 
 export default async function contact() {
 
@@ -12,6 +13,8 @@ export default async function contact() {
     <>
 
 
+        <Breadcrumb currentnavlink="Contact" />
+      
       <div className="mx-auto max-w-7xl py-20 ">
        <section>
         <div className="grid grid-cols-2 items-center max-w-full">
