@@ -112,16 +112,15 @@ const herosectiondata = await fetchAPI({ endpoint: "herobanner/contact" });
 
 
         <div className="w-full h-[500px]">
-          <iframe
-            src="https://www.google.com/maps"
-            title="Google Map"
-            width="100%"
-            height="100%"
-            style={{ border: 0 }}
-            allowFullScreen
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-          ></iframe>
+        <iframe 
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3876.995845205694!2d85.30639871127741!3d27.715205525045!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39eb19fd47a09885%3A0x901169afffa90a51!2sFUSION%20EXPEDITIONS!5e1!3m2!1sen!2snp!4v1748602032280!5m2!1sen!2snp" 
+          width="100%" 
+          height="100%" 
+          style={{ border: 0 }} 
+          allowFullScreen 
+          loading="lazy" 
+          referrerPolicy="no-referrer-when-downgrade"
+        ></iframe>
         </div>
       </div>
     </>
