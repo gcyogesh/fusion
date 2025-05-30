@@ -70,6 +70,7 @@ interface DestinationCard {
   slug: any;
   subtitle: string;
   imageUrl: string;
+    imageUrls: string;
   tags: string[];
   location: string;
   duration: number;
@@ -177,7 +178,7 @@ export default async function Home() {
             <Link href={`/destinations/${card.slug}`} key={index} className="flex flex-col gap-4">
               <div className="aspect-video">
                 <ImageDisplay
-                  src={card.imageUrl}
+                  src={card.imageUrls[0]}
                   variant="square"
                   snippet={card.tags[0]}
                   snippetPosition="start"
@@ -347,12 +348,13 @@ export default async function Home() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
           {/* Rectangle Image (spans 2 columns) */}
           <div className="lg:col-span-2">
-            <ImageDisplay src={destinationdata.data[0].imageUrl} variant="rectangle" width={840} height={430} title={destinationdata.data[0].title} />
+            <ImageDisplay src={destinationdata.data[0].imageUrls[0]} variant="rectangle" width={840} height={430} title={destinationdata.data[0].title} description={destinationdata.data[0].subtitle} />
           </div>
-
+ 
           {/* Square Image */}
           <div>
-            <ImageDisplay src={destinationdata.data[1].src} variant="square" title={destinationdata.data[1].title} />
+            <ImageDisplay src={destinationdata.data[1].imageUrls[0]} variant="square" title={destinationdata.data[1].title} description={destinationdata.data[1].subtitle} />
+        
           </div>
         </div>
 
@@ -360,7 +362,8 @@ export default async function Home() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {destinationdata.data.slice(2, 5).map((card, index) => (
             <div key={index}>
-              <ImageDisplay src={card.Image} variant="square" alt="Pashpati" snippet="popular" title={card.title} />
+              <ImageDisplay src={card.imageUrls[0]} variant="square" alt="Pashpati" snippet="popular" title={card.title}  description={card.subtitle}/>
+              
             </div>
           ))}
         </div>
@@ -492,7 +495,7 @@ export default async function Home() {
               </div>
 
             ))}
-
+            
           </div>
         </div>
       </section>
@@ -529,7 +532,7 @@ export default async function Home() {
                 </div>
                 <div className="mt-4 h-[150px] ">
                   <h3 className="text-lg font-semibold">{card.title}</h3>
-                  <TextDescription text={card.description} className="text-justify " />
+                  <TextDescription text={card.description} className="text-justify line-clamp-3 " />
                 </div>
               </div>
             ))}

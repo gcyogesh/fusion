@@ -6,17 +6,7 @@ import { notFound } from "next/navigation";
 import MidNavbar from "@/components/organisms/MidNavBar";
 import TextDescription from "@/components/atoms/description";
 // featuresData.ts
-const features = [
-  { icon: "👥", title: "Min 2", subtitle: "Group Size" },
-  { icon: "🕒", title: "14 Days", subtitle: "Trip Durations" },
-  { icon: "📊", title: "Moderate", subtitle: "Trip Difficulty" },
-  { icon: "🍽️", title: "Breakfast", subtitle: "Meals" },
-  { icon: "🥾", title: "Trekking, Walking", subtitle: "Activities" },
-  { icon: "🏨", title: "Hotel / Guesthouse", subtitle: "Accomodation" },
-  { icon: "⛰️", title: "4,130 meters", subtitle: "Max Altitude" },
-  { icon: "🌤️", title: "Mar – May , Sep – Dec", subtitle: "Best Season" },
-  { icon: "📍", title: "Kathmandu", subtitle: "Start/End Point" },
-];
+
 
 // This sets up the <title> and <meta description> dynamically
 export async function generateMetadata({ params }: { params: { slug: string } }) {
@@ -83,8 +73,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
 <div className="mx-auto max-w-7xl">
   {destinationdata.relatedPackages?.map((pkg: any, idx: number) => (
     <div key={idx}>
-      {/* Render package details here, e.g.: */}
-      <div>{pkg.name}</div>
+   
   <TextDescription text={pkg.description} />
     </div>
   ))}
