@@ -1,5 +1,5 @@
 import React from "react";
-import { fetchAPI } from "@/utils/apiService";
+import { fetchAPI } from "@/utils/apiService"; //git
 import Image from "next/image";
 import { FaInstagram, FaFacebookF, FaYoutube } from "react-icons/fa";
 import HeroBanner from "@/components/organisms/Banner/HeroBanner";
