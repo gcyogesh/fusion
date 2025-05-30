@@ -5,12 +5,17 @@ import TextHeader from "@/components/atoms/headings";
 import { FaInstagram, FaFacebookF, FaYoutube } from "react-icons/fa";
 import Link from "next/link";
 import ImageDisplay from "@/components/atoms/ImageCard";
+import ArrowIcon from "@/components/atoms/arrowIcon";
 interface PageProps {
   params: {
     slug: string;
   };
 }
-
+const socialLinks = [
+  { icon: <FaInstagram className="text-white bg-[#F7941D] p-2 rounded-xl w-8 h-8"/>, link: "#" },
+  { icon: <FaFacebookF className="text-white bg-[#F7941D] p-2 rounded-xl w-8 h-8"/>, link: "#" },
+  { icon: <FaYoutube className="text-white bg-[#F7941D] p-2 rounded-xl w-8 h-8"/>, link: "#" },
+];
 export default async function Page({ params }: PageProps) {
   const blogEndpoint = `blogs/${params.slug}`;
   const blogdata = await fetchAPI({ endpoint: blogEndpoint });
@@ -26,7 +31,7 @@ export default async function Page({ params }: PageProps) {
 
   return (
     <section>
-      <div className="mx-auto max-w-7xl py-18  flex flex-col md:flex-row lg:flex-row gap-8 px-[-4]">
+      <div className="mx-auto max-w-7xl py-18  flex flex-col md:flex-row lg:flex-row  justify-between gap-8 px-[-4]">
         {/* Main Content */}
         <div className="flex-1 max-w-[860px]">
           <TextHeader text={blogdata.data.subtitle} align="left" size="large" width={855} className=" w-[815px] h-auto" />
@@ -55,8 +60,8 @@ export default async function Page({ params }: PageProps) {
         </div>
 
         {/* Sidebar */}
-        <div className="w-[325px] ">
-          <div className="sticky top-24 ">
+        <div className="w-auto  ">
+          <div className=" sticky top-24 ">
             {/* Related Blogs */}
             <TextHeader
               text="Related Blogs"
@@ -65,7 +70,7 @@ export default async function Page({ params }: PageProps) {
               width={300}
               className="mb-2 text-[#1A1E21]"
             />
-            <div className="border p-4 rounded-2xl shadow-md bg-white w-[325px] h-auto">
+            <div className="border p-4 rounded-2xl shadow-md bg-white w-[325px] h-auto mb-2">
               
               {relatedBlogs.length > 0 ? (
                 <ul className="space-y-3">
@@ -74,7 +79,10 @@ export default async function Page({ params }: PageProps) {
                       <Link href={`/blogs/${blog.slug}`} className="text-sm text-gray-700 hover:text-orange-500">
                         {blog.subtitle}
                       </Link>
-                      <span className="text-white  text-xl bg-orange-500 rounded-full p-1 ">↗</span>
+                      <ArrowIcon 
+                       size={14}
+                       
+                      />
                     </li>
                   ))}
                 </ul>
@@ -84,14 +92,16 @@ export default async function Page({ params }: PageProps) {
             </div>
 
             {/* Share in Section */}
-            <div className="border p-4 rounded-md shadow-md bg-white">
-              <h3 className="text-lg font-semibold mb-3 text-gray-800">Share in</h3>
-              <div className="flex space-x-4 text-orange-500 text-xl">
-                <FaInstagram />
-                <FaFacebookF />
-                <FaYoutube />
-              </div>
-            </div>
+            <div className="flex flex-row justify-between items-center border p-4 rounded-xl shadow-md bg-white">
+  <h3 className="text-2xl font-semibold text-gray-800">Share in</h3>
+  <div className="flex space-x-2">
+    {socialLinks.map((link, index) => (
+      <a key={index} href={link.link} className="hover:scale-110 transition-transform">
+        <span>{link.icon}</span>
+      </a>
+    ))}
+  </div>
+</div>
           </div>
         </div>
       </div>
