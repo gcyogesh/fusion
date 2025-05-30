@@ -3,8 +3,7 @@ import HeroBanner from "@/components/organisms/Banner/HeroBanner"
 import { fetchAPI } from "@/utils/apiService"
 import Breadcrumb from "@/components/atoms/breadcrumb";
 import ImageDisplay from "@/components/atoms/ImageCard";
-import TextHeader from "@/components/atoms/headings";
-export default async function destination({params}) {
+export default async function destination() {
       
   const destination = await fetchAPI({ endpoint: 'destinations' });
   const destinationdata = destination.data;

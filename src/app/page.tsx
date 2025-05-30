@@ -1,11 +1,10 @@
 import Image from "next/image";
-import { FaMapMarkerAlt, FaCalendarAlt, FaDollarSign, FaSearch } from 'react-icons/fa';
+import { FaMapMarkerAlt } from 'react-icons/fa';
 import { FaInstagram, FaFacebookF, FaYoutube } from "react-icons/fa";
 import { HiOutlineClock } from 'react-icons/hi';
 import HeroSection from "@/components/organisms/HeroSection";
 import { FaHiking } from 'react-icons/fa';
 import { HiOutlineCurrencyDollar } from 'react-icons/hi';
-import { FaCloudSun } from 'react-icons/fa'
 // Atom Components
 import ImageDisplay from "@/components/atoms/ImageCard";
 import Button from "@/components/atoms/button";
@@ -25,49 +24,11 @@ import Link from "next/link";
 import TopCategoriesSection from "@/components/molecules/TopCategoriesSection";
 import ValuesSection from "@/components/molecules/ValueSection";
 
-const imageCards = [
-  {
-    src: "/image.png",
-    title: "Dreamy Beach Escape",
-    variant: "square",
-    snippet: "Popular",
-    snippetPosition: "start",
-  },
-  {
-    src: "/image.png",
-    title: "Mountain Adventure",
-    variant: "square",
-    snippet: "Top Pick",
-    snippetPosition: "start",
-  },
-  {
-    src: "/image.png",
-    title: "City Lights Weekend",
-    variant: "square",
-    snippet: "Limited Time",
-    snippetPosition: "start",
-  }, {
-    src: "/image.png",
-    title: "Mountain Adventure",
-    variant: "square",
-    snippet: "Top Pick",
-    snippetPosition: "start",
-  },
-  {
-    src: "/image.png",
-    title: "City Lights Weekend",
-    variant: "square",
-    snippet: "Limited Time",
-    snippetPosition: "start",
-  },
-
-
-];
 
 
 
 interface DestinationCard {
-  slug: any;
+  slug: string;
   subtitle: string;
   imageUrl: string;
     imageUrls: string;
@@ -528,6 +489,7 @@ export default async function Home() {
             {blogsdata.data.slice(1, 3).map((card: { id: string; imageUrl: string; title: string; description: string }) => (
               <div key={card.id} className="flex flex-col">
                 <div className="">
+                     
                   <ImageDisplay src={card.imageUrl} variant="smallrectangle" title={card.title} description={card.description} />
                 </div>
                 <div className="mt-4 h-[150px] ">

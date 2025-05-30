@@ -4,7 +4,6 @@ import { fetchAPI } from "@/utils/apiService";
 import { CiLocationOn } from "react-icons/ci";
 import { notFound } from "next/navigation";
 import MidNavbar from "@/components/organisms/MidNavBar";
-import TextDescription from "@/components/atoms/description";
 // featuresData.ts
 
 
@@ -36,7 +35,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
   const endpoint = `destinations/${params.slug}`;
   const data = await fetchAPI({ endpoint });
   const destinationdata = data?.data;
-5
+
   if (!destinationdata) {
     notFound();
   }
@@ -71,12 +70,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
     <section>
 {
 <div className="mx-auto max-w-7xl">
-  {destinationdata.relatedPackages?.map((pkg: any, idx: number) => (
-    <div key={idx}>
-   
-  <TextDescription text={pkg.description} />
-    </div>
-  ))}
+
  <div className="max-w-5xl mx-auto p-6 border rounded-md shadow-sm bg-white">
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {destinationdata.feature?.map((item, index) => (

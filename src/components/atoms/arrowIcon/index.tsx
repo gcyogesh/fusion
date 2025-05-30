@@ -21,6 +21,7 @@ interface ArrowIconProps {
   direction?: Direction;
   position?: Position;
   variant?: Variant;
+  className?: string;
 }
 
 const directionAngles: Record<Direction, number> = {
@@ -66,7 +67,8 @@ const ArrowIcon: React.FC<ArrowIconProps> = ({
   position,
   variant = 'primary',
   color,
-  backgroundColor
+  backgroundColor,
+  className,
 }) => {
   const rotation = directionAngles[direction] ?? 45;
 
@@ -86,6 +88,7 @@ const ArrowIcon: React.FC<ArrowIconProps> = ({
     backgroundColor: appliedBackground,
     padding: iconPadding,
     borderRadius,
+    
   };
 
   if (position) {
@@ -107,7 +110,7 @@ const ArrowIcon: React.FC<ArrowIconProps> = ({
   };
 
   return (
-    <div style={baseStyle}>
+    <div className={className} style={baseStyle}>
       <FiArrowUpRight size={size} color={appliedColor} style={iconStyle} />
     </div>
   );

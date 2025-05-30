@@ -1,6 +1,7 @@
 import React from "react";
-
+import { fetchAPI } from "@/utils/apiService";
 import Image from "next/image";
+import { FaInstagram, FaFacebookF, FaYoutube } from "react-icons/fa";
 import HeroBanner from "@/components/organisms/Banner/HeroBanner";
 import ContactDetails from "@/components/organisms/ContactDetails";
 import TextHeader from "@/components/atoms/headings";
@@ -8,15 +9,20 @@ import TextDescription from "@/components/atoms/description";
 import Breadcrumb from "@/components/atoms/breadcrumb";
 import ContactForm from "@/components/organisms/Form";
 
+const socialLinks = [
+  { icon: <FaInstagram className="text-white bg-primary p-2 rounded-xl w-8 h-8"/>, link: "#" },
+  { icon: <FaFacebookF className="text-white bg-primary p-2 rounded-xl w-8 h-8"/>, link: "#" },
+  { icon: <FaYoutube className="text-white bg-primary p-2 rounded-xl w-8 h-8"/>, link: "#" },
+];
 
 export default async function contact() {
-
+const herosectiondata = await fetchAPI({ endpoint: "herobanner/contact" });
   return (
     <>
 
 
         <Breadcrumb currentnavlink="Contact" />
-      
+      <HeroBanner herodata={herosectiondata.data} />
       <div className="mx-auto max-w-7xl py-20 ">
        <section>
         <div className="grid grid-cols-2 items-center max-w-full">
@@ -49,7 +55,7 @@ export default async function contact() {
 
 
         <section>
-          <div className="grid grid-cols-2 items-center max-w-full ">
+          <div className="grid grid-cols-2  max-w-full px-12 ">
           {/* Left Side form */}
           <div>
           <TextHeader
@@ -62,15 +68,38 @@ export default async function contact() {
             />
           <ContactForm />
           </div>
-         <div>
+         <div className=" py-26">
             <TextHeader
               text="Let's Start a Conversation"
               align="left"
               size="large"
               width="auto"
               textcolor="black"
+              className="font-semi-bold"
             />
-            <TextDescription text=" Have a question, idea, or just want to say hello? We’re here to help! Fill out the form and one of our team members will get back to you as soon as possible." className=" text-[#535556] w-[495px]" />
+            <TextDescription text=" Have a question, idea, or just want to say hello? We’re here to help! Fill out the form and one of our team members will get back to you as soon as possible." className=" text-[#535556] font-base w-[495px] mb-15" />
+
+             <div className="inline-flex items-center gap-2 border border-[#0C2A34]  px-2 py-1 rounded-lg  bg-white ">
+           <Image
+                      src="/images/message.svg"
+                      alt="message icon"
+                      width={8}
+                      height={8}
+                      className="w-[39px] h-[39px]"
+                    />
+          <span className="text-xl font-medium text-[#1A1E21] opacity-[60%]">We usually respond within 24 hours.</span>
+          </div>
+          <div className="flex flex-col justify-between  mt-8">
+            <h1 className="font-bold text-2xl mb-3">Follow Us</h1>
+            <div className="flex space-x-2 mt-auto">
+    {socialLinks.map((link, index) => (
+      <a key={index} href={link.link} className="hover:scale-110 transition-transform">
+        <span>{link.icon}</span>
+      </a>
+    ))}
+    </div>
+    
+  </div>
             </div>
 
           

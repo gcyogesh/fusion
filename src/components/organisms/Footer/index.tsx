@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { MdCall, MdEmail, MdLocationOn } from "react-icons/md";
+
 import { FaInstagram, FaFacebookF, FaYoutube } from "react-icons/fa";
 import Logo from "@/components/atoms/Logo";
 import { FaCcVisa, FaCcMastercard, FaCcAmex } from "react-icons/fa";

@@ -41,11 +41,11 @@ const TextHeader = <TSpecialIndices extends string = string>({
 
   const baseFontStyles = {
     medium: {
-      fontSize: 'clamp(2rem, 5vw, 3.25rem)',
+      fontSize: 'clamp(2rem, 5vw, 3.25rem)',   // ~32px to 52px
       lineHeight: 1.1,
     },
     small: {
-      fontSize: 'clamp(1.125rem, 2.5vw, 1.5rem)',
+      fontSize: 'clamp(1.125rem, 2.5vw, 1.5rem)',  // ~18px to 24px
       lineHeight: 1.6,
     },
     large: {
