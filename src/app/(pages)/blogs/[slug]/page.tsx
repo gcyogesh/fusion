@@ -26,16 +26,17 @@ export default async function Page({ params }: PageProps) {
 
   return (
     <section>
-      <div className="mx-auto max-w-7xl py-18 px-4 flex flex-col lg:flex-row gap-8">
+      <div className="mx-auto max-w-7xl py-18  flex flex-col md:flex-row lg:flex-row gap-8 px-[-4]">
         {/* Main Content */}
-        <div className="flex-1 space-y-8">
-          <TextHeader text={blogdata.data.subtitle} align="left" width={500} />
-          <TextDescription text={blogdata.data.description} />
+        <div className="flex-1 max-w-[860px]">
+          <TextHeader text={blogdata.data.subtitle} align="left" size="large" width={855} className=" w-[815px] h-auto" />
+          <TextDescription text={blogdata.data.description}  className="text-[#535556]"/>
 
           {/* Quick Facts Section */}
           <div className="border border-gray-300 rounded-md p-6 bg-white shadow-sm">
-            <h2 className="text-xl font-bold mb-4">Quick Facts about Nepal:</h2>
-            <ul className="list-disc list-inside text-sm text-gray-800 space-y-1 pl-2">
+            <TextHeader text="Quick Facts about Nepal" align="left" size="large" width={855} className=" w-[815px] h-auto mb-2" />
+            
+            <ul className="list-disc list-inside text-base text-[#535556] space-y-2 pl-2">
               <li>Location: In South Asia (coordinates: 28°N 84°15′E)</li>
               <li>Currency: Nepalese Rupee (NPR)</li>
               <li>Capital: Kathmandu (Capital and the largest city)</li>
@@ -49,14 +50,23 @@ export default async function Page({ params }: PageProps) {
               <li>Area: 147,516 sq. km</li>
             </ul>
           </div>
+
+          
         </div>
 
         {/* Sidebar */}
-        <div className="w-full lg:w-[300px] ml-auto">
-          <div className="sticky top-24 space-y-6">
+        <div className="w-[325px] ">
+          <div className="sticky top-24 ">
             {/* Related Blogs */}
-            <div className="border p-4 rounded-md shadow-md bg-white">
-              <h3 className="text-lg font-semibold mb-4 text-gray-800">Related Blogs</h3>
+            <TextHeader
+              text="Related Blogs"
+              align="left"
+              size="large"
+              width={300}
+              className="mb-2 text-[#1A1E21]"
+            />
+            <div className="border p-4 rounded-2xl shadow-md bg-white w-[325px] h-auto">
+              
               {relatedBlogs.length > 0 ? (
                 <ul className="space-y-3">
                   {relatedBlogs.map((blog) => (
@@ -64,7 +74,7 @@ export default async function Page({ params }: PageProps) {
                       <Link href={`/blogs/${blog.slug}`} className="text-sm text-gray-700 hover:text-orange-500">
                         {blog.subtitle}
                       </Link>
-                      <span className="text-orange-500 text-xl">↗</span>
+                      <span className="text-white  text-xl bg-orange-500 rounded-full p-1 ">↗</span>
                     </li>
                   ))}
                 </ul>
