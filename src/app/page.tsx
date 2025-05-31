@@ -119,7 +119,7 @@ export default async function Home() {
       
       {/*Featured Experience: destination */}
 
-      <section className="max-w-7xl mx-auto ">
+      <section className="max-w-7xl mx-auto  px-6">
         <TextHeader
           text="Where Dreams Meet Destinations"
           buttonText="Featured Experience"
@@ -149,22 +149,22 @@ export default async function Home() {
               </div>
 
               <div className="flex flex-col gap-3">
-                <div className="flex justify-between text-sm text-gray-600">
-                  <span className="flex items-center gap-1">
+                <div className="flex justify-between text-sm text-[#7E7E7E]">
+                  <span className="flex items-center gap-1 font-semibold ">
                     <CiLocationOn className="w-5 h-5" />
                     {card.location}
                   </span>
-                  <span className="flex items-center gap-1">
+                  <span className="flex items-center  font-semibold gap-1">
                     <HiOutlineClock className="w-5 h-5" />
-                    {card.duration} days
+                    {card.duration} Days
                   </span>
                 </div>
 
                 <TextHeader text={card?.subtitle} size="small" align="left" width={410} />
 
-                <div className="w-full h-[1 .5px] bg-[#C2C2C2]" />
+                <div className="w-full h-[1.5px] bg-[#C2C2C2]" />
 
-                <div className="text-lg font-semibold mt-2">
+                <div className="text-lg font-semibold text-[#7E7E7E] mt-1">
                   Start From <span className="ml-10 text-orange-500 ">${card.priceMin}-${card.priceMax}</span>
                 </div>
               </div>
@@ -262,41 +262,46 @@ export default async function Home() {
         </div>
       </section>
 
-      {/*ranks */}
-      <section >
-        <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 text-center">
-          {stats.map((stat, index) => (
-            <div key={index} className="space-y-2">
-              <div className="flex items-center justify-center space-x-2">
-                {stat.icon}
-                <TextHeader
-                  text={stat.title}
-                  size="medium"
-                  align="left"
-                  width="auto"
-                />
-              </div>
-              <TextHeader
-                text={stat.subtitle}
-                size="small"
-                align="center"
-                width="100%"
-                className="text-gray-600"
-              />
-              <TextDescription
-                text={stat.description}
-                className="" />
-
-            </div>
-          ))}
+      <section>
+  <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-12 ">
+    {stats.map((stat, index) => (
+      <div key={index} className=" text-left">
+        {/* Icon + Title aligned inline, flush left */}
+        <div className="flex items-center space-x-2">
+          {stat.icon}
+          <TextHeader
+            text={stat.title}
+            size="medium"
+            align="left"
+            width="auto"
+          />
         </div>
-      </section>
+
+        {/* Subtitle aligned left under title */}
+        <TextHeader
+          text={stat.subtitle}
+          size="small"
+          align="left"
+          width="100%"
+          className="text-gray-600"
+        />
+
+        {/* Description aligned left and start from title's left */}
+        <TextDescription
+          text={stat.description}
+          className="text-left w-[239px]"
+        />
+      </div>
+    ))}
+  </div>
+</section>
+
 
 
 
       {/*Best destination */}
 
-      <section className="max-w-7xl mx-auto ">
+      <section className="max-w-7xl mx-auto px-6 ">
         <TextHeader
           text="Top Picks for Your Next Adventure"
           buttonText="Best Destinations"
@@ -339,7 +344,7 @@ export default async function Home() {
 
 
       {/* Everest Section */}
-      <section className="relative z-0 max-w-7xl mx-auto mt-20 rounded-lg overflow-hidden">
+      <section className="relative z-0 max-w-7xl mx-auto mt-20 rounded-lg overflow-hidden px-6">
         {/* Background Image */}
         <div className="absolute inset-0 ">
           <Image
@@ -485,7 +490,7 @@ export default async function Home() {
           </div>
 
           {/* Right Side: Two Small Blog Posts */}
-          <div className="flex flex-col gap-y-[25px] ">
+          <div className="flex flex-col ">
             {blogsdata.data.slice(1, 3).map((card: { id: string; imageUrl: string; title: string; description: string }) => (
               <div key={card.id} className="flex flex-col">
                 <div className="">
@@ -494,7 +499,7 @@ export default async function Home() {
                 </div>
                 <div className="mt-4 h-[150px] ">
                   <h3 className="text-lg font-semibold">{card.title}</h3>
-                  <TextDescription text={card.description} className="text-justify line-clamp-3 " />
+                  <TextDescription text={card.description} className=" line-clamp-3 " />
                 </div>
               </div>
             ))}

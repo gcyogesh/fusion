@@ -1,48 +1,34 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
 @import "tailwindcss";
-
 
 @layer base {
   :root {
-    /* Your existing variables */
     --color-primary: #F28A15;
-    --font-dm-sans: 'DM Sans';
-    
+    --font-dm-sans: 'DM Sans', sans-serif;
+
     /* Global Spacing System */
-    --global-spacer: 2rem; /* Base spacer value (32px) */
-    
-    /* Vertical rhythm spacing */
+    --global-spacer: 2rem;
     --spacer-y: var(--global-spacer);
-    
-    /* Section spacing */
     --section-spacer: calc(var(--global-spacer) * 2);
   }
 
-  /* Add automatic spacing to common elements */
   body {
+    font-family: var(--font-dm-sans);
     @apply overflow-x-hidden;
   }
-
-
 }
 
 @layer utilities {
-  /* Spacer utility classes */
-
-  /* Your existing utilities */
   .text-primary { color: var(--color-primary); }
   .bg-primary { background-color: var(--color-primary); }
   .border-primary { border-color: var(--color-primary); }
 }
 
-
-/* ✅ Apply spacing to all section tags globally */
 section {
   padding-top: 48px;
   padding-bottom: 24px;
 }
 
-/* Small devices (phones) */
 @media (max-width: 640px) {
   section {
     padding-top: 32px;
@@ -50,22 +36,20 @@ section {
   }
 }
 
-/* Medium devices (tablets) */
 @media (min-width: 641px) and (max-width: 1024px) {
   section {
     padding-top: 32px;
     padding-bottom: 24px;
-    
   }
 }
 
-/* Large devices (desktops) */
 @media (min-width: 1025px) {
   section {
     padding-top: 64px;
     padding-bottom: 32px;
   }
 }
+
 body {
   background-color: #fef9ee !important;
 }

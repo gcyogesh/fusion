@@ -1,5 +1,4 @@
 import React from "react";
-
 interface ButtonProps<T = unknown> {
   text: string;
   onClick?: (event: React.MouseEvent<HTMLButtonElement>, extra?: T) => void;

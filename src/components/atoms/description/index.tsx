@@ -9,7 +9,7 @@ interface TextDescriptionProps {
 const TextDescription: React.FC<TextDescriptionProps> = ({ text, className = '' }) => {
   return (
     <p
-      className={` font-normal text-[16px] leading-[24px] mt-2 mb-2  font-dm-sans !${className}`}
+      className={`font-dm-sans font-normal    ${className}`}
     >
       {text}
     </p>

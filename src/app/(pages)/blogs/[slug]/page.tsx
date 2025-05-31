@@ -52,7 +52,8 @@ export default async function Page({
           <TextDescription text={blogdata.data.description}  className="text-[#535556]"/>
 
           {/* Quick Facts Section */}
-          <div className="border border-gray-300 rounded-md p-6 bg-white shadow-sm mb-4">
+<section>
+            <div className="border border-gray-300 rounded-md p-6 bg-white shadow-sm mb-4">
             <TextHeader text="Quick Facts about Nepal" align="left" size="large" width={855} className=" w-[815px] h-auto mb-2" />
             
             <ul className="list-disc list-inside text-base text-[#535556] space-y-2 pl-2">
@@ -72,7 +73,12 @@ export default async function Page({
 
           </div>
           
-      <TextHeader text="Why Visit Nepal?" align="left" size="large" width={855} className=" w-[815px] h-auto" />
+</section>
+<section>
+
+
+
+        <TextHeader text="Why Visit Nepal?" align="left" size="large" width={855} className=" w-[815px] h-auto" />
       <TextDescription text={intro} className="font-semibold text-[#535556]" />
       <TextDescription text={heading} className="font-semibold text-[#535556]" />
       {points.map((point, index) => (
@@ -81,6 +87,7 @@ export default async function Page({
           <TextDescription text={point} className="text-justify text-[#535556]" />
         </div>
       ))}
+</section>
         </div>
 
         {/* Sidebar */}

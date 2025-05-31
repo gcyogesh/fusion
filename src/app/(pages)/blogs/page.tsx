@@ -4,14 +4,10 @@ import { fetchAPI } from '@/utils/apiService';
 import TextDescription from '@/components/atoms/description';
 import ImageDisplay from '@/components/atoms/ImageCard';
 import TextHeader from '@/components/atoms/headings';
-import MidNavbar from '@/components/organisms/MidNavBar';
-
 import Breadcrumb from "@/components/atoms/breadcrumb";
 const Blogs = async () => {
   const blogsdata = await fetchAPI({ endpoint: "blogs" });
-
-  const firstThree = blogsdata.data.slice(0, 3); // First 3 rectangle
-  const rest = blogsdata.data.slice(3);          // Remaining blogs
+   // Remaining blogs
 const herodata =  await fetchAPI({ endpoint: "herobanner/blog   " });
   return (
     <>
@@ -52,7 +48,7 @@ const herodata =  await fetchAPI({ endpoint: "herobanner/blog   " });
                      
                   <ImageDisplay src={card.imageUrl} variant="smallrectangle" title={card.title} description={card.description} />
                 </div>
-                <div className="mt-4 h-[150px] ">
+                <div className="mt-2 h-[150px] ">
                   <h3 className="text-lg font-semibold">{card.title}</h3>
                   <TextDescription text={card.description} className="text-justify line-clamp-3 " />
                 </div>

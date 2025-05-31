@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import ArrowIcon from '../arrowIcon';
 
 type Variant = 'rectangle' | 'square' | 'smallsquare' | 'smallrectangle';
 type SnippetPosition = 'center' | 'start' | 'end';
@@ -44,7 +45,12 @@ const getSnippetPositionClasses = (position: SnippetPosition) => {
 
 const containerVariants = {
   hidden: { opacity: 0, y: 30, scale: 0.95 },
-  visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] },
+  },
   exit: { opacity: 0, y: 20, scale: 0.95, transition: { duration: 0.3 } },
 };
 
@@ -74,7 +80,7 @@ const ImageDisplay = <T extends string>({
       animate="visible"
       exit="exit"
       whileHover={{ scale: 1.02 }}
-      className={`relative overflow-hidden rounded-xl group w-full ${className}`}
+      className={`relative overflow-hidden rounded-xl group w-full cursor-pointer ${className}`}
       style={{
         aspectRatio: `${aspectRatios[variant].toFixed(3)}`,
         maxWidth: width || '100%',
@@ -107,16 +113,16 @@ const ImageDisplay = <T extends string>({
           initial={{ opacity: 0 }}
           whileHover={{ opacity: 1 }}
           transition={{ duration: 0.4 }}
-          className="absolute inset-0 bg-black/50 flex flex-col justify-center items-center text-white opacity-0 group-hover:opacity-100"
+          className="absolute inset-0 bg-black/70 flex flex-col justify-center items-center text-white opacity-0 group-hover:opacity-100 cursor-pointer px-4 text-center"
         >
           {title && <h3 className="text-lg font-semibold">{title}</h3>}
           {description && (
-            <p className="text-sm text-center mt-1 px-4 line-clamp-3">
+            <p className="text-sm mt-1 line-clamp-3">
               {description}
             </p>
           )}
           <div className="mt-4 w-8 h-8 flex items-center justify-center rounded-full bg-orange-500">
-            <span className="text-white text-sm">↗</span>
+            <ArrowIcon size={10} />
           </div>
         </motion.div>
       )}

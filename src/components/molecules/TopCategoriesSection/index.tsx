@@ -1,7 +1,7 @@
 'use client';
 import TextHeader from "@/components/atoms/headings";
 import ImageDisplay from "@/components/atoms/ImageCard";
-
+import TextDescription from "@/components/atoms/description";
 const topcategories = [
   {
     src: "/image.png",
@@ -42,7 +42,7 @@ interface Props {
 
 const TopCategoriesSection = ({ buttonText }: Props) => {
   return (
-   <section className="max-w-7xl mx-auto">
+   <section className="max-w-7xl mx-auto px-6">
      <TextHeader
        text="Unforgettable Experiences Await"
        align="left"
@@ -69,9 +69,7 @@ const TopCategoriesSection = ({ buttonText }: Props) => {
            <div className="px-2 flex flex-col">
              <TextHeader text={card?.title} size="small" align="left" />
              <h2 className="text-lg font-semibold">{card.subtitle}</h2>
-             <p className="text-gray-600 text-justify">
-               {card.description}
-             </p>
+          <TextDescription text={card.description} className="mt-1"/>
            </div>
          </div>
        ))}

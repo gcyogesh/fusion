@@ -1,80 +1,169 @@
 'use client'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Logo from '@/components/atoms/Logo'
-import { ChevronDown } from 'lucide-react'
+import { ChevronDown, ChevronUp } from 'lucide-react'
 import { IoMdClose } from 'react-icons/io'
 import { FiMenu } from 'react-icons/fi'
 
-
-
 const navLinks = [
-  { name: "Home", href: "/", hasDropdown: false },
-  { name: "Destinations", href: "/destinations", hasDropdown: true },
-  { name: "Activities", href: "/activities", hasDropdown: true },
-  { name: "About", href: "/about", hasDropdown: true },
+  { name: "Destinations", href: "/destinations", hasDropdown: true, subLinks: [{ name: "Nepal", href: "/destinations/nepal" }, { name: "Bhutan", href: "/destinations/bhutan" }] },
+  { name: "Activities", href: "/activities", hasDropdown: true, subLinks: [{ name: "Trekking", href: "/activities/trekking" }, { name: "Rafting", href: "/activities/rafting" }] },
+  { name: "About", href: "/about", hasDropdown: false },
   { name: "Contact", href: "/contact", hasDropdown: false },
-];
-
+]
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const pathname = usePathname()
-  const isHome = pathname === '/'
+  const [dropdownOpen, setDropdownOpen] = useState<string | null>(null)
+  const [mobileDropdown, setMobileDropdown] = useState<string | null>(null)
+  const [showNavbar, setShowNavbar] = useState(true)
+  const [lastScrollY, setLastScrollY] = useState(0)
+  const [navbarBg, setNavbarBg] = useState('transparent')
+  const [navbarBlur, setNavbarBlur] = useState(true)
 
   const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen)
-    document.body.style.overflow = isMenuOpen ? 'auto' : 'hidden'
+    setIsMenuOpen(prev => {
+      const newState = !prev
+      document.body.style.overflow = newState ? 'hidden' : 'auto'
+      return newState
+    })
   }
 
- 
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY
+
+      if (currentScrollY === 0) {
+        setNavbarBg('transparent')
+        setNavbarBlur(true)
+        setShowNavbar(true)
+      } else if (currentScrollY > lastScrollY && currentScrollY > 100) {
+        setShowNavbar(false)
+        setNavbarBg('transparent')
+        setNavbarBlur(false)
+      } else {
+        setShowNavbar(true)
+        setNavbarBg('#0F7BBA')
+        setNavbarBlur(false)
+      }
+
+      setLastScrollY(currentScrollY)
+    }
+
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [lastScrollY])
 
   return (
-    <>
-     <nav
-      className={`${
-        isHome ? 'absolute' : 'fixed'
-      } top-0 left-1/2 transform -translate-x-1/2 w-full z-50 flex items-center justify-center h-20 
-      ${isHome ? 'bg-white/15 backdrop-blur-lg' : 'bg-[#0F7BBA]'}`}
+    <nav
+      style={{
+        backgroundColor: navbarBg,
+        backdropFilter: navbarBlur ? 'blur(10px)' : 'none',
+        WebkitBackdropFilter: navbarBlur ? 'blur(10px)' : 'none',
+      }}
+      className={`fixed top-0 left-0 w-full z-50 transition-transform duration-300 ${showNavbar ? 'translate-y-0' : '-translate-y-full'} transition-colors duration-500 ease-in-out px-2`}
     >
-  <div className="w-full max-w-7xl flex justify-between items-center  py-2">
-    {/* Logo & Brand */}
-   <Logo />
+      <div className={`max-w-7xl mx-auto flex justify-between items-center px-4 py-3 h-20 ${navbarBg === 'transparent' && navbarBlur ? 'text-black' : 'text-white'}`}>
+        {/* Logo */}
+        <Link href="/">
+          <Logo />
+        </Link>
 
-    {/* Nav Links (Desktop) */}
+        {/* Desktop Nav */}
+        <ul className="hidden md:flex gap-8 font-medium text-base relative">
+          {navLinks.map((link) => (
+            <li
+              key={link.name}
+              className="relative group"
+              onMouseEnter={() => setDropdownOpen(link.hasDropdown ? link.name : null)}
+              onMouseLeave={() => setDropdownOpen(null)}
+            >
+              <div className="flex items-center gap-1 cursor-pointer">
+                <Link href={link.href}>{link.name}</Link>
+                {link.hasDropdown && <ChevronDown className="w-3 h-4 mt-[2px]" />}
+              </div>
 
-   <ul className="hidden md:flex gap-8 text-white font-medium text-base">
-      {navLinks.map((link) => (
-        <li key={link.name} className="flex items-center gap-1 cursor-pointer">
-          <Link href={link.href}>{link.name}</Link>
-          {link.hasDropdown && <ChevronDown className="w-3 h-4 mt-[2px]" />}
-        </li>
-      ))}
-    </ul>
+              {/* Dropdown */}
+              {link.hasDropdown && dropdownOpen === link.name && (
+                <ul className="absolute top-8 left-0 w-40 bg-white text-black rounded shadow-md py-2 z-50">
+                  {link.subLinks?.map((sublink) => (
+                    <li key={sublink.name}>
+                      <Link href={sublink.href} className="block px-4 py-2 hover:bg-gray-100">
+                        {sublink.name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </li>
+          ))}
+        </ul>
 
-    {/* CTA and Toggle Button */}
-    <div className="flex items-center justify-center gap-4 ">
-      <Link href="/plan-trip">
-        <button className="hidden lg:block bg-gradient-to-r from-[#F28A15] to-[#E47312] hover:from-[#0f7bba] hover:to-[#0f7bba] text-white text-sm font-medium  h-[46px] w-[160px] rounded-full transition">
-          Plan Your Trip
-        </button>
-      </Link>
-      <button
-  className="text-white text-5xl"
-  onClick={toggleMenu}
-  aria-label="Toggle Menu"
->
-  {isMenuOpen ? (
-    <IoMdClose className="text-white text-4xl transition-transform duration-300 rotate-90" />
-  ) : (
-     <FiMenu className="text-white transition-transform p-1 duration-250" />
-  )}
-</button>
-    </div>
-  </div>
-</nav>
+        {/* CTA + Mobile Toggle */}
+        <div className="flex items-center gap-4">
+          <Link href="/plan-trip">
+            <button className="hidden lg:block bg-gradient-to-r from-[#F28A15] to-[#E47312] hover:from-[#0f7bba] hover:to-[#0f7bba] text-white text-sm font-medium h-[46px] w-[160px] rounded-full transition">
+              Plan Your Trip
+            </button>
+          </Link>
 
-    </>
+          <button
+            className="text-3xl md:hidden"
+            onClick={toggleMenu}
+            aria-label="Toggle Menu"
+          >
+            {isMenuOpen ? <IoMdClose /> : <FiMenu />}
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile Menu */}
+      {isMenuOpen && (
+        <div className="md:hidden bg-white text-black px-6 py-4 space-y-4 shadow-lg z-40">
+          {navLinks.map((link) => (
+            <div key={link.name}>
+              <div
+                className="flex justify-between items-center cursor-pointer py-2"
+                onClick={() =>
+                  setMobileDropdown(mobileDropdown === link.name ? null : link.name)
+                }
+              >
+                <Link href={link.href} onClick={toggleMenu}>
+                  {link.name}
+                </Link>
+                {link.hasDropdown &&
+                  (mobileDropdown === link.name ? (
+                    <ChevronUp className="w-4 h-4" />
+                  ) : (
+                    <ChevronDown className="w-4 h-4" />
+                  ))}
+              </div>
+              {link.hasDropdown && mobileDropdown === link.name && (
+                <ul className="pl-4 space-y-2">
+                  {link.subLinks?.map((sublink) => (
+                    <li key={sublink.name}>
+                      <Link
+                        href={sublink.href}
+                        onClick={toggleMenu}
+                        className="block py-1 text-sm"
+                      >
+                        {sublink.name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          ))}
+
+          <Link href="/plan-trip" onClick={toggleMenu}>
+            <button className="w-full bg-gradient-to-r from-[#F28A15] to-[#E47312] text-white font-medium h-[46px] rounded-full">
+              Plan Your Trip
+            </button>
+          </Link>
+        </div>
+      )}
+    </nav>
   )
 }
