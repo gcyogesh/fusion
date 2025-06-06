@@ -14,6 +14,7 @@ const navLinks = [
 ]
 
 export default function Navbar() {
+  
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [dropdownOpen, setDropdownOpen] = useState<string | null>(null)
   const [mobileDropdown, setMobileDropdown] = useState<string | null>(null)

@@ -7,7 +7,7 @@ import ContactDetails from "@/components/organisms/ContactDetails";
 import TextHeader from "@/components/atoms/headings";
 import TextDescription from "@/components/atoms/description";
 import Breadcrumb from "@/components/atoms/breadcrumb";
-import ContactForm from "@/components/organisms/Form";
+import ContactForm from "@/components/organisms/Form/Contactform";
 
 const socialLinks = [
   { icon: <FaInstagram className="text-white bg-primary p-2 rounded-xl w-8 h-8"/>, link: "#" },

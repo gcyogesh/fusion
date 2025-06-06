@@ -1,134 +1,231 @@
 "use client";
-import Button from "@/components/atoms/button";
-import React, { useState, FormEvent } from "react";
-;
 
-type ContactFormProps = {
-  padding?: number | string;
-  width?: "full" | string;
+import React, { useRef, useState } from "react";
+import Button from "@/components/atoms/button";
+import TextArea from "@/components/atoms/input/textArea";
+import Input from "@/components/atoms/input/input";
+
+interface BaseField {
+  label: string;
+  placeholder?: string;
+  name: string;
+  type?: string;
+  value?: string;
+  onChange?: (value: string) => void;
+  required?: boolean;
+  validate?: (value: string) => boolean;
+  errorMessage?: string;
+  colSpan?: number; // For grid layout
+}
+
+interface TextAreaField extends BaseField {
+  type: "textarea" | "subtitle";
+}
+
+interface SelectField extends BaseField {
+  type: "select";
+  options: { value: string; label: string }[];
+}
+
+interface FileField extends BaseField {
+  type: "image" | "file";
+}
+
+interface InputField extends BaseField {
+  type?: string;
+}
+
+type Field = TextAreaField | SelectField | FileField | InputField;
+
+interface FormContainerProps {
+  formTitle?: string;
   primaryButton?: string;
   secondaryButton?: string;
-  formTitle?: string;
   onPrimaryClick?: () => void;
   onSecondaryClick?: () => void;
-};
+  width?: "full" | "partial";
+  onSubmit?: (e: React.FormEvent) => void;
+  children: React.ReactNode;
+}
 
-const ContactForm: React.FC<ContactFormProps> = ({
-  padding = 30,
+interface FormProps extends Omit<FormContainerProps, "children"> {
+  fields: Field[];
+}
+
+const FormContainer: React.FC<FormContainerProps> = ({
   formTitle,
-
+  primaryButton,
+  secondaryButton,
+  onPrimaryClick,
+  onSecondaryClick,
+  width = "full",
+  onSubmit,
+  children,
 }) => {
-  const [formData, setFormData] = useState({
-    Name: "",
-    email: "",
-    phone: "",
-    country: "",
-    message: "",
-  });
-
-  const handleChange = (field: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-  };
-
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    console.log("Form Submitted:", formData);
-  };
- const phoneField = [
-    { name: "Phone", label: "Phone Number", placeholder: "+977" },
-    { name: "Country", label: "Country", placeholder: "Country" },
-  ]
+  const formRef = useRef<HTMLFormElement>(null);
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div className="flex flex-col items- px-4">
-        <div
-          className={`bg-[#0E334F] w-[520px] rounded-3xl shadow-md border border-white  flex flex-col gap-7 
-          }`}
-          style={{ padding }}
-        >
-          {formTitle && (
-            <h2 className="text-2xl font-semibold text-white text-center">
-              {formTitle}
-            </h2>
-          )}
+    <div className="min-h-screen w-full flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <form
+        onSubmit={onSubmit}
+        className={`${
+          width === "full" ? "max-w-7xl" : "max-w-4xl"
+        } w-full bg-white rounded-3xl shadow-xl border p-8 sm:p-12`}
+        ref={formRef}
+      >
+        {formTitle && (
+          <h2 className="text-3xl font-bold text-gray-800 text-center mb-12">
+            {formTitle}
+          </h2>
+        )}
 
-          {/* Name */}
-          <div className="w-full flex flex-col">
-                <label className="text-sm text-white font-medium mb-1">
-                  name
-                </label>
-                <input
-                  required
-                  type="text"
-                  placeholder="Your Name"
-                  value={formData.Name}
-                  onChange={(e) => handleChange("Name", e.target.value)}
-                  className="border border-white rounded-md px-4 py-2 focus:outline-none focus:ring-2  focus:ring-white  placeholder:text-white placeholder:opacity-30"
-                />
-              </div>
-         
-          
-
-           {/* Email */}
-          <div className="flex flex-col">
-            <label className="text-sm text-white font-medium mb-1">
-              Email Address
-            </label>
-            <input
-              required
-              type="email"
-              placeholder="fusion@gmail.com"
-              value={formData.email}
-              onChange={(e) => handleChange("email", e.target.value)}
-              className="border  rounded-md border-white opacity-30 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-white  placeholder:text-white placeholder:opacity-30"
-            />
-          </div>
-
-
-          {/* Phone */}
-          <div className="flex flex-col md:flex-row gap-6">
-                        {phoneField.map(({ name, label, placeholder }) => (
-              <div key={name} className="flex flex-col w-full">
-            <label className="text-sm text-white font-medium mb-1">
-             {label}
-            </label>
-            <input
-              required
-              type="tel"
-              placeholder={placeholder}
-              value={(formData as never)[name]}
-              onChange={(e) => handleChange("phone", e.target.value)}
-              className="border border-white opacity-30 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-white placeholder:text-white placeholder:opacity-30 "
-            />
-          </div>
-    ))}
-          </div>
-         
-          {/* Additional Info */}
-          <div className="flex flex-col">
-            <label className="text-sm text-white font-medium mb-1">
-              Message
-            </label>
-            <textarea
-              placeholder="Type Message"
-              value={formData.message}
-              onChange={(e) => handleChange("additionalInfo", e.target.value)}
-              className="border border-white opacity-30 rounded-md px-4 py-2 h-28 resize-none focus:outline-none focus:ring-2 focus:ring-white  placeholder:text-white placeholder:opacity-30"
-            />
-          </div>
-            {/* Buttons */}
-        <Button 
-            text="Submit"
-            variant="primary"
-            className="mt-6 w-full bg-[#F7941D] hover:bg-[#E47312] text-white font-semibold py-2 px-4 rounded-md transition-colors"
-            onClick={() => console.log("Primary Button Clicked")}
-        />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {children}
         </div>
-        </div>
-    </form>
-    
+
+        {(primaryButton || secondaryButton) && (
+          <div className="mt-12 flex flex-wrap gap-4 justify-end">
+            {secondaryButton && (
+              <Button
+                text={secondaryButton}
+                onClick={onSecondaryClick}
+                className="text-lg px-8 py-3"
+              />
+            )}
+            {primaryButton && (
+              <Button
+                text={primaryButton}
+                onClick={onPrimaryClick}
+                className="text-lg px-8 py-3"
+              />
+            )}
+          </div>
+        )}
+      </form>
+    </div>
   );
 };
 
-export default ContactForm;
+const Form: React.FC<FormProps> = ({
+  formTitle,
+  primaryButton,
+  secondaryButton,
+  onPrimaryClick,
+  onSecondaryClick,
+  width,
+  onSubmit,
+  fields,
+}) => {
+  const [formValues, setFormValues] = useState<Record<string, string>>({});
+
+  const handleFieldChange = (name: string, value: string) => {
+    setFormValues(prev => ({ ...prev, [name]: value }));
+    const field = fields.find(f => f.name === name);
+    if (field?.onChange) {
+      field.onChange(value);
+    }
+  };
+
+  const getFieldColSpan = (field: BaseField) => {
+    // Full width for textarea and subtitle
+    if (field.type === "textarea" || field.type === "subtitle") {
+      return "col-span-full";
+    }
+    // Use custom colSpan if provided
+    if (field.colSpan) {
+      return `col-span-${field.colSpan}`;
+    }
+    // Default to single column
+    return "";
+  };
+
+  return (
+    <FormContainer
+      formTitle={formTitle}
+      primaryButton={primaryButton}
+      secondaryButton={secondaryButton}
+      onPrimaryClick={onPrimaryClick}
+      onSecondaryClick={onSecondaryClick}
+      width={width}
+      onSubmit={onSubmit}
+    >
+      {fields.map((field, index) => {
+        const colSpanClass = getFieldColSpan(field);
+
+        // Render textarea for subtitle or textarea type
+        if (field.type === "textarea" || field.type === "subtitle") {
+          return (
+            <div key={index} className={`w-full ${colSpanClass}`}>
+              <TextArea
+                label={field.label}
+                placeholder={field.placeholder}
+                value={formValues[field.name] || field.value || ""}
+                onChange={(e) => handleFieldChange(field.name, e.target.value)}
+              />
+            </div>
+          );
+        }
+
+        // Render file input for image or file type
+        if (field.type === "image" || field.type === "file") {
+          return (
+            <div key={index} className={`w-full ${colSpanClass}`}>
+              <Input
+                type="file"
+                label={field.label}
+                placeholder={field.placeholder || "Choose a file"}
+                value={formValues[field.name] || field.value || ""}
+                onChange={(value) => handleFieldChange(field.name, value)}
+                required={field.required}
+                validate={field.validate}
+                errorMessage={field.errorMessage}
+                prefix=""
+                options={[]}
+              />
+            </div>
+          );
+        }
+
+        // Render select input
+        if (field.type === "select" && "options" in field) {
+          return (
+            <div key={index} className={`w-full ${colSpanClass}`}>
+              <Input
+                type="select"
+                label={field.label}
+                placeholder={field.placeholder}
+                options={field.options}
+                value={formValues[field.name] || field.value || ""}
+                onChange={(value) => handleFieldChange(field.name, value)}
+                required={field.required}
+                validate={field.validate}
+                errorMessage={field.errorMessage}
+                prefix=""
+              />
+            </div>
+          );
+        }
+
+        // Default input type
+        return (
+          <div key={index} className={`w-full ${colSpanClass}`}>
+            <Input
+              type={field.type || "text"}
+              label={field.label}
+              placeholder={field.placeholder}
+              value={formValues[field.name] || field.value || ""}
+              onChange={(value) => handleFieldChange(field.name, value)}
+              required={field.required}
+              validate={field.validate}
+              errorMessage={field.errorMessage}
+              prefix=""
+              options={[]}
+            />
+          </div>
+        );
+      })}
+    </FormContainer>
+  );
+};
+
+export default Form;

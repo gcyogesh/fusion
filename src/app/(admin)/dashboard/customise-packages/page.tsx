@@ -2,19 +2,19 @@
 
 import { AdminTable } from "@/components/organisms/ListingCard"
 import { fetchAPI } from "@/utils/apiService"
-
 export default async function dashboard() {
-  const destinationdata = await fetchAPI({ endpoint: "destinations" });
+  const packagesdata = await fetchAPI({ endpoint: "tour/tour-packages" });
+
     return (
 
         <>
  <AdminTable
-      title="Destination Management"
-      buttonText="Add Destination"
-      data={destinationdata.data}
+      title="Packages Management"
+      buttonText="Add Packages"
+      data={packagesdata.data}
       columns={[
 
-        { label: "Location", accessor: "location" },
+        { label: "Packages title", accessor: "title" },
       
       ]}
 

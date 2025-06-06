@@ -72,11 +72,22 @@ export default async function Page({
 
 
           </div>
-          
+     
 </section>
+
 <section>
 
 
+  <ImageDisplay
+    src={blogdata.data.imageUrl}
+    variant="rectangle"
+    title={blogdata.data.title}
+    description={blogdata.data.subtitle}
+  />
+
+</section>
+<section>
+    
 
         <TextHeader text="Why Visit Nepal?" align="left" size="large" width={855} className=" w-[815px] h-auto" />
       <TextDescription text={intro} className="font-semibold text-[#535556]" />
@@ -131,13 +142,18 @@ export default async function Page({
         <span>{link.icon}</span>
       </a>
     ))}
+    
+    
   </div>
+  
 </div>
+
           </div>
         </div>
+         
       </div>
-
-      {/* Featured Blogs Section */}
+    
+    {/* Qq1 Blogs Section */}
       {hasPrimaryBlog && (
         <section className="max-w-7xl mx-auto px-4">
           <TextHeader
@@ -161,8 +177,8 @@ export default async function Page({
                 />
               </div>
               <div className="mt-3">
-                <h3 className="text-xl font-bold">{relatedBlogs[0].title}</h3>
-                <p className="mt-2 h-[155px]">{relatedBlogs[0].subtitle}</p>
+                <h3 className="text-xl font-bold">{relatedBlogs[0].subtitle}</h3>
+                <p className="mt-2 h-[155px]">{relatedBlogs[0].description}</p>
               </div>
             </div>
 
