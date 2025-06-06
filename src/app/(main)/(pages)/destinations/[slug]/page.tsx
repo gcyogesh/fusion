@@ -69,7 +69,7 @@ console.log("Itinerary data:", itinerary);
           <div className="lg:col-span-2 flex flex-col">
             <div className="aspect-video w-full">
               <ImageDisplay
-                src={destinationdata?.destination.imageUrl}
+                src={destinationdata?.destination.imageUrls[0]}
                 variant="rectangle"
                 title={destinationdata?.destination.title}
                 description={destinationdata?.subtitle}
@@ -78,6 +78,9 @@ console.log("Itinerary data:", itinerary);
           </div>
         </div>
       </div>
+
+
+        
     </section>
     <MidNavbar/>
 
