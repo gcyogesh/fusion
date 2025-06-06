@@ -5,15 +5,18 @@ import Logo from '@/components/atoms/Logo'
 import { ChevronDown, ChevronUp } from 'lucide-react'
 import { IoMdClose } from 'react-icons/io'
 import { FiMenu } from 'react-icons/fi'
-
+import { usePathname } from 'next/navigation'
 const navLinks = [
-  { name: "Destinations", href: "/destinations", hasDropdown: true, subLinks: [{ name: "Nepal", href: "/destinations/nepal" }, { name: "Bhutan", href: "/destinations/bhutan" }] },
+  { name: "Destinations", href: "/destinations", hasDropdown: true, subLinks: [{ name: "pokhara", href: "/destinations/pokhara" }, { name: "mustang", href: "/destinations/mustang" } , { name: "taplejung", href: "/destinations/taplejung" }] },
   { name: "Activities", href: "/activities", hasDropdown: true, subLinks: [{ name: "Trekking", href: "/activities/trekking" }, { name: "Rafting", href: "/activities/rafting" }] },
   { name: "About", href: "/about", hasDropdown: false },
   { name: "Contact", href: "/contact", hasDropdown: false },
 ]
 
-export default function Navbar() {
+export  default  function Navbar() {
+
+
+ 
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [dropdownOpen, setDropdownOpen] = useState<string | null>(null)
   const [mobileDropdown, setMobileDropdown] = useState<string | null>(null)
@@ -21,6 +24,7 @@ export default function Navbar() {
   const [lastScrollY, setLastScrollY] = useState(0)
   const [navbarBg, setNavbarBg] = useState('transparent')
   const [navbarBlur, setNavbarBlur] = useState(true)
+  const pathname = usePathname()
 
   const toggleMenu = () => {
     setIsMenuOpen(prev => {
@@ -32,24 +36,29 @@ export default function Navbar() {
 
   useEffect(() => {
     const handleScroll = () => {
-      const currentScrollY = window.scrollY
+  const currentScrollY = window.scrollY
 
-      if (currentScrollY === 0) {
-        setNavbarBg('transparent')
-        setNavbarBlur(true)
-        setShowNavbar(true)
-      } else if (currentScrollY > lastScrollY && currentScrollY > 100) {
-        setShowNavbar(false)
-        setNavbarBg('transparent')
-        setNavbarBlur(false)
-      } else {
-        setShowNavbar(true)
-        setNavbarBg('#0F7BBA')
-        setNavbarBlur(false)
-      }
-
-      setLastScrollY(currentScrollY)
+  if (currentScrollY === 0) {
+    if (pathname === '/') {
+      setNavbarBg('transparent')
+      setNavbarBlur(true)
+    } else {
+      setNavbarBg('#0F7BBA')
+      setNavbarBlur(false)
     }
+    setShowNavbar(true)
+  } else if (currentScrollY > lastScrollY && currentScrollY > 100) {
+    setShowNavbar(false)
+    setNavbarBg('transparent')
+    setNavbarBlur(false)
+  } else {
+    setShowNavbar(true)
+    setNavbarBg('#0F7BBA')
+    setNavbarBlur(false)
+  }
+
+  setLastScrollY(currentScrollY)
+}
 
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
@@ -62,7 +71,7 @@ export default function Navbar() {
         backdropFilter: navbarBlur ? 'blur(10px)' : 'none',
         WebkitBackdropFilter: navbarBlur ? 'blur(10px)' : 'none',
       }}
-      className={`fixed top-0 left-0 w-full z-50 transition-transform duration-300 ${showNavbar ? 'translate-y-0' : '-translate-y-full'} transition-colors duration-500 ease-in-out px-2`}
+      className={`fixed top-0 left-0 w-full z-60 transition-transform duration-300 ${showNavbar ? 'translate-y-0' : '-translate-y-full'} transition-colors duration-500 ease-in-out px-2`}
     >
       <div className={`max-w-7xl mx-auto flex justify-between items-center px-4 py-3 h-20 ${navbarBg === 'transparent' && navbarBlur ? 'text-black' : 'text-white'}`}>
         {/* Logo */}

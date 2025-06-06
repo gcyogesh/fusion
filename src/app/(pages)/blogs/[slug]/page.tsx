@@ -43,6 +43,8 @@ export default async function Page({
   const hasPrimaryBlog = relatedBlogs.length > 0;
   const secondaryBlogs = relatedBlogs.slice(1, 3);
 
+ 
+
   return (
     <section>
       <div className="mx-auto max-w-7xl py-18  flex flex-col md:flex-row lg:flex-row  justify-between gap-8 px-[-4]">
@@ -185,6 +187,7 @@ export default async function Page({
             </div>
           </div>
         </section>
+        
       )}
     </section>
   );
