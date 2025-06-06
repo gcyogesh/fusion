@@ -1,20 +1,21 @@
 
-
 import { AdminTable } from "@/components/organisms/ListingCard"
 import { fetchAPI } from "@/utils/apiService"
-
 export default async function dashboard() {
-  const destinationdata = await fetchAPI({ endpoint: "destinations" });
+  const blogsdata = await fetchAPI({ endpoint: "activities" });
+ 
+
     return (
 
         <>
  <AdminTable
-      title="Destination Management"
-      buttonText="Add Destination"
-      data={destinationdata.data}
+      title="Activities Management"
+      buttonText="Add Activities"
+      data={blogsdata.data}
       columns={[
 
-        { label: "Location", accessor: "location" },
+        { label: "Activities Title", accessor: "title" },
+        
       
       ]}
 

@@ -10,13 +10,13 @@ const navLinks = [
   { name: "Destinations", href: "/destinations", hasDropdown: true, subLinks: [{ name: "pokhara", href: "/destinations/pokhara" }, { name: "mustang", href: "/destinations/mustang" } , { name: "taplejung", href: "/destinations/taplejung" }] },
   { name: "Activities", href: "/activities", hasDropdown: true, subLinks: [{ name: "Trekking", href: "/activities/trekking" }, { name: "Rafting", href: "/activities/rafting" }] },
   { name: "About", href: "/about", hasDropdown: false },
+
+{ name: "Blogs", href: "/blogs", hasDropdown: false },
   { name: "Contact", href: "/contact", hasDropdown: false },
 ]
 
-export  default  function Navbar() {
-
-
- 
+export default function Navbar() {
+  
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [dropdownOpen, setDropdownOpen] = useState<string | null>(null)
   const [mobileDropdown, setMobileDropdown] = useState<string | null>(null)
