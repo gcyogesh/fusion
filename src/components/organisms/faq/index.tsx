@@ -105,7 +105,7 @@ export default function FAQSection() {
         })}
       </div>
 
-      {/* Tailwind custom animation */}
+      Tailwind custom animation
       <style jsx>{`
         @keyframes slideIn {
           from {
