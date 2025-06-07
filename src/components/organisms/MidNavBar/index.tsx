@@ -27,7 +27,7 @@ const MidNavbar = () => {
               onClick={() => setActiveTab(tab)}
               className={`font-semibold px-3 py-1 rounded ${
                 activeTab === tab
-                  ? "bg-[#F7931E] text-white"
+                ? "bg-[#F7931E] text-white"
                   : "text-black hover:bg-[#fcd59d]"
               }`}
             >
