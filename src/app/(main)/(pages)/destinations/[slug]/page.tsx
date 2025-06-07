@@ -127,7 +127,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
                       className="mt-1"
                     />
                     <div>
-                      <p className="font-semibold">{destination.tripDuration}</p>
+                      <p className="font-semibold">{destination.feature?.tripDuration}</p>
                       <p className="text-sm text-gray-500">Trip Duration</p>
                     </div>
                   </div>
@@ -140,7 +140,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
                       className="mt-1"
                     />
                     <div>
-                      <p className="font-semibold">{destination.tripDifficulty}</p>
+                      <p className="font-semibold">{destination.feature?.tripDifficulty}</p>
                       <p className="text-sm text-gray-500">Trip Difficulty</p>
                     </div>
                   </div>
@@ -153,7 +153,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
                       className="mt-1"
                     />
                     <div>
-                      <p className="font-semibold">{destination.meals?.join(", ")}</p>
+                      <p className="font-semibold">{destination.feature?.meals?.join(", ")}</p>
                       <p className="text-sm text-gray-500">Meals</p>
                     </div>
                   </div>
@@ -166,7 +166,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
                       className="mt-1"
                     />
                     <div>
-                      <p className="font-semibold">{destination.activities?.join(", ")}</p>
+                      <p className="font-semibold">{destination.feature?.activities?.join(", ")}</p>
                       <p className="text-sm text-gray-500">Activities</p>
                     </div>
                   </div>
@@ -179,7 +179,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
                       className="mt-1"
                     />
                     <div>
-                      <p className="font-semibold">{destination.accommodation?.join(" / ")}</p>
+                      <p className="font-semibold">{destination.feature?.accommodation?.join(" / ")}</p>
                       <p className="text-sm text-gray-500">Accommodation</p>
                     </div>
                   </div>
@@ -192,7 +192,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
                       className="mt-1"
                     />
                     <div>
-                      <p className="font-semibold">{destination.maxAltitude}</p>
+                      <p className="font-semibold">{destination.feature?.maxAltitude}</p>
                       <p className="text-sm text-gray-500">Max Altitude</p>
                     </div>
                   </div>
@@ -205,7 +205,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
                       className="mt-1"
                     />
                     <div>
-                      <p className="font-semibold">{destination.bestSeason?.join(", ")}</p>
+                      <p className="font-semibold">{destination.feature?.bestSeason?.join(", ")}</p>
                       <p className="text-sm text-gray-500">Best Season</p>
                     </div>
                   </div>
@@ -218,7 +218,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
                       className="mt-1"
                     />
                     <div>
-                      <p className="font-semibold">{destination.startEndPoint}</p>
+                      <p className="font-semibold">{destination.feature?.startEndPoint}</p>
                       <p className="text-sm text-gray-500">Start/End Point</p>
                     </div>
                   </div>
