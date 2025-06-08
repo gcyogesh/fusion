@@ -63,7 +63,7 @@ const activityMap: { keyword: string; icon: JSX.Element; label: string }[] = [
     icon: <FaHiking className="text-[#0E334F]" />,
     label: "Explore Lakeside",
   },
-  
+
 ];
 
 const ItinerarySection: FC<Props> = ({ itinerary }) => {
@@ -83,9 +83,9 @@ const ItinerarySection: FC<Props> = ({ itinerary }) => {
             className={`rounded-xl border-none transition-all duration-300 ease-in-out  ${isOpen ? "bg-transparent" : ""
               }`}
           >
-            
+
             <div className="flex items-start justify-between  relative  ">
-             
+
               <div className="flex items-center py-2 ">
                 {/* Image with overlay text */}
                 <div className="relative w-[60px] h-[60px] ">
@@ -105,7 +105,7 @@ const ItinerarySection: FC<Props> = ({ itinerary }) => {
                   </div>
                 </div>
 
-               
+
                 <h3 className="text-xl font-semibold text-gray-900 px-2">
                   {item.title}
                 </h3>
@@ -114,7 +114,7 @@ const ItinerarySection: FC<Props> = ({ itinerary }) => {
               {/* Toggle Button */}
               <button
                 onClick={() => toggleDay(item.day)}
-                className="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center"
+                className="w-8 h-8  bg-primary text-white rounded-full flex items-center justify-center"
               >
                 {isOpen ? <Minus size={18} /> : <Plus size={18} />}
               </button>
@@ -138,29 +138,29 @@ const ItinerarySection: FC<Props> = ({ itinerary }) => {
                 )}
 
                 {/* Activities Section */}
-               <div className="mt-4 flex flex-wrap gap-6 text-sm text-gray-600 items-center bg-white p-4 rounded-xl shadow-sm">
-  {item.activities.map((activityText, idx) => {
-    const matched = activityMap.find(({ keyword }) =>
-      activityText.toLowerCase().includes(keyword)
-    );
+                <div className="mt-4 flex flex-wrap justify-between text-sm text-gray-600 items-center bg-white p-4 border border-black rounded-xl shadow-sm">
+                  {item.activities.map((activityText, idx) => {
+                    const matched = activityMap.find(({ keyword }) =>
+                      activityText.toLowerCase().includes(keyword)
+                    );
 
-    return (
-      <div key={idx} className="flex items-center gap-1 text-xl">
-        {matched ? (
-          <>
-            {matched.icon}
-            <span>{activityText}</span>
-          </>
-        ) : (
-          <>
-            <span className="text-[#0E334F] font-bold">•</span>
-            <span>{activityText}</span>
-          </>
-        )}
-      </div>
-    );
-  })}
-</div>
+                    return (
+                      <div key={idx} className="flex items-center gap-1 text-xl">
+                        {matched ? (
+                          <>
+                            {matched.icon}
+                            <span>{activityText}</span>
+                          </>
+                        ) : (
+                          <>
+                            <span className="text-[#0E334F] font-bold">•</span>
+                            <span>{activityText}</span>
+                          </>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
 
 
 

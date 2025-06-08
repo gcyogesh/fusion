@@ -64,45 +64,45 @@ export default async function Page({ params }: { params: { slug: string } }) {
           </span>
 
           <TextHeader text={destinationdata?.destination.subtitle} align="start" size="large" width={2000} className="mb-4" />
-<div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-  {/* Left side large image */}
-  <div className="lg:col-span-2">
-    <div className="aspect-video w-full">
-      <ImageDisplay
-        src={destinationdata?.destination.imageUrls?.[0] || "/fallback.jpg"}
-        variant="rectangle"
-        title={destinationdata?.destination.title}
-        description={destinationdata?.destination.subtitle}
-      />
-    </div>
-  </div>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            {/* Left side large image */}
+            <div className="lg:col-span-2">
+              <div className="aspect-video w-full">
+                <ImageDisplay
+                  src={destinationdata?.destination.imageUrls?.[0] || "/fallback.jpg"}
+                  variant="rectangle"
+                  title={destinationdata?.destination.title}
+                  description={destinationdata?.destination.subtitle}
+                />
+              </div>
+            </div>
 
-  {/* Right side two stacked images */}
-  <div className="flex flex-col gap-4">
-    {destinationdata?.destination.imageUrls?.[1] && (
-      <div className="aspect-[16/9] w-full relative">
-        <ImageDisplay
-          src={destinationdata.destination.imageUrls[1]}
-          variant="rectangle"
-          title={destinationdata.destination.title}
-          description={destinationdata.destination.subtitle}
-        />
-       
-      </div>
-    )}
+            {/* Right side two stacked images */}
+            <div className="flex flex-col gap-4">
+              {destinationdata?.destination.imageUrls?.[1] && (
+                <div className="aspect-[16/9] w-full relative">
+                  <ImageDisplay
+                    src={destinationdata.destination.imageUrls[1]}
+                    variant="rectangle"
+                    title={destinationdata.destination.title}
+                    description={destinationdata.destination.subtitle}
+                  />
 
-    {destinationdata?.destination.imageUrls?.[2] && (
-      <div className="aspect-[16/9] w-full">
-        <ImageDisplay
-          src={destinationdata.destination.imageUrls[2]}
-          variant="rectangle"
-          title={destinationdata.destination.title}
-          description={destinationdata.destination.subtitle}
-        />
-      </div>
-    )}
-  </div>
-</div>
+                </div>
+              )}
+
+              {destinationdata?.destination.imageUrls?.[2] && (
+                <div className="aspect-[16/9] w-full">
+                  <ImageDisplay
+                    src={destinationdata.destination.imageUrls[2]}
+                    variant="rectangle"
+                    title={destinationdata.destination.title}
+                    description={destinationdata.destination.subtitle}
+                  />
+                </div>
+              )}
+            </div>
+          </div>
 
         </div>
 
@@ -112,7 +112,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
       <MidNavbar />
 
       <section className="mx-auto max-w-7xl py-16">
-         {/* main column and side bar */}
+        {/* main column and side bar */}
         <div className="flex flex-row  justify-between gap-2 ">
           {/* Main Content */}
           <div className="flex-1 max-w-[860px]">
@@ -281,7 +281,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
 
             </section>
 
-              <div className={`w-auto md:w-[875px] h-[1px] bg-black opacity-20  mt-2 `} />
+            <div className={`w-auto md:w-[875px] h-[1px] bg-black opacity-20  mt-2 `} />
 
           </div>
 
@@ -300,7 +300,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
                   <p className="text-xl text-gray-700">Per Person</p>
                 </div>
                 <hr className="border-t border-dashed border-gray-300 w-full" />
-                
+
                 <p className="text-sm text-gray-500">Price May Vary According<br />To The Group Size.</p>
                 <div className="space-y-4 p-2 items-center">
                   <Button text=" Book this Trip" variant="primary" className="text-xs flex  sm:text-sm " />
@@ -338,7 +338,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
 
   </div> */}
 
-          <div className=" max-w-3xl grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className=" max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Cost Includes */}
             <div>
               <TextHeader
@@ -404,7 +404,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
         </section>
 
         <section>
-          
+
           <TextHeader
             text="ABC Trek Map"
             align="left"
@@ -421,60 +421,60 @@ export default async function Page({ params }: { params: { slug: string } }) {
               className=" h-[600px] object-cover rounded-lg shadow"
             />
           )}
-        
+
         </section>
 
 
         <section>
           <div className="max-w-4xl  p-6">
-          <TextHeader
-            text="ABC Trek Gallery"
-            align="left"
-            size="large"
-            width={855}
-            className="w-[815px] h-auto mb-2"
-          />
+            <TextHeader
+              text="ABC Trek Gallery"
+              align="left"
+              size="large"
+              width={855}
+              className="w-[815px] h-auto mb-2"
+            />
 
-          {/* Gallery Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
+            {/* Gallery Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
 
-            {/* Large Rectangle Image - spans 2 columns */}
-            <div className="lg:col-span-2">
-              {relatedDestination[0]?.gallery?.[0] && (
-                <ImageDisplay
-                  src={relatedDestination[0].gallery[0]}
-                  variant="rectangle"
-                  width={840}
-                  height={290}
-                />
-              )}
+              {/* Large Rectangle Image - spans 2 columns */}
+              <div className="lg:col-span-2">
+                {relatedDestination[0]?.gallery?.[0] && (
+                  <ImageDisplay
+                    src={relatedDestination[0].gallery[0]}
+                    variant="rectangle"
+                    width={840}
+                    height={290}
+                  />
+                )}
+              </div>
+
+              {/* Right Square Image (top right corner) */}
+              <div>
+                {relatedDestination[0]?.gallery?.[1] && (
+                  <ImageDisplay
+                    src={relatedDestination[0].gallery[1]}
+                    variant="square"
+                    width={400}
+                    height={400}
+                  />
+                )}
+              </div>
             </div>
 
-            {/* Right Square Image (top right corner) */}
-            <div>
-              {relatedDestination[0]?.gallery?.[1] && (
+            {/* Bottom 3 Square Images */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {relatedDestination[0]?.gallery?.slice(2, 5).map((img, i) => (
                 <ImageDisplay
-                  src={relatedDestination[0].gallery[1]}
+                  key={`bottom-${i}`}
+                  src={img}
                   variant="square"
                   width={400}
                   height={400}
                 />
-              )}
+              ))}
             </div>
-          </div>
-
-          {/* Bottom 3 Square Images */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {relatedDestination[0]?.gallery?.slice(2, 5).map((img, i) => (
-              <ImageDisplay
-                key={`bottom-${i}`}
-                src={img}
-                variant="square"
-                width={400}
-                height={400}
-              />
-            ))}
-          </div>
           </div>
         </section>
 
