@@ -287,22 +287,24 @@ export default async function Page({ params }: { params: { slug: string } }) {
 
           {/* Sidebar */}
           <div className="w-auto  ">
-            <div className=" sticky top-24 w-[327px] ">
+            <div className=" sticky top-24 w-[330px] ">
               {/* Related Blogs */}
-              <div className="max-w-xs rounded-xl border border-black bg-[#ffff] shadow p-6 text-center space-y-4">
-                <div className="bg-[#002D62] text-white text-base font-medium py-2 rounded-xl">
+              <div className="max-w-xs flex flex-col items-center rounded-xl border border-black bg-[#ffff] shadow p-2 text-center space-y-4">
+                <div className="bg-[#002D62] text-white p-2 h-[45px] w-[280px] text-base font-medium rounded-xl ">
                   Best Price
                 </div>
-                <div>
-                  <p className="text-gray-700 text-sm">USD</p>
+
+                <div className="flex flex-row items-center gap-3">
+                  <p className="text-gray-700 font-semibold text-2xl">USD</p>
                   <p className="text-4xl font-bold text-gray-800">250</p>
-                  <p className="text-sm text-gray-700">Per Person</p>
+                  <p className="text-xl text-gray-700">Per Person</p>
                 </div>
-                <hr className="border-dashed border-gray-300" />
-                <p className="text-xs text-gray-500">Price May Vary According<br />To The Group Size.</p>
-                <div className="space-y-3 ml-12">
+                <hr className="border-t border-dashed border-gray-300 w-full" />
+                
+                <p className="text-sm text-gray-500">Price May Vary According<br />To The Group Size.</p>
+                <div className="space-y-4 p-2 items-center">
                   <Button text=" Book this Trip" variant="primary" className="text-xs flex  sm:text-sm " />
-                  <Button text=" Make in Enquiry" variant="secondary" className="text-xs flex  sm:text-sm " />
+                  <Button text=" Make in Enquiry" variant="secondary" className="text-xs flex sm:text-sm " />
 
                 </div>
               </div>
@@ -344,7 +346,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
                 align="left"
                 size="large"
                 width={855}
-                className="w-[815px] h-auto mb-2"
+                className="w-[200px] h-auto mb-2"
               />
 
               <ul className="space-y-3 list-none">
@@ -355,7 +357,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
                       alt="Included"
                       width={20}
                       height={20}
-                      className="mt-1"
+                      className="w-[30] h-[30]"
                     />
                     <span>{item}</span>
                   </li>
@@ -370,7 +372,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
                 align="left"
                 size="large"
                 width={855}
-                className="w-[815px] h-auto mb-2"
+                className="w-[206px] h-auto mb-2"
               />
 
               <ul className="space-y-3 list-none">
@@ -381,7 +383,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
                       alt="Excluded"
                       width={20}
                       height={20}
-                      className="mt-1"
+                      className="w-[30] h-[30]"
                     />
                     <span>{item}</span>
                   </li>
