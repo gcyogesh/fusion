@@ -1,7 +1,7 @@
 'use client';
 
 import Image from "next/image";
-import { FC, useState } from "react";
+import { FC, useState, JSX } from "react";
 import { FaHiking, FaHotel, FaUtensils } from "react-icons/fa";
 import { Minus, Plus } from "lucide-react";
 
@@ -16,6 +16,55 @@ type ItineraryItem = {
 type Props = {
   itinerary: ItineraryItem[];
 };
+
+const activityMap: { keyword: string; icon: JSX.Element; label: string }[] = [
+  {
+    keyword: "arrival",
+    icon: <FaHotel className="text-[#0E334F]" />,
+    label: "Arrival",
+  },
+  {
+    keyword: "hotel",
+    icon: <FaHotel className="text-[#0E334F]" />,
+    label: "Hotel",
+  },
+  {
+    keyword: "transfer",
+    icon: <FaHotel className="text-[#0E334F]" />,
+    label: "Hotel Transfer",
+  },
+  {
+    keyword: "briefing",
+    icon: <FaUtensils className="text-[#0E334F]" />,
+    label: "Welcome Briefing",
+  },
+  {
+    keyword: "sightseeing",
+    icon: <FaHiking className="text-[#0E334F]" />,
+    label: "Sightseeing",
+  },
+  {
+    keyword: "temple",
+    icon: <FaHiking className="text-[#0E334F]" />,
+    label: "Temple Visits",
+  },
+  {
+    keyword: "trek",
+    icon: <FaHiking className="text-[#0E334F]" />,
+    label: "Trek Preparation",
+  },
+  {
+    keyword: "scenic",
+    icon: <FaHiking className="text-[#0E334F]" />,
+    label: "Scenic Drive",
+  },
+  {
+    keyword: "lakeside",
+    icon: <FaHiking className="text-[#0E334F]" />,
+    label: "Explore Lakeside",
+  },
+  
+];
 
 const ItinerarySection: FC<Props> = ({ itinerary }) => {
   const [openDay, setOpenDay] = useState<number | null>(1); // open Day 1 by default
@@ -89,22 +138,30 @@ const ItinerarySection: FC<Props> = ({ itinerary }) => {
                 )}
 
                 {/* Activities Section */}
-                <div className="mt-4 flex flex-wrap gap-4 text-sm text-gray-600 items-center bg-white p-4 rounded-xl shadow-sm">
-                  <div className="flex items-center gap-1 text-xl">
-                    <FaUtensils className="text-[#0E334F]" />
-                    <span>Breakfast</span>
-                  </div>
-                  {item.activities.includes("Trekking") && (
-                    <div className="flex items-center gap-1 text-xl">
-                      <FaHiking className="text-[#0E334F]" />
-                      <span>Trekking, Walking</span>
-                    </div>
-                  )}
-                  <div className="flex items-center gap-1">
-                    <FaHotel className="text-[#0E334F] text-xl" />
-                    <span>Hotel / Guesthouse</span>
-                  </div>
-                </div>
+               <div className="mt-4 flex flex-wrap gap-6 text-sm text-gray-600 items-center bg-white p-4 rounded-xl shadow-sm">
+  {item.activities.map((activityText, idx) => {
+    const matched = activityMap.find(({ keyword }) =>
+      activityText.toLowerCase().includes(keyword)
+    );
+
+    return (
+      <div key={idx} className="flex items-center gap-1 text-xl">
+        {matched ? (
+          <>
+            {matched.icon}
+            <span>{activityText}</span>
+          </>
+        ) : (
+          <>
+            <span className="text-[#0E334F] font-bold">•</span>
+            <span>{activityText}</span>
+          </>
+        )}
+      </div>
+    );
+  })}
+</div>
+
 
 
               </div>
