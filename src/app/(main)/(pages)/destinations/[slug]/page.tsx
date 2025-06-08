@@ -64,21 +64,46 @@ export default async function Page({ params }: { params: { slug: string } }) {
           </span>
 
           <TextHeader text={destinationdata?.destination.subtitle} align="start" size="large" width={2000} className="mb-4" />
+<div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+  {/* Left side large image */}
+  <div className="lg:col-span-2">
+    <div className="aspect-video w-full">
+      <ImageDisplay
+        src={destinationdata?.destination.imageUrls?.[0] || "/fallback.jpg"}
+        variant="rectangle"
+        title={destinationdata?.destination.title}
+        description={destinationdata?.destination.subtitle}
+      />
+    </div>
+  </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3   gap-4">
-            <div className="lg:col-span-2 flex flex-col">
-              <div className="aspect-video w-full">
-                <ImageDisplay
-                  src={destinationdata?.destination.imageUrls[0]}
-                  variant="rectangle"
-                  title={destinationdata?.destination.title}
-                  description={destinationdata?.subtitle}
-                />
-              </div>
+  {/* Right side two stacked images */}
+  <div className="flex flex-col gap-4">
+    {destinationdata?.destination.imageUrls?.[1] && (
+      <div className="aspect-[16/9] w-full relative">
+        <ImageDisplay
+          src={destinationdata.destination.imageUrls[1]}
+          variant="rectangle"
+          title={destinationdata.destination.title}
+          description={destinationdata.destination.subtitle}
+        />
+       
+      </div>
+    )}
 
-              
-            </div>
-          </div>
+    {destinationdata?.destination.imageUrls?.[2] && (
+      <div className="aspect-[16/9] w-full">
+        <ImageDisplay
+          src={destinationdata.destination.imageUrls[2]}
+          variant="rectangle"
+          title={destinationdata.destination.title}
+          description={destinationdata.destination.subtitle}
+        />
+      </div>
+    )}
+  </div>
+</div>
+
         </div>
 
 

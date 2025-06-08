@@ -80,11 +80,11 @@ export default function Navbar() {
         </Link>
 
         {/* Desktop Nav */}
-        <ul className="hidden md:flex gap-8 font-medium text-base relative">
+        <ul className="hidden md:flex gap-8 font-medium text-base relative ">
           {navLinks.map((link) => (
             <li
               key={link.name}
-              className="relative group"
+              className="relative group text-white"
               onMouseEnter={() => setDropdownOpen(link.hasDropdown ? link.name : null)}
               onMouseLeave={() => setDropdownOpen(null)}
             >
