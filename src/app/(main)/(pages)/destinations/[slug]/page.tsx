@@ -75,6 +75,8 @@ export default async function Page({ params }: { params: { slug: string } }) {
                   description={destinationdata?.subtitle}
                 />
               </div>
+
+              
             </div>
           </div>
         </div>

@@ -89,7 +89,7 @@ const HeroSection = ({ herodata }: { herodata: HeroData }) => {
               text={buttonText}
               variant="secondary"
               textColor="text-white"
-              className="border border-white w-[185px] h-[55px] mt-4"
+              className="border border-white w-[200px] h-[55px] mt-4"
             />
           </div>
         </div>

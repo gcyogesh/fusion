@@ -223,7 +223,7 @@ export default async function Home() {
 
                   <div className="w-auto md:w-[530px] h-px bg-white/30 mb-3 sm:mb-1 md:mb-3" />
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 w-[530px] gap-4 mt-6 sm:mt-1 md:mt-6 ">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 w-full  mt-6 sm:mt-1 md:mt-6 ">
                     <div className="space-y-0 md:space-y-4 text-sm md:text-xl lg:text-xl ">
                       <div className="flex items-center gap-2">
                         <HiOutlineClock className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -238,8 +238,8 @@ export default async function Home() {
                       </div>
                     </div>
 
-                    <div className="flex justify-start sm:justify-end items-end">
-                      <Button text="Book Now" variant="primary" className="text-xs flex  sm:text-sm " />
+                    <div className="flex justify-start sm:justify-end items-end ">
+                      <Button text="Book Now" variant="primary" className="text-xs sm:text-sm " />
                     </div>
                   </div>
                 </div>
