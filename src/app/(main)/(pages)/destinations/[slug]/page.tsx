@@ -73,6 +73,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
                   variant="rectangle"
                   title={destinationdata?.destination.title}
                   description={destinationdata?.destination.subtitle}
+                  className="h-[550px] w-full"
                 />
               </div>
             </div>
@@ -86,18 +87,20 @@ export default async function Page({ params }: { params: { slug: string } }) {
                     variant="rectangle"
                     title={destinationdata.destination.title}
                     description={destinationdata.destination.subtitle}
+                    className="h-[265px]"
                   />
 
                 </div>
               )}
 
               {destinationdata?.destination.imageUrls?.[2] && (
-                <div className="aspect-[16/9] w-full">
+                <div className="aspect-[16/9] w-full ">
                   <ImageDisplay
                     src={destinationdata.destination.imageUrls[2]}
                     variant="rectangle"
                     title={destinationdata.destination.title}
                     description={destinationdata.destination.subtitle}
+                    className="h-[265px]"
                   />
                 </div>
               )}
@@ -111,135 +114,135 @@ export default async function Page({ params }: { params: { slug: string } }) {
       </section>
       <MidNavbar />
 
-      <section className="mx-auto max-w-7xl py-16">
+      <section className="mx-auto max-w-7xl mt-[-4]">
         {/* main column and side bar */}
-        <div className="flex flex-row  justify-between gap-2 ">
+        <div className="flex flex-row  justify-between gap-4 ">
           {/* Main Content */}
-          <div className="flex-1 max-w-[860px]">
+          <div className="flex-1 max-w-4xl">
             {relatedDestination.map((destination) => (
               <TextDescription className="" text={destination.description} />
             ))}
 
             {relatedDestination.map((destination, index) => (
-              <div key={index} className="mb-4">
+              <div key={index} className="mb-4 text-xl">
 
                 {/* Features Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-6 border rounded-xl bg-white shadow-md max-w-4xl mx-auto mt-2">
-                  <div className="flex items-start gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3  gap-6 p-6 border rounded-xl bg-white shadow-md max-w-4xl mx-auto mt-2 ">
+                  <div className="flex items-center gap-4">
                     <Image
                       src="/images/iterate/min.png"
                       alt="Included"
-                      width={30}
-                      height={30}
+                      width={40}
+                      height={50}
                       className="mt-1"
                     />
                     <div>
-                      <p className="font-semibold text-2xl ">{destination.feature?.groupSize?.min}</p>
-                      <p className="text-sm text-gray-500">Group Size</p>
+                      <p className="font-semibold ">{destination.feature?.groupSize?.min}</p>
+                      <p className=" text-gray-500">Group Size</p>
                     </div>
                   </div>
-                  <div className="flex items-start gap-3">
+                  <div className="flex items-center gap-4">
                     <Image
                       src="/images/iterate/Days.png"
                       alt="Included"
-                      width={30}
-                      height={30}
+                      width={40}
+                      height={40}
                       className="mt-1"
                     />
                     <div>
                       <p className="font-semibold">{destination.feature?.tripDuration}</p>
-                      <p className="text-sm text-gray-500">Trip Duration</p>
+                      <p className=" text-gray-500">Trip Duration</p>
                     </div>
                   </div>
-                  <div className="flex items-start gap-3">
+                  <div className="flex items-center gap-4">
                     <Image
                       src="/images/iterate/Moderate.png"
                       alt="Included"
-                      width={30}
-                      height={30}
+                      width={40}
+                      height={40}
                       className="mt-1"
                     />
                     <div>
                       <p className="font-semibold">{destination.feature?.tripDifficulty}</p>
-                      <p className="text-sm text-gray-500">Trip Difficulty</p>
+                      <p className=" text-gray-500">Trip Difficulty</p>
                     </div>
                   </div>
-                  <div className="flex items-start gap-3">
+                  <div className="flex items-center gap-4">
                     <Image
                       src="/images/iterate/BreakFast.png"
                       alt="Included"
-                      width={30}
-                      height={30}
+                      width={40}
+                      height={40}
                       className="mt-1"
                     />
                     <div>
                       <p className="font-semibold">{destination.feature?.meals?.join(", ")}</p>
-                      <p className="text-sm text-gray-500">Meals</p>
+                      <p className=" text-gray-500">Meals</p>
                     </div>
                   </div>
-                  <div className="flex items-start gap-3">
+                  <div className="flex items-center gap-4">
                     <Image
                       src="/images/iterate/Trekking.png"
                       alt="Included"
-                      width={30}
-                      height={30}
+                      width={40}
+                      height={40}
                       className="mt-1"
                     />
                     <div>
                       <p className="font-semibold">{destination.feature?.activities?.join(", ")}</p>
-                      <p className="text-sm text-gray-500">Activities</p>
+                      <p className=" text-gray-500">Activities</p>
                     </div>
                   </div>
-                  <div className="flex items-start gap-3">
+                  <div className="flex items-center gap-4">
                     <Image
                       src="/images/iterate/Bed.png"
                       alt="Included"
-                      width={30}
-                      height={30}
+                      width={40}
+                      height={40}
                       className="mt-1"
                     />
                     <div>
                       <p className="font-semibold">{destination.feature?.accommodation?.join(" / ")}</p>
-                      <p className="text-sm text-gray-500">Accommodation</p>
+                      <p className=" text-gray-500">Accommodation</p>
                     </div>
                   </div>
-                  <div className="flex items-start gap-3">
+                  <div className="flex items-center gap-4">
                     <Image
                       src="/images/iterate/meters.png"
                       alt="Included"
-                      width={30}
-                      height={30}
+                      width={40}
+                      height={40}
                       className="mt-1"
                     />
                     <div>
                       <p className="font-semibold">{destination.feature?.maxAltitude}</p>
-                      <p className="text-sm text-gray-500">Max Altitude</p>
+                      <p className=" text-gray-500">Max Altitude</p>
                     </div>
                   </div>
-                  <div className="flex items-start gap-3">
+                  <div className="flex items-center gap-4">
                     <Image
                       src="/images/iterate/Seasons.png"
                       alt="Included"
-                      width={30}
-                      height={30}
+                      width={40}
+                      height={40}
                       className="mt-1"
                     />
                     <div>
                       <p className="font-semibold">{destination.feature?.bestSeason?.join(", ")}</p>
-                      <p className="text-sm text-gray-500">Best Season</p>
+                      <p className=" text-gray-500">Best Season</p>
                     </div>
                   </div>
-                  <div className="flex items-start gap-3">
+                  <div className="flex items-center gap-4">
                     <Image
                       src="/images/iterate/kathmandu.png"
                       alt="Included"
-                      width={30}
-                      height={30}
+                      width={40}
+                      height={40}
                       className="mt-1"
                     />
                     <div>
                       <p className="font-semibold">{destination.feature?.startEndPoint}</p>
-                      <p className="text-sm text-gray-500">Start/End Point</p>
+                      <p className=" text-gray-500">Start/End Point</p>
                     </div>
                   </div>
                 </div>
@@ -248,7 +251,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
 
 
             <section>
-              <div>
+              <div className="max-w-5xl mx-auto ">
 
                 {relatedDestination.map((destination) => (
                   <div key={destination.title}>
@@ -261,47 +264,191 @@ export default async function Page({ params }: { params: { slug: string } }) {
 
 
 
-              <div className="border border-gray-300 rounded-md p-6 bg-white shadow-sm mb-4">
+              <div className="border border-gray-300  rounded-2xl p-6 bg-white shadow-sm mb-4">
                 <TextHeader text="Trip Highlights" align="left" size="large" width={855} className=" w-[815px] h-auto mb-2" />
 
-                <ul className="list-disc list-inside text-base text-[#535556] space-y-2 pl-2">
+                <ul className="list-disc list-outside text-base text-[#535556] space-y-3  pl-6">
                   {relatedDestination[0]?.highlights?.map((trips, index) => (
                     <li key={index}>{trips}</li>
                   ))}
 
                 </ul>
               </div>
-
-
-              <div className="max-w-5xl mx-auto py-4 ">
-                <TextHeader text="ABC Trek Itinerary" align="start" size="large" width={855} className=" w-full h-auto mb-2" />
-                <ItinerarySection itinerary={itinerary} />
-
+            </section>
+            <section className="space-y-4">
+              <div className="flex flex-row gap-2">
+                <Image
+                  src="/images/iterate/itenerylogo.svg"
+                  alt="Itinerary logo"
+                  width={60}
+                  height={5}
+                  className=" "
+                />
+                <TextHeader text="ABC Trek Itinerary" align="start" size="large" width={855} />
               </div>
+              <ItinerarySection itinerary={itinerary} />
+
+              <div className={`w-auto md:w-[875px] h-[1px] bg-black opacity-20  mt-2 mb-6`} />
+
+
+              <div className=" max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-8">
+                {/* Cost Includes */}
+                <div>
+                  <TextHeader
+                    text="ABC Trek Cost Includes"
+                    align="left"
+                    size="large"
+                    width={855}
+                    className="w-[200px] h-auto mb-2"
+                  />
+
+                  <ul className="space-y-3 list-none">
+                    {relatedDestination[0].inclusions.map((item, index) => (
+                      <li key={index} className="flex items-start gap-2">
+                        <Image
+                          src="/images/right.png"
+                          alt="Included"
+                          width={20}
+                          height={20}
+                          className="w-[35] h-[35]"
+                        />
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Cost Excludes */}
+                <div>
+                  <TextHeader
+                    text="ABC Trek Cost Excludes"
+                    align="left"
+                    size="large"
+                    width={855}
+                    className="w-[206px] h-auto mb-2"
+                  />
+
+                  <ul className="space-y-3 list-none">
+                    {relatedDestination[0].exclusions.map((item, index) => (
+                      <li key={index} className="flex items-start gap-2">
+                        <Image
+                          src="/images/cross.png"
+                          alt="Excluded"
+                          width={20}
+                          height={20}
+                          className="w-[35] h-[35]"
+                        />
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </section>
+
+
+            <section className="w-4xl">
+              < DepartureCalendar />
+            </section>
+
+            <section>
+              < UserForm />
+            </section>
+
+            <section>
+
+              <TextHeader
+                text="ABC Trek Map"
+                align="left"
+                size="large"
+                width={855}
+                className="w-[815px] h-auto mb-2"
+              />
+              {relatedDestination?.[0]?.googleMapUrl && (
+                <Image
+                  src={relatedDestination[0].googleMapUrl}
+                  alt="Google Map Preview"
+                  width={800}
+                  height={600}
+                  className=" h-[600px] object-cover rounded-lg shadow"
+                />
+              )}
 
             </section>
 
-            <div className={`w-auto md:w-[875px] h-[1px] bg-black opacity-20  mt-2 `} />
+
+            <section>
+              <div className="max-w-4xl ">
+                <TextHeader
+                  text="ABC Trek Gallery"
+                  align="left"
+                  size="large"
+                  width={855}
+                  className="w-[815px] h-auto mb-2"
+                />
+
+                {/* Gallery Grid */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
+
+                  {/* Large Rectangle Image - spans 2 columns */}
+                  <div className="lg:col-span-2">
+                    {relatedDestination[0]?.gallery?.[0] && (
+                      <ImageDisplay
+                        src={relatedDestination[0].gallery[0]}
+                        variant="rectangle"
+                        width={840}
+                        height={290}
+                      />
+                    )}
+                  </div>
+
+                  {/* Right Square Image (top right corner) */}
+                  <div>
+                    {relatedDestination[0]?.gallery?.[1] && (
+                      <ImageDisplay
+                        src={relatedDestination[0].gallery[1]}
+                        variant="square"
+                        width={400}
+                        height={400}
+                      />
+                    )}
+                  </div>
+                </div>
+
+                {/* Bottom 3 Square Images */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {relatedDestination[0]?.gallery?.slice(2, 5).map((img, i) => (
+                    <ImageDisplay
+                      key={`bottom-${i}`}
+                      src={img}
+                      variant="square"
+                      width={400}
+                      height={400}
+                    />
+                  ))}
+                </div>
+              </div>
+            </section>
 
           </div>
 
           {/* Sidebar */}
           <div className="w-auto  ">
-            <div className=" sticky top-24 w-[330px] ">
+            <div className=" sticky top-24 w-[330px]  ">
               {/* Related Blogs */}
-              <div className="max-w-xs flex flex-col items-center rounded-xl border border-black bg-[#ffff] shadow p-2 text-center space-y-4">
-                <div className="bg-[#002D62] text-white p-2 h-[45px] w-[280px] text-base font-medium rounded-xl ">
+              <div className="max-w-xs flex flex-col items-center rounded-xl border border-black bg-[#ffff] shadow p-2 text-center space-y-3">
+                <div className="bg-[#002D62] text-white p-2 h-[45px] w-[280px] text-xl font-medium rounded-xl ">
                   Best Price
                 </div>
 
-                <div className="flex flex-row items-center gap-3">
+                <div className="flex flex-row  items-center gap-4 mr-12 ">
                   <p className="text-gray-700 font-semibold text-2xl">USD</p>
                   <p className="text-4xl font-bold text-gray-800">250</p>
-                  <p className="text-xl text-gray-700">Per Person</p>
+                  <p className="text-xl text-gray-700 w-[10px]">Per Person</p>
                 </div>
                 <hr className="border-t border-dashed border-gray-300 w-full" />
 
-                <p className="text-sm text-gray-500">Price May Vary According<br />To The Group Size.</p>
+                <p className="text-base text-gray-500">Price May Vary According<br />To The Group Size.</p>
                 <div className="space-y-4 p-2 items-center">
                   <Button text=" Book this Trip" variant="primary" className="text-xs flex  sm:text-sm " />
                   <Button text=" Make in Enquiry" variant="secondary" className="text-xs flex sm:text-sm " />
@@ -313,220 +460,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
             </div>
           </div>
         </div>
-
-
-        <section>
-          {/* 
-   <TextHeader
-    text="ABC Trek Itinerary"
-    align="left"
-    size="large"
-    width={855}
-    className="w-[815px] h-auto mb-2"
-  />
-  <div>
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-    {itinerary.map((item, i) => (
-      <ItineraryCard
-        key={i}
-        title={`Day ${item.day}: ${item.title}`}
-        description={item.description}
-        image={item.image}
-      />
-    ))}
-  </div> 
-
-  </div> */}
-
-          <div className=" max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Cost Includes */}
-            <div>
-              <TextHeader
-                text="ABC Trek Cost Includes"
-                align="left"
-                size="large"
-                width={855}
-                className="w-[200px] h-auto mb-2"
-              />
-
-              <ul className="space-y-3 list-none">
-                {relatedDestination[0].inclusions.map((item, index) => (
-                  <li key={index} className="flex items-start gap-2">
-                    <Image
-                      src="/images/right.png"
-                      alt="Included"
-                      width={20}
-                      height={20}
-                      className="w-[30] h-[30]"
-                    />
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Cost Excludes */}
-            <div>
-              <TextHeader
-                text="ABC Trek Cost Excludes"
-                align="left"
-                size="large"
-                width={855}
-                className="w-[206px] h-auto mb-2"
-              />
-
-              <ul className="space-y-3 list-none">
-                {relatedDestination[0].exclusions.map((item, index) => (
-                  <li key={index} className="flex items-start gap-2">
-                    <Image
-                      src="/images/cross.png"
-                      alt="Excluded"
-                      width={20}
-                      height={20}
-                      className="w-[30] h-[30]"
-                    />
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-
-        </section>
-
-
-        <section>
-          < DepartureCalendar />
-        </section>
-
-        <section>
-          < UserForm />
-        </section>
-
-        <section>
-
-          <TextHeader
-            text="ABC Trek Map"
-            align="left"
-            size="large"
-            width={855}
-            className="w-[815px] h-auto mb-2"
-          />
-          {relatedDestination?.[0]?.googleMapUrl && (
-            <Image
-              src={relatedDestination[0].googleMapUrl}
-              alt="Google Map Preview"
-              width={800}
-              height={600}
-              className=" h-[600px] object-cover rounded-lg shadow"
-            />
-          )}
-
-        </section>
-
-
-        <section>
-          <div className="max-w-4xl  p-6">
-            <TextHeader
-              text="ABC Trek Gallery"
-              align="left"
-              size="large"
-              width={855}
-              className="w-[815px] h-auto mb-2"
-            />
-
-            {/* Gallery Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
-
-              {/* Large Rectangle Image - spans 2 columns */}
-              <div className="lg:col-span-2">
-                {relatedDestination[0]?.gallery?.[0] && (
-                  <ImageDisplay
-                    src={relatedDestination[0].gallery[0]}
-                    variant="rectangle"
-                    width={840}
-                    height={290}
-                  />
-                )}
-              </div>
-
-              {/* Right Square Image (top right corner) */}
-              <div>
-                {relatedDestination[0]?.gallery?.[1] && (
-                  <ImageDisplay
-                    src={relatedDestination[0].gallery[1]}
-                    variant="square"
-                    width={400}
-                    height={400}
-                  />
-                )}
-              </div>
-            </div>
-
-            {/* Bottom 3 Square Images */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {relatedDestination[0]?.gallery?.slice(2, 5).map((img, i) => (
-                <ImageDisplay
-                  key={`bottom-${i}`}
-                  src={img}
-                  variant="square"
-                  width={400}
-                  height={400}
-                />
-              ))}
-            </div>
-          </div>
-        </section>
-
-
-
       </section>
-      {/* <section>
-{
-<div className="mx-auto max-w-7xl">
-
- <div className="max-w-5xl mx-auto p-6 border rounded-md shadow-sm bg-white">
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {destinationdata.feature?.map((item, index) => (
-          <div key={index} className="flex items-start space-x-3">
-            <div className="text-2xl">{item.icon}</div>
-            <div>
-              <h4 className="text-sm font-semibold">{item.groupSize.min}</h4>
-              <p className="text-xs text-gray-500">{item.tripDifficulty}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-</div>
-
-  
-}
-     
-    </section>
-
-
-
-   <section>
-  <TextHeader text="Related Destinations" align="start" width={2000} />
-  <div className="mx-auto max-w-7xl grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-6">
-    {relatedDestination.map((destination, index) => (
-     <TextHeader
-        key={index}
-        text={destination.title}
-        align="start"
-        width={2000}
-        className="text-lg font-semibold mb-2"
-      />
-      
-     
-
-    ))}
-   
-   </div> 
- 
-</section> */}
-
     </>
   );
 }

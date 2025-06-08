@@ -17,10 +17,10 @@ const MidNavbar = () => {
 
   return (
   
-    <div className="bg-[#FDE3B0] border-b border-[#DEBC7E] ">
-      <div className="max-w-7xl mx-auto relative flex items-center py-2 ">
+    <div className="bg-[#FDE3B0] border-b border-[#DEBC7E]  ">
+      <div className="max-w-7xl mx-auto relative flex items-center py-3 ">
         {/* Tabs on the left */}
-        <div className="flex gap-8">
+        <div className="flex gap-10">
           {tabs.map((tab) => (
             <button
               key={tab}

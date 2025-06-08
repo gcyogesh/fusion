@@ -74,7 +74,7 @@ const ItinerarySection: FC<Props> = ({ itinerary }) => {
   };
 
   return (
-    <div className="space-y-2 bg-transparent">
+    <div className="space-y-2 bg-transparent px-4">
       {itinerary.map((item) => {
         const isOpen = openDay === item.day;
         return (
@@ -112,9 +112,9 @@ const ItinerarySection: FC<Props> = ({ itinerary }) => {
               </div>
 
               {/* Toggle Button */}
-              <button
+              <button 
                 onClick={() => toggleDay(item.day)}
-                className="w-8 h-8  bg-primary text-white rounded-full flex items-center justify-center"
+                className="w-10 h-10  bg-primary text-white rounded-full flex items-center justify-center mt-4"
               >
                 {isOpen ? <Minus size={18} /> : <Plus size={18} />}
               </button>
@@ -138,7 +138,7 @@ const ItinerarySection: FC<Props> = ({ itinerary }) => {
                 )}
 
                 {/* Activities Section */}
-                <div className="mt-4 flex flex-wrap justify-between text-sm text-gray-600 items-center bg-white p-4 border border-black rounded-xl shadow-sm">
+                <div className="mt-4 flex flex-wrap justify-between text-xl text-gray-600 items-center  bg-white  w-[735px] p-5 border border-black rounded-xl shadow-sm">
                   {item.activities.map((activityText, idx) => {
                     const matched = activityMap.find(({ keyword }) =>
                       activityText.toLowerCase().includes(keyword)
