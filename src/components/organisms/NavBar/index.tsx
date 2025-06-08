@@ -11,8 +11,8 @@ const navLinks = [
   { name: "Activities", href: "/activities", hasDropdown: true, subLinks: [{ name: "Trekking", href: "/activities/trekking" }, { name: "Rafting", href: "/activities/rafting" }] },
   { name: "About", href: "/about", hasDropdown: false },
 
-{ name: "Blogs", href: "/blogs", hasDropdown: false },
-  { name: "Contact", href: "/contact", hasDropdown: false },
+  { name: "Blogs", href: "/blogs", hasDropdown: false },
+  
 ]
 
 export default function Navbar() {
@@ -111,9 +111,9 @@ export default function Navbar() {
 
         {/* CTA + Mobile Toggle */}
         <div className="flex items-center gap-4">
-          <Link href="/plan-trip">
+          <Link href="/contact">
             <button className="hidden lg:block bg-gradient-to-r from-[#F28A15] to-[#E47312] hover:from-[#0f7bba] hover:to-[#0f7bba] text-white text-sm font-medium h-[46px] w-[160px] rounded-full transition">
-              Plan Your Trip
+              Contact
             </button>
           </Link>
 
@@ -166,9 +166,9 @@ export default function Navbar() {
             </div>
           ))}
 
-          <Link href="/plan-trip" onClick={toggleMenu}>
+          <Link href="/contact" onClick={toggleMenu}>
             <button className="w-full bg-gradient-to-r from-[#F28A15] to-[#E47312] text-white font-medium h-[46px] rounded-full">
-              Plan Your Trip
+              Contact
             </button>
           </Link>
         </div>

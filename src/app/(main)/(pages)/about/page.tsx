@@ -7,6 +7,7 @@ import TopCategoriesSection from "@/components/molecules/TopCategoriesSection";
 import ValuesSection from "@/components/molecules/ValueSection";
 import Breadcrumb from "@/components/atoms/breadcrumb";
 import PartnerSection from "@/components/organisms/partners";
+import ImageDisplay from "@/components/atoms/ImageCard";
 
 
 
@@ -104,6 +105,7 @@ const profile = teamsdata.data;
                 width="auto"
                 textcolor="white"
                 buttonText="Our Mission"
+                className=""
 
               />
 
@@ -147,7 +149,7 @@ const profile = teamsdata.data;
      </section>
 
      <section className=" max-w-7xl mx-auto">
-       <div className="flex flex-col ">
+       <div className="flex flex-col py-10">
                 <TextHeader
                   text="Fusion Expeditions – Crafted in the Heart of Nepal"
                   specialWordsIndices=""
@@ -165,19 +167,26 @@ const profile = teamsdata.data;
               </div>
               
             
-            <div className=" grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 ">
+            <div className=" grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6  ">
   {profile.map((item, index) => (
-    <div key={index} className="text-center relative">
+    <div key={index} className="text-center relative mb-6">
       {/* Card Background */}
-      <div className="bg-gradient-to-b from-[#D4E7EA] to-[#1891D1] h-[370px] w-[300px] rounded-[80px] overflow-hidden flex items-center justify-center mx-auto">
+      <div className="bg-gradient-to-b from-[#D4E7EA] to-[#1891D1] h-[370px] w-[300px] rounded-[80px] overflow-hidden flex items-center justify-center  mx-auto">
         {/* Leader Image */}
+       <Image
+                             src={item.image}
+                             alt="profile"
+                             
+                             fill
+                             className="border rounded-4xl"
+                           />
    
       </div>
 
       {/* Name & Role */}
-      <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 z-20 bg-orange-400 w-[215px] h-[70px] px-4 py-1 rounded-full text-white font-semibold text-sm shadow-md ">
-        <h1 className="font-semibold text-[24px] ">{item.name}</h1>
-        <h1 className=" text-[20px] opacity-[80%]">{item.postion}</h1>
+      <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 z-20 bg-orange-400 w-[210px] h-[60px] px-4 py-2 rounded-full text-white font-semibold text-sm shadow-md items-center ">
+        <h1 className="font-bold text-base ">{item.name}</h1>
+        <h1 className=" font-semibold text-sm opacity-[80%]">{item.position}</h1>
       </div>
     </div>
   ))}

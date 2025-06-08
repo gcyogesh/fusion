@@ -86,9 +86,9 @@ const ItinerarySection: FC<Props> = ({ itinerary }) => {
             
             <div className="flex items-start justify-between  relative  ">
              
-              <div className="flex items-center gap-2">
+              <div className="flex items-center py-2 ">
                 {/* Image with overlay text */}
-                <div className="relative w-[60px] h-[60px]">
+                <div className="relative w-[60px] h-[60px] ">
                   <Image
                     src="/images/iterate/DaysCalender.png"
                     alt="Day Badge"
@@ -106,7 +106,7 @@ const ItinerarySection: FC<Props> = ({ itinerary }) => {
                 </div>
 
                
-                <h3 className="text-xl font-semibold text-gray-900">
+                <h3 className="text-xl font-semibold text-gray-900 px-2">
                   {item.title}
                 </h3>
               </div>

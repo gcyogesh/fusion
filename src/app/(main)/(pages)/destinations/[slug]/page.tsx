@@ -84,24 +84,17 @@ export default async function Page({ params }: { params: { slug: string } }) {
       </section>
       <MidNavbar />
 
-      <section>
-        <div className="mx-auto max-w-7xl   flex flex-col md:flex-row lg:flex-row  justify-between gap-2 ">
+      <section className="mx-auto max-w-7xl py-16">
+         {/* main column and side bar */}
+        <div className="flex flex-row  justify-between gap-2 ">
           {/* Main Content */}
-
-
-
-
           <div className="flex-1 max-w-[860px]">
-
             {relatedDestination.map((destination) => (
               <TextDescription className="" text={destination.description} />
             ))}
 
             {relatedDestination.map((destination, index) => (
               <div key={index} className="mb-4">
-
-
-
 
                 {/* Features Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-6 border rounded-xl bg-white shadow-md max-w-4xl mx-auto mt-2">
@@ -261,6 +254,8 @@ export default async function Page({ params }: { params: { slug: string } }) {
 
             </section>
 
+              <div className={`w-auto md:w-[875px] h-[1px] bg-black opacity-20  mt-2 `} />
+
           </div>
 
           {/* Sidebar */}
@@ -291,7 +286,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
         </div>
 
 
-        <section className="mx-auto max-w-7xl py-16">
+        <section>
           {/* 
    <TextHeader
     text="ABC Trek Itinerary"
@@ -371,21 +366,22 @@ export default async function Page({ params }: { params: { slug: string } }) {
         </section>
 
 
-        <section className=" mx-auto  max-w-7xl py-16 ">
+        <section>
           < DepartureCalendar />
         </section>
 
-        <section className=" mx-auto max-w-7xl py-16">
+        <section>
           < UserForm />
         </section>
 
-        <section className="mx-auto max-w-7xl py-16">
+        <section>
+          
           <TextHeader
-            text="ABC Trek Gallery"
+            text="ABC Trek Map"
             align="left"
             size="large"
             width={855}
-            className="w-[815px] h-auto mb-6"
+            className="w-[815px] h-auto mb-2"
           />
           {relatedDestination?.[0]?.googleMapUrl && (
             <Image
@@ -396,13 +392,14 @@ export default async function Page({ params }: { params: { slug: string } }) {
               className=" h-[600px] object-cover rounded-lg shadow"
             />
           )}
-
+        
         </section>
 
 
-        <section className="mx-auto max-w-7xl py-16">
+        <section>
+          <div className="max-w-4xl  p-6">
           <TextHeader
-            text="ABC Trek Map"
+            text="ABC Trek Gallery"
             align="left"
             size="large"
             width={855}
@@ -419,7 +416,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
                   src={relatedDestination[0].gallery[0]}
                   variant="rectangle"
                   width={840}
-                  height={430}
+                  height={290}
                 />
               )}
             </div>
@@ -431,7 +428,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
                   src={relatedDestination[0].gallery[1]}
                   variant="square"
                   width={400}
-                  height={430}
+                  height={400}
                 />
               )}
             </div>
@@ -448,6 +445,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
                 height={400}
               />
             ))}
+          </div>
           </div>
         </section>
 
