@@ -115,7 +115,7 @@ const ImageDisplay = <T extends string>({
           transition={{ duration: 0.4 }}
           className="absolute inset-0 bg-black/70 flex flex-col justify-center items-center text-white opacity-0 group-hover:opacity-100 cursor-pointer px-4 text-center"
         >
-          {title && <h3 className="text-lg font-semibold">{title}</h3>}
+          {title && <h1 className="text-lg font-semibold">{title}</h1>}
           {description && (
             <p className="text-sm mt-1 line-clamp-3">
               {description}
