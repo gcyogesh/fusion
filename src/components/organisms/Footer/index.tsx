@@ -5,9 +5,9 @@ import Logo from "@/components/atoms/Logo";
 import { FaCcVisa, FaCcMastercard, FaCcAmex } from "react-icons/fa";
 import ContactDetails from "../ContactDetails";
 const socialLinks = [
-  { icon: <FaInstagram className="text-white bg-[#F7941D] p-2 rounded-xl w-10 h-10"/>, link: "#" },
-  { icon: <FaFacebookF className="text-white bg-[#F7941D] p-2 rounded-xl w-10 h-10"/>, link: "#" },
-  { icon: <FaYoutube className="text-white bg-[#F7941D] p-2 rounded-xl w-10 h-10"/>, link: "#" },
+  { icon: <FaInstagram className="text-white bg-primary p-2 rounded-xl w-10 h-10"/>, link: "#" },
+  { icon: <FaFacebookF className="text-white bg-primary p-2 rounded-xl w-10 h-10"/>, link: "#" },
+  { icon: <FaYoutube className="text-white bg-primary p-2 rounded-xl w-10 h-10"/>, link: "#" },
 ];
 
 const destinations = [
@@ -61,7 +61,7 @@ export default function Footer() {
            placeholder="Enter Your Email Address"
            className="w-full px-4 py-2 text-sm border-none focus:outline-none focus:ring-0 placeholder-gray-400"
            />
-            <button className="  bg-[#F7941D] hover:bg-green-500 text-white text-sm px-4 rounded-md ">
+            <button className="  bg-primary hover:bg-green-500 text-[#ffff] text-base px-4 rounded-md ">
               Subscribe
             </button>
           </div>

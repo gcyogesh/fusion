@@ -1,5 +1,6 @@
 import React from 'react';
 import TextHeader from '@/components/atoms/headings';
+import Image from "next/image";
 
 interface Partner {
   image: string;

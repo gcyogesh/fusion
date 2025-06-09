@@ -150,13 +150,13 @@ export default async function Home() {
               </div>
 
               <div className="flex flex-col gap-3">
-                <div className="flex justify-between text-sm text-[#7E7E7E]">
-                  <span className="flex items-center gap-1 font-semibold ">
-                    <CiLocationOn className="w-5 h-5" />
+                <div className="flex justify-between text-sm text-[#5A5A5A]">
+                  <span className="flex items-center gap-1 font-bold ">
+                    <CiLocationOn className="w-4 h-4" />
                     {card.location}
                   </span>
-                  <span className="flex items-center  font-semibold gap-1">
-                    <HiOutlineClock className="w-5 h-5" />
+                  <span className="flex items-center  font-bold gap-1">
+                    <HiOutlineClock className="w-4 h-4" />
                     {card.duration} Days
                   </span>
                 </div>
@@ -165,8 +165,8 @@ export default async function Home() {
 
                 <div className="w-full h-[1.5px] bg-[#C2C2C2]" />
 
-                <div className="text-lg font-semibold text-[#7E7E7E] mt-1">
-                  Start From <span className="ml-10 text-orange-500 ">${card.priceMin}-${card.priceMax}</span>
+                <div className="flex flex-row justify-between text-lg font-semibold text-[#5A5A5A] mt-1">
+                  Start From <span className="  text-primary ">${card.priceMin}-${card.priceMax}</span>
                 </div>
               </div>
             </Link>
@@ -223,7 +223,7 @@ export default async function Home() {
 
                   <div className="w-auto md:w-[530px] h-px bg-white/30 mb-3 sm:mb-1 md:mb-3" />
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 w-full  mt-6 sm:mt-1 md:mt-6 ">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 w-full   mt-6 sm:mt-1 md:mt-6 ">
                     <div className="space-y-0 md:space-y-4 text-sm md:text-xl lg:text-xl ">
                       <div className="flex items-center gap-2">
                         <HiOutlineClock className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -232,14 +232,14 @@ export default async function Home() {
                       <div className="flex items-center gap-2">
                         <HiOutlineCurrencyDollar className="w-4 h-4 sm:w-5 sm:h-5" />
                         <span className="flex items-center gap-x-2 md:gap-x-4">
-                          Start From <span className="text-orange-400 font-semibold">$120 – $250</span>
+                          Start From <span className="text-primary font-semibold">$120 – $250</span>
                         </span>
 
                       </div>
                     </div>
 
-                    <div className="flex justify-start sm:justify-end items-end ">
-                      <Button text="Book Now" variant="primary" className="text-xs sm:text-sm " />
+                    <div className="flex justify-start sm:justify-end items-end mr-25">
+                      <Button text="Book Now" variant="primary" className="text-base " />
                     </div>
                   </div>
                 </div>
@@ -290,7 +290,7 @@ export default async function Home() {
         {/* Description aligned left and start from title's left */}
         <TextDescription
           text={stat.description}
-          className="text-left w-[239px]"
+          className="text-left w-[239px] "
         />
       </div>
     ))}
@@ -378,15 +378,15 @@ export default async function Home() {
 
             {/* Info Row */}
             <div className="flex flex-col sm:flex-row justify-center  gap-4 sm:gap-6 mt-6 font-semibold">
-              <div className="flex items-center justify-center gap-2 text-sm md:text-base ">
+              <div className="flex items-center justify-center gap-2 text-base md:text-xl ">
                 <HiOutlineClock />
                 <span>12–14 Days</span>
               </div>
-              <div className="flex items-center justify-center gap-2  text-sm md:text-base">
+              <div className="flex items-center justify-center gap-2  text-base md:text-xl">
                 <FaMapMarkerAlt />
                 <h1>Everest (Khumbu), Nepal</h1>
               </div>
-              <div className="flex items-center justify-center gap-2  text-sm md:text-base">
+              <div className="flex items-center justify-center gap-2  text-base md:text-xl">
                 <FaHiking />
                 <h1 className="font-sans">Moderate to Challenging</h1>
               </div>
@@ -396,7 +396,7 @@ export default async function Home() {
             <Button
               text="Start Your Adventure"
               variant="primary"
-              className="mt-8 mx-auto"
+              className="mt-8 mx-auto text-base p-2"
             />
           </div>
         </div>
