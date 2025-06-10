@@ -1,5 +1,12 @@
 import Image from "next/image";
-import { FaInstagram, FaFacebookF, FaYoutube, FaCcVisa, FaCcMastercard, FaCcAmex } from "react-icons/fa";
+import {
+  FaInstagram,
+  FaFacebookF,
+  FaYoutube,
+  FaCcVisa,
+  FaCcMastercard,
+  FaCcAmex,
+} from "react-icons/fa";
 import Logo from "@/components/atoms/Logo";
 import ContactDetails from "../ContactDetails";
 
@@ -84,7 +91,7 @@ export default function Footer() {
           <div className="w-full lg:w-7/12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {/* Company Links */}
             <div className="flex flex-col space-y-4">
-              <h3 className="text-2xl font-semibold">Company</h3>
+              <h1 className="text-2xl font-semibold">Company</h1>
               <ul className="space-y-3">
                 {companyLinks.map((item, index) => (
                   <li key={index}>
@@ -96,27 +103,26 @@ export default function Footer() {
               </ul>
             </div>
 
-             
-             {/* Destinations */}
+            {/* Destinations */}
             <div className="flex flex-col space-y-4">
-          <h3 className="text-2xl font-semibold">Destinations</h3>
-          <ul className="space-y-3">
-            {destinations.map((place, index) => (
-              <li key={index}>
-                <a href="#" className="hover:text-[#06ab86] transition-colors">{place}</a>
-              </li>
-            ))}
-          </ul>
-        </div>
+              <h1 className="text-2xl font-semibold">Destinations</h1>
+              <ul className="space-y-3">
+                {destinations.map((place, index) => (
+                  <li key={index}>
+                    <a href="#" className="hover:text-[#06ab86] transition-colors">{place}</a>
+                  </li>
+                ))}
+              </ul>
+            </div>
 
             {/* Contact Details & Payment */}
             <div className="flex flex-col space-y-4">
               <h1 className="text-2xl font-semibold">Contact Detail</h1>
+              {/* Fix: Wrap ContactDetails in a <ul> */}
               <ul className="space-y-3">
                 <li>
                   <ContactDetails showDivider={false} />
                 </li>
-                
               </ul>
 
               <div className="mt-6">
