@@ -106,9 +106,9 @@ const ItinerarySection: FC<Props> = ({ itinerary }) => {
                 </div>
 
 
-                <h3 className="text-xl font-semibold text-gray-900 px-2">
+                <h1 className="text-xl font-semibold text-gray-900 px-2">
                   {item.title}
-                </h3>
+                </h1>
               </div>
 
               {/* Toggle Button */}

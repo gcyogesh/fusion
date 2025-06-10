@@ -32,7 +32,7 @@ interface DestinationCard {
   slug: string;
   subtitle: string;
   imageUrl: string;
-    imageUrls: string;
+  imageUrls: string;
   tags: string[];
   location: string;
   duration: number;
@@ -116,8 +116,8 @@ export default async function Home() {
 
 
       {/*Value secction */}
-      < ValuesSection/>
-      
+      < ValuesSection />
+
       {/*Featured Experience: destination */}
 
       <section className="max-w-7xl mx-auto  px-6">
@@ -264,38 +264,38 @@ export default async function Home() {
       </section>
 
       <section>
-  <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-12 ">
-    {stats.map((stat, index) => (
-      <div key={index} className=" text-left">
-        {/* Icon + Title aligned inline, flush left */}
-        <div className="flex items-center space-x-2">
-          {stat.icon}
-          <TextHeader
-            text={stat.title}
-            size="medium"
-            align="left"
-            width="auto"
-          />
+        <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-12 ">
+          {stats.map((stat, index) => (
+            <div key={index} className=" text-left">
+              {/* Icon + Title aligned inline, flush left */}
+              <div className="flex items-center space-x-2">
+                {stat.icon}
+                <TextHeader
+                  text={stat.title}
+                  size="medium"
+                  align="left"
+                  width="auto"
+                />
+              </div>
+
+              {/* Subtitle aligned left under title */}
+              <TextHeader
+                text={stat.subtitle}
+                size="small"
+                align="left"
+                width="100%"
+                className="text-gray-600"
+              />
+
+              {/* Description aligned left and start from title's left */}
+              <TextDescription
+                text={stat.description}
+                className="text-left w-[239px] "
+              />
+            </div>
+          ))}
         </div>
-
-        {/* Subtitle aligned left under title */}
-        <TextHeader
-          text={stat.subtitle}
-          size="small"
-          align="left"
-          width="100%"
-          className="text-gray-600"
-        />
-
-        {/* Description aligned left and start from title's left */}
-        <TextDescription
-          text={stat.description}
-          className="text-left w-[239px] "
-        />
-      </div>
-    ))}
-  </div>
-</section>
+      </section>
 
 
 
@@ -317,11 +317,11 @@ export default async function Home() {
           <div className="lg:col-span-2">
             <ImageDisplay src={destinationdata.data[0].imageUrls[0]} variant="rectangle" width={840} height={430} title={destinationdata.data[0].title} description={destinationdata.data[0].subtitle} />
           </div>
- 
+
           {/* Square Image */}
           <div>
             <ImageDisplay src={destinationdata.data[1].imageUrls[0]} variant="square" title={destinationdata.data[1].title} description={destinationdata.data[1].subtitle} />
-        
+
           </div>
         </div>
 
@@ -329,8 +329,8 @@ export default async function Home() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {destinationdata.data.slice(2, 5).map((card, index) => (
             <div key={index}>
-              <ImageDisplay src={card.imageUrls[0]} variant="square" alt="Pashpati" snippet="popular" title={card.title}  description={card.subtitle}/>
-              
+              <ImageDisplay src={card.imageUrls[0]} variant="square" alt="Pashpati" snippet="popular" title={card.title} description={card.subtitle} />
+
             </div>
           ))}
         </div>
@@ -456,13 +456,13 @@ export default async function Home() {
                       align="end"
                       className="md:show hidden"
                       textcolor="white"
-                     / >
+                    />
                   }
                 />
               </div>
 
             ))}
-            
+
           </div>
         </div>
       </section>
@@ -480,15 +480,15 @@ export default async function Home() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Side: Large Blog Post */}
           <div className="lg:col-span-2 flex flex-col">
-                <Link href={`/blogs/${blogsdata.data[0].slug}`}  >
-            <div className="aspect-video w-full">
-              <ImageDisplay src={blogsdata.data[0].imageUrl} variant="rectangle" title={blogsdata.data[0].title}
-                description={blogsdata.data[0].subtitle} />
-            </div>
-            <div className="mt-3">
-              <h1 className="text-xl font-bold">{blogsdata.data[0].subtitle}</h1>
-              <p className="mt-2 h-[155px]">{blogsdata.data[0].description}</p>
-            </div>
+            <Link href={`/blogs/${blogsdata.data[0].slug}`}  >
+              <div className="aspect-video w-full">
+                <ImageDisplay src={blogsdata.data[0].imageUrl} variant="rectangle" title={blogsdata.data[0].title}
+                  description={blogsdata.data[0].subtitle} />
+              </div>
+              <div className="mt-3">
+                <h1 className="text-xl font-bold">{blogsdata.data[0].subtitle}</h1>
+                <p className="mt-2 h-[155px]">{blogsdata.data[0].description}</p>
+              </div>
             </Link>
           </div>
 
@@ -496,21 +496,21 @@ export default async function Home() {
           <div className="flex flex-col ">
             {blogsdata.data.slice(1, 3).map((card: {
               slug: any;
-              subtitle: ReactNode; id: string; imageUrl: string; title: string; description: string 
-}) => (
+              subtitle: ReactNode; id: string; imageUrl: string; title: string; description: string
+            }) => (
               <>
-              <Link href={`/blogs/${card.slug}`} key={card.id} >
-              <div key={card.id} className="flex flex-col">
-                <div className="">
-                     
-                  <ImageDisplay src={card.imageUrl} variant="smallrectangle" title={card.title} description={card.description} />
-                </div>
-                <div className="mt-4 h-[150px] ">
-                  <h3 className="text-lg font-semibold">{card.subtitle}</h3>
-                  <TextDescription text={card.description} className=" line-clamp-3 " />
-                </div>
-              </div>
-              </Link>
+                <Link href={`/blogs/${card.slug}`} key={card.id} >
+                  <div key={card.id} className="flex flex-col">
+                    <div className="">
+
+                      <ImageDisplay src={card.imageUrl} variant="smallrectangle" title={card.title} description={card.description} />
+                    </div>
+                    <div className="mt-4 h-[150px] ">
+                      <h1 className="text-lg font-semibold">{card.subtitle}</h1>
+                      <TextDescription text={card.description} className=" line-clamp-3 " />
+                    </div>
+                  </div>
+                </Link>
               </>
             ))}
           </div>

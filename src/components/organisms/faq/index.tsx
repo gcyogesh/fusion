@@ -95,10 +95,7 @@ export default function FAQSection() {
                   {faq.answer}
                 </p>
 
-                {/* Bottom sliding bar animation */}
-                {isOpen && (
-                  <div className="h-[2px] w-full bg-black mt-4 animate-slideIn" />
-                )}
+               
               </div>
             </div>
           );

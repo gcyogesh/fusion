@@ -42,7 +42,7 @@ const Blogs = async () => {
                     description={card.subtitle}
                   />
                   <div className="mt-3">
-                    <h3 className="text-xl font-bold">{card.subtitle}</h3>
+                    <h1 className="text-xl font-bold">{card.subtitle}</h1>
                     <p className="mt-2">{card.description}</p>
                   </div>
                 </div>
@@ -62,7 +62,7 @@ const Blogs = async () => {
                     description={card.description}
                   />
                   <div className="mt-2 mb-4 h-[150px]">
-                    <h3 className="text-lg font-semibold">{card.subtitle}</h3>
+                    <h1 className="text-lg font-semibold">{card.subtitle}</h1>
                     <TextDescription
                       text={card.description}
                       className="text-justify line-clamp-3"

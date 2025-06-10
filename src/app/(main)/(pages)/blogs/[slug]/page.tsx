@@ -133,7 +133,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
 
             {/* Share Section */}
             <div className="flex flex-row justify-between items-center border p-4 rounded-xl shadow-md bg-white">
-              <h3 className="text-2xl font-semibold text-gray-800">Share in</h3>
+              <h1 className="text-2xl font-semibold text-gray-800">Share in</h1>
               <div className="flex space-x-2">
                 {socialLinks.map((link, index) => (
                   <a key={index} href={link.link} className="hover:scale-110 transition-transform">
@@ -169,7 +169,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
                 />
               </div>
               <div className="mt-3">
-                <h3 className="text-xl font-bold">{relatedBlogs[0].subtitle}</h3>
+                <h1 className="text-xl font-bold">{relatedBlogs[0].subtitle}</h1>
                 <p className="mt-2 h-[155px]">{relatedBlogs[0].description}</p>
               </div>
             </div>
@@ -184,7 +184,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
                     description={card.description}
                   />
                   <div className="mt-4 h-[150px]">
-                    <h3 className="text-lg font-semibold">{card.title}</h3>
+                    <h1 className="text-lg font-semibold">{card.title}</h1>
                     <TextDescription text={card.description} className="text-justify" />
                   </div>
                 </div>
