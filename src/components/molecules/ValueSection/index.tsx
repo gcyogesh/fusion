@@ -64,9 +64,9 @@ const ValuesSection = () => {
                 {value.icon}
               </div>
               <div>
-                <h3 className="text-lg sm:text-xl font-semibold mb-1">
+                <h1 className="text-lg sm:text-xl font-semibold mb-1">
                   {value.title}
-                </h3>
+                </h1>
                 <p className="text-sm m-1">{value.description}</p>
               </div>
             </div>

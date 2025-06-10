@@ -49,7 +49,7 @@ export default function DepartureCalendar() {
         <button
           onClick={() => updateParam('trip', 'private')}
           className={` px-3 py-3   ${
-            tripType === 'private' ? 'bg-primary text-white' : 'bg-[#B1B1B1]'
+            tripType === 'private' ? 'bg-primary text-[#ffffff]' : 'bg-[#B1B1B1]'
           }`}
         >
           <div className="flex flex-row items-center text-xl gap-2">

@@ -239,7 +239,7 @@ export default async function Home() {
                     </div>
 
                     <div className="flex justify-start sm:justify-end items-end mr-25">
-                      <Button text="Book Now" variant="primary" className="text-base " />
+                      <Button text="Book Now" variant="primary" className="text-base text-[#FFFFFF] " />
                     </div>
                   </div>
                 </div>
@@ -426,7 +426,7 @@ export default async function Home() {
                 textcolor="white"
               />
 
-              <TextDescription text="Show us your #BestFamilyMoments by tagging us @Fusion Expeditions for a chance to be featured!" className="w-[300px] md:w-[400px] lg:w-[400px] " />
+              <TextDescription text="Show us your #BestFamilyMoments by tagging us @Fusion Expeditions for a chance to be featured!" className="w-[300px] md:w-[400px] lg:w-[400px] text-[#FFFFFF] opacity-90" />
             </div>
 
             {/* Right Side: Social Links */}
@@ -486,7 +486,7 @@ export default async function Home() {
                 description={blogsdata.data[0].subtitle} />
             </div>
             <div className="mt-3">
-              <h3 className="text-xl font-bold">{blogsdata.data[0].subtitle}</h3>
+              <h1 className="text-xl font-bold">{blogsdata.data[0].subtitle}</h1>
               <p className="mt-2 h-[155px]">{blogsdata.data[0].description}</p>
             </div>
             </Link>

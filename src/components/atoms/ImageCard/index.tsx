@@ -129,7 +129,7 @@ const ImageDisplay = <T extends string>({
 
       {snippet && (
         <div
-        className={`absolute z-10 text-white text-xs md:text-sm font-semibold px-2 py-1 md:px-4 md:py-2 bg-primary rounded-lg ${getSnippetPositionClasses(
+        className={`absolute z-10 text-[#ffffff] text-xs md:text-sm font-semibold px-2 py-1 md:px-4 md:py-2 bg-primary rounded-lg ${getSnippetPositionClasses(
             snippetPosition
           )}`}
         >
@@ -139,7 +139,7 @@ const ImageDisplay = <T extends string>({
 
       {secondSnippet && (
         <div
-          className={`absolute z-10 text-white text-xs md:text-sm font-medium ${getSnippetPositionClasses(
+          className={`absolute z-10 text-[#ffffff] text-xs md:text-sm font-medium ${getSnippetPositionClasses(
             secondSnippetPosition
           )}`}
         >
