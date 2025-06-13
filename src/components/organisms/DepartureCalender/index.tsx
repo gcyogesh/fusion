@@ -23,7 +23,7 @@ export default function DepartureCalendar() {
   };
 
   return (
-    <div className="  p-5 space-y-6 bg-white border border-black rounded-xl shadow-md">
+    <div className="  p-5 space-y-6 bg-white border border-[#0E334F] rounded-xl shadow-md">
 
          <TextHeader
               text="ABC Trek date and time"
@@ -42,7 +42,7 @@ export default function DepartureCalendar() {
           }`}
         >
            <div className="flex flex-row items-center text-xl gap-2">
-          <FaUsers className='text-3xl'/>
+          <FaUsers className='text-2xl'/>
           Group Departures
           </div>
         </button>
@@ -58,9 +58,9 @@ export default function DepartureCalendar() {
         </button>
       </div>
 
-      <h2 className="text-lg font-semibold ">Select Departure Date</h2>
+      <h2 className="text-xl text-[#0E334F] font-semibold ">Select Departure Date</h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+      <div className="grid grid-cols-1 md:grid-cols-2 justify-between gap-8">
         <LocalizationProvider dateAdapter={AdapterDayjs}>
       <DateCalendar />
     </LocalizationProvider>
@@ -75,7 +75,7 @@ export default function DepartureCalendar() {
         <Button
           text="Book Now"
           variant="primary"
-          className="bg-[#F7941D] hover:bg-[#E47312] text-white font-semibold py-2 px-6 rounded-full"
+          className="bg-[#F7941D] hover:bg-[#E47312] text-white font-semibold  px-2 rounded-full "
         />
       </div>
       </div>

@@ -1,8 +1,8 @@
 import TextHeader from "@/components/atoms/headings";
 import ImageDisplay from "@/components/atoms/ImageCard";
 import { fetchAPI } from "@/utils/apiService";
-import { CiLocationOn } from "react-icons/ci";
-import { MapPin, Mountain, Utensils, BedDouble, Users, Clock, Footprints, Calendar } from "lucide-react";
+import { MapPin } from 'lucide-react';
+
 import { notFound } from "next/navigation";
 import MidNavbar from "@/components/organisms/MidNavBar";
 import Button from "@/components/atoms/button";
@@ -11,6 +11,7 @@ import Image from "next/image";
 import UserForm from "@/components/organisms/Userform";
 import DepartureCalendar from "@/components/organisms/DepartureCalender";
 import ItinerarySection from "@/components/molecules/ItinerarySection";
+import Breadcrumb from "@/components/atoms/breadcrumb";
 // featuresData.ts
 
 
@@ -56,12 +57,13 @@ export default async function Page({ params }: { params: { slug: string } }) {
   return (
 
     <>
-      <section >
-        <div className="mx-auto max-w-7xl py-16">
-          <span className="flex items-center gap-1">
-            <CiLocationOn className="w-5 h-5" />
-            {destinationdata.destination.location}
-          </span>
+     <Breadcrumb currentnavlink="Destinations" />
+      <section className="mx-auto max-w-7xl mt-5" >
+        
+          <span className="flex items-center gap-2 text-[#7e7e7e] text-xl font-medium mb-2">
+          <MapPin className="w-6 h-6"/>
+  {destinationdata.destination.location}
+</span>
 
           <TextHeader text={destinationdata?.destination.subtitle} align="start" size="large" width={2000} className="mb-4" />
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
@@ -107,24 +109,24 @@ export default async function Page({ params }: { params: { slug: string } }) {
             </div>
           </div>
 
-        </div>
+      
 
 
 
       </section>
       <MidNavbar />
 
-      <section className="mx-auto max-w-7xl mt-[-4]">
+      <section className="mx-auto max-w-7xl ">
         {/* main column and side bar */}
-        <div className="flex flex-row  justify-between gap-4 ">
+        <div className="flex flex-row  justify-between  ">
           {/* Main Content */}
-          <div className="flex-1 max-w-4xl">
+          <div className="flex-1 max-w-4xl  pr-2 ">
             {relatedDestination.map((destination) => (
               <TextDescription className="" text={destination.description} />
             ))}
-
+          <div className="py-2">
             {relatedDestination.map((destination, index) => (
-              <div key={index} className="mb-4 text-xl">
+              <div key={index} className="mb-4 text-xl ">
 
                 {/* Features Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3  gap-6 p-6 border rounded-xl bg-white shadow-md max-w-4xl mx-auto mt-2 ">
@@ -249,9 +251,9 @@ export default async function Page({ params }: { params: { slug: string } }) {
               </div>
             ))}
 
-
-            <section>
-              <div className="max-w-5xl mx-auto ">
+              </div>
+        
+              <div className="max-w-5xl mx-auto py-4">
 
                 {relatedDestination.map((destination) => (
                   <div key={destination.title}>
@@ -264,25 +266,26 @@ export default async function Page({ params }: { params: { slug: string } }) {
 
 
 
-              <div className="border border-gray-300  rounded-2xl p-6 bg-white shadow-sm mb-4">
+              <div className="border border-[#0E334F]  rounded-2xl p-6 bg-white shadow-sm mb-4">
                 <TextHeader text="Trip Highlights" align="left" size="large" width={855} className=" w-[815px] h-auto mb-2" />
 
-                <ul className="list-disc list-outside text-base text-[#535556] space-y-3  pl-6">
+                <ul className="list-disc list-outside text-base text-[#535556] space-y-2  pl-6">
                   {relatedDestination[0]?.highlights?.map((trips, index) => (
                     <li key={index}>{trips}</li>
                   ))}
 
                 </ul>
               </div>
-            </section>
-            <section className="space-y-4">
-              <div className="flex flex-row gap-2">
+
+           
+            <div className="space-y-6 py-10">
+              <div className="flex flex-row gap-2 ">
                 <Image
                   src="/images/iterate/itenerylogo.svg"
                   alt="Itinerary logo"
-                  width={60}
-                  height={5}
-                  className=" "
+                  width={40}
+                  height={2}
+                  
                 />
                 <TextHeader text="ABC Trek Itinerary" align="start" size="large" width={855} />
               </div>
@@ -344,18 +347,18 @@ export default async function Page({ params }: { params: { slug: string } }) {
                   </ul>
                 </div>
               </div>
-            </section>
+            </div>
 
 
-            <section className="w-4xl">
+            <div className="w-4xl py-6">
               < DepartureCalendar />
-            </section>
+            </div>
 
-            <section>
+            <div className="py-6">
               < UserForm />
-            </section>
+            </div>
 
-            <section>
+            <div className="py-6">
 
               <TextHeader
                 text="ABC Trek Map"
@@ -374,11 +377,11 @@ export default async function Page({ params }: { params: { slug: string } }) {
                 />
               )}
 
-            </section>
+            </div>
 
 
-            <section>
-              <div className="max-w-4xl ">
+        
+              <div className="max-w-4xl py-6 ">
                 <TextHeader
                   text="ABC Trek Gallery"
                   align="left"
@@ -428,32 +431,43 @@ export default async function Page({ params }: { params: { slug: string } }) {
                   ))}
                 </div>
               </div>
-            </section>
+            
 
           </div>
 
           {/* Sidebar */}
           <div className="w-auto  ">
-            <div className=" sticky top-24 w-[330px]  ">
+            <div className=" sticky top-24 w-full ">
               {/* Related Blogs */}
-              <div className="max-w-xs flex flex-col items-center rounded-xl border border-black bg-[#ffff] shadow p-2 text-center space-y-3">
-                <div className="bg-[#002D62] text-white p-2 h-[45px] w-[280px] text-xl font-medium rounded-xl ">
+              <div className="max-w-xs flex flex-col items-center rounded-xl border border-black bg-[#ffff] shadow p-1 text-center space-y-3">
+                <div className="bg-[#002D62] text-white p-2 h-[45px] w-[300px] text-xl font-medium rounded-xl ">
                   Best Price
                 </div>
 
-                <div className="flex flex-row  items-center gap-4 mr-12 ">
-                  <p className="text-gray-700 font-semibold text-2xl">USD</p>
+                <div className="flex flex-row  items-center gap-4 mt-[15px] ">
+                  <p className="text-gray-700 font-semibold text-xl">USD</p>
                   <p className="text-4xl font-bold text-gray-800">250</p>
-                  <p className="text-xl text-gray-700 w-[10px]">Per Person</p>
+                  <p className="text-base flex flex-col items-start leading-tight ">
+                    <span>Per</span>
+                    <span>Person</span>
+                   </p>
                 </div>
                 <hr className="border-t border-dashed border-gray-300 w-full" />
+                 <p className="text-base text-gray-500">Price May Vary According<br />To The Group Size.</p>
 
-                <p className="text-base text-gray-500">Price May Vary According<br />To The Group Size.</p>
-                <div className="space-y-4 p-2 items-center">
-                  <Button text=" Book this Trip" variant="primary" className="text-xs flex  sm:text-sm " />
-                  <Button text=" Make in Enquiry" variant="secondary" className="text-xs flex sm:text-sm " />
 
-                </div>
+               <div className="py-4 space-y-2 pb-4  items-center flex flex-col">
+  <Button 
+    text="Book this Trip" 
+    variant="primary" 
+    className="text-xs sm:text-sm w-[175px] h-[42px]" 
+  />
+  <Button 
+    text="Make an Enquiry" 
+    variant="secondary" 
+    className="text-xs sm:text-sm border border-black text-[#0E334F] !p-[10px] w-[175px] h-[42px]" 
+  />
+</div>
               </div>
 
 

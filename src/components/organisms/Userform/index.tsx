@@ -26,7 +26,7 @@ const UserForm = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="max-w-4xl p-6 bg-white rounded-xl shadow border border-gray-200"
+      className="max-w-4xl p-6 bg-white rounded-xl shadow border border-[#0E334F]"
     >
         
       <TextDescription
@@ -134,7 +134,7 @@ const UserForm = () => {
         <Button
           text="Submit"
           variant="primary"
-          className="bg-[#F7941D] hover:bg-[#E47312] text-white font-semibold py-2 px-6 rounded-full"
+          className="bg-[#F7941D] hover:bg-[#E47312] text-white font-semibold  rounded-full"
         />
       </div>
     </form>

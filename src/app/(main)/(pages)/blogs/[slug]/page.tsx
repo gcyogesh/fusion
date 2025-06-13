@@ -119,8 +119,8 @@ export default async function Page({ params }: { params: { slug: string } }) {
                 <ul className="space-y-3">
                   {relatedBlogs.map((blog) => (
                     <li key={blog.id} className="flex justify-between items-center border-b pb-2">
-                      <Link href={`/blogs/${blog.slug}`} className="text-sm text-gray-700 hover:text-orange-500">
-                        {blog.subtitle}
+                      <Link href={`/blogs/${blog.title}`} className="text-sm text-gray-700 hover:text-orange-500">
+                        {blog.title}
                       </Link>
                       <ArrowIcon size={14} />
                     </li>

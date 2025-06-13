@@ -6,6 +6,8 @@ import { ChevronDown, ChevronUp } from 'lucide-react'
 import { IoMdClose } from 'react-icons/io'
 import { FiMenu } from 'react-icons/fi'
 import { usePathname } from 'next/navigation'
+import { FaWhatsapp } from 'react-icons/fa';
+
 const navLinks = [
   { name: "Destinations", href: "/destinations", hasDropdown: true, subLinks: [{ name: "pokhara", href: "/destinations/pokhara" }, { name: "mustang", href: "/destinations/mustang" } , { name: "taplejung", href: "/destinations/taplejung" }] },
   { name: "Activities", href: "/activities", hasDropdown: true, subLinks: [{ name: "Trekking", href: "/activities/trekking" }, { name: "Rafting", href: "/activities/rafting" }] },
@@ -109,8 +111,9 @@ export default function Navbar() {
           ))}
         </ul>
 
-        {/* CTA + Mobile Toggle */}
         <div className="flex items-center gap-4">
+        <FaWhatsapp className="text-white text-3xl" />
+
           <Link href="/contact">
             <button className="hidden lg:block bg-gradient-to-r from-[#F28A15] to-[#E47312] hover:from-[#0E334F] hover:to-[#0E334F] text-[#ffff] text-base font-medium h-[46px] w-[160px] rounded-full transition">
               Contact
