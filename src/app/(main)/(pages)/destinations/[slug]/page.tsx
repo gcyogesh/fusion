@@ -129,7 +129,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
               <div key={index} className="mb-4 text-xl ">
 
                 {/* Features Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3  gap-6 p-6 border rounded-xl bg-white shadow-md max-w-4xl mx-auto mt-2 ">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3  gap-10 p-6 border rounded-xl bg-white shadow-md max-w-4xl mx-auto mt-2 ">
                   <div className="flex items-center gap-4">
                     <Image
                       src="/images/iterate/min.png"
@@ -460,12 +460,12 @@ export default async function Page({ params }: { params: { slug: string } }) {
   <Button 
     text="Book this Trip" 
     variant="primary" 
-    className="text-xs sm:text-sm w-[175px] h-[42px]" 
+    className="text-xs sm:text-sm w-[175px] h-[42px] font-semibold" 
   />
   <Button 
     text="Make an Enquiry" 
     variant="secondary" 
-    className="text-xs sm:text-sm border border-black text-[#0E334F] !p-[10px] w-[175px] h-[42px]" 
+    className="text-xs sm:text-sm border border-black text-[#0E334F] !p-[10px] w-[175px] h-[42px] font-medium" 
   />
 </div>
               </div>

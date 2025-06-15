@@ -1,5 +1,14 @@
 import React from 'react';
-import { FiArrowUpRight } from 'react-icons/fi';
+import {
+  FiArrowUpRight,
+  FiArrowUpLeft,
+  FiArrowDownRight,
+  FiArrowDownLeft,
+  FiArrowUp,
+  FiArrowDown,
+  FiArrowLeft,
+  FiArrowRight,
+} from 'react-icons/fi';
 
 type Direction =
   | 'up-right' | 'up-left' | 'down-right' | 'down-left'
@@ -23,17 +32,6 @@ interface ArrowIconProps {
   variant?: Variant;
   className?: string;
 }
-
-const directionAngles: Record<Direction, number> = {
-  'up-right': 45,
-  'up-left': -45,
-  'down-right': 135,
-  'down-left': -135,
-  'up': 0,
-  'down': 180,
-  'left': 270,
-  'right': 90,
-};
 
 const positionBaseStyles: Record<Position, React.CSSProperties> = {
   'top-left': { top: 0, left: 0 },
@@ -59,6 +57,17 @@ const positionTransforms: Record<Position, string | undefined> = {
   'bottom-right': undefined,
 };
 
+const directionIconMap: Record<Direction, React.ElementType> = {
+  'up-right': FiArrowUpRight,
+  'up-left': FiArrowUpLeft,
+  'down-right': FiArrowDownRight,
+  'down-left': FiArrowDownLeft,
+  'up': FiArrowUp,
+  'down': FiArrowDown,
+  'left': FiArrowLeft,
+  'right': FiArrowRight,
+};
+
 const ArrowIcon: React.FC<ArrowIconProps> = ({
   size = 24,
   iconPadding = 10,
@@ -70,9 +79,8 @@ const ArrowIcon: React.FC<ArrowIconProps> = ({
   backgroundColor,
   className,
 }) => {
-  const rotation = directionAngles[direction] ?? 45;
+  const IconComponent = directionIconMap[direction];
 
-  // Variant-based styling
   const variantStyles: Record<Variant, { color: string; backgroundColor: string }> = {
     primary: { color: '#fff', backgroundColor: '#f7931e' },
     secondary: { color: '#f7931e', backgroundColor: '#fff' },
@@ -88,7 +96,6 @@ const ArrowIcon: React.FC<ArrowIconProps> = ({
     backgroundColor: appliedBackground,
     padding: iconPadding,
     borderRadius,
-    
   };
 
   if (position) {
@@ -98,20 +105,12 @@ const ArrowIcon: React.FC<ArrowIconProps> = ({
     });
 
     const transformPart = positionTransforms[position];
-    baseStyle.transform = transformPart
-      ? `${transformPart} rotate(${rotation}deg)`
-      : `rotate(${rotation}deg)`;
-  } else {
-    baseStyle.transform = `rotate(${rotation}deg)`;
+    baseStyle.transform = transformPart ? transformPart : undefined;
   }
-
-  const iconStyle: React.CSSProperties = {
-    transform: `rotate(${-rotation}deg)`,
-  };
 
   return (
     <div className={className} style={baseStyle}>
-      <FiArrowUpRight size={size} color={appliedColor} style={iconStyle} />
+      <IconComponent size={size} color={appliedColor} />
     </div>
   );
 };
