@@ -176,12 +176,12 @@ export default async function Page({ params }: { params: { id: string } }) {
             </div>
 
             <div className="max-w-5xl mx-auto py-4">
-              <TextHeader text={destination.title} align="left" size="large" width={855} className="mb-2" />
+              <TextHeader text={destination.title} align="left" size="large" width={855} className="mb-1" />
               <TextDescription className="mb-4" text={destination.overview} />
             </div>
 
             <div className="border border-[#0E334F] rounded-2xl p-6 bg-white shadow-sm mb-4">
-              <TextHeader text="Trip Highlights" align="left" size="large" width={855} />
+              <TextHeader text="Trip Highlights" align="left" size="large" width={855} className="mb-2" />
               <ul className="list-disc pl-6 space-y-2 text-base text-[#535556] ">
                 {destination.highlights?.map((item, i) => <li key={i}>{item}</li>)}
               </ul>
