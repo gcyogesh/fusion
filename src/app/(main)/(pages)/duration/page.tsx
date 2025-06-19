@@ -19,6 +19,7 @@ interface Package {
   slug: string;
   tag?: string;
   city?: string;
+  
 }
 
 export default function DurationPackages() {

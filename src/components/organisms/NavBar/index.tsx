@@ -172,7 +172,10 @@ export default function Navbar() {
         </ul>
 
         <div className="flex items-center gap-4">
-          <FaWhatsapp className="text-white text-3xl" />
+          <Link href="https://wa.me/977985-1167629" target="_blank" rel="noopener noreferrer">
+    <FaWhatsapp className="text-white text-3xl hover:text-green-400 transition-colors cursor-pointer" />
+  </Link>
+          
           <Link href="/contact">
             <button className="hidden lg:block bg-gradient-to-r from-[#F28A15] to-[#E47312] hover:from-[#0E334F] hover:to-[#0E334F] text-white text-base font-medium h-[46px] w-[160px] rounded-full transition">
               Contact

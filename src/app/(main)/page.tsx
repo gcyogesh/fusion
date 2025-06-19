@@ -406,9 +406,9 @@ export default async function Home() {
       {/*PartnerSection*/}
       <section><PartnerSection partnersdata={partnersdata.data} /></section>
 
-     <section className="relative px-4 py-10 w-full">
+     <section className="relative ">
   {/* Left Arrow – hidden on sm, shown on md+ */}
-  <div className="hidden md:block absolute top-[65%] md:left-[120px] -translate-y-1/2 z-10 ">
+  <div className="hidden md:block absolute top-[65%] md:left-[100px] -translate-y-1/2 z-10 ">
     <ArrowIcon
       direction="left"
       variant="primary"
@@ -422,7 +422,7 @@ export default async function Home() {
   </div>
 
   {/* Right Arrow – hidden on sm, shown on md+ */}
-  <div className="hidden md:block absolute top-[65%] md:right-[120px] -translate-y-1/2 z-10">
+  <div className="hidden md:block absolute top-[65%] md:right-[100px] -translate-y-1/2 z-10">
     <ArrowIcon
       direction="right"
       variant="primary"
