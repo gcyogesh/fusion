@@ -15,7 +15,7 @@
 
     const TestimonialCard: React.FC<TestimonialCardProps> = ({ message, name, position, profileImage, rating }) => {
       return (
-        <div className="flex flex-col min-w-[320px] max-w-[320px] md:max-w-[410px] h-[293px] md:h-[260px]   bg-[#FCE1AC] rounded-xl p-4  snap-center flex-shrink-0 shadow-md">
+        <div className="flex flex-col min-w-[320px] max-w-[320px] md:max-w-[380px] h-[293px] md:h-[260px]   bg-[#FCE1AC] rounded-xl p-4  snap-center flex-shrink-0 shadow-md">
         
           {/* Testimonial Icon */}
       <FaQuoteRight className="absolute top-50 hidden md:top-60 lg:top-60 right-40 lg:right-70 text-blue text-2xl  opacity-40" />

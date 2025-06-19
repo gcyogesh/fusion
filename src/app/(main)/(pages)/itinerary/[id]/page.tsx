@@ -14,44 +14,45 @@ import TextHeader from "@/components/atoms/headings";
  import Breadcrumb from "@/components/atoms/breadcrumb";
 
 
- export async function generateMetadata({ params }: { params: { slug: string } }) {
-   const endpoint = `destinations/${params.slug}`;
-   const data = await fetchAPI({ endpoint });
-   const destinationdata = data?.data;
+ export async function generateMetadata({ params }: { params: { id: string } }) {
+  const endpoint = `tour/tour-packages/${params.id}`;
+  const data = await fetchAPI({ endpoint });
+  const destinationdata = data?.data;
 
-   if (!destinationdata) {
-     return {
-       title: "Not Found",
-       description: "Destination page not found.",
-     };
-   }
+  if (!destinationdata) {
+    return {
+      title: "Not Found",
+      description: "Destination page not found.",
+    };
+  }
 
-   return {
-     title: destinationdata.destination.subtitle,
-     description: destinationdata.destination.subtitle,
-     openGraph: {
-       title: destinationdata.destination.title,
-       description: destinationdata.destination.subtitle,
-       images: [destinationdata.imageUrl],
-     },
-   };
- }
+  return {
+    title: destinationdata.destination.subtitle,
+    description: destinationdata.destination.subtitle,
+    openGraph: {
+      title: destinationdata.destination.title,
+      description: destinationdata.destination.subtitle,
+      images: [destinationdata.imageUrl],
+    },
+  };
+}
 
- export default async function Page({ params }: { params: { slug: string } }) {
-   const endpoint = `destinations/${params.slug}`;
-   const data = await fetchAPI({ endpoint });
-   const destinationdata = data?.data;
+export default async function Page({ params }: { params: { id: string } }) {
+  const endpoint = `tour/tour-packages/${params.id}`;
+  const data = await fetchAPI({ endpoint });
+  const destinationdata = data?.data;
 
-   const itinerary = destinationdata?.relatedPackages?.[0]?.itinerary || [];
-   const relatedDestination = destinationdata?.relatedPackages || [];
+  if (!destinationdata) {
+    notFound();
+  }
 
-   console.log("Related Destinations:", relatedDestination);
-   console.log("Image URL:", relatedDestination?.[0]?.googleMapUrl);
-   console.log("Itinerary data:", itinerary);
-   if (!destinationdata) {
-     notFound();
-   }
+  const itinerary = destinationdata?.relatedPackages?.[0]?.itinerary || [];
+  const relatedDestination = destinationdata?.relatedPackages || [];
 
+  console.log("Related Destinations:", relatedDestination);
+  console.log("Image URL:", relatedDestination?.[0]?.googleMapUrl);
+  console.log("Itinerary data:", itinerary);
+  
    return (
 
      <>

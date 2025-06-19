@@ -21,6 +21,8 @@ interface Package {
   imageUrls?: string[];
   slug: string;
   tag?: string;
+  city?: string;
+  
 }
 
 
