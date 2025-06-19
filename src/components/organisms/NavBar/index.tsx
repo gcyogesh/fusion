@@ -72,6 +72,11 @@ export default function Navbar() {
           name: 'Blogs',
           href: '/blogs',
           hasDropdown: false
+        },
+        {
+          name: 'Duration',
+          href: '/duration',
+          hasDropdown: false
         }
       ]
 
