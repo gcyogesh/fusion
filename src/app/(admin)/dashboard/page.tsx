@@ -9,15 +9,12 @@ export default async function dashboard() {
 
         <>
  <AdminTable
-      title="Destination Management"
-      buttonText="Add Destination"
-      data={destinationdata.data}
-      columns={[
-
-        { label: "Location", accessor: "location" },
-      
-      ]}
-
+          title="Destination Management"
+          buttonText="Add Destination"
+          data={destinationdata.data}
+          columns={[
+            { label: "Location", accessor: "location" },
+          ]} endpoint={""}
     />
         </>
     )

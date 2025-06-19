@@ -8,15 +8,12 @@ export default async function dashboard() {
 
         <>
  <AdminTable
-      title="Destination Management"
-      buttonText="Add Destination"
-      data={blogsdata.data}
-      columns={[
-
-        { label: "Blog Title", accessor: "title" },
-      
-      ]}
-
+          title="Destination Management"
+          buttonText="Add Destination"
+          data={blogsdata.data}
+          columns={[
+            { label: "Blog Title", accessor: "title" },
+          ]} endpoint={"blogs"}
     />
         </>
     )

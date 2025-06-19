@@ -9,16 +9,12 @@ export default async function dashboard() {
 
         <>
  <AdminTable
-      title="Activities Management"
-      buttonText="Add Activities"
-      data={blogsdata.data}
-      columns={[
-
-        { label: "Activities Title", accessor: "title" },
-        
-      
-      ]}
-
+          title="Activities Management"
+          buttonText="Add Activities"
+          data={blogsdata.data}
+          columns={[
+            { label: "Activities Title", accessor: "title" },
+          ]} endpoint={""}
     />
         </>
     )

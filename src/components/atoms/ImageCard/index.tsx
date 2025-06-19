@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import ArrowIcon from '../arrowIcon';
-
 type Variant = 'rectangle' | 'square' | 'smallsquare' | 'smallrectangle';
 type SnippetPosition = 'center' | 'start' | 'end';
 

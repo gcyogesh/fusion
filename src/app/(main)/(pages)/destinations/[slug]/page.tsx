@@ -58,7 +58,8 @@ export default async function Page({ params }: { params: { slug: string } }) {
 
     <>
      <Breadcrumb currentnavlink="Destinations" />
-      <section className="mx-auto max-w-7xl mt-5" >
+      <section className="mx-auto max-w-7xl mt-5 ">
+
         
           <span className="flex items-center gap-2 text-[#7e7e7e] text-xl font-medium mb-2">
           <MapPin className="w-6 h-6"/>

@@ -19,6 +19,7 @@ import TestimonialCarousel from "@/components/organisms/testimonial/testimoinal"
 import { FaTrophy, FaStar, FaGlobe } from "react-icons/fa";
 import TextDescription from "@/components/atoms/description";
 import Link from "next/link";
+import ArrowIcon from "@/components/atoms/arrowIcon";
 
 //molecules components
 import TopCategoriesSection from "@/components/molecules/TopCategoriesSection";
@@ -33,7 +34,7 @@ interface DestinationCard {
   subtitle: string;
   imageUrl: string;
   imageUrls: string;
-  tags: string[];
+  tag: string;
   location: string;
   duration: number;
   title: string;
@@ -142,7 +143,7 @@ export default async function Home() {
                 <ImageDisplay
                   src={card.imageUrls[0]}
                   variant="square"
-                  snippet={card.tags[0]}
+                  snippet={card.tag}
                   snippetPosition="start"
                   title={card.title}
                   description={card.subtitle}
@@ -190,14 +191,14 @@ export default async function Home() {
 
         {/* Overlay Content */}
         <div className="absolute inset-0 flex items-center justify-center ">
-          <div className="w-full max-w-7xl mx-auto py-6 sm:py-0">
+          <div className="w-full max-w-7xl mx-auto  py-0 md:py-6 lg:py-6">
             {/* Scale wrapper for responsiveness */}
             <div className="transform origin-top scale-[0.85] sm:scale-100">
               <div className="grid grid-cols-2 items-center  max-w-full">
 
                 {/* Left Content */}
                 <div className="text-white space-y-3 md:space-y-6 text-xs  md:text-base">
-                  <div className="space-y-2 sm:space-y-1">
+                  <div className="space-y-1 md:space-y-2 lg:space-y-3 ">
                     <div className="flex items-center gap-3">
                       <Image
                         src="/images/ph_cloud-sun-duotone.svg"
@@ -217,14 +218,14 @@ export default async function Home() {
                       align="left"
                       size="medium"
                       textcolor="white"
-                      className="w-[250px]  md:w-[400px]  mt-2"
+                      className="w-[250px]  md:w-[400px] lg:w-[400px] mt-2"
                     />
                   </div>
 
                   <div className="w-auto md:w-[530px] h-px bg-white/30 mb-3 sm:mb-1 md:mb-3" />
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 w-full   mt-6 sm:mt-1 md:mt-6 ">
-                    <div className="space-y-0 md:space-y-4 text-sm md:text-xl lg:text-xl ">
+                    <div className="space-y-2 md:space-y-4 text-sm md:text-xl lg:text-xl ">
                       <div className="flex items-center gap-2">
                         <HiOutlineClock className="w-4 h-4 sm:w-5 sm:h-5" />
                         <span>30 Minutes – 90 Minutes</span>
@@ -238,7 +239,7 @@ export default async function Home() {
                       </div>
                     </div>
 
-                    <div className="flex justify-start sm:justify-end items-end mr-25">
+                    <div className="flex justify-start sm:justify-end items-end mr-0 md:mr-25 mt-4 md:mt-0 lg:mt-0 ">
                       <Button text="Book Now" variant="primary" className="text-base text-[#FFFFFF] " />
                     </div>
                   </div>
@@ -246,7 +247,7 @@ export default async function Home() {
 
                 {/* Right Side Image */}
                 <div className="w-full flex flex-row justify-end  pl-10 md:pl-0 lg:pl-0">
-                  <div className="rounded-xl shadow-md  border border-gray-400  backdrop-blur-md p-3 ">
+                  <div className="rounded-xl shadow-md  border border-gray-400  backdrop-blur-md p-2 md:p-3 lg:p-3 ">
                     <ImageDisplay
                       src="/images/pokharaflight.png"
                       alt="Ultralight Flight"
@@ -405,10 +406,32 @@ export default async function Home() {
       {/*PartnerSection*/}
       <section><PartnerSection partnersdata={partnersdata.data} /></section>
 
-      {/*Testimonial */}
-      <section>
-        <TestimonialCarousel testimoinaldata={testimoinaldata} />
-      </section>
+     <section className="relative px-4 py-10 w-full">
+  {/* Left Arrow – hidden on sm, shown on md+ */}
+  <div className="hidden md:block absolute top-[65%] md:left-[120px] -translate-y-1/2 z-10 ">
+    <ArrowIcon
+      direction="left"
+      variant="primary"
+    
+    />
+  </div>
+
+  {/* Carousel */}
+  <div className="">
+    <TestimonialCarousel testimoinaldata={testimoinaldata} />
+  </div>
+
+  {/* Right Arrow – hidden on sm, shown on md+ */}
+  <div className="hidden md:block absolute top-[65%] md:right-[120px] -translate-y-1/2 z-10">
+    <ArrowIcon
+      direction="right"
+      variant="primary"
+      
+    />
+  </div>
+</section>
+
+
 
 
 
