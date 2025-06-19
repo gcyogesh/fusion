@@ -6,7 +6,6 @@ import TextDescription from "@/components/atoms/description";
 import Breadcrumb from "@/components/atoms/breadcrumb";
 
 interface Activity {
-  [x: string]: unknown;
   _id: string;
   title: string;
   subtitle: string;
@@ -22,11 +21,10 @@ interface Params {
 export default async function Page({ params }: Params) {
   const { slug } = params;
 
-  
-  const activitiesdata = await fetchAPI({ endpoint: "destinations" });
+  const herosectiondata = await fetchAPI({ endpoint: "herobanner/activities" });
+  const activitiesdata = await fetchAPI({ endpoint: "activities" });
 
   const activities: Activity[] = activitiesdata?.data || [];
-  console.log("activity:",activitiesdata);
 
   const activity: Activity | undefined = activities.find((item) => item.slug === slug);
 
@@ -37,6 +35,7 @@ export default async function Page({ params }: Params) {
   return (
     <>
       <Breadcrumb currentnavlink={activity?.title || "Activity"} />
+      <HeroBanner herodata={herosectiondata?.data || []} />
 
       <section className="max-w-7xl mx-auto px-4">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -66,9 +65,6 @@ export default async function Page({ params }: Params) {
                   .map((item) => (
                     <div key={item._id}>
                       <ImageDisplay src={item.image} variant="smallrectangle" />
-                    
-                                 <TextHeader text={item.title} size="small" align="left" className="mt-2" />
-                  <h3 className="text-lg font-medium text-gray-600">{item.subtitle}</h3>
                     </div>
                   ))}
               </div>

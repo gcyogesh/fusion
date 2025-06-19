@@ -1,3 +1,4 @@
+'use client'
 import React from "react";
 interface ButtonProps<T = unknown> {
   text: string;
@@ -13,14 +14,14 @@ interface ButtonProps<T = unknown> {
 
 const Button = <T,>({
   text,
- 
+  onClick,
   className = "",
   leftIcon,
   rightIcon,
   variant = "primary",
-
   borderColor,
   textColor,
+  extraData,
 }: ButtonProps<T>) => {
   const variants = {
     primary: {
@@ -45,6 +46,7 @@ const Button = <T,>({
   return (
     <button
       type="button"
+      onClick={(e) => onClick?.(e, extraData)}
       className={`
         ${baseClasses} 
         ${variants[variant].bg} 

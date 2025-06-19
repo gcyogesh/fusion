@@ -14,7 +14,7 @@ export default async function dashboard() {
           data={blogsdata.data}
           columns={[
             { label: "Activities Title", accessor: "title" },
-          ]} endpoint={""}
+          ]} endpoint={"activities"}
     />
         </>
     )

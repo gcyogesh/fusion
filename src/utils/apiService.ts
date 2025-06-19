@@ -26,6 +26,12 @@ export const fetchAPI = async <T = any>({
   else if (id !== undefined) urlParts.push(String(id));
   const url = urlParts.join("/");
 
+  console.log('🌐 API Call Details:');
+  console.log('URL:', url);
+  console.log('Method:', method);
+  console.log('Data type:', data instanceof FormData ? 'FormData' : 'JSON');
+  console.log('Has token:', !!token);
+
   const headers: Record<string, string> = {};
 
   // Only set JSON content type if not sending FormData
@@ -37,14 +43,21 @@ export const fetchAPI = async <T = any>({
     headers["Authorization"] = `Bearer ${token}`;
   }
 
+  console.log('Headers:', headers);
+
   const response = await fetch(url, {
     method,
     headers,
     body: method !== "GET" && data ? (data instanceof FormData ? data : JSON.stringify(data)) : undefined,
   });
 
+  console.log('Response status:', response.status);
+  console.log('Response ok:', response.ok);
+
   if (!response.ok) {
-    throw new Error(`API error: ${response.status} - ${response.statusText}`);
+    const errorText = await response.text();
+    console.error('Response error text:', errorText);
+    throw new Error(`API error: ${response.status} - ${response.statusText} - ${errorText}`);
   }
 
   return response.json();

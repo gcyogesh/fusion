@@ -13,7 +13,8 @@ export default async function dashboard() {
           data={blogsdata.data}
           columns={[
             { label: "Blog Title", accessor: "title" },
-          ]} endpoint={"blogs"}
+          ]}
+           endpoint="blogs"
     />
         </>
     )
