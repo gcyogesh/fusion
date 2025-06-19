@@ -199,7 +199,7 @@ export function AdminTable<T extends Record<string, any>>({
   };
 
   return (
-    <div className="w-full flex flex-col items-center bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
+    <div className="w-full flex flex-col items-center bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen px-10">
       <div className="w-full max-w-7xl p-8">
         {/* Header */}
         <div className="flex justify-between items-center mb-10">

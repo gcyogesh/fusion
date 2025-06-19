@@ -44,7 +44,7 @@ export default async function Page({ params }: Params) {
           <div className="lg:col-span-2 space-y-4">
             {activity ? (
               <div className="flex flex-col">
-                <ImageDisplay src={activity.image} variant="smallrectangle" />
+                <ImageDisplay src={activity.imageUrls[0]} variant="smallrectangle" />
                 <div className="mt-4">
                   <TextHeader text={activity.title} size="small" align="left" />
                   <h3 className="text-lg font-medium text-gray-600">{activity.subtitle}</h3>
@@ -59,16 +59,24 @@ export default async function Page({ params }: Params) {
           {/* Right Column */}
           <div className="lg:col-span-1">
             <div className="sticky top-24">
-              <TextHeader text="Other Tour Categories" size="small" align="left" />
+              <TextHeader text="Other Destinations" size="small" align="left" />
               <div className="space-y-4 mt-4">
-                {activities
+                 {activities
                   .filter((item) => item.slug !== slug)
                   .map((item) => (
                     <div key={item._id}>
-                      <ImageDisplay src={item.image} variant="smallrectangle" />
-                    
-                                 <TextHeader text={item.title} size="small" align="left" className="mt-2" />
-                  <h3 className="text-lg font-medium text-gray-600">{item.subtitle}</h3>
+                      {/* Display first image if imageUrls exist, fallback to image */}
+                      <ImageDisplay
+                        src={item.imageUrls?.[0] || item.image}
+                        variant="smallrectangle"
+                      />
+                      <TextHeader
+                        text={item.title}
+                        size="small"
+                        align="left"
+                        className="mt-2"
+                      />
+                      <h3 className="text-lg font-medium text-gray-600">{item.subtitle}</h3>
                     </div>
                   ))}
               </div>

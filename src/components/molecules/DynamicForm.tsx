@@ -153,7 +153,7 @@ const DynamicForm: React.FC<Props> = ({ fields, title = '', endpoint="blogs", me
           value.forEach((item) => {
             if (item instanceof File) {
               console.log('Adding file:', item.name);
-              formDataToSend.append('imageFiles', item);
+              formDataToSend.append('imageUrls', item);
             } else if (typeof item === 'string') {
               console.log('Adding existing image URL:', item);
               formDataToSend.append('imageUrls', item);
@@ -168,7 +168,7 @@ const DynamicForm: React.FC<Props> = ({ fields, title = '', endpoint="blogs", me
           value.forEach((item) => {
             formDataToSend.append(key, item);
           });
-        } else {
+        } else {  
           // Handle regular fields (including _id and id)
           console.log('Adding field:', key, value);
           formDataToSend.append(key, value);
