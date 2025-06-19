@@ -142,12 +142,12 @@ export default async function Home() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10 "> {/* Consistent gap */}
 
 {(packagesdata as DestinationData)?.data.map((card, index) => (
-  <Link href={`/destinations/${card._id}`} key={index} className="flex flex-col gap-4">
+  <Link href={`/itinerary/${card._id}`} key={index} className="flex flex-col gap-4">
     <div className="aspect-video ">
       <ImageDisplay
         src={card.gallery[0]}
         variant="square"
-        snippet={card.title}
+        snippet="popular"
         snippetPosition="start"
         title={card.title}
         description={card.description}

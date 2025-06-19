@@ -26,7 +26,7 @@ export default function DepartureCalendar() {
     <div className="  p-5 space-y-6 bg-white border border-[#0E334F] rounded-xl shadow-md">
 
          <TextHeader
-              text="ABC Trek date and time"
+              text="Trek date and time"
               align="left"
               size="large"
               width={400}
