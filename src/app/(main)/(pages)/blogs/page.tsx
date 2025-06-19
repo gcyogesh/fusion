@@ -6,13 +6,24 @@ import TextDescription from '@/components/atoms/description';
 import ImageDisplay from '@/components/atoms/ImageCard';
 import TextHeader from '@/components/atoms/headings';
 import Breadcrumb from "@/components/atoms/breadcrumb";
+import Pagination from '@/components/atoms/pagination';
 
-const Blogs = async () => {
+type Props = {
+  searchParams?: {
+    page?: string;
+  };
+};
+
+const Blogs = async ({ searchParams }: Props) => {
   const blogsdata = await fetchAPI({ endpoint: "blogs" });
   const herodata = await fetchAPI({ endpoint: "herobanner/blog" });
 
-  const leftBlogs = blogsdata.data.slice(0, 3);
-  const rightBlogs = blogsdata.data.slice(6);
+  const blogs = blogsdata?.data || [];
+  const currentPage = parseInt(searchParams?.page || '1', 10);
+  const blogsPerPage = 3;
+  const totalPages = Math.ceil(blogs.length / blogsPerPage);
+  const startIndex = (currentPage - 1) * blogsPerPage;
+  const currentBlogs = blogs.slice(startIndex, startIndex + blogsPerPage);
 
   return (
     <>
@@ -29,50 +40,56 @@ const Blogs = async () => {
           width={500}
         />
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left Side: First 3 Blogs as Large Cards */}
-          <div className="lg:col-span-2 flex flex-col gap-6">
-            {leftBlogs.map((card: any) => (
-              <Link href={`/blogs/${card.slug}`} key={card.id}>
-                <div className="aspect-video w-full cursor-pointer">
-                  <ImageDisplay
-                    src={card.imageUrl}
-                    variant="rectangle"
-                    title={card.subtitle}
-                    description={card.subtitle}
-                  />
-                  <div className="mt-3">
-                    <h1 className="text-xl font-bold">{card.subtitle}</h1>
-                    <p className="mt-2">{card.description}</p>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-
-          {/* Right Side: Next 3 Blogs as Small Cards */}
-          <div className="flex flex-col">
-            {rightBlogs.map((card: any) => (
-              <Link href={`/blogs/${card.slug}`} key={card.id}>
-                <div className="flex flex-col cursor-pointer">
-                  <ImageDisplay
-                    src={card.imageUrl}
-                    variant="smallrectangle"
-                    title={card.subtitle}
-                    description={card.description}
-                  />
-                  <div className="mt-2 mb-4 h-[150px]">
-                    <h1 className="text-lg font-semibold">{card.subtitle}</h1>
-                    <TextDescription
-                      text={card.description}
-                      className="text-justify line-clamp-3"
+        <div className="flex flex-col gap-12">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {currentBlogs[0] && (
+              <div className="lg:col-span-2">
+                <Link href={`/blogs/${currentBlogs[0].slug}`}>
+                  <div className="aspect-video w-full cursor-pointer">
+                    <ImageDisplay
+                      src={currentBlogs[0].imageUrl}
+                      variant="rectangle"
+                      title={currentBlogs[0].subtitle}
+                      description={currentBlogs[0].subtitle}
                     />
+                    <div className="mt-3">
+                      <h1 className="text-xl font-bold">{currentBlogs[0].subtitle}</h1>
+                      <p className="mt-2">{currentBlogs[0].description}</p>
+                    </div>
                   </div>
-                </div>
-              </Link>
-            ))}
+                </Link>
+              </div>
+            )}
+
+            <div className="flex flex-col gap-6">
+              {currentBlogs.slice(1).map((card: any) => (
+                <Link href={`/blogs/${card.slug}`} key={card.id}>
+                  <div className="flex flex-col cursor-pointer">
+                    <ImageDisplay
+                      src={card.imageUrl}
+                      variant="smallrectangle"
+                      title={card.subtitle}
+                      description={card.description}
+                    />
+                    <div className="mt-2 h-[150px]">
+                      <h1 className="text-lg font-semibold">{card.subtitle}</h1>
+                      <TextDescription
+                        text={card.description}
+                        className="text-justify line-clamp-3"
+                      />
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
+
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          getPageUrl={(page) => `/blogs?page=${page}`}
+        />
       </section>
     </>
   );

@@ -16,7 +16,7 @@ export default async function DestinationPage() {
 
       <section className="max-w-7xl mx-auto ">
         {/* First Row */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
+        <div className="   grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
           {/* Rectangle Image (spans 2 columns) */}
           {destinationdata[0] && (
             <div className="lg:col-span-2">
@@ -53,6 +53,7 @@ export default async function DestinationPage() {
                 snippet="popular"
                 title={card?.title || "Untitled"}
               />
+              
             </div>
           ))}
         </div>

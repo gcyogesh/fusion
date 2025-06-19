@@ -6,19 +6,17 @@ import { ChevronDown, ChevronUp } from 'lucide-react'
 import { IoMdClose } from 'react-icons/io'
 import { FiMenu } from 'react-icons/fi'
 import { usePathname } from 'next/navigation'
-import { FaWhatsapp } from 'react-icons/fa';
+import { FaWhatsapp } from 'react-icons/fa'
+import { fetchAPI } from '@/utils/apiService'
 
-const navLinks = [
-  { name: "Destinations", href: "/destinations", hasDropdown: true, subLinks: [{ name: "pokhara", href: "/destinations/pokhara" }, { name: "mustang", href: "/destinations/mustang" } , { name: "taplejung", href: "/destinations/taplejung" }] },
-  { name: "Activities", href: "/activities", hasDropdown: true, subLinks: [{ name: "Trekking", href: "/activities/trekking" }, { name: "Rafting", href: "/activities/rafting" }] },
-  { name: "About", href: "/about", hasDropdown: false },
-
-  { name: "Blogs", href: "/blogs", hasDropdown: false },
-  
-]
+type NavLink = {
+  name: string
+  href: string
+  hasDropdown: boolean
+  subLinks?: { name: string; href: string }[]
+}
 
 export default function Navbar() {
-  
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [dropdownOpen, setDropdownOpen] = useState<string | null>(null)
   const [mobileDropdown, setMobileDropdown] = useState<string | null>(null)
@@ -26,10 +24,11 @@ export default function Navbar() {
   const [lastScrollY, setLastScrollY] = useState(0)
   const [navbarBg, setNavbarBg] = useState('transparent')
   const [navbarBlur, setNavbarBlur] = useState(true)
+  const [navLinks, setNavLinks] = useState<NavLink[]>([])
   const pathname = usePathname()
 
   const toggleMenu = () => {
-    setIsMenuOpen(prev => {
+    setIsMenuOpen((prev) => {
       const newState = !prev
       document.body.style.overflow = newState ? 'hidden' : 'auto'
       return newState
@@ -37,46 +36,97 @@ export default function Navbar() {
   }
 
   useEffect(() => {
-    const handleScroll = () => {
-  const currentScrollY = window.scrollY
+    const fetchData = async () => {
+      const activitiesRes = await fetchAPI({ endpoint: 'activities' })
+      const destinationsRes = await fetchAPI({ endpoint: 'destinations' })
 
-  if (currentScrollY === 0) {
-    if (pathname === '/') {
-      setNavbarBg('transparent')
-      setNavbarBlur(true)
-    } else {
-      setNavbarBg('#0F7BBA')
-      setNavbarBlur(false)
+      const formattedActivities = activitiesRes?.data?.map((item: any) => ({
+        name: item?.title || 'Untitled',
+        href: `/activities/${item?.slug || ''}`
+      }))
+
+      const formattedDestinations = destinationsRes?.data?.map((item: any) => ({
+        name: item?.title || 'Untitled',
+        href: `/destinations/${item?.slug || ''}`
+      }))
+
+      const links: NavLink[] = [
+        {
+          name: 'Destinations',
+          href: '/destinations',
+          hasDropdown: true,
+          subLinks: formattedDestinations
+        },
+        {
+          name: 'Activities',
+          href: '/activities',
+          hasDropdown: true,
+          subLinks: formattedActivities
+        },
+        {
+          name: 'About',
+          href: '/about',
+          hasDropdown: false
+        },
+        {
+          name: 'Blogs',
+          href: '/blogs',
+          hasDropdown: false
+        }
+      ]
+
+      setNavLinks(links)
     }
-    setShowNavbar(true)
-  } else if (currentScrollY > lastScrollY && currentScrollY > 100) {
-    setShowNavbar(false)
-    setNavbarBg('transparent')
-    setNavbarBlur(false)
-  } else {
-    setShowNavbar(true)
-    setNavbarBg('#0F7BBA')
-    setNavbarBlur(false)
-  }
 
-  setLastScrollY(currentScrollY)
-}
+    fetchData()
+  }, [])
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY
+
+      if (currentScrollY === 0) {
+        if (pathname === '/') {
+          setNavbarBg('transparent')
+          setNavbarBlur(true)
+        } else {
+          setNavbarBg('#0F7BBA')
+          setNavbarBlur(false)
+        }
+        setShowNavbar(true)
+      } else if (currentScrollY > lastScrollY && currentScrollY > 100) {
+        setShowNavbar(false)
+        setNavbarBg('transparent')
+        setNavbarBlur(false)
+      } else {
+        setShowNavbar(true)
+        setNavbarBg('#0F7BBA')
+        setNavbarBlur(false)
+      }
+
+      setLastScrollY(currentScrollY)
+    }
 
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [lastScrollY])
+  }, [lastScrollY, pathname])
 
   return (
     <nav
       style={{
         backgroundColor: navbarBg,
         backdropFilter: navbarBlur ? 'blur(10px)' : 'none',
-        WebkitBackdropFilter: navbarBlur ? 'blur(10px)' : 'none',
+        WebkitBackdropFilter: navbarBlur ? 'blur(10px)' : 'none'
       }}
-      className={`fixed top-0 left-0 w-full z-60 transition-transform duration-300 ${showNavbar ? 'translate-y-0' : '-translate-y-full'} transition-colors duration-500 ease-in-out px-2`}
+      className={`fixed top-0 left-0 w-full z-60 transition-transform duration-300 ${
+        showNavbar ? 'translate-y-0' : '-translate-y-full'
+      } transition-colors duration-500 ease-in-out px-2`}
     >
-      <div className={`max-w-7xl mx-auto flex justify-between items-center px-4 py-3 h-20 ${navbarBg === 'transparent' && navbarBlur ? 'text-black' : 'text-white'}`}>
-        {/* Logo */}
+      <div
+        className={`max-w-7xl mx-auto flex justify-between items-center px-4 py-3 h-20 ${
+          navbarBg === 'transparent' && navbarBlur ? 'text-black' : 'text-white'
+        }`}
+      >
         <Link href="/">
           <Logo />
         </Link>
@@ -88,19 +138,24 @@ export default function Navbar() {
               key={link.name}
               className="relative group text-white"
               onMouseEnter={() => setDropdownOpen(link.hasDropdown ? link.name : null)}
-              onMouseLeave={() => setDropdownOpen(null)}
             >
               <div className="flex items-center gap-1 cursor-pointer">
                 <Link href={link.href}>{link.name}</Link>
                 {link.hasDropdown && <ChevronDown className="w-3 h-4 mt-[2px]" />}
               </div>
 
-              {/* Dropdown */}
               {link.hasDropdown && dropdownOpen === link.name && (
-                <ul className="absolute top-8 left-0 w-40 bg-white text-black rounded shadow-md py-2 z-50">
+                <ul
+                  className="absolute top-8 left-0 w-44 bg-white text-black rounded shadow-md py-2 z-50"
+                  onMouseLeave={() => setDropdownOpen(null)}
+                >
                   {link.subLinks?.map((sublink) => (
                     <li key={sublink.name}>
-                      <Link href={sublink.href} className="block px-4 py-2 hover:bg-gray-100">
+                      <Link
+                        href={sublink.href}
+                        className="block px-4 py-2 hover:bg-gray-100"
+                        onClick={() => setDropdownOpen(null)}
+                      >
                         {sublink.name}
                       </Link>
                     </li>
@@ -112,10 +167,9 @@ export default function Navbar() {
         </ul>
 
         <div className="flex items-center gap-4">
-        <FaWhatsapp className="text-white text-3xl" />
-
+          <FaWhatsapp className="text-white text-3xl" />
           <Link href="/contact">
-            <button className="hidden lg:block bg-gradient-to-r from-[#F28A15] to-[#E47312] hover:from-[#0E334F] hover:to-[#0E334F] text-[#ffff] text-base font-medium h-[46px] w-[160px] rounded-full transition">
+            <button className="hidden lg:block bg-gradient-to-r from-[#F28A15] to-[#E47312] hover:from-[#0E334F] hover:to-[#0E334F] text-white text-base font-medium h-[46px] w-[160px] rounded-full transition">
               Contact
             </button>
           </Link>
@@ -137,9 +191,7 @@ export default function Navbar() {
             <div key={link.name}>
               <div
                 className="flex justify-between items-center cursor-pointer py-2"
-                onClick={() =>
-                  setMobileDropdown(mobileDropdown === link.name ? null : link.name)
-                }
+                onClick={() => setMobileDropdown(mobileDropdown === link.name ? null : link.name)}
               >
                 <Link href={link.href} onClick={toggleMenu}>
                   {link.name}

@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import ArrowIcon from '../arrowIcon';
+import { FiEdit, FiTrash } from 'react-icons/fi';
 
 type Variant = 'rectangle' | 'square' | 'smallsquare' | 'smallrectangle';
 type SnippetPosition = 'center' | 'start' | 'end';
@@ -22,6 +23,9 @@ interface ImageDisplayProps<T = string> {
   title?: string;
   description?: string;
   showOverlayContent?: boolean;
+  admin?: boolean;
+  onEdit?: () => void;
+  onDelete?: () => void;
 }
 
 const aspectRatios = {
@@ -69,6 +73,9 @@ const ImageDisplay = <T extends string>({
   title,
   description,
   showOverlayContent = true,
+  admin = false,
+  onEdit,
+  onDelete,
 }: ImageDisplayProps<T>) => {
   const [isError, setIsError] = useState(false);
   const shouldShowPlaceholder = isError || !src;
@@ -144,6 +151,29 @@ const ImageDisplay = <T extends string>({
           )}`}
         >
           {secondSnippet}
+        </div>
+      )}
+
+      {admin && (
+        <div className="absolute top-2 right-2 z-20 flex gap-2">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onEdit?.();
+            }}
+            className="p-2 bg-white/90 rounded-full shadow hover:bg-blue-100 transition"
+          >
+            <FiEdit className="w-4 h-4 text-blue-600" />
+          </button>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onDelete?.();
+            }}
+            className="p-2 bg-white/90 rounded-full shadow hover:bg-red-100 transition"
+          >
+            <FiTrash className="w-4 h-4 text-red-600" />
+          </button>
         </div>
       )}
     </motion.div>

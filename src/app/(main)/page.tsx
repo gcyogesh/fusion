@@ -136,41 +136,6 @@ export default async function Home() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10 "> {/* Consistent gap */}
 
 
-          {(destinationdata as DestinationData)?.data.map((card, index) => (
-            <Link href={`/destinations/${card.slug}`} key={index} className="flex flex-col gap-4">
-              <div className="aspect-video">
-                <ImageDisplay
-                  src={card.imageUrls[0]}
-                  variant="square"
-                  snippet={card.tags[0]}
-                  snippetPosition="start"
-                  title={card.title}
-                  description={card.subtitle}
-                />
-              </div>
-
-              <div className="flex flex-col gap-3">
-                <div className="flex justify-between text-sm text-[#5A5A5A]">
-                  <span className="flex items-center gap-1 font-bold ">
-                    <CiLocationOn className="w-4 h-4" />
-                    {card.location}
-                  </span>
-                  <span className="flex items-center  font-bold gap-1">
-                    <HiOutlineClock className="w-4 h-4" />
-                    {card.duration} Days
-                  </span>
-                </div>
-
-                <TextHeader text={card?.subtitle} size="small" align="left" width={410} />
-
-                <div className="w-full h-[1.5px] bg-[#C2C2C2]" />
-
-                <div className="flex flex-row justify-between text-lg font-semibold text-[#5A5A5A] mt-1">
-                  Start From <span className="  text-primary ">${card.priceMin}-${card.priceMax}</span>
-                </div>
-              </div>
-            </Link>
-          ))}
 
         </div>
       </section>
