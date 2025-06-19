@@ -1,5 +1,5 @@
 
-import { AdminTable } from "@/components/organisms/ListingCard"
+import { AdminTable } from "@/components/organisms/ListingCard" //Changes
 import { fetchAPI } from "@/utils/apiService"
 export default async function dashboard() {
   const blogsdata = await fetchAPI({ endpoint: "activities" });

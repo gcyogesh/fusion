@@ -14,10 +14,9 @@ export default async function DestinationPage() {
       <Breadcrumb currentnavlink={"destinations"} />
       <HeroBanner herodata={herodata?.data || []} />
 
-      <section className="max-w-7xl mx-auto ">
-        {/* First Row */}
-        <div className="   grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
-          {/* Rectangle Image (spans 2 columns) */}
+      <section className="max-w-7xl mx-auto px-4">
+        {/* First Row: Rectangle + Square */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
           {destinationdata[0] && (
             <div className="lg:col-span-2">
               <ImageDisplay
@@ -26,34 +25,34 @@ export default async function DestinationPage() {
                 width={840}
                 height={430}
                 title={destinationdata[0].title}
+                description={destinationdata[0].subtitle}
               />
             </div>
           )}
 
-          {/* Square Image */}
           {destinationdata[1] && (
             <div>
               <ImageDisplay
-                src={destinationdata[1].imageUrls?.[1]}
+                src={destinationdata[1].imageUrls?.[0]}
                 variant="square"
                 title={destinationdata[1].title}
+                description={destinationdata[1].subtitle}
               />
             </div>
           )}
         </div>
 
-        {/* Second Row with 3 Square Images */}
+        {/* Second Row: 3 Square Images */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {destinationdata.slice(2, 5).map((card, index) => (
             <div key={index}>
               <ImageDisplay
-                src={card?.src || card?.imageUrls?.[0]} // fallback to imageUrls
+                src={card?.src || card?.imageUrls?.[0]}
                 variant="square"
-                alt="Pashpati"
+                alt="Popular destination"
                 snippet="popular"
                 title={card?.title || "Untitled"}
               />
-              
             </div>
           ))}
         </div>

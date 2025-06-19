@@ -71,10 +71,8 @@ export default async function Dashboard() {
   ];
 
   return (
-    <div className="">
-      <div className=" max-w-7xl 
-      mx-auto
-      space-y-8">
+    <div className="flex justify-center w-full px-6 py-10">
+      <div className="w-full max-w-[900px] space-y-10">
         {/* Header */}
         <div className="flex justify-between items-center">
           <div>
@@ -89,8 +87,8 @@ export default async function Dashboard() {
           </div>
         </div>
 
-        {/* Statistics Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* Stats */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
           {stats.map((stat, index) => (
             <div
               key={index}

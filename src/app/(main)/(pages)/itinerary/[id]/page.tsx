@@ -14,7 +14,16 @@ import TextHeader from "@/components/atoms/headings";
  import Breadcrumb from "@/components/atoms/breadcrumb";
 
 
- export async function generateMetadata({ params }: { params: { id: string } }) {
+
+
+export async function generateMetadata({ params }: { params: { id: string } }) {
+  if (!params?.id) {
+    return {
+      title: "Invalid ID",
+      description: "Missing tour package ID.",
+    };
+  }
+
   const endpoint = `tour/tour-packages/${params.id}`;
   const data = await fetchAPI({ endpoint });
   const destinationdata = data?.data;
@@ -38,6 +47,10 @@ import TextHeader from "@/components/atoms/headings";
 }
 
 export default async function Page({ params }: { params: { id: string } }) {
+  if (!params?.id) {
+    notFound();
+  }
+
   const endpoint = `tour/tour-packages/${params.id}`;
   const data = await fetchAPI({ endpoint });
   const destinationdata = data?.data;
@@ -52,7 +65,7 @@ export default async function Page({ params }: { params: { id: string } }) {
   console.log("Related Destinations:", relatedDestination);
   console.log("Image URL:", relatedDestination?.[0]?.googleMapUrl);
   console.log("Itinerary data:", itinerary);
-  
+
    return (
 
      <>

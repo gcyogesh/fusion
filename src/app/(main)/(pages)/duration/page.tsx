@@ -6,7 +6,6 @@ import ImageDisplay from "@/components/atoms/ImageCard";
 import TextHeader from "@/components/atoms/headings";
 import { CiLocationOn } from "react-icons/ci";
 import { HiOutlineClock } from "react-icons/hi";
-
 interface Package {
   _id: string;
   title: string;
@@ -14,13 +13,18 @@ interface Package {
   duration: { days: number };
   basePrice: number;
   priceMax?: number;
-  location: string[];
+  location: {
+    city: string;
+    country: string;
+  };
   gallery: string[];
+  imageUrls?: string[];
   slug: string;
   tag?: string;
   city?: string;
   
 }
+
 
 export default function DurationPackages() {
   const [packagesByDuration, setPackagesByDuration] = useState<Record<string, Package[]>>({});
@@ -120,7 +124,7 @@ export default function DurationPackages() {
                     </div>
 
                     <TextHeader 
-                      text={pkg.subtitle} 
+                      text={pkg.title} 
                       size="small" 
                       align="left" 
                       width={410} 
