@@ -49,6 +49,7 @@ export const fetchAPI = async <T = any>({
     method,
     headers,
     body: method !== "GET" && data ? (data instanceof FormData ? data : JSON.stringify(data)) : undefined,
+    cache: "no-store",
   });
 
   console.log('Response status:', response.status);

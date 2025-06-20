@@ -3,6 +3,8 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { motion, useInView, useMotionValue, animate } from 'framer-motion';
 import Button from '../button';
+import Link from 'next/link';
+
 
 type TextAlign = 'left' | 'center' | 'right' | 'justify' | 'start' | 'end';
 type TextSize = 'medium' | 'small' | 'large';
@@ -18,6 +20,8 @@ interface TextHeaderProps<TSpecialIndices = string> {
   buttonText?: string;
   textcolor?: string;
   type?: TextHeaderType;
+  buttonLink?: string;
+
 }
 
 const TextHeader = <TSpecialIndices extends string = string>({
@@ -30,6 +34,7 @@ const TextHeader = <TSpecialIndices extends string = string>({
   buttonText,
   textcolor = '',
   type = 'default',
+  buttonLink
 }: TextHeaderProps<TSpecialIndices>) => {
   const ref = useRef(null);
   const isInView = useInView(ref, {
@@ -151,21 +156,33 @@ const TextHeader = <TSpecialIndices extends string = string>({
         width: typeof width === 'number' ? `${width}px` : width,
       }}
     >
-      {buttonText && (
-        <motion.div
-          initial={{ opacity: 0, x: -10 }}
-          animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -10 }}
-          transition={{ duration: 0.5, ease: 'easeOut' }}
-          className="mb-2"
-        >
-          <Button
-            text={buttonText}
-            variant="secondary"
-            textColor="text-primary"
-            className="text-sm md:text-base"
-          />
-        </motion.div>
-      )}
+   {buttonText && (
+  <motion.div
+    initial={{ opacity: 0, x: -10 }}
+    animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -10 }}
+    transition={{ duration: 0.5, ease: 'easeOut' }}
+    className="mb-2"
+  >
+    {buttonLink ? (
+      <Link href={buttonLink}>
+        <Button
+          text={buttonText}
+          variant="secondary"
+          textColor="text-primary"
+          className="text-sm md:text-base"
+        />
+      </Link>
+    ) : (
+      <Button
+        text={buttonText}
+        variant="secondary"
+        textColor="text-primary"
+        className="text-sm md:text-base"
+      />
+    )}
+  </motion.div>
+)}
+
       <motion.h1
         className={`text-header ${type === 'main' ? 'mb-4 md:mb-6' : 'mb-0'} ${className}`}
         style={baseStyle}

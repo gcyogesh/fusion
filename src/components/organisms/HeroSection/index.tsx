@@ -117,29 +117,12 @@ const HeroSection = ({ herodata }: { herodata: HeroData }) => {
             </div>
           </div>
 
-          {/* Date Input */}
-          <div className="flex items-center space-x-1 flex-shrink-0 min-w-[100px] sm:min-w-[160px] md:min-w-[200px]">
-            <span className="bg-[#FEF2D6] p-1 md:p-4 rounded-full">
-              <FaCalendarAlt className="text-[#0E334F] text-xs md:text-2xl" />
-            </span>
-            <div className="flex flex-col text-[10px] sm:text-sm md:text-base w-full truncate">
-              <label htmlFor="date" className="font-bold">
-                Date
-              </label>
-              <input
-                id="date"
-                type="date"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-                className="text-gray-500 truncate bg-transparent border-none outline-none placeholder-gray-400"
-              />
-            </div>
-          </div>
+       
 
           {/* Price Input */}
           <div className="flex items-center space-x-1 flex-shrink-0 min-w-[100px] sm:min-w-[160px] md:min-w-[200px]">
             <span className="bg-[#FEF2D6] p-1 md:p-4 rounded-full">
-              <FaDollarSign className="text-[#0E334F] text-xs md:text-2xl" />
+             <Image src={"/images/dollar.png"} alt="Dollar" width={28.72} height={28.72}/>
             </span>
             <div className="flex flex-col text-[10px] sm:text-sm md:text-base w-full truncate">
               <label htmlFor="price" className="font-bold">

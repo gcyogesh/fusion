@@ -36,13 +36,15 @@ const ValuesSection = () => {
       <div className="max-w-7xl mx-auto flex flex-col gap-10 md:flex-row justify-between items-start md:items-center">
         {/* Left Section */}
         <div className="w-full md:w-5/12">
-          <TextHeader
-            text="Our true values for your unforgettable journey"
-            specialWordsIndices="1,2"
-            align="left"
-            width="100%" // Allow full width on mobile
-            buttonText="Why Fusion Expedition"
-          />
+         <TextHeader
+  text="Our true values for your unforgettable journey"
+  specialWordsIndices="1,2"
+  align="left"
+  width="100%"
+  buttonText="Why Fusion Expedition"
+  buttonLink="/about" 
+/>
+
           <div className="flex flex-col justify-end h-full mt-6 md:mt-80 lg:mt-80">
             <TextDescription
               text="Our values are more than promises – they’re the soul of every adventure we offer.
