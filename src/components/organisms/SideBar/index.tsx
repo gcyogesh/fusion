@@ -49,7 +49,7 @@ const Sidebar = () => {
             { icon: FaWallet, text: "Blog Collection", link: "/dashboard/customise-blogs" },
             { icon: FaChartLine, text: "Contact Form", link: "/dashboard/contact-info" },
             { icon: FaBox, text: "Packages", link: "/dashboard/customise-packages" },
-             { icon: FaBox, text: "Acttivities", link: "/dashboard/packages" },
+             { icon: FaBox, text: "Activities", link: "/dashboard/customise-activities" },
             { icon: FaCog, text: "Settings", link: "/settings" },
           ].map(({ icon: Icon, text, link }, index) => (
             <Link

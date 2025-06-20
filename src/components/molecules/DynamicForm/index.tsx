@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Button from "@/components/atoms/button";
 import { fetchAPI } from "@/utils/apiService";
 import { FiEdit, FiTrash, FiPlus, FiX, FiAlertCircle } from "react-icons/fi";
@@ -12,7 +12,7 @@ interface Props<T> {
   onSave: (savedData: T) => void;
   title?: string;
   isSaving?: boolean;
-  columns?: { label: string; accessor: keyof T }[];
+  columns?: { label: string; accessor: keyof T; required?: boolean; editable?: boolean; deletable?: boolean }[];
   method?: "POST" | "PUT" | "PATCH";
 }
 
@@ -29,6 +29,16 @@ export default function DynamicForm<T extends { _id?: string }>({
   const [formData, setFormData] = useState<T>(data);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [categories, setCategories] = useState<any[]>([]);
+
+  useEffect(() => {
+    // Only fetch categories if a category field is present in columns
+    if (columns.some(col => col.accessor === 'category' || col.accessor === 'categorySlug')) {
+      fetchAPI({ endpoint: 'categories' }).then(res => {
+        setCategories(res.data || []);
+      });
+    }
+  }, [columns]);
 
   const handleChange = (key: string, value: any) => {
     setFormData((prev) => ({
@@ -59,6 +69,24 @@ export default function DynamicForm<T extends { _id?: string }>({
   };
 
   const renderField = (key: string, value: any) => {
+    // Category dropdown
+    if (key === 'category' || key === 'categorySlug') {
+      return (
+        <select
+          value={formData[key] || ''}
+          onChange={e => handleChange(key, e.target.value)}
+          className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+        >
+          <option value="">Select a category</option>
+          {categories.map(cat => (
+            <option key={cat.slug || cat._id || cat.id} value={cat.slug || cat._id || cat.id}>
+              {cat.name || cat.title || cat.slug}
+            </option>
+          ))}
+        </select>
+      );
+    }
+
     // Handle image fields
     if (key.toLowerCase().includes('image') || key.toLowerCase().includes('photo')) {
       const images = Array.isArray(value) ? value : [value];
@@ -337,29 +365,67 @@ export default function DynamicForm<T extends { _id?: string }>({
         <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-8">
           <div className="max-w-7xl mx-auto space-y-10">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-              {Object.entries(data).map(([key, value]) => {
-                // Skip unnecessary fields
-                if (shouldSkipField(key)) return null;
+              {columns
+                .filter(col => data.hasOwnProperty(col.accessor))
+                .map(col => {
+                  const key = col.accessor as string;
+                  const value = data[key];
+                  if (shouldSkipField(key)) return null;
 
-                // Full width for certain fields
-                const isFullWidth = 
-                  key.toLowerCase().includes('image') || 
-                  key.toLowerCase().includes('photo') || 
-                  key.toLowerCase().includes('description') ||
-                  Array.isArray(value);
+                  // Full width for certain fields
+                  const isFullWidth = 
+                    key.toLowerCase().includes('image') || 
+                    key.toLowerCase().includes('photo') || 
+                    key.toLowerCase().includes('description') ||
+                    Array.isArray(value);
 
-                return (
-                  <div 
-                    key={key} 
-                    className={`flex flex-col gap-3 ${isFullWidth ? 'md:col-span-2' : ''}`}
-                  >
-                    <label className="text-sm font-semibold text-gray-700 uppercase tracking-wider">
-                      {getFieldLabel(key)}
-                    </label>
-                    {renderField(key, value)}
-                  </div>
-                );
-              })}
+                  // Highlight required fields
+                  const highlightClass = col.required ? 'border-2 border-yellow-400 bg-yellow-50' : '';
+
+                  return (
+                    <div 
+                      key={key} 
+                      className={`flex flex-col gap-3 ${isFullWidth ? 'md:col-span-2' : ''} ${highlightClass}`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <label className="text-sm font-semibold text-gray-700 uppercase tracking-wider">
+                          {getFieldLabel(key)}
+                          {col.required && <span className="text-red-500 ml-1">*</span>}
+                        </label>
+                        <div className="flex gap-2">
+                          {col.editable && (
+                            <button
+                              type="button"
+                              className="p-1 rounded hover:bg-blue-100 text-blue-600"
+                              title="Edit Field"
+                              onClick={() => {/* Optionally focus or enable editing */}}
+                            >
+                              <FiEdit className="w-4 h-4" />
+                            </button>
+                          )}
+                          {col.deletable && (
+                            <button
+                              type="button"
+                              className="p-1 rounded hover:bg-red-100 text-red-600"
+                              title="Delete Field"
+                              onClick={() => {
+                                // Remove the field from formData
+                                setFormData(prev => {
+                                  const newData = { ...prev };
+                                  delete newData[key];
+                                  return newData;
+                                });
+                              }}
+                            >
+                              <FiTrash className="w-4 h-4" />
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                      {renderField(key, value)}
+                    </div>
+                  );
+                })}
             </div>
 
             {error && (

@@ -278,26 +278,12 @@ export function AdminTable<T extends Record<string, any>>({
         {/* Form Modal */}
         {showForm && currentItem && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-            <div className="w-full mx-auto max-w-3xl xl:max-w-4xl flex flex-col justify-center bg-white rounded-3xl shadow-2xl p-8 max-h-[90vh] overflow-y-auto">
-              <div className="flex justify-between items-center sticky top-0 pb-6 bg-white border-b border-gray-100">
+            <div className="w-full mx-auto max-w-3xl xl:max-w-4xl flex flex-col justify-center bg">
+              <div className="flex justify-between items-center ">
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-800 tracking-tight">
-                    {currentItem._id ? "Edit Item" : "Add New Item"}
-                  </h2>
-                  <p className="text-gray-500 mt-2">
-                    {currentItem._id ? "Update the details below" : "Fill in the details below"}
-                  </p>
+                  
                 </div>
-                <button
-                  onClick={() => {
-                    setShowForm(false);
-                    setCurrentItem(null);
-                    setImagePreview(null);
-                  }}
-                  className="text-gray-400 hover:text-gray-600 transition-all duration-200 p-2 hover:bg-gray-100 rounded-xl"
-                >
-                  <FiX className="w-6 h-6" />
-                </button>
+
               </div>
               {error && (
                 <div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 flex items-center gap-2">
