@@ -140,9 +140,7 @@ const profile = teamsdata.data;
         </div>
       </section>
 
-      <TopCategoriesSection
-        buttonText="What We Offer"
-      />
+     
 
      <section>
       <ValuesSection />
