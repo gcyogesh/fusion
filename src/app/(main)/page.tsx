@@ -10,13 +10,12 @@ import ImageDisplay from "@/components/atoms/ImageCard";
 import Button from "@/components/atoms/button";
 import TextHeader from "@/components/atoms/headings";
 import { fetchAPI } from "@/utils/apiService";
+
  
 import PartnerSection from "@/components/organisms/partners";
-import { CiLocationOn } from "react-icons/ci";
 
 
 import TestimonialCarousel from "@/components/organisms/testimonial/testimoinal";
-import { FaTrophy, FaStar, FaGlobe } from "react-icons/fa";
 import TextDescription from "@/components/atoms/description";
 import Link from "next/link";
 import ArrowIcon from "@/components/atoms/arrowIcon";
@@ -51,25 +50,25 @@ interface DestinationData {
 
 const stats = [
   {
-    icon: <FaTrophy className="text-4xl text-[#002B45]" />,
+    icon: <Image src="/images/stat1.png" alt="Experience Icon" width={46} height={46} className=" text-[#002B45]" />,
     title: "18+",
     subtitle: "Years of Experience",
     description: "Seasoned in travel excellence since day one.",
   },
   {
-    icon: <FaStar className="text-4xl text-[#002B45]" />,
+      icon: <Image src="/images/stat2.png" alt="Experience Icon" width={46} height={46} className=" text-[#002B45]" />,
     title: "2750+",
     subtitle: "TripAdvisor Reviews",
     description: "Loved and trusted by thousands of travelers.",
   },
   {
-    icon: <FaGlobe className="text-4xl text-[#002B45]" />,
+        icon: <Image src="/images/stat3.png" alt="Experience Icon" width={46} height={46} className=" text-[#002B45]" />,
     title: "116+",
     subtitle: "Cultural Tours",
     description: "Experience the heart of tradition and heritage with us.",
   },
   {
-    icon: <FaHiking className="text-4xl text-[#002B45]" />,
+        icon: <Image src="/images/stat4.png" alt="Experience Icon" width={46} height={46} className=" text-[#002B45]" />,
     title: "106+",
     subtitle: "Adventure Activities",
     description: "Thrills, treks, and unforgettable adrenaline rushes.",
@@ -156,8 +155,8 @@ export default async function Home() {
 
     <div className="flex flex-col gap-3">
       <div className="flex justify-between text-sm text-[#5A5A5A]">
-        <span className="flex items-center gap-1 font-bold">
-          <CiLocationOn className="w-4 h-4" />
+        <span className="flex items-center gap-1 font-sans  leading-2">
+          <Image src={"/images/location1.png"} alt="Location" width={17.5} height={25}/>
           {card.location.city}, {card.location.country}
         </span>
         <span className="flex items-center font-bold gap-1">
@@ -170,8 +169,8 @@ export default async function Home() {
 
       <div className="w-full h-[1.5px] bg-[#C2C2C2]" />
 
-      <div className="flex flex-row justify-between text-lg font-semibold text-[#5A5A5A] mt-1">
-        Start From <span className="text-primary">${card.basePrice}</span>
+      <div className="flex flex-row  text-lg font-semibold text-[#5A5A5A] mt-1">
+        Start From <span className="text-primary ml-5">$120 - ${card.basePrice}</span>
       </div>
     </div>
   </Link>
@@ -244,7 +243,7 @@ export default async function Home() {
                     </div>
 
                     <div className="flex justify-start sm:justify-end items-end mr-0 md:mr-25 mt-4 md:mt-0 lg:mt-0 ">
-                      <Button text="Book Now" variant="primary" className="text-base text-[#FFFFFF] " />
+                      <Button text="Book Now" variant="primary" className="text-base text-[#FFFFFF]"  buttonLink="/itinary" />
                     </div>
                   </div>
                 </div>
@@ -256,7 +255,7 @@ export default async function Home() {
                       src="/images/pokharaflight.png"
                       alt="Ultralight Flight"
                       variant="smallsquare"
-                      width={455}
+                      width={568}
                       height={400}
                       className="object-fill"
                     />
@@ -320,12 +319,12 @@ export default async function Home() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
           {/* Rectangle Image (spans 2 columns) */}
           <div className="lg:col-span-2">
-            <ImageDisplay src={destinationdata.data[0].imageUrls[0]} variant="rectangle" width={840} height={430} title={destinationdata.data[0].title} description={destinationdata.data[0].subtitle} />
+            <ImageDisplay src={destinationdata.data[0].imageUrls[0]} variant="rectangle" width={840} height={430} title={destinationdata.data[0].title} description={destinationdata.data[0].subtitle} totalTrips={destinationdata.data[0].totalTrips}  />
           </div>
 
           {/* Square Image */}
           <div>
-            <ImageDisplay src={destinationdata.data[1].imageUrls[0]} variant="square" title={destinationdata.data[1].title} description={destinationdata.data[1].subtitle} />
+            <ImageDisplay src={destinationdata.data[1].imageUrls[0]} variant="square" title={destinationdata.data[1].title} description={destinationdata.data[1].subtitle} totalTrips={destinationdata.data[0].totalTrips}   />
 
           </div>
         </div>
@@ -334,7 +333,7 @@ export default async function Home() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {destinationdata.data.slice(2, 5).map((card, index) => (
             <div key={index}>
-              <ImageDisplay src={card.imageUrls[0]} variant="square" alt="Pashpati" snippet="popular" title={card.title} description={card.subtitle} />
+              <ImageDisplay src={card.imageUrls[0]} variant="square" alt="Pashpati"  title={card.title} description={card.subtitle}  totalTrips={destinationdata.data[0].totalTrips} />
 
             </div>
           ))}
@@ -509,12 +508,14 @@ export default async function Home() {
           <div className="lg:col-span-2 flex flex-col">
             <Link href={`/blogs/${blogsdata.data[0].slug}`}  >
               <div className="aspect-video w-full">
-                <ImageDisplay src={blogsdata.data[0].imageUrl} variant="rectangle" title={blogsdata.data[0].title}
-                  description={blogsdata.data[0].subtitle} />
+                <ImageDisplay src={blogsdata.data[0].imageUrl}  variant="rectangle" title={blogsdata.data[0].title}
+                  description={blogsdata.data[0].subtitle} createdAt={blogsdata.data[0].createdAt} />
               </div>
               <div className="mt-3">
                 <h1 className="text-xl font-bold">{blogsdata.data[0].subtitle}</h1>
-                <p className="mt-2 h-[155px]">{blogsdata.data[0].description}</p>
+                <p className="mt-2 h-[155px]"></p>
+              
+                
               </div>
             </Link>
           </div>
@@ -530,7 +531,7 @@ export default async function Home() {
                   <div key={card.id} className="flex flex-col">
                     <div className="">
 
-                      <ImageDisplay src={card.imageUrl} variant="smallrectangle" title={card.title} description={card.description} />
+                      <ImageDisplay src={card.imageUrl} variant="smallrectangle" title={card.title} description={card.description} createdAt={blogsdata.data[0].createdAt} />
                     </div>
                     <div className="mt-4 h-[150px] ">
                       <h1 className="text-lg font-semibold">{card.subtitle}</h1>

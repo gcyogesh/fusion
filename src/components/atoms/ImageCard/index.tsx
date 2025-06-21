@@ -3,6 +3,8 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import ArrowIcon from '../arrowIcon';
+import Button from '../button';
+import Image from 'next/image';
 type Variant = 'rectangle' | 'square' | 'smallsquare' | 'smallrectangle';
 type SnippetPosition = 'center' | 'start' | 'end';
 
@@ -21,6 +23,8 @@ interface ImageDisplayProps<T = string> {
   title?: string;
   description?: string;
   showOverlayContent?: boolean;
+  totalTrips?: number;
+  createdAt?: string;
 }
 
 const aspectRatios = {
@@ -67,6 +71,8 @@ const ImageDisplay = <T extends string>({
   secondSnippetPosition = 'end',
   title,
   description,
+  totalTrips,
+  createdAt,
   showOverlayContent = true,
 }: ImageDisplayProps<T>) => {
   const [isError, setIsError] = useState(false);
@@ -96,6 +102,9 @@ const ImageDisplay = <T extends string>({
             />
           ) : (
             <span className="text-gray-400 text-sm md:text-base">Image not available</span>
+
+
+
           )}
         </div>
       ) : (
@@ -105,8 +114,18 @@ const ImageDisplay = <T extends string>({
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           onError={() => setIsError(true)}
         />
+
+
+
+        
+        
+
+
       )}
 
+
+
+     
       {showOverlayContent && (
         <motion.div
           initial={{ opacity: 0 }}
@@ -120,6 +139,23 @@ const ImageDisplay = <T extends string>({
               {description}
             </p>
           )}
+
+           {createdAt && (
+        <div className="absolute bottom-2 left-2  flex   items-center  backdrop-blur-md bg-white/20  text-md text-gray-200 px-6 py-2 rounded-full">
+<Image src="/images/calender.png" width={27} height={27} alt="asdjfkj" className='mr-2 '/>
+          {new Date(createdAt).toLocaleDateString()}
+        </div>
+      )}
+
+
+          {typeof totalTrips === 'number' && (
+            <Button 
+              text={`${totalTrips} Trips`}
+              className="absolute  top-0 text-[#ffffff] text-xs md:text-sm font-semibold px-2 py-1 bg-primary rounded-lg"
+            />
+          )}
+
+
           <div className="mt-4 w-8 h-8 flex items-center justify-center rounded-full bg-orange-500">
             <ArrowIcon size={10} />
           </div>
@@ -128,7 +164,7 @@ const ImageDisplay = <T extends string>({
 
       {snippet && (
         <div
-        className={`absolute z-10 text-[#ffffff] text-xs md:text-sm font-semibold px-2 py-1 md:px-4 md:py-2 bg-primary rounded-lg ${getSnippetPositionClasses(
+          className={`absolute z-10 text-[#ffffff] text-xs md:text-sm font-semibold px-6 py-4 md:px-4 md:py-2 bg-primary rounded-lg ${getSnippetPositionClasses(
             snippetPosition
           )}`}
         >
