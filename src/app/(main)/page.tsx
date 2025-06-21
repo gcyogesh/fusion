@@ -10,13 +10,12 @@ import ImageDisplay from "@/components/atoms/ImageCard";
 import Button from "@/components/atoms/button";
 import TextHeader from "@/components/atoms/headings";
 import { fetchAPI } from "@/utils/apiService";
+
  
 import PartnerSection from "@/components/organisms/partners";
-import { CiLocationOn } from "react-icons/ci";
 
 
 import TestimonialCarousel from "@/components/organisms/testimonial/testimoinal";
-import { FaTrophy, FaStar, FaGlobe } from "react-icons/fa";
 import TextDescription from "@/components/atoms/description";
 import Link from "next/link";
 import ArrowIcon from "@/components/atoms/arrowIcon";
