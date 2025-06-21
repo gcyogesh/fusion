@@ -35,9 +35,9 @@ const ContactForm: React.FC<ContactFormProps> = ({
 
   return (
     <form onSubmit={handleSubmit}>
-      <div className="flex flex-col items-center px-4">
+      <div className="flex flex-col items-center">
         <div
-          className="bg-[#0E334F] w-[520px] rounded-3xl shadow-md border border-white flex flex-col gap-7"
+          className="bg-[#0E334F] w-full max-w-[520px] rounded-3xl shadow-md border border-white flex flex-col gap-6 sm:gap-7 p-6 sm:p-8"
           style={{ padding }}
         >
           {formTitle && (
@@ -47,75 +47,65 @@ const ContactForm: React.FC<ContactFormProps> = ({
           )}
 
           {/* Name */}
-          <div className="w-full flex flex-col">
-            <label className="text-sm text-white font-medium mb-1">
-              Name
-            </label>
+          <div className="flex flex-col w-full">
+            <label className="text-sm text-white font-medium mb-1">Name</label>
             <input
               required
               type="text"
               placeholder="Your Name"
               value={formData.name}
               onChange={(e) => handleChange("name", e.target.value)}
-              className="border border-white rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-white placeholder:text-white placeholder:opacity-30"
+              className="w-full border border-white rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-white placeholder:text-white placeholder:opacity-30"
             />
           </div>
 
           {/* Email */}
-          <div className="flex flex-col">
-            <label className="text-sm text-white font-medium mb-1">
-              Email Address
-            </label>
+          <div className="flex flex-col w-full">
+            <label className="text-sm text-white font-medium mb-1">Email Address</label>
             <input
               required
               type="email"
               placeholder="your@email.com"
               value={formData.email}
               onChange={(e) => handleChange("email", e.target.value)}
-              className="border rounded-md border-white opacity-30 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-white placeholder:text-white placeholder:opacity-30"
+              className="w-full border border-white rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-white placeholder:text-white placeholder:opacity-30"
             />
           </div>
 
           {/* Phone */}
-          <div className="flex flex-col">
-            <label className="text-sm text-white font-medium mb-1">
-              Phone Number
-            </label>
+          <div className="flex flex-col w-full">
+            <label className="text-sm text-white font-medium mb-1">Phone Number</label>
             <input
               required
               type="tel"
               placeholder="+977"
               value={formData.phone}
               onChange={(e) => handleChange("phone", e.target.value)}
-              className="border border-white rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-white placeholder:text-white placeholder:opacity-30"
+              className="w-full border border-white rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-white placeholder:text-white placeholder:opacity-30"
             />
           </div>
 
           {/* Address */}
-          <div className="flex flex-col">
-            <label className="text-sm text-white font-medium mb-1">
-              Address
-            </label>
+          <div className="flex flex-col w-full">
+            <label className="text-sm text-white font-medium mb-1">Address</label>
             <input
               required
               type="text"
               placeholder="Your Address"
               value={formData.address}
               onChange={(e) => handleChange("address", e.target.value)}
-              className="border border-white rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-white placeholder:text-white placeholder:opacity-30"
+              className="w-full border border-white rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-white placeholder:text-white placeholder:opacity-30"
             />
           </div>
 
           {/* Message */}
-          <div className="flex flex-col">
-            <label className="text-sm text-white font-medium mb-1">
-              Message
-            </label>
+          <div className="flex flex-col w-full">
+            <label className="text-sm text-white font-medium mb-1">Message</label>
             <textarea
               placeholder="Type your message..."
               value={formData.message}
               onChange={(e) => handleChange("message", e.target.value)}
-              className="border border-white opacity-30 rounded-md px-4 py-2 h-28 resize-none focus:outline-none focus:ring-2 focus:ring-white placeholder:text-white placeholder:opacity-30"
+              className="w-full border border-white opacity-30 rounded-md px-4 py-2 h-28 resize-none focus:outline-none focus:ring-2 focus:ring-white placeholder:text-white placeholder:opacity-30"
             />
           </div>
 
@@ -123,7 +113,7 @@ const ContactForm: React.FC<ContactFormProps> = ({
           <Button
             text="Submit"
             variant="primary"
-            className="mt-6 w-full bg-[#F7941D] hover:bg-[#E47312] text-white font-semibold py-2 px-4 rounded-md transition-colors"
+            className="mt-4 w-full bg-[#F7941D] hover:bg-[#E47312] text-white font-semibold py-2 px-4 rounded-md transition-colors"
             onClick={() => console.log("Primary Button Clicked")}
           />
         </div>

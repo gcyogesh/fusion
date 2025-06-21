@@ -48,7 +48,7 @@ export default function Footer() {
                   To receive tour packages, news, updates, departures and offers via email.
                 </p>
               </div>
-              <div className="w-[356px] pt-1 pr-1 pb-1 mt-2 bg-white border border-black rounded-xl">
+              <div className="w-[300px] md:w-[356px] pt-1 pr-1 pb-1 mt-2 bg-white border border-black rounded-xl">
                 <div className="flex bg-white rounded-xl">
                   <input
                     type="email"
