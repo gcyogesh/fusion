@@ -123,7 +123,7 @@ export default function Navbar() {
         backdropFilter: navbarBlur ? 'blur(10px)' : 'none',
         WebkitBackdropFilter: navbarBlur ? 'blur(10px)' : 'none'
       }}
-      className={`fixed top-0 left-0 w-full z-60 transition-transform duration-300 ${
+      className={`fixed top-0 left-0 w-full z-60 transition-all duration-300 ease-linear ${
         showNavbar ? 'translate-y-0' : '-translate-y-full'
       } transition-colors duration-500 ease-in-out px-2`}
     >

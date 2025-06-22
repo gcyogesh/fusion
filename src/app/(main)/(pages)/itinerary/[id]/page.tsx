@@ -155,7 +155,7 @@ export default async function Page({ params }: { params: { id: string } }) {
 
       <MidNavbar />
 
-      <section className="mx-auto max-w-7xl">
+      <section id="Overview" className="mx-auto max-w-7xl">
         <div className="flex flex-col md:flex-row justify-between gap-6">
           <div className="flex-1 max-w-4xl pr-2">
             <TextDescription text={destination.description} />
@@ -186,16 +186,16 @@ export default async function Page({ params }: { params: { id: string } }) {
                 {destination.highlights?.map((item, i) => <li key={i}>{item}</li>)}
               </ul>
             </div>
-
-            <div className="space-y-6 py-10">
+             {/* Itinerary */}
+            <div id="Itinerary" className="space-y-6 py-10">
               <div className="flex flex-row gap-2">
                 <Image src="/images/iterate/itenerylogo.svg" alt="Itinerary" width={40} height={2} />
                 <TextHeader text={`${destination.title} Itinerary`} align="start" size="large" width={855}  />
               </div>
               <ItinerarySection itinerary={itinerary} />
 
-              <div className="w-auto md:w-[875px] h-[1px] bg-black opacity-20 mt-2 mb-6" />
-
+              <div id="Includes-Excludes" className="w-auto md:w-[875px] h-[1px] bg-black opacity-20 mt-2 mb-6" />
+            {/* iclusion& exclusions */}
               <div className="max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-8">
                 <InclusionExclusion title="Cost Includes" items={destination.inclusions} icon="/images/right.png" />
                 <InclusionExclusion title="Cost Excludes" items={destination.exclusions} icon="/images/cross.png" />
@@ -210,8 +210,8 @@ export default async function Page({ params }: { params: { id: string } }) {
             <div className="py-6">
               <UserForm />
             </div>
-
-            <div className="py-6">
+          {/*trips maps */}
+            <div id="Trip-Map" className="py-6">
               <TextHeader text="Trek Map" align="left" size="large" width={855} className=" mb-2" />
               {destination.googleMapUrl && (
                 <Image
@@ -223,7 +223,7 @@ export default async function Page({ params }: { params: { id: string } }) {
                 />
               )}
             </div>
-
+{/*equipments */}
             <div className="max-w-4xl py-6">
               <TextHeader text="Trek Gallery" align="left" size="large" width={855} className="mb-2" />
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">

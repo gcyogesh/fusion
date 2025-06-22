@@ -6,7 +6,7 @@ import Image from "next/image";
 import TextHeader from "@/components/atoms/headings";
 import Button from "@/components/atoms/button";
 import { FaMapMarkerAlt, FaCalendarAlt, FaTimes, FaBusinessTime } from "react-icons/fa";
-
+import ArrowIcon from "@/components/atoms/arrowIcon";
 interface HeroData {
   title: string;
   subTitle?: string;
@@ -125,7 +125,10 @@ const HeroSection = ({ herodata }: { herodata: HeroData }) => {
               variant="secondary"
               textColor="text-white"
               className="border border-white w-[200px] h-[55px] mt-4"
+               
             />
+
+            
           </div>
         </div>
       </div>

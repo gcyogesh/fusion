@@ -8,6 +8,7 @@ import Image from 'next/image';
 type Variant = 'rectangle' | 'square' | 'smallsquare' | 'smallrectangle';
 type SnippetPosition = 'center' | 'start' | 'end';
 
+
 interface ImageDisplayProps<T = string> {
   src?: T;
   alt?: string;
@@ -21,6 +22,7 @@ interface ImageDisplayProps<T = string> {
   secondSnippet?: React.ReactNode;
   secondSnippetPosition?: SnippetPosition;
   title?: string;
+  showDefaultTitle?: boolean;
   description?: string;
   showOverlayContent?: boolean;
   totalTrips?: number;
@@ -46,6 +48,7 @@ const getSnippetPositionClasses = (position: SnippetPosition) => {
   }
 };
 
+
 const containerVariants = {
   hidden: { opacity: 0, y: 30, scale: 0.95 },
   visible: {
@@ -70,6 +73,7 @@ const ImageDisplay = <T extends string>({
   secondSnippet,
   secondSnippetPosition = 'end',
   title,
+  showDefaultTitle,
   description,
   totalTrips,
   createdAt,
@@ -117,15 +121,15 @@ const ImageDisplay = <T extends string>({
 
 
 
-        
-        
+
+
 
 
       )}
 
 
 
-     
+
       {showOverlayContent && (
         <motion.div
           initial={{ opacity: 0 }}
@@ -140,26 +144,36 @@ const ImageDisplay = <T extends string>({
             </p>
           )}
 
-           {createdAt && (
-        <div className="absolute bottom-2 left-2  flex   items-center  backdrop-blur-md bg-white/20  text-md text-gray-200 px-6 py-2 rounded-full">
-<Image src="/images/calender.png" width={27} height={27} alt="asdjfkj" className='mr-2 '/>
-          {new Date(createdAt).toLocaleDateString()}
-        </div>
-      )}
-
-
-          {typeof totalTrips === 'number' && (
-            <Button 
-              text={`${totalTrips} Trips`}
-              className="absolute  top-0 text-[#ffffff] text-xs md:text-sm font-semibold px-2 py-1 bg-primary rounded-lg"
-            />
+          {createdAt && (
+            <div className="absolute bottom-2 left-2  flex   items-center  backdrop-blur-md bg-white/20  text-md text-gray-200 px-6 py-2 rounded-full">
+              <Image src="/images/calender.png" width={27} height={27} alt="Image nnot found" className='mr-2 ' />
+              {new Date(createdAt).toLocaleDateString()}
+            </div>
           )}
+
+
+
 
 
           <div className="mt-4 w-8 h-8 flex items-center justify-center rounded-full bg-orange-500">
             <ArrowIcon size={10} />
           </div>
         </motion.div>
+      )}
+      {typeof totalTrips === 'number' && (
+        <div className="absolute top-8 left-1/2 -translate-x-1/2 z-10">
+          <Button
+            text={`${totalTrips} Trips`}
+            className=" text-[#ffffff] text-xs md:text-sm font-semibold px-2 py-1 bg-primary rounded-lg"
+          />
+        </div>
+      )}
+
+
+      {title && showDefaultTitle && (
+        <div className="absolute bottom-4 left-0 w-full text-center px-4 py-3  from-black/70 to-transparent group-hover:opacity-0 transition-opacity duration-300 text-lg ">
+          <h1 className="text-white text-sm md:text-lg font-semibold">{title}</h1>
+        </div>
       )}
 
       {snippet && (

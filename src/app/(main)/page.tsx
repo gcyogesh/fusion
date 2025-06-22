@@ -154,13 +154,13 @@ export default async function Home() {
     </div>
 
     <div className="flex flex-col gap-3">
-      <div className="flex justify-between text-sm text-[#5A5A5A]">
-        <span className="flex items-center gap-1 font-sans  leading-2">
-          <Image src={"/images/location1.png"} alt="Location" width={17.5} height={25}/>
+      <div className="flex justify-between text-sm ">
+        <span className="flex items-center gap-1 font-medium text-[20px] text-[#7E7E7E] ">
+          <Image src={"/images/location.svg"} alt="Location" width={25} height={25}/>
           {card.location.city}, {card.location.country}
         </span>
-        <span className="flex items-center font-bold gap-1">
-          <HiOutlineClock className="w-4 h-4" />
+        <span className="flex items-center gap-2 font-medium text-[20px]  text-[#7E7E7E]  ">
+          <Image src={"/images/clock.svg"} alt="Clock" width={22} height={22}/>
           {card.duration.days} Days
         </span>
       </div>
@@ -169,7 +169,7 @@ export default async function Home() {
 
       <div className="w-full h-[1.5px] bg-[#C2C2C2]" />
 
-      <div className="flex flex-row  text-lg font-semibold text-[#5A5A5A] mt-1">
+      <div className="flex flex-row  text-lg font-medium text-[#7E7E7E] text-[20px] mt-1">
         Start From <span className="text-primary ml-5">$120 - ${card.basePrice}</span>
       </div>
     </div>
@@ -319,12 +319,12 @@ export default async function Home() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
           {/* Rectangle Image (spans 2 columns) */}
           <div className="lg:col-span-2">
-            <ImageDisplay src={destinationdata.data[0].imageUrls[0]} variant="rectangle" width={840} height={430} title={destinationdata.data[0].title} description={destinationdata.data[0].subtitle} totalTrips={destinationdata.data[0].totalTrips}  />
+            <ImageDisplay src={destinationdata.data[0].imageUrls[0]} variant="rectangle" width={840} height={430} title={destinationdata.data[0].title} showDefaultTitle={true} description={destinationdata.data[0].subtitle} totalTrips={destinationdata.data[0].totalTrips}  />
           </div>
 
           {/* Square Image */}
           <div>
-            <ImageDisplay src={destinationdata.data[1].imageUrls[0]} variant="square" title={destinationdata.data[1].title} description={destinationdata.data[1].subtitle} totalTrips={destinationdata.data[0].totalTrips}   />
+            <ImageDisplay src={destinationdata.data[1].imageUrls[0]} variant="square" title={destinationdata.data[1].title} showDefaultTitle={true} description={destinationdata.data[1].subtitle} totalTrips={destinationdata.data[0].totalTrips}   />
 
           </div>
         </div>
@@ -333,7 +333,7 @@ export default async function Home() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {destinationdata.data.slice(2, 5).map((card, index) => (
             <div key={index}>
-              <ImageDisplay src={card.imageUrls[0]} variant="square" alt="Pashpati"  title={card.title} description={card.subtitle}  totalTrips={destinationdata.data[0].totalTrips} />
+              <ImageDisplay src={card.imageUrls[0]} variant="square" alt="Pashpati"  title={card.title} description={card.subtitle} showDefaultTitle={true}  totalTrips={destinationdata.data[0].totalTrips} />
 
             </div>
           ))}
@@ -420,7 +420,7 @@ export default async function Home() {
   </div>
 
   {/* Carousel */}
-  <div className="">
+  <div>
     <TestimonialCarousel testimoinaldata={testimoinaldata} />
   </div>
 
