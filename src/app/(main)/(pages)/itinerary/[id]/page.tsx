@@ -1,4 +1,3 @@
-
 import TextHeader from "@/components/atoms/headings";
 import ImageDisplay from "@/components/atoms/ImageCard";
 import { fetchAPI } from "@/utils/apiService";
@@ -271,7 +270,7 @@ export default async function Page({ params }: { params: { id: string } }) {
   );
 }
 
-function FeatureItem({ icon, label, value }: { icon: string; label: string; value: any }) {
+function FeatureItem({ icon, label, value }: { icon: string; label: string; value: string | number | undefined | null }) {
   return (
     <div className="flex items-center gap-4">
       <Image src={icon} alt={label} width={40} height={40} className="mt-1 w-[35] h-[35]" />

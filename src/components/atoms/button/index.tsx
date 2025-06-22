@@ -12,7 +12,11 @@ interface ButtonProps<T = unknown> {
   textColor?: string;   // Accept Tailwind or custom text classes like "text-blue-600" alright
 }
 
-const Button = <T,>({
+/**
+ * Reusable button component with variants and optional icons.
+ * Memoized for performance.
+ */
+const Button = React.memo(<T,>({
   text,
   onClick,
   className = "",
@@ -79,6 +83,6 @@ const Button = <T,>({
       <div className="absolute right-0 top-0 bottom-0 w-1/4 hover:bg-transparent"></div>
     </button>
   );
-};
+});
 
 export default Button;

@@ -11,6 +11,7 @@ export default async function dashboard() {
             data={packagesdata.data}
             columns={[
               { label: "Packages title", accessor: "title" },
+             
             ]} 
             endpoint="tour/tour-packages"
           />

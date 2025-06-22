@@ -46,7 +46,7 @@ export default function DurationPackages() {
           const res = await fetchAPI({
             endpoint: `tour/tour-packages/filter-by-duration?min=${group.min}&max=${group.max}`
           });
-          data[group.slug] = res.data?.map((pkg: any) => ({
+          data[group.slug] = res.data?.map((pkg: Package) => ({
             ...pkg,
             duration: { days: pkg.duration?.days || 0 },
             priceMin: pkg.basePrice,

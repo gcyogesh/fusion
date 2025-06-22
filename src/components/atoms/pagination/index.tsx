@@ -5,9 +5,14 @@ type PaginationProps = {
   currentPage: number;
   totalPages: number;
   getPageUrl: (page: number) => string;
+  onPageChange?: (page: number) => void;
 };
 
-const Pagination = ({ currentPage, totalPages, getPageUrl }: PaginationProps) => {
+/**
+ * Pagination component for navigating between pages.
+ * Memoized for performance.
+ */
+const Pagination = React.memo(({ currentPage, totalPages, getPageUrl, onPageChange }: PaginationProps) => {
   const pages = [...Array(totalPages).keys()].map(n => n + 1);
 
   return (
@@ -15,11 +20,20 @@ const Pagination = ({ currentPage, totalPages, getPageUrl }: PaginationProps) =>
 
       {/* Previous Button */}
       {currentPage > 1 ? (
-        <Link href={getPageUrl(currentPage - 1)}>
-          <button className="px-4 py-2 border rounded-md text-sm text-primary border-primary hover:bg-blue-100 cursor-pointer transition">
+        onPageChange ? (
+          <button
+            className="px-4 py-2 border rounded-md text-sm text-primary border-primary hover:bg-blue-100 cursor-pointer transition"
+            onClick={() => onPageChange(currentPage - 1)}
+          >
             Previous
           </button>
-        </Link>
+        ) : (
+          <Link href={getPageUrl(currentPage - 1)}>
+            <button className="px-4 py-2 border rounded-md text-sm text-primary border-primary hover:bg-blue-100 cursor-pointer transition">
+              Previous
+            </button>
+          </Link>
+        )
       ) : (
         <button disabled className="px-4 py-2 border rounded-md text-sm text-gray-400 border-gray-300 cursor-not-allowed">
           Previous
@@ -28,26 +42,50 @@ const Pagination = ({ currentPage, totalPages, getPageUrl }: PaginationProps) =>
 
       {/* Page Buttons */}
       {pages.map((page) => (
-        <Link href={getPageUrl(page)} key={page}>
+        onPageChange ? (
           <button
+            key={page}
+            onClick={() => onPageChange(page)}
             className={`px-4 py-2 border rounded-md text-sm transition ${
               page === currentPage
                 ? 'bg-primary text-white border-primary cursor-default'
                 : 'text-gray-700 border-gray-300 hover:bg-primary hover:text-white cursor-pointer'
             }`}
+            disabled={page === currentPage}
           >
             {page}
           </button>
-        </Link>
+        ) : (
+          <Link href={getPageUrl(page)} key={page}>
+            <button
+              className={`px-4 py-2 border rounded-md text-sm transition ${
+                page === currentPage
+                  ? 'bg-primary text-white border-primary cursor-default'
+                  : 'text-gray-700 border-gray-300 hover:bg-primary hover:text-white cursor-pointer'
+              }`}
+            >
+              {page}
+            </button>
+          </Link>
+        )
       ))}
 
       {/* Next Button */}
       {currentPage < totalPages ? (
-        <Link href={getPageUrl(currentPage + 1)}>
-          <button className="px-4 py-2 border rounded-md text-sm text-primary border-primary hover:bg-primary hover:text-white cursor-pointer transition">
+        onPageChange ? (
+          <button
+            className="px-4 py-2 border rounded-md text-sm text-primary border-primary hover:bg-primary hover:text-white cursor-pointer transition"
+            onClick={() => onPageChange(currentPage + 1)}
+          >
             Next
           </button>
-        </Link>
+        ) : (
+          <Link href={getPageUrl(currentPage + 1)}>
+            <button className="px-4 py-2 border rounded-md text-sm text-primary border-primary hover:bg-primary hover:text-white cursor-pointer transition">
+              Next
+            </button>
+          </Link>
+        )
       ) : (
         <button disabled className="px-4 py-2 border rounded-md text-sm text-primary border-primary cursor-not-allowed">
           Next
@@ -55,6 +93,6 @@ const Pagination = ({ currentPage, totalPages, getPageUrl }: PaginationProps) =>
       )}
     </div>
   );
-};
+});
 
 export default Pagination;

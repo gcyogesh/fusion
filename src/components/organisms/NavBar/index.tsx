@@ -16,6 +16,16 @@ type NavLink = {
   subLinks?: { name: string; href: string }[]
 }
 
+interface Activity {
+  title: string;
+  slug: string;
+}
+
+interface Destination {
+  title: string;
+  slug: string;
+}
+
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [dropdownOpen, setDropdownOpen] = useState<string | null>(null)
@@ -37,15 +47,15 @@ export default function Navbar() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const activitiesRes = await fetchAPI({ endpoint: 'activities' })
-      const destinationsRes = await fetchAPI({ endpoint: 'destinations' })
+      const activitiesRes = await fetchAPI<{ data: Activity[] }>({ endpoint: 'activities' })
+      const destinationsRes = await fetchAPI<{ data: Destination[] }>({ endpoint: 'destinations' })
 
-      const formattedActivities = activitiesRes?.data?.map((item: any) => ({
+      const formattedActivities = activitiesRes?.data?.map((item: Activity) => ({
         name: item?.title || 'Untitled',
         href: `/activities/${item?.slug || ''}`
       }))
 
-      const formattedDestinations = destinationsRes?.data?.map((item: any) => ({
+      const formattedDestinations = destinationsRes?.data?.map((item: Destination) => ({
         name: item?.title || 'Untitled',
         href: `/destinations/${item?.slug || ''}`
       }))

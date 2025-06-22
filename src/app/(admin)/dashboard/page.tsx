@@ -1,4 +1,4 @@
-import { fetchAPI } from "@/utils/apiService";
+import { fetchAPI, APIResponse } from "@/utils/apiService";
 import {
   FaMapMarkerAlt,
   FaNewspaper,
@@ -9,11 +9,36 @@ import {
 } from "react-icons/fa";
 import Link from "next/link";
 
+interface Destination {
+  title: string;
+  location: string;
+}
+
+interface Blog {
+  title: string;
+  subtitle: string;
+}
+
+interface Activity {
+  title: string;
+}
+
+interface Testimonial {
+  name: string;
+  feedback: string;
+}
+
 export default async function Dashboard() {
-  const destinations = await fetchAPI({ endpoint: "destinations" });
-  const blogs = await fetchAPI({ endpoint: "blogs" });
-  const activities = await fetchAPI({ endpoint: "activities" });
-  const testimonials = await fetchAPI({ endpoint: "testimonials" });
+  const destinations = await fetchAPI<APIResponse<Destination[]>>({
+    endpoint: "destinations",
+  });
+  const blogs = await fetchAPI<APIResponse<Blog[]>>({ endpoint: "blogs" });
+  const activities = await fetchAPI<APIResponse<Activity[]>>({
+    endpoint: "activities",
+  });
+  const testimonials = await fetchAPI<APIResponse<Testimonial[]>>({
+    endpoint: "testimonials",
+  });
 
   const stats = [
     {
@@ -68,6 +93,13 @@ export default async function Dashboard() {
       href: "/dashboard/customise-activities",
       color: "bg-orange-500 hover:bg-orange-600",
     },
+    {
+      title: "Add Package",
+      description: "Create a new package",
+      icon: <FaPlus className="text-xl" />,
+      href: "/dashboard/customise-packages",
+      color: "bg-yellow-500 hover:bg-yellow-600",
+    },
   ];
 
   return (
@@ -114,7 +146,7 @@ export default async function Dashboard() {
           <h2 className="text-xl font-semibold text-gray-900 mb-4">
             Quick Actions
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {quickActions.map((action, index) => (
               <Link key={index} href={action.href}>
                 <div
@@ -143,22 +175,24 @@ export default async function Dashboard() {
               Recent Destinations
             </h2>
             <div className="space-y-3">
-              {destinations?.data?.slice(0, 5).map((destination: any, index: number) => (
-                <div
-                  key={index}
-                  className="flex items-center space-x-3 p-3 bg-gray-50 rounded"
-                >
-                  <FaMapMarkerAlt className="text-blue-500" />
-                  <div className="flex-1">
-                    <p className="font-medium text-gray-900">
-                      {destination.title}
-                    </p>
-                    <p className="text-sm text-gray-600">
-                      {destination.location}
-                    </p>
+              {destinations?.data
+                ?.slice(0, 5)
+                .map((destination: Destination, index: number) => (
+                  <div
+                    key={index}
+                    className="flex items-center space-x-3 p-3 bg-gray-50 rounded"
+                  >
+                    <FaMapMarkerAlt className="text-blue-500" />
+                    <div className="flex-1">
+                      <p className="font-medium text-gray-900">
+                        {destination.title}
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        {destination.location}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
             </div>
             <Link
               href="/dashboard/customise-destinations"
@@ -174,7 +208,7 @@ export default async function Dashboard() {
               Recent Blogs
             </h2>
             <div className="space-y-3">
-              {blogs?.data?.slice(0, 5).map((blog: any, index: number) => (
+              {blogs?.data?.slice(0, 5).map((blog: Blog, index: number) => (
                 <div
                   key={index}
                   className="flex items-center space-x-3 p-3 bg-gray-50 rounded"

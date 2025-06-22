@@ -53,7 +53,11 @@ const containerVariants = {
   exit: { opacity: 0, y: 20, scale: 0.95, transition: { duration: 0.3 } },
 };
 
-const ImageDisplay = <T extends string>({
+/**
+ * Optimized image display component with optional overlays and variants.
+ * Memoized for performance.
+ */
+const ImageDisplay = React.memo(<T extends string>({
   src,
   alt = 'Image',
   className = '',
@@ -147,6 +151,6 @@ const ImageDisplay = <T extends string>({
       )}
     </motion.div>
   );
-};
+});
 
 export default ImageDisplay;

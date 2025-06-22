@@ -14,6 +14,14 @@ type Props = {
   };
 };
 
+interface BlogCard {
+  id: string;
+  slug: string;
+  imageUrl: string;
+  subtitle: string;
+  description: string;
+}
+
 const Blogs = async ({ searchParams }: Props) => {
   const blogsdata = await fetchAPI({ endpoint: "blogs" });
   const herodata = await fetchAPI({ endpoint: "herobanner/blog" });
@@ -62,7 +70,7 @@ const Blogs = async ({ searchParams }: Props) => {
             )}
 
             <div className="flex flex-col gap-6">
-              {currentBlogs.slice(1).map((card: any) => (
+              {currentBlogs.slice(1).map((card: BlogCard) => (
                 <Link href={`/blogs/${card.slug}`} key={card.id}>
                   <div className="flex flex-col cursor-pointer">
                     <ImageDisplay

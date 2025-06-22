@@ -453,7 +453,7 @@ export default async function Home() {
                 textcolor="white"
               />
 
-              <TextDescription text="Show us your #BestFamilyMoments by tagging us @Fusion Expeditions for a chance to be featured!" className="w-[300px] md:w-[400px] lg:w-[400px] text-[#FFFFFF] opacity-90" />
+              <TextDescription text="Show us your #BestFamilyMoments by tagging us @Fusion Expeditions for a chance to be featured!" className="w-[300px] md:w-[400px] lg:w-[400px] text-[#FFFFFF] opacity-90" />
             </div>
 
             {/* Right Side: Social Links */}
@@ -522,7 +522,7 @@ export default async function Home() {
           {/* Right Side: Two Small Blog Posts */}
           <div className="flex flex-col ">
             {blogsdata.data.slice(1, 3).map((card: {
-              slug: any;
+              slug: string;
               subtitle: ReactNode; id: string; imageUrl: string; title: string; description: string
             }) => (
               <>
