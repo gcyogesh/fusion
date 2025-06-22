@@ -156,7 +156,7 @@ export default async function Page({ params }: { params: { id: string } }) {
       <MidNavbar />
 
       <section className="mx-auto max-w-7xl">
-        <div className="flex flex-row justify-between">
+        <div className="flex flex-col md:flex-row justify-between gap-6">
           <div className="flex-1 max-w-4xl pr-2">
             <TextDescription text={destination.description} />
             <div className="py-2">
@@ -176,12 +176,12 @@ export default async function Page({ params }: { params: { id: string } }) {
             </div>
 
             <div className="max-w-5xl mx-auto py-4">
-              <TextHeader text={destination.title} align="left" size="large" width={855} className="mb-2" />
+              <TextHeader text={destination.title} align="left" size="large" width={855} className="mb-1" />
               <TextDescription className="mb-4" text={destination.overview} />
             </div>
 
             <div className="border border-[#0E334F] rounded-2xl p-6 bg-white shadow-sm mb-4">
-              <TextHeader text="Trip Highlights" align="left" size="large" width={855} />
+              <TextHeader text="Trip Highlights" align="left" size="large" width={855} className="mb-2" />
               <ul className="list-disc pl-6 space-y-2 text-base text-[#535556] ">
                 {destination.highlights?.map((item, i) => <li key={i}>{item}</li>)}
               </ul>
@@ -202,7 +202,8 @@ export default async function Page({ params }: { params: { id: string } }) {
               </div>
             </div>
 
-            <div className="w-4xl py-6">
+           <div className="w-full max-w-4xl px-4 sm:px-6 py-6 mx-auto">
+
               <DepartureCalendar />
             </div>
 

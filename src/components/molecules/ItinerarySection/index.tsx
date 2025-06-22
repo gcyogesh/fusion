@@ -138,29 +138,35 @@ const ItinerarySection: FC<Props> = ({ itinerary }) => {
                 )}
 
                 {/* Activities Section */}
-                <div className="mt-4 flex flex-wrap justify-between text-xl text-gray-600 items-center  bg-white  w-[735px] p-5 border border-black rounded-xl shadow-sm">
-                  {item.activities.map((activityText, idx) => {
-                    const matched = activityMap.find(({ keyword }) =>
-                      activityText.toLowerCase().includes(keyword)
-                    );
+              <div className="mt-4 overflow-x-auto">
+  <div className="min-w-[600px] sm:min-w-full flex flex-wrap sm:flex-nowrap justify-between text-xl text-gray-600 items-center bg-white p-5 border border-black rounded-xl shadow-sm">
+    {item.activities.map((activityText, idx) => {
+      const matched = activityMap.find(({ keyword }) =>
+        activityText.toLowerCase().includes(keyword)
+      );
 
-                    return (
-                      <div key={idx} className="flex items-center gap-1 text-xl">
-                        {matched ? (
-                          <>
-                            {matched.icon}
-                            <span>{activityText}</span>
-                          </>
-                        ) : (
-                          <>
-                            <span className="text-[#0E334F] font-bold">•</span>
-                            <span>{activityText}</span>
-                          </>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
+      return (
+        <div
+          key={idx}
+          className="flex items-center gap-1 sm:gap-3 text-xl whitespace-nowrap mr-2 sm:mr-4 mb-1 sm:mb-2"
+        >
+          {matched ? (
+            <>
+              {matched.icon}
+              <span>{activityText}</span>
+            </>
+          ) : (
+            <>
+              <span className="text-[#0E334F] font-bold">•</span>
+              <span>{activityText}</span>
+            </>
+          )}
+        </div>
+      );
+    })}
+  </div>
+</div>
+
 
 
 

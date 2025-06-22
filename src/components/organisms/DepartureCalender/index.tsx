@@ -34,11 +34,11 @@ export default function DepartureCalendar() {
             />
       
 
-      <div className=" text-white">
+      <div className=" text-[#ffffff]">
         <button
           onClick={() => updateParam('trip', 'group')}
-          className={` px-3 py-3  ${
-            tripType === 'group' ? 'bg-primary text-white' : 'bg-gray-200'
+          className={`px-3 py-3   ${
+            tripType === 'group' ? 'bg-primary text-[#ffffff]' : 'bg-gray-200'
           }`}
         >
            <div className="flex flex-row items-center text-xl gap-2">
@@ -70,15 +70,12 @@ export default function DepartureCalendar() {
     </LocalizationProvider>
       </div>
 
-      <div className="mt-6">
-        <div>
-        <Button
-          text="Book Now"
-          variant="primary"
-          className="bg-[#F7941D] hover:bg-[#E47312] text-white font-semibold  px-2 rounded-full "
-        />
-      </div>
-      </div>
-    </div>
+       <Button
+    text="Book Now"
+    variant="primary"
+    className=" bg-[#F7941D] hover:bg-[#E47312] text-white font-semibold px-6 py-2 rounded-full text-center"
+  />
+</div>
+    
   );
 }

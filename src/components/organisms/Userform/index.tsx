@@ -30,9 +30,9 @@ const UserForm = () => {
     >
         
       <TextDescription
-              text="Looking for personalized experience? We organize privately guided journey which is mainly designed to fit your taste and interest. Please fill out the form below to get started."
-              className=" w-[800px] mb-10 "
-            />
+  text="Looking for personalized experience? We organize privately guided journey which is mainly designed to fit your taste and interest. Please fill out the form below to get started."
+  className="w-full max-w-[850px]  mb-10 text-left "
+/>
       
 
       {/* First row: Date and Name */}
