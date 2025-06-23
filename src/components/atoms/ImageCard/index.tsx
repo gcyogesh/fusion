@@ -32,7 +32,7 @@ interface ImageDisplayProps<T = string> {
 const aspectRatios = {
   rectangle: 820 / 590,
   square: 408 / 430,
-  smallsquare: 300 / 313,
+  smallsquare: 450 / 370,
   smallrectangle: 408 / 236,
 };
 
@@ -162,10 +162,11 @@ const ImageDisplay = <T extends string>({
       )}
       {typeof totalTrips === 'number' && (
         <div className="absolute top-8 left-1/2 -translate-x-1/2 z-10">
-          <Button
-            text={`${totalTrips} Trips`}
-            className=" text-[#ffffff] text-xs md:text-sm font-semibold px-2 py-1 bg-primary rounded-lg"
-          />
+          <button
+            className=" text-[#ffffff] text-base font-semibold px-6 py-2 bg-primary rounded-lg"
+          >
+            {`${totalTrips} Trips`}
+          </button>
         </div>
       )}
 

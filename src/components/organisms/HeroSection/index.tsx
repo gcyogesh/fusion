@@ -53,7 +53,7 @@ const HeroSection = ({ herodata }: { herodata: HeroData }) => {
 
     try {
       const res = await fetch(
-        `http://localhost:3333/api/tour/tour-packages/search?${params.toString()}`
+        `https://yogeshbhai.ddns.net/api/tour/tour-packages/search?${params.toString()}`
       );
       const data = await res.json();
 
@@ -237,7 +237,7 @@ const HeroSection = ({ herodata }: { herodata: HeroData }) => {
 
         {/* Search Results Dropdown */}
         {showResults && (
-          <div className="mt-4 bg-white rounded-2xl shadow-xl max-h-96 overflow-y-auto">
+          <div className="mt-4 backdrop-blur-xl bg-white/20 rounded-2xl shadow-xl max-h-96 overflow-y-auto">
             {/* Header */}
             <div className="flex justify-between items-center px-6 py-4 border-b border-gray-200">
               <h3 className="text-lg font-semibold text-gray-800">

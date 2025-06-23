@@ -7,12 +7,23 @@ import ImageDisplay from '@/components/atoms/ImageCard';
 import TextHeader from '@/components/atoms/headings';
 import Breadcrumb from "@/components/atoms/breadcrumb";
 import Pagination from '@/components/atoms/pagination';
+import MidNavbar from '@/components/organisms/MidNavBar';
 
 type Props = {
   searchParams?: {
     page?: string;
   };
 };
+
+const blogstab = [
+  "All Blogs",
+  "Adventure Travel",
+  "Food",
+  "Responsible Tourism",
+  "Culture & Tradition",
+  "Travel trips",
+  "Travel Experience",
+];
 
 const Blogs = async ({ searchParams }: Props) => {
   const blogsdata = await fetchAPI({ endpoint: "blogs" });
@@ -30,15 +41,9 @@ const Blogs = async ({ searchParams }: Props) => {
       <Breadcrumb currentnavlink="Blogs" />
       <HeroBanner herodata={herodata?.data} />
 
-      <section className="max-w-7xl mx-auto px-4">
-        <TextHeader
-          text="Explore Our Blogs"
-          buttonText="From the Blogs"
-          className="mb-8"
-          type="main"
-          specialWordsIndices="2"
-          width={500}
-        />
+      <MidNavbar tabs={blogstab}/>
+      <section className="max-w-7xl mx-auto px-8">
+       
 
         <div className="flex flex-col gap-12">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

@@ -11,6 +11,7 @@ import Button from "@/components/atoms/button";
 import TextHeader from "@/components/atoms/headings";
 import { fetchAPI } from "@/utils/apiService";
 
+
  
 import PartnerSection from "@/components/organisms/partners";
 
@@ -24,7 +25,7 @@ import ArrowIcon from "@/components/atoms/arrowIcon";
 import TopCategoriesSection from "@/components/molecules/TopCategoriesSection";
 import ValuesSection from "@/components/molecules/ValueSection";
 import { ReactNode } from "react";
-
+import StatCard from "@/components/molecules/StatCard";
 
 
 interface DestinationCard {
@@ -47,28 +48,27 @@ interface DestinationData {
   data: DestinationCard[];
 }
 
-
 const stats = [
   {
-    icon: <Image src="/images/stat1.png" alt="Experience Icon" width={46} height={46} className=" text-[#002B45]" />,
+    iconSrc: "/images/stat1.png",
     title: "18+",
     subtitle: "Years of Experience",
     description: "Seasoned in travel excellence since day one.",
   },
   {
-      icon: <Image src="/images/stat2.png" alt="Experience Icon" width={46} height={46} className=" text-[#002B45]" />,
+    iconSrc: "/images/stat2.png",
     title: "2750+",
     subtitle: "TripAdvisor Reviews",
     description: "Loved and trusted by thousands of travelers.",
   },
   {
-        icon: <Image src="/images/stat3.png" alt="Experience Icon" width={46} height={46} className=" text-[#002B45]" />,
+    iconSrc: "/images/stat3.png",
     title: "116+",
     subtitle: "Cultural Tours",
     description: "Experience the heart of tradition and heritage with us.",
   },
   {
-        icon: <Image src="/images/stat4.png" alt="Experience Icon" width={46} height={46} className=" text-[#002B45]" />,
+    iconSrc: "/images/stat4.png",
     title: "106+",
     subtitle: "Adventure Activities",
     description: "Thrills, treks, and unforgettable adrenaline rushes.",
@@ -134,8 +134,6 @@ export default async function Home() {
           width={622}
           align="center"
           className="mb-4" // Increased spacing for better visual balance
-
-
         />
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10 "> {/* Consistent gap */}
@@ -156,11 +154,11 @@ export default async function Home() {
     <div className="flex flex-col gap-3">
       <div className="flex justify-between text-sm ">
         <span className="flex items-center gap-1 font-medium text-[20px] text-[#7E7E7E] ">
-          <Image src={"/images/location.svg"} alt="Location" width={25} height={25}/>
+          <Image src={"/images/location.svg"} alt="Location" width={22} height={22}/>
           {card.location.city}, {card.location.country}
         </span>
         <span className="flex items-center gap-2 font-medium text-[20px]  text-[#7E7E7E]  ">
-          <Image src={"/images/clock.svg"} alt="Clock" width={22} height={22}/>
+          <Image src={"/images/clock.svg"} alt="Clock" width={20} height={20}/>
           {card.duration.days} Days
         </span>
       </div>
@@ -170,7 +168,7 @@ export default async function Home() {
       <div className="w-full h-[1.5px] bg-[#C2C2C2]" />
 
       <div className="flex flex-row  text-lg font-medium text-[#7E7E7E] text-[20px] mt-1">
-        Start From <span className="text-primary ml-5">$120 - ${card.basePrice}</span>
+        Start From <span className="text-primary font-semibold ml-5">$120 - ${card.basePrice}</span>
       </div>
     </div>
   </Link>
@@ -268,38 +266,18 @@ export default async function Home() {
       </section>
 
       <section>
-        <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-12 ">
-          {stats.map((stat, index) => (
-            <div key={index} className=" text-left">
-              {/* Icon + Title aligned inline, flush left */}
-              <div className="flex items-center space-x-2">
-                {stat.icon}
-                <TextHeader
-                  text={stat.title}
-                  size="medium"
-                  align="left"
-                  width="auto"
-                />
-              </div>
-
-              {/* Subtitle aligned left under title */}
-              <TextHeader
-                text={stat.subtitle}
-                size="small"
-                align="left"
-                width="100%"
-                className="text-gray-600"
-              />
-
-              {/* Description aligned left and start from title's left */}
-              <TextDescription
-                text={stat.description}
-                className="text-left w-[239px] "
-              />
-            </div>
-          ))}
-        </div>
-      </section>
+      <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-12">
+        {stats.map((stat, index) => (
+          <StatCard
+            key={index}
+            iconSrc={stat.iconSrc}
+            title={stat.title}
+            subtitle={stat.subtitle}
+            description={stat.description}
+          />
+        ))}
+      </div>
+    </section>
 
 
 
@@ -382,16 +360,16 @@ export default async function Home() {
 
             {/* Info Row */}
             <div className="flex flex-col sm:flex-row justify-center  gap-4 sm:gap-6 mt-6 font-semibold">
-              <div className="flex items-center justify-center gap-2 text-base md:text-xl ">
-                <HiOutlineClock />
+              <div className="flex items-center justify-center gap-2 text-[16px] md:text-[18px] ">
+                <Image src={"/images/time.svg"} alt="Location" width={25} height={22}/>
                 <span>12–14 Days</span>
               </div>
-              <div className="flex items-center justify-center gap-2  text-base md:text-xl">
-                <FaMapMarkerAlt />
+              <div className="flex items-center justify-center gap-2  text-[16px] md:text-[18px]">
+                <Image src={"/images/loco.svg"} alt="Location" width={25} height={22}/>
                 <h1>Everest (Khumbu), Nepal</h1>
               </div>
-              <div className="flex items-center justify-center gap-2  text-base md:text-xl">
-                <FaHiking />
+              <div className="flex items-center justify-center gap-2  text-[16px] md:text-[18px]">
+                <Image src={"/images/treks.svg"} alt="Location" width={25} height={22}/>
                 <h1 className="font-sans">Moderate to Challenging</h1>
               </div>
             </div>
@@ -512,7 +490,8 @@ export default async function Home() {
                   description={blogsdata.data[0].subtitle} createdAt={blogsdata.data[0].createdAt} />
               </div>
               <div className="mt-3">
-                <h1 className="text-xl font-bold">{blogsdata.data[0].subtitle}</h1>
+                <TextHeader size="small" text={String(blogsdata.data[0].subtitle)} align="left" />
+                
                 <p className="mt-2 h-[155px]"></p>
               
                 
@@ -534,7 +513,7 @@ export default async function Home() {
                       <ImageDisplay src={card.imageUrl} variant="smallrectangle" title={card.title} description={card.description} createdAt={blogsdata.data[0].createdAt} />
                     </div>
                     <div className="mt-4 h-[150px] ">
-                      <h1 className="text-lg font-semibold">{card.subtitle}</h1>
+                      <TextHeader size="small" text={String(card.subtitle)} align="left" />
                       <TextDescription text={card.description} className=" line-clamp-3 " />
                     </div>
                   </div>

@@ -13,6 +13,18 @@ import DepartureCalendar from "@/components/organisms/DepartureCalender";
 import ItinerarySection from "@/components/molecules/ItinerarySection";
 import Breadcrumb from "@/components/atoms/breadcrumb";
 
+
+
+const trekTabs = [
+  "Overview",
+  "Itinerary",
+  "Includes/Excludes",
+  "Trip Map",
+  "Equipments",
+  "FAQs",
+  "Reviews",
+];
+
 export async function generateMetadata({ params }: { params: { id: string } }) {
   const endpoint = `tour/tour-packages/${params.id}`;
   const data = await fetchAPI({ endpoint });
@@ -153,7 +165,7 @@ export default async function Page({ params }: { params: { id: string } }) {
         </div>
       </section>
 
-      <MidNavbar />
+      <MidNavbar tabs={trekTabs} />
 
       <section id="Overview" className="mx-auto max-w-7xl">
         <div className="flex flex-col md:flex-row justify-between gap-6">

@@ -11,9 +11,10 @@ interface ButtonProps<T = unknown> {
   variant?: 'primary' | 'secondary';
   extraData?: T;
   className?: string;
-  borderColor?: string; // Accept Tailwind or custom border classes like "border-red-500"
-  textColor?: string;   // Accept Tailwind or custom text classes like "text-blue-600"
-  buttonLink?: string;  // ✅ New prop for linking
+  borderColor?: string;
+  textColor?: string;
+  buttonLink?: string;
+  disableHover?: boolean; // ✅ New prop
 }
 
 const Button = <T,>({
@@ -27,20 +28,21 @@ const Button = <T,>({
   textColor,
   extraData,
   buttonLink,
+  disableHover = false,
 }: ButtonProps<T>) => {
   const variants = {
     primary: {
       bg: 'bg-primary',
       text: 'text-white',
       border: 'border-transparent',
-      hoverBg: 'hover:bg-[#e67c10]',
+      hoverBg: 'hover:bg-gradient-to-r from-[#D35400] to-[#A84300]',
       hoverBorder: 'hover:border-orange-700',
     },
     secondary: {
       bg: 'bg-transparent',
       text: 'text-black',
       border: 'border border-[#00000033]',
-      hoverBg: 'hover:bg-gray-200',
+      hoverBg: 'hover:bg-gradient-to-r from-[#D35400] to-[#A84300]',
       hoverBorder: 'hover:border-gray-500',
     },
   };
@@ -55,8 +57,8 @@ const Button = <T,>({
         ${variants[variant].bg} 
         ${textColor || variants[variant].text} 
         ${borderColor || variants[variant].border} 
-        ${variants[variant].hoverBg} 
-        ${variants[variant].hoverBorder} 
+        ${!disableHover ? variants[variant].hoverBg : ''} 
+        ${!disableHover ? variants[variant].hoverBorder : ''} 
         ${className}
       `}
     >
@@ -71,7 +73,13 @@ const Button = <T,>({
       )}
       {text}
       {rightIcon && (
-        <span className="absolute right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+        <span
+          className={`${
+            !disableHover
+              ? 'absolute right-4 opacity-0 group-hover:opacity-100'
+              : ''
+          } transition-opacity duration-300`}
+        >
           {typeof rightIcon === 'string' ? (
             <img src={rightIcon} alt="right-icon" className="w-5 h-5" />
           ) : (
@@ -79,7 +87,9 @@ const Button = <T,>({
           )}
         </span>
       )}
-      <div className="absolute right-0 top-0 bottom-0 w-1/4 hover:bg-transparent"></div>
+      {!disableHover && (
+        <div className="absolute right-0 top-0 bottom-0 w-1/4 hover:bg-transparent"></div>
+      )}
     </div>
   );
 

@@ -22,8 +22,7 @@ export default function Navbar() {
   const [mobileDropdown, setMobileDropdown] = useState<string | null>(null)
   const [showNavbar, setShowNavbar] = useState(true)
   const [lastScrollY, setLastScrollY] = useState(0)
-  const [navbarBg, setNavbarBg] = useState('transparent')
-  const [navbarBlur, setNavbarBlur] = useState(true)
+  const [scrollY, setScrollY] = useState(0)
   const [navLinks, setNavLinks] = useState<NavLink[]>([])
   const pathname = usePathname()
 
@@ -89,24 +88,14 @@ export default function Navbar() {
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY
+      setScrollY(currentScrollY)
 
       if (currentScrollY === 0) {
-        if (pathname === '/') {
-          setNavbarBg('transparent')
-          setNavbarBlur(true)
-        } else {
-          setNavbarBg('#0F7BBA')
-          setNavbarBlur(false)
-        }
         setShowNavbar(true)
       } else if (currentScrollY > lastScrollY && currentScrollY > 100) {
         setShowNavbar(false)
-        setNavbarBg('transparent')
-        setNavbarBlur(false)
       } else {
         setShowNavbar(true)
-        setNavbarBg('#0F7BBA')
-        setNavbarBlur(false)
       }
 
       setLastScrollY(currentScrollY)
@@ -114,51 +103,49 @@ export default function Navbar() {
 
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [lastScrollY, pathname])
+  }, [lastScrollY])
+
+  const getNavbarClasses = () => {
+    if (pathname === '/' && scrollY === 0) {
+      return 'backdrop-blur-xl bg-white/20 text-white shadow-lg'
+    }
+    return 'bg-[#0F7BBA] text-white'
+  }
 
   return (
     <nav
-      style={{
-        backgroundColor: navbarBg,
-        backdropFilter: navbarBlur ? 'blur(10px)' : 'none',
-        WebkitBackdropFilter: navbarBlur ? 'blur(10px)' : 'none'
-      }}
-      className={`fixed top-0 left-0 w-full z-60 transition-all duration-300 ease-linear ${
+      className={`fixed top-0 left-0 w-full z-60 px-2 transition-all duration-300 ease-linear ${
         showNavbar ? 'translate-y-0' : '-translate-y-full'
-      } transition-colors duration-500 ease-in-out px-2`}
+      } ${getNavbarClasses()}`}
     >
-      <div
-        className={`max-w-7xl mx-auto flex justify-between items-center px-4 py-3 h-20 ${
-          navbarBg === 'transparent' && navbarBlur ? 'text-black' : 'text-white'
-        }`}
-      >
+      <div className="max-w-7xl mx-auto flex justify-between items-center px-4 py-3 h-20">
         <Link href="/">
           <Logo />
         </Link>
 
         {/* Desktop Nav */}
-        <ul className="hidden md:flex gap-8 font-medium text-base relative ">
+        <ul className="hidden md:flex gap-8 font-medium text-base relative">
           {navLinks.map((link) => (
             <li
               key={link.name}
-              className="relative group text-white"
+              className="relative group"
               onMouseEnter={() => setDropdownOpen(link.hasDropdown ? link.name : null)}
             >
               <div className="flex items-center gap-1 cursor-pointer">
                 <Link href={link.href}>{link.name}</Link>
-                {link.hasDropdown && <ChevronDown className="w-3 h-4 mt-[2px]" />}
+                {link.hasDropdown && <ChevronDown className="w-3 h-4 mt-[2px] " />}
               </div>
 
               {link.hasDropdown && dropdownOpen === link.name && (
                 <ul
-                  className="absolute top-8 left-0 w-44 bg-white text-black rounded shadow-md py-2 z-50"
+                  className="absolute top-8 left-0 w-44 backdrop-blur-xl bg-white/20 text-white shadow-lg  py-2 z-50"
                   onMouseLeave={() => setDropdownOpen(null)}
                 >
                   {link.subLinks?.map((sublink) => (
                     <li key={sublink.name}>
                       <Link
                         href={sublink.href}
-                        className="block px-4 py-2 hover:bg-gray-100"
+                        className="block px-4 py-2  hover:bg-[#E47312]"
                         onClick={() => setDropdownOpen(null)}
                       >
                         {sublink.name}
@@ -173,11 +160,11 @@ export default function Navbar() {
 
         <div className="flex items-center gap-4">
           <Link href="https://wa.me/977985-1167629" target="_blank" rel="noopener noreferrer">
-    <FaWhatsapp className="text-white text-3xl hover:text-green-400 transition-colors cursor-pointer" />
-  </Link>
-          
+            <FaWhatsapp className="text-white text-3xl hover:text-green-400 transition-colors cursor-pointer" />
+          </Link>
+
           <Link href="/contact">
-            <button className="hidden lg:block bg-gradient-to-r from-[#F28A15] to-[#E47312] hover:from-[#0E334F] hover:to-[#0E334F] text-white text-base font-medium h-[46px] w-[160px] rounded-full transition">
+            <button className="hidden lg:block bg-primary hover:bg-gradient-to-r from-[#D35400] to-[#A84300] text-white text-base font-medium h-[46px] w-[160px] rounded-full transition">
               Contact
             </button>
           </Link>
@@ -230,7 +217,7 @@ export default function Navbar() {
           ))}
 
           <Link href="/contact" onClick={toggleMenu}>
-            <button className="w-full bg-gradient-to-r from-[#F28A15] to-[#E47312] text-white font-medium h-[46px] rounded-full">
+            <button className="w-full bg-primary hover:bg-gradient-to-r from-[#D35400] to-[#A84300] text-white font-medium h-[46px] rounded-full">
               Contact
             </button>
           </Link>

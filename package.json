@@ -25,10 +25,12 @@
     "npm": "^11.3.0",
     "react-arrows": "^1.2.0",
     "react-calendar": "^6.0.0",
+    "react-countup": "^6.5.3",
     "react-fast-marquee": "^1.6.5",
     "react-flow-renderer": "^10.3.17",
     "react-icons": "^5.5.0",
     "react-international-phone": "^4.5.0",
+    "react-intersection-observer": "^9.16.0",
     "react-slick": "^0.30.3",
     "react-xarrows": "^2.0.2",
     "reactflow": "^11.11.4"
