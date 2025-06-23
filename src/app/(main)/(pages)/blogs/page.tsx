@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import HeroBanner from '@/components/organisms/Banner/HeroBanner';
+import HeroBanner from '@/components/organisms/Banner/HeroBanner'; //kapil push
 import { fetchAPI } from '@/utils/apiService';
 import TextDescription from '@/components/atoms/description';
 import ImageDisplay from '@/components/atoms/ImageCard';
