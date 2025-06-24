@@ -9,6 +9,7 @@ import { fetchAPI } from "@/utils/apiService";
 import Pagination from "@/components/atoms/pagination";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import Alert from "@/components/atoms/alert";
 
 // Define a generic type for items
 export interface ItemBase {
@@ -112,6 +113,14 @@ export function AdminTable<T extends ItemBase>({
   const totalPages = Math.ceil(items.length / itemsPerPage);
   const paginatedItems = items.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
+  const [alert, setAlert] = useState({
+    show: false,
+    type: "confirm" as "confirm" | "success" | "error" | "warning",
+    message: "",
+    onConfirm: () => {},
+    onCancel: () => {},
+  });
+
   const showSuccessMessage = (message: string) => {
     setSuccessMessage(message);
     setShowSuccess(true);
@@ -144,19 +153,39 @@ export function AdminTable<T extends ItemBase>({
     setShowForm(true);
   };
 
-  const handleDelete = async (item: T) => {
-    if (!confirm(`Are you sure you want to delete this item?`)) return;
-    setIsDeleting(true);
-    setDeleteError(null);
-    try {
-      await fetchAPI({ endpoint, method: "DELETE", id: item._id || item.id });
-      await refreshData();
-      showSuccessMessage("Item deleted successfully!");
-    } catch (err) {
-      setDeleteError(err instanceof Error ? err.message : "Failed to delete.");
-    } finally {
-      setIsDeleting(false);
-    }
+  const handleDelete = (item: T) => {
+    setAlert({
+      show: true,
+      type: "confirm",
+      message: "Are you sure you want to delete this item?",
+      onConfirm: async () => {
+        setAlert((prev) => ({ ...prev, show: false })); // Hide alert immediately
+        setIsDeleting(true);
+        setDeleteError(null);
+        try {
+          await fetchAPI({ endpoint, method: "DELETE", id: item._id || item.id });
+          await refreshData();
+          setAlert({
+            show: true,
+            type: "success",
+            message: "Item deleted successfully!",
+            onConfirm: () => setAlert((prev) => ({ ...prev, show: false })),
+            onCancel: undefined,
+          });
+        } catch (err) {
+          setAlert({
+            show: true,
+            type: "error",
+            message: "Failed to delete item.",
+            onConfirm: () => setAlert((prev) => ({ ...prev, show: false })),
+            onCancel: undefined,
+          });
+        } finally {
+          setIsDeleting(false);
+        }
+      },
+      onCancel: () => setAlert((prev) => ({ ...prev, show: false })),
+    });
   };
 
   const handleAddNew = () => {
@@ -183,6 +212,13 @@ export function AdminTable<T extends ItemBase>({
 
   return (
     <div className="w-full min-h-screen bg-slate-50">
+      <Alert
+        show={alert.show}
+        type={alert.type}
+        message={alert.message}
+        onConfirm={alert.onConfirm}
+        onCancel={alert.onCancel}
+      />
       <div className="max-w-7xl mx-auto px-4">
         {showSuccess && (
           <div className="fixed top-4 right-4 z-50 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg text-sm">

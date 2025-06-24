@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect, useMemo } from "react";
-import { FiMail, FiPhone, FiUser, FiMapPin, FiMessageCircle, FiClock, FiTrash2, FiCheckCircle, FiXCircle, FiSearch, FiInbox } from "react-icons/fi";
+import { FiMail, FiPhone, FiUser, FiMapPin, FiMessageCircle, FiClock, FiTrash2, FiCheckCircle, FiXCircle, FiSearch, FiInbox, FiEye, FiX } from "react-icons/fi";
 import { fetchAPI } from "@/utils/apiService";
 import Pagination from "@/components/atoms/pagination";
 
@@ -22,9 +22,9 @@ export default function ContactInquiriesClient({ inquiries: initialInquiries }: 
   const [inquiries, setInquiries] = useState(initialInquiries);
   const [toast, setToast] = useState<{ type: "success" | "error"; message: string } | null>(null);
   const [page, setPage] = useState(1);
-  const [expanded, setExpanded] = useState<{ [id: string]: boolean }>({});
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [viewInquiry, setViewInquiry] = useState<any | null>(null);
 
   useEffect(() => {
     const handler = setTimeout(() => setDebouncedSearch(search), 300);
@@ -53,27 +53,6 @@ export default function ContactInquiriesClient({ inquiries: initialInquiries }: 
   const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
   const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
-  const anyLongCollapsed = paginated.some(inq => inq.message && inq.message.length > MAX_PREVIEW_CHARS && !expanded[inq._id]);
-  const allLongExpanded = paginated.every(inq => !(inq.message && inq.message.length > MAX_PREVIEW_CHARS) || expanded[inq._id]);
-  const handleExpandAll = () => {
-    const newExpanded = { ...expanded };
-    paginated.forEach(inq => {
-      if (inq.message && inq.message.length > MAX_PREVIEW_CHARS) {
-        newExpanded[inq._id] = true;
-      }
-    });
-    setExpanded(newExpanded);
-  };
-  const handleCollapseAll = () => {
-    const newExpanded = { ...expanded };
-    paginated.forEach(inq => {
-      if (inq.message && inq.message.length > MAX_PREVIEW_CHARS) {
-        newExpanded[inq._id] = false;
-      }
-    });
-    setExpanded(newExpanded);
-  };
-
   async function handleDelete(id: string) {
     if (!confirm("Are you sure you want to delete this inquiry?")) return;
     try {
@@ -85,10 +64,6 @@ export default function ContactInquiriesClient({ inquiries: initialInquiries }: 
     }
     setTimeout(() => setToast(null), 2500);
   }
-
-  const handleToggleExpand = (id: string) => {
-    setExpanded((prev) => ({ ...prev, [id]: !prev[id] }));
-  };
 
   return (
     <div className="relative">
@@ -107,17 +82,6 @@ export default function ContactInquiriesClient({ inquiries: initialInquiries }: 
           />
         </div>
       </div>
-      {/* See more/less all button */}
-      {paginated.some(inq => inq.message && inq.message.length > MAX_PREVIEW_CHARS) && (
-        <div className="flex justify-end max-w-6xl mx-auto mb-4 px-2">
-          <button
-            className="text-primary text-sm font-semibold px-4 py-2 rounded hover:underline transition-all duration-150 border border-primary bg-white shadow-sm"
-            onClick={allLongExpanded ? handleCollapseAll : handleExpandAll}
-          >
-            {allLongExpanded ? 'See less' : 'See more'}
-          </button>
-        </div>
-      )}
       {toast && (
         <div className={`fixed top-6 right-6 z-50 flex items-center gap-2 px-5 py-3 rounded-xl shadow-lg text-white ${toast.type === "success" ? "bg-green-600" : "bg-red-600"}`}>
           {toast.type === "success" ? <FiCheckCircle className="w-5 h-5" /> : <FiXCircle className="w-5 h-5" />}
@@ -131,16 +95,20 @@ export default function ContactInquiriesClient({ inquiries: initialInquiries }: 
             <span className="text-lg font-semibold">No contacts found</span>
           </div>
         ) : paginated.map((inq) => {
-          const isLong = inq.message && inq.message.length > MAX_PREVIEW_CHARS;
-          const isExpanded = expanded[inq._id];
-          const preview = isLong && !isExpanded ? inq.message.slice(0, MAX_PREVIEW_CHARS) : inq.message;
-          const isUnread = inq.status === 'open';
           return (
             <div
               key={inq._id}
               className="bg-white rounded-2xl shadow-md border border-gray-200 p-8 flex flex-col justify-between gap-6 hover:shadow-lg transition-shadow duration-200 relative min-h-[340px] group w-full md:w-[340px] lg:w-[370px] h-[400px]"
               style={{ minHeight: '340px', height: '400px' }}
             >
+              {/* Eye icon button for viewing details */}
+              <button
+                onClick={() => setViewInquiry(inq)}
+                className="absolute top-4 right-16 p-2 rounded-full bg-blue-50 hover:bg-blue-100 text-blue-600 shadow-sm transition"
+                title="View Details"
+              >
+                <FiEye className="w-5 h-5" />
+              </button>
               {/* Delete button */}
               <button
                 onClick={() => handleDelete(inq._id)}
@@ -176,27 +144,31 @@ export default function ContactInquiriesClient({ inquiries: initialInquiries }: 
                     <span>{inq.guestInfo?.country}</span>
                   </div>
                 </div>
-                <div className="flex items-start gap-3 text-gray-700 text-base mt-4 flex-1 min-h-0">
+                <div className="flex items-start gap-2 text-gray-700 text-sm mt-4 flex-1 min-h-0">
                   <FiMessageCircle className="w-5 h-5 mt-1 text-primary flex-shrink-0" />
                   <span
-                    className={
-                      `font-medium whitespace-pre-line break-words w-full border border-gray-200 rounded-xl px-4 py-3 text-[1rem] leading-relaxed relative block bg-white overflow-y-auto transition-all duration-200` +
-                      (isLong && !isExpanded ? ' max-h-[7em] fade-out-mask' : '')
-                    }
-                    style={{ wordBreak: 'break-word', minHeight: '3.5em', maxHeight: isExpanded ? 'none' : isLong ? '7em' : undefined }}
+                    className="whitespace-pre-line break-words"
+                    style={{
+                      wordBreak: 'break-word',
+                      display: '-webkit-box',
+                      WebkitLineClamp: 3,
+                      WebkitBoxOrient: 'vertical',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      minHeight: '2.5em',
+                      fontSize: '1rem',
+                      color: '#374151',
+                      fontWeight: 500,
+                    }}
                   >
-                    {preview}
+                    {(() => {
+                      const words = inq.message.split(/\s+/);
+                      return words.length > 20
+                        ? words.slice(0, 20).join(' ') + '...'
+                        : inq.message;
+                    })()}
                   </span>
                 </div>
-                {/* Only show See more/less button if message is long */}
-                {isLong && (
-                  <button
-                    className="self-end mt-2 text-xs sm:text-sm text-primary hover:underline font-semibold px-2 py-1 rounded transition-all duration-150"
-                    onClick={() => handleToggleExpand(inq._id)}
-                  >
-                    {isExpanded ? "See less" : "See more"}
-                  </button>
-                )}
               </div>
               <div className="flex items-center gap-2 text-gray-400 text-xs mt-4 pt-3 border-t border-gray-100">
                 <FiClock className="w-4 h-4" />
@@ -215,6 +187,47 @@ export default function ContactInquiriesClient({ inquiries: initialInquiries }: 
             getPageUrl={() => "#"}
             onPageChange={setPage}
           />
+        </div>
+      )}
+      {/* Modal for viewing inquiry details */}
+      {viewInquiry && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-8 relative animate-fadeIn">
+            <button
+              onClick={() => setViewInquiry(null)}
+              className="absolute top-4 right-4 p-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600"
+              title="Close"
+            >
+              <FiX className="w-6 h-6" />
+            </button>
+            <h2 className="text-2xl font-bold mb-4 text-primary flex items-center gap-2">
+              <FiUser className="w-6 h-6" /> {viewInquiry.guestInfo?.name}
+            </h2>
+            <div className="mb-2 flex items-center gap-3 text-gray-700">
+              <FiMail className="w-5 h-5" />
+              <span>{viewInquiry.guestInfo?.email}</span>
+            </div>
+            <div className="mb-2 flex items-center gap-3 text-gray-700">
+              <FiPhone className="w-5 h-5" />
+              <span>{viewInquiry.guestInfo?.phoneNumber}</span>
+            </div>
+            <div className="mb-2 flex items-center gap-3 text-gray-700">
+              <FiMapPin className="w-5 h-5" />
+              <span>{viewInquiry.guestInfo?.country}</span>
+            </div>
+            <div className="mb-2 flex items-center gap-3 text-gray-700">
+              <FiClock className="w-5 h-5" />
+              <span>{formatDate(viewInquiry.createdAt)}</span>
+            </div>
+            <div className="mt-6">
+              <h3 className="text-lg font-semibold mb-2 text-gray-800 flex items-center gap-2">
+                <FiMessageCircle className="w-5 h-5 text-primary" /> Message
+              </h3>
+              <div className="border border-gray-200 rounded-xl p-4 bg-gray-50 text-gray-800 whitespace-pre-line break-words">
+                {viewInquiry.message}
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>
