@@ -43,8 +43,8 @@ export default function DynamicForm<T extends { _id?: string }>({
   };
 
   const shouldSkipField = (key: string) => {
-    // Skip all system and internal fields
-    return [
+    // Skip all system and internal fields and specific unwanted fields (case-insensitive)
+    const skipKeys = [
       '_id',
       '__v',
       'slug',
@@ -54,13 +54,21 @@ export default function DynamicForm<T extends { _id?: string }>({
       'created_at',
       'updated_at',
       'created_by',
-      'updated_by'
-    ].includes(key);
+      'updated_by',
+      'isfeatured', // always skip isfeatured
+      'totaltrips'  // always skip totalTrips
+    ];
+    return skipKeys.includes(key.toLowerCase());
   };
 
   const renderField = (key: string, value: any) => {
     // Handle image fields
-    if (key.toLowerCase().includes('image') || key.toLowerCase().includes('photo')) {
+    if (
+      key.toLowerCase().includes('image') ||
+      key.toLowerCase().includes('photo') ||
+      key.toLowerCase().includes('gallery') ||
+      key.toLowerCase().includes('imageurl')
+    ) {
       const images = Array.isArray(value) ? value : [value];
       return (
         <div className="space-y-6">

@@ -53,3 +53,18 @@ section {
 body {
   background-color: #fef9ee !important;
 }
+
+.fade-out-mask {
+  position: relative;
+}
+.fade-out-mask:after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2.5em;
+  pointer-events: none;
+  background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, #fff 100%);
+  border-radius: 0 0 0.75rem 0.75rem;
+}

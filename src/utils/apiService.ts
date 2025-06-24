@@ -23,7 +23,7 @@ export const fetchAPI = async <T = unknown>({
   data,
   id,
   slug,
-  revalidateSeconds = 60, // ISR: revalidate after 60 seconds
+  revalidateSeconds = 10, // ISR: revalidate after 60 seconds
 }: FetchAPIOptions): Promise<T> => {
   const token = Cookies.get("token");
 
@@ -35,7 +35,7 @@ export const fetchAPI = async <T = unknown>({
   const headers: Record<string, string> = {};
 
   // Only set JSON content type if not sending FormData
-  if (!(data instanceof FormData)) {
+  if (data && !(data instanceof FormData)) {
     headers["Content-Type"] = "application/json";
   }
 

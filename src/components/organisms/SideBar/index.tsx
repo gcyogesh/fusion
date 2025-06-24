@@ -51,10 +51,10 @@ const Sidebar = ({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen: (open: boo
             { icon: FaTachometerAlt, text: "Dashboard", link: "/dashboard" },
             { icon: FaUsers, text: "Destiantions", link: "/dashboard/customise-destinations" },
             { icon: FaWallet, text: "Blog Collection", link: "/dashboard/customise-blogs" },
-            { icon: FaChartLine, text: "Contact Form", link: "/dashboard/contact-info" },
+            { icon: FaChartLine, text: "Contact Form", link: "/dashboard/contact" },
             { icon: FaBox, text: "Packages", link: "/dashboard/customise-packages" },
              { icon: FaBox, text: "Activities", link: "/dashboard/customise-activities" },
-            { icon: FaCog, text: "Settings", link: "/settings" },
+            { icon: FaCog, text: "Settings", link: "/dashboard/settings" },
           ].map(({ icon: Icon, text, link }, index) => (
             <Link
               key={index}

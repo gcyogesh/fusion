@@ -8,8 +8,8 @@ export default async function dashboard() {
 
         <>
  <AdminTable
-          title="Destination Management"
-          buttonText="Add Destination"
+          title="Blogs Management"
+          buttonText="Add New Blogs"
           data={blogsdata.data}
           columns={[
             { label: "Blog Title", accessor: "title" },

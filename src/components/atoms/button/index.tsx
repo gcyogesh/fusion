@@ -15,6 +15,7 @@ interface ButtonProps<T = unknown> {
   textColor?: string;
   buttonLink?: string;
   disableHover?: boolean; // ✅ New prop
+  disabled?: boolean;
 }
 
 const Button = <T,>({
@@ -29,6 +30,7 @@ const Button = <T,>({
   extraData,
   buttonLink,
   disableHover = false,
+  disabled = false,
 }: ButtonProps<T>) => {
   const variants = {
     primary: {
@@ -102,6 +104,7 @@ const Button = <T,>({
       type="button"
       onClick={(e) => onClick?.(e, extraData)}
       className="relative"
+      disabled={disabled}
     >
       {content}
     </button>
