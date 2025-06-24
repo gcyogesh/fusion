@@ -28,6 +28,15 @@ export default async function Page({ params }: Params) {
 
   const activity: Activity | undefined = activities.find((item) => item.slug === slug);
 
+  // Fetch all packages
+  const packagesData = await fetchAPI({ endpoint: "tour/tour-packages" });
+  const packages = packagesData?.data || [];
+
+  // Filter packages by activity._id (assuming field is activityId)
+  const relatedPackages = activity
+    ? packages.filter((pkg) => pkg.activityId === activity._id)
+    : [];
+
   // Debug logs
   console.log("Slug param:", slug);
   console.log("Activity found:", activity);
@@ -75,7 +84,22 @@ export default async function Page({ params }: Params) {
         </div>
       </section>
 
-
+      {/* Show related packages */}
+      <section>
+        <div className="max-w-7xl mx-auto px-4">
+          <h2 className="text-2xl font-bold mb-4">Available Packages</h2>
+          {activity ? (
+            <a
+              href={`/packages?activityId=${activity._id}`}
+              className="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition mb-4"
+            >
+              View Packages for this Activity
+            </a>
+          ) : (
+            <p>No packages available for this activity.</p>
+          )}
+        </div>
+      </section>
 
       <section>
         <div className="max-w-7xl mx-auto   ">

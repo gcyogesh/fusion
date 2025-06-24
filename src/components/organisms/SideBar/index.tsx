@@ -15,8 +15,7 @@ import {
 } from "react-icons/fa";
 import Logo from "@/components/atoms/Logo";
 
-const Sidebar = () => {
-  const [isOpen, setIsOpen] = useState(false);
+const Sidebar = ({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen: (open: boolean) => void }) => {
   const router = useRouter();
 
   const handleLogout = () => {
@@ -32,13 +31,18 @@ const Sidebar = () => {
       } md:translate-x-0 z-50 shadow-xl`}
     >
       <div className="flex flex-col h-full">
-        {/* Logo */}
+        {/* Logo and Close Button for mobile */}
         <div className="mb-10 px-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Logo/>
-         
-
           </div>
+          {/* Close button only on mobile */}
+          <button
+            className="md:hidden text-white text-2xl ml-4"
+            onClick={() => setIsOpen(false)}
+          >
+            &times;
+          </button>
         </div>
 
         {/* Navigation */}

@@ -4,8 +4,7 @@
 @layer base {
   :root {
     --color-primary: #F28A15;
-    --font-dm-sans: 'DM Sans', sans-serif;
-
+    --font-dm-sans: 'DM Sans', sans-serif
     /* Global Spacing System */
     --global-spacer: 2rem;
     --spacer-y: var(--global-spacer);

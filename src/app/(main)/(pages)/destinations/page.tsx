@@ -2,6 +2,7 @@ import HeroBanner from "@/components/organisms/Banner/HeroBanner";
 import { fetchAPI } from "@/utils/apiService";
 import Breadcrumb from "@/components/atoms/breadcrumb";
 import ImageDisplay from "@/components/atoms/ImageCard";
+import Link from "next/link";
 
 export default async function DestinationPage() {
   const destination = await fetchAPI({ endpoint: "destinations" });
@@ -18,7 +19,7 @@ export default async function DestinationPage() {
         {/* First Row: Rectangle + Square */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
           {destinationdata[0] && (
-            <div className="lg:col-span-2">
+            <Link href={`/destinations/${destinationdata[0].slug}`} className="lg:col-span-2 block">
               <ImageDisplay
                 src={destinationdata[0].imageUrls?.[0]}
                 variant="rectangle"
@@ -27,25 +28,25 @@ export default async function DestinationPage() {
                 title={destinationdata[0].title}
                 description={destinationdata[0].subtitle}
               />
-            </div>
+            </Link>
           )}
 
           {destinationdata[1] && (
-            <div>
+            <Link href={`/destinations/${destinationdata[1].slug}`} className="block">
               <ImageDisplay
                 src={destinationdata[1].imageUrls?.[0]}
                 variant="square"
                 title={destinationdata[1].title}
                 description={destinationdata[1].subtitle}
               />
-            </div>
+            </Link>
           )}
         </div>
 
         {/* Second Row: 3 Square Images */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {destinationdata.slice(2, 5).map((card, index) => (
-            <div key={index}>
+            <Link href={`/destinations/${card.slug}`} key={index} className="block">
               <ImageDisplay
                 src={card?.src || card?.imageUrls?.[0]}
                 variant="square"
@@ -53,7 +54,7 @@ export default async function DestinationPage() {
                 snippet="popular"
                 title={card?.title || "Untitled"}
               />
-            </div>
+            </Link>
           ))}
         </div>
       </section>
