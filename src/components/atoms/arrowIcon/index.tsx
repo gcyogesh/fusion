@@ -110,7 +110,12 @@ const ArrowIcon: React.FC<ArrowIconProps> = ({
 
   return (
     <div className={className} style={baseStyle}>
-      <IconComponent size={size} color={appliedColor} />
+<IconComponent
+  size={size}
+  color={appliedColor}
+ 
+/>
+      
     </div>
   );
 };

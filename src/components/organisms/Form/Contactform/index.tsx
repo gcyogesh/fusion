@@ -1,5 +1,4 @@
 "use client";
-import Button from "@/components/atoms/button";
 import React, { useState, FormEvent } from "react";
 
 type ContactFormProps = {
@@ -24,13 +23,72 @@ const ContactForm: React.FC<ContactFormProps> = ({
     message: "",
   });
 
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+
   const handleChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    console.log("Form Submitted:", formData);
+    setLoading(true);
+    setError(null);
+    setSuccess(null);
+
+    try {
+      // Prepare the payload matching your backend structure
+      const payload = {
+        guestInfo: {
+          name: formData.name.trim(),
+          email: formData.email.trim(),
+          phoneNumber: formData.phone.trim(),
+          country: formData.address.trim(),
+        },
+        message: formData.message.trim(),
+      };
+
+      console.log('Sending payload:', payload); // Debug log
+
+      const res = await fetch("https://yogeshbhai.ddns.net/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      console.log('Response status:', res.status); // Debug log
+
+      if (!res.ok) {
+        const errorText = await res.text();
+        console.error('Error response:', errorText);
+        throw new Error(`Server responded with status ${res.status}: ${errorText}`);
+      }
+
+      const data = await res.json();
+      console.log('Response data:', data); // Debug log
+
+      // Check if the response indicates success
+      if (data.success) {
+        setSuccess("🎉 Thank you! Your inquiry has been received and we'll get back to you soon.");
+        setFormData({
+          name: "",
+          email: "",
+          phone: "",
+          address: "",
+          message: "",
+        });
+      } else {
+        setError(data.message || "Failed to submit inquiry. Please try again.");
+      }
+    } catch (err: any) {
+      console.error('Submit error:', err);
+      setError(err.message || "Something went wrong. Please check your connection and try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -46,76 +104,100 @@ const ContactForm: React.FC<ContactFormProps> = ({
             </h2>
           )}
 
+          {/* Success & Error Messages */}
+          {success && (
+  <div className=" rounded-md p-3">
+    <p className="text-green-400 text-left font-medium">{success}</p>
+  </div>
+)}
+
+          {error && (
+            <div className=" rounded-md p-1">
+              <p className="text-red-400 text-center font-medium">{error}</p>
+            </div>
+          )}
+
           {/* Name */}
           <div className="flex flex-col w-full">
-            <label className="text-sm text-white font-medium mb-1">Name</label>
+            <label className="text-sm text-white font-medium mb-1">Name *</label>
             <input
               required
               type="text"
               placeholder="Your Name"
               value={formData.name}
               onChange={(e) => handleChange("name", e.target.value)}
-              className="w-full border border-white rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-white placeholder:text-white placeholder:opacity-30"
+              className="w-full bg-transparent border border-white rounded-md px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white placeholder:text-white placeholder:opacity-50"
+              disabled={loading}
             />
           </div>
 
           {/* Email */}
           <div className="flex flex-col w-full">
-            <label className="text-sm text-white font-medium mb-1">Email Address</label>
+            <label className="text-sm text-white font-medium mb-1">
+              Email Address *
+            </label>
             <input
               required
               type="email"
               placeholder="your@email.com"
               value={formData.email}
               onChange={(e) => handleChange("email", e.target.value)}
-              className="w-full border border-white rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-white placeholder:text-white placeholder:opacity-30"
+              className="w-full bg-transparent border border-white rounded-md px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white placeholder:text-white placeholder:opacity-50"
+              disabled={loading}
             />
           </div>
 
           {/* Phone */}
           <div className="flex flex-col w-full">
-            <label className="text-sm text-white font-medium mb-1">Phone Number</label>
+            <label className="text-sm text-white font-medium mb-1">
+              Phone Number *
+            </label>
             <input
               required
               type="tel"
-              placeholder="+977"
+              placeholder="+977 1234567890"
               value={formData.phone}
               onChange={(e) => handleChange("phone", e.target.value)}
-              className="w-full border border-white rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-white placeholder:text-white placeholder:opacity-30"
+              className="w-full bg-transparent border border-white rounded-md px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white placeholder:text-white placeholder:opacity-50"
+              disabled={loading}
             />
           </div>
 
-          {/* Address */}
+          {/* Country */}
           <div className="flex flex-col w-full">
-            <label className="text-sm text-white font-medium mb-1">Address</label>
+            <label className="text-sm text-white font-medium mb-1">Country *</label>
             <input
               required
               type="text"
-              placeholder="Your Address"
+              placeholder="Your Country"
               value={formData.address}
               onChange={(e) => handleChange("address", e.target.value)}
-              className="w-full border border-white rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-white placeholder:text-white placeholder:opacity-30"
+              className="w-full bg-transparent border border-white rounded-md px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-white placeholder:text-white placeholder:opacity-50"
+              disabled={loading}
             />
           </div>
 
           {/* Message */}
           <div className="flex flex-col w-full">
-            <label className="text-sm text-white font-medium mb-1">Message</label>
+            <label className="text-sm text-white font-medium mb-1">Message *</label>
             <textarea
+              required
               placeholder="Type your message..."
               value={formData.message}
               onChange={(e) => handleChange("message", e.target.value)}
-              className="w-full border border-white opacity-30 rounded-md px-4 py-2 h-28 resize-none focus:outline-none focus:ring-2 focus:ring-white placeholder:text-white placeholder:opacity-30"
+              className="w-full bg-transparent border border-white rounded-md px-4 py-2 h-28 resize-none text-white focus:outline-none focus:ring-2 focus:ring-white placeholder:text-white placeholder:opacity-50"
+              disabled={loading}
             />
           </div>
 
           {/* Submit Button */}
-          <Button
-            text="Submit"
-            variant="primary"
-            className="mt-4 w-full bg-[#F7941D] hover:bg-[#E47312] text-white font-semibold py-2 px-4 rounded-md transition-colors"
-            onClick={() => console.log("Primary Button Clicked")}
-          />
+          <button
+            type="submit"
+            disabled={loading}
+            className="mt-4 w-full bg-[#F7941D] hover:bg-[#E47312] disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-3 px-4 rounded-md transition-colors duration-300"
+          >
+            {loading ? "Submitting..." : "Submit Inquiry"}
+          </button>
         </div>
       </div>
     </form>

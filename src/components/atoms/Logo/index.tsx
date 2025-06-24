@@ -23,9 +23,9 @@ const Logo = () => {
         }
         const result = await response.json();
         const imageData = result.data.image;
-        console.log(imageData.url)
+        console.log(imageData.urls)
         setLogo({
-          url: imageData.url,
+          url: imageData.urls && imageData.urls.length > 0 ? imageData.urls[0] : '',
           alt: imageData.alt || 'Logo',
           width: imageData.width,
           height: imageData.height,

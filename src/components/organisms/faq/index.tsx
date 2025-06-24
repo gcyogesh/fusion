@@ -47,20 +47,21 @@ export default function FAQSection() {
   };
 
   return (
-   <section className=' '>
+   
 
 
-<div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 px-6 " >
+<div className="max-w-7xl mx-auto flex flex-col md:flex-row lg:flex-row gap-10 px-4 " >
       <TextHeader
         text="Need Help? We've Got Answers!"
         specialWordsIndices="4"
-        align="start"
-        width="622px"
+        align="left"
+        size="medium"
+        width="500px"
         buttonText="FAQ"
         className="cursor-pointer "
       />
 
-      <div className="space-y-4">
+      <div className="space-y-4 w-[710px]">
         {faqs.map((faq) => {
           const isOpen = openId === faq.id;
           return (
@@ -74,14 +75,14 @@ export default function FAQSection() {
                 onClick={() => toggleFAQ(faq.id)}
                 className="w-full flex justify-between items-center text-left"
               >
-                <span className="text-lg font-semibold">
+                <span className="text-xl font-semibold">
                   {faq.question}
                 </span>
                 <span className="ml-6">
                   {isOpen ? (
-                    <Minus className="w-8 h-8 text-white bg-primary rounded cursor-pointer" />
+                    <Minus className="w-10 h-10 text-white bg-primary rounded cursor-pointer " />
                   ) : (
-                    <Plus className="w-8 h-8 text-white bg-primary rounded cursor-pointer" />
+                    <Plus className="w-10 h-10 text-white bg-primary rounded cursor-pointer" />
                   )}
                 </span>
               </button>
@@ -91,7 +92,7 @@ export default function FAQSection() {
                   isOpen ? 'max-h-96 mt-2' : 'max-h-0 overflow-hidden'
                 }`}
               >
-                <p className="text-sm text-gray-800">
+                <p className="text-sm text-gray-800 w-[600px] mr-1">
                   {faq.answer}
                 </p>
 
@@ -119,6 +120,6 @@ export default function FAQSection() {
       `}</style>
     </div>
 
-   </section>
+  
   );
 }

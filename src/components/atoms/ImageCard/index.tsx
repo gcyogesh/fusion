@@ -84,7 +84,6 @@ const ImageDisplay = <T extends string>({
 
   return (
     <motion.div
-      variants={containerVariants}
       initial="hidden"
       animate="visible"
       exit="exit"
@@ -144,22 +143,19 @@ const ImageDisplay = <T extends string>({
             </p>
           )}
 
-          {createdAt && (
-            <div className="absolute bottom-2 left-2  flex   items-center  backdrop-blur-md bg-white/20  text-md text-gray-200 px-6 py-2 rounded-full">
-              <Image src="/images/calender.png" width={27} height={27} alt="Image nnot found" className='mr-2 ' />
+          <div className="mt-4 w-8 h-8 flex items-center justify-center rounded-full bg-orange-500">
+            <ArrowIcon size={15} />
+          </div>
+        </motion.div>
+      )}
+
+      {createdAt && (
+            <div className="absolute bottom-2 left-2  flex   items-center  backdrop-blur-md bg-white/20  text-md text-gray-200 px-6 py-2 m-3 border border-white/40 rounded-full">
+              <Image src="/images/calender.png" width={25} height={25} alt="Image nnot found" className='mr-1.5 ' />
               {new Date(createdAt).toLocaleDateString()}
             </div>
           )}
 
-
-
-
-
-          <div className="mt-4 w-8 h-8 flex items-center justify-center rounded-full bg-orange-500">
-            <ArrowIcon size={10} />
-          </div>
-        </motion.div>
-      )}
       {typeof totalTrips === 'number' && (
         <div className="absolute top-8 left-1/2 -translate-x-1/2 z-10">
           <button

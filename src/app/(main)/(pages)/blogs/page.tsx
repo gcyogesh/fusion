@@ -41,7 +41,7 @@ const Blogs = async ({ searchParams }: Props) => {
       <Breadcrumb currentnavlink="Blogs" />
       <HeroBanner herodata={herodata?.data} />
 
-      <MidNavbar tabs={blogstab}/>
+      <MidNavbar tabs={blogstab} />
       <section className="max-w-7xl mx-auto px-8">
        
 

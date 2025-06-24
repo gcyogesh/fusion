@@ -1,9 +1,13 @@
+"use client";
+
 import React from 'react';
 import TextHeader from '@/components/atoms/headings';
-import Image from "next/image";
 
 interface Partner {
-  image: string;
+  images: {
+    small: string;
+    big: string;
+  };
   title: string;
 }
 
@@ -23,19 +27,20 @@ const PartnerSection = ({ partnersdata }: PartnerSectionProps) => {
       />
       <div className="flex flex-wrap justify-center items-center gap-10">
         {partnersdata.map((partner, idx) => (
-          <a
-            key={idx}
-            href={partner.image}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block"
-          >
+          <div key={idx} className="relative w-40 h-16 group">
+            {/* Small image */}
             <img
-              src={partner.image}
-              alt={`${partner.title} logo`}
-              className="h-16 object-contain  hover:grayscale-0 transition duration-300"
+              src={partner.images.small}
+              alt={`${partner.title} small logo`}
+              className="absolute inset-0 w-full h-full object-contain transition-opacity duration-300 group-hover:opacity-0"
             />
-          </a>
+            {/* Big image */}
+            <img
+              src={partner.images.big}
+              alt={`${partner.title} big logo`}
+              className="absolute inset-0 w-full h-full object-contain opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+            />
+          </div>
         ))}
       </div>
     </div>

@@ -12,6 +12,7 @@ import UserForm from "@/components/organisms/Userform";
 import DepartureCalendar from "@/components/organisms/DepartureCalender";
 import ItinerarySection from "@/components/molecules/ItinerarySection";
 import Breadcrumb from "@/components/atoms/breadcrumb";
+import FAQAccordion from "@/components/organisms/faq";
 
 
 
@@ -20,7 +21,7 @@ const trekTabs = [
   "Itinerary",
   "Includes/Excludes",
   "Trip Map",
-  "Equipments",
+  "Book Now",
   "FAQs",
   "Reviews",
 ];
@@ -165,7 +166,7 @@ export default async function Page({ params }: { params: { id: string } }) {
         </div>
       </section>
 
-      <MidNavbar tabs={trekTabs} />
+      <MidNavbar tabs={trekTabs}  />
 
       <section id="Overview" className="mx-auto max-w-7xl">
         <div className="flex flex-col md:flex-row justify-between gap-6">
@@ -176,7 +177,7 @@ export default async function Page({ params }: { params: { id: string } }) {
                  
   {featureData.map((item, index) => (
     <div key={index} className="flex items-center gap-4">
-      <Image src={item.icon} alt={item.label} width={50} height={50} className="mt-1" />
+      <Image src={item.icon} alt={item.label} width={40} height={40} className="mt-1" />
       <div>
         <p className="text-2xl font-semibold text-gray-800">{item.value || "—"}</p>
         <p className="text-xl text-gray-500">{item.label}</p>
@@ -219,7 +220,7 @@ export default async function Page({ params }: { params: { id: string } }) {
               <DepartureCalendar />
             </div>
 
-            <div className="py-6">
+            <div id="Book-Now" className="py-6">
               <UserForm />
             </div>
           {/*trips maps */}
@@ -252,7 +253,10 @@ export default async function Page({ params }: { params: { id: string } }) {
                 ))}
               </div>
             </div>
+            
           </div>
+
+          
 
           <aside className="w-auto">
             <div className="sticky top-24 w-full">
@@ -279,6 +283,7 @@ export default async function Page({ params }: { params: { id: string } }) {
           </aside>
         </div>
       </section>
+      <FAQAccordion />
     </>
   );
 }

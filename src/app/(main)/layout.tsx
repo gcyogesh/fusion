@@ -28,7 +28,7 @@ export default function RootLayout({
       <body className="antialiased bg-[#fef9ee]">
         <Navbar />
         {children}
-        <FAQAccordion />
+        
         <Footer />
       </body>
     </html>
