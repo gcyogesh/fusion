@@ -389,9 +389,33 @@ export default async function Home() {
 
 
   {/* Carousel */}
-  <div>
+   <section><PartnerSection partnersdata={partnersdata.data} /></section>
+
+     <section className="relative ">
+  {/* Left Arrow – hidden on sm, shown on md+ */}
+  <div className="hidden md:block absolute top-[65%] md:left-[100px] -translate-y-1/2 z-10 ">
+    <ArrowIcon
+      direction="left"
+      variant="primary"
+    
+    />
+  </div>
+
+  {/* Carousel */}
+  <div className="">
     <TestimonialCarousel testimoinaldata={testimoinaldata} />
   </div>
+
+  {/* Right Arrow – hidden on sm, shown on md+ */}
+  <div className="hidden md:block absolute top-[65%] md:right-[100px] -translate-y-1/2 z-10">
+    <ArrowIcon
+      direction="right"
+      variant="primary"
+      
+    />
+  </div>
+</section>
+
 
   
 
