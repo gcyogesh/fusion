@@ -14,7 +14,8 @@ import { fetchAPI } from "@/utils/apiService";
 import PartnerSection from "@/components/organisms/partners";
 
 
-import TestimonialCarousel from "@/components/organisms/testimonial/testimoinal";
+
+
 import TextDescription from "@/components/atoms/description";
 import Link from "next/link";
 import ArrowIcon from "@/components/atoms/arrowIcon";
@@ -22,9 +23,10 @@ import ArrowIcon from "@/components/atoms/arrowIcon";
 //molecules components
 import TopCategoriesSection from "@/components/molecules/TopCategoriesSection";
 import ValuesSection from "@/components/molecules/ValueSection";
-import { ReactNode } from "react";
+import { ReactNode} from "react";
 import StatCard from "@/components/molecules/StatCard";
 import FAQAccordion from "@/components/organisms/faq";
+import TestimonialsSection from "@/components/organisms/testimonial/arrowtestimonial"
 
 
 interface DestinationCard {
@@ -111,8 +113,9 @@ export default async function Home() {
     const packagesdata = await fetchAPI({ endpoint: "tour/tour-packages" });
 
  
-  const testimoinaldata = await fetchAPI({ endpoint: "testimonials" });
+
   const herosectiondata = await fetchAPI({ endpoint: "herobanner/home" });
+    
   return (
     <>
 
@@ -227,11 +230,11 @@ export default async function Home() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 w-full   mt-6 sm:mt-1 md:mt-6 ">
                     <div className="space-y-2 md:space-y-4 text-sm md:text-xl lg:text-xl ">
                       <div className="flex items-center gap-2">
-                        <HiOutlineClock className="w-4 h-4 sm:w-5 sm:h-5" />
+                        <Image src={"/images/clocky.svg"} alt="Location" width={22} height={22}/>
                         <span>30 Minutes – 90 Minutes</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <HiOutlineCurrencyDollar className="w-4 h-4 sm:w-5 sm:h-5" />
+                        <Image src={"/images/dollars.svg"} alt="Location" width={22} height={22}/>
                         <span className="flex items-center gap-x-2 md:gap-x-4">
                           Start From <span className="text-primary font-semibold">$120 – $250</span>
                         </span>
@@ -292,29 +295,50 @@ export default async function Home() {
           width={500}
         />
 
-        {/* First Row */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
-          {/* Rectangle Image (spans 2 columns) */}
-          <div className="lg:col-span-2">
-            <ImageDisplay src={destinationdata.data[0].imageUrls[0]} variant="rectangle" width={840} height={430} title={destinationdata.data[0].title} showDefaultTitle={true} description={destinationdata.data[0].subtitle} totalTrips={destinationdata.data[0].totalTrips}  />
-          </div>
+       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
+ 
+  <div className="lg:col-span-2">
+    <ImageDisplay 
+      src={destinationdata.data[0].imageUrls[0]} 
+      variant="rectangle" 
+      width={840} 
+      height={430} 
+      title={destinationdata.data[0].title} 
+      showDefaultTitle={true} 
+      description={destinationdata.data[0].subtitle} 
+      totalTrips={destinationdata.data[0].totalTrips}  // ✅ Uses [0]'s data
+    />
+  </div>
 
-          {/* Square Image */}
-          <div>
-            <ImageDisplay src={destinationdata.data[1].imageUrls[0]} variant="square" title={destinationdata.data[1].title} showDefaultTitle={true} description={destinationdata.data[1].subtitle} totalTrips={destinationdata.data[0].totalTrips}   />
+  
+  <div>
+    <ImageDisplay 
+      src={destinationdata.data[1].imageUrls[0]} 
+      variant="square" 
+      title={destinationdata.data[1].title} 
+      showDefaultTitle={true} 
+      description={destinationdata.data[1].subtitle} 
+      totalTrips={destinationdata.data[1].totalTrips}  // ✅ Changed to [1]'s data
+    />
+  </div>
+</div>
 
-          </div>
-        </div>
 
-        {/* Second Row with 3 Square Images */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {destinationdata.data.slice(2, 5).map((card, index) => (
-            <div key={index}>
-              <ImageDisplay src={card.imageUrls[0]} variant="square" alt="Pashpati"  title={card.title} description={card.subtitle} showDefaultTitle={true}  totalTrips={destinationdata.data[0].totalTrips} />
-
-            </div>
-          ))}
-        </div>
+<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+  {destinationdata.data.slice(2, 5).map((card, index) => (
+    <div key={index}>
+      <ImageDisplay 
+        src={card.imageUrls[0]} 
+        variant="square" 
+        alt="Pashpati"
+        title={card.title} 
+        description={card.subtitle} 
+        showDefaultTitle={true}
+        totalTrips={card.totalTrips}  // ✅ Uses current card's data
+      />
+    </div>
+  ))}
+</div>
 
       </section>
 
@@ -386,35 +410,9 @@ export default async function Home() {
       {/*PartnerSection*/}
       <section><PartnerSection partnersdata={partnersdata.data} /></section>
 
+     
+ <TestimonialsSection />
 
-
-  {/* Carousel */}
-   <section><PartnerSection partnersdata={partnersdata.data} /></section>
-
-     <section className="relative ">
-  {/* Left Arrow – hidden on sm, shown on md+ */}
-  <div className="hidden md:block absolute top-[65%] md:left-[100px] -translate-y-1/2 z-10 ">
-    <ArrowIcon
-      direction="left"
-      variant="primary"
-    
-    />
-  </div>
-
-  {/* Carousel */}
-  <div className="">
-    <TestimonialCarousel testimoinaldata={testimoinaldata} />
-  </div>
-
-  {/* Right Arrow – hidden on sm, shown on md+ */}
-  <div className="hidden md:block absolute top-[65%] md:right-[100px] -translate-y-1/2 z-10">
-    <ArrowIcon
-      direction="right"
-      variant="primary"
-      
-    />
-  </div>
-</section>
 
 
   
@@ -539,3 +537,4 @@ export default async function Home() {
     </>
   );
 }
+

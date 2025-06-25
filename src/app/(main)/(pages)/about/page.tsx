@@ -140,13 +140,10 @@ const profile = teamsdata.data;
         </div>
       </section>
 
-      <TopCategoriesSection
-        buttonText="What We Offer"
-      />
-
-     <section>
+     
+     
       <ValuesSection />
-     </section>
+     
 
      <section className=" max-w-7xl mx-auto">
        <div className="flex flex-col py-10">
@@ -194,8 +191,7 @@ const profile = teamsdata.data;
 
 
      </section>
-     <section className="bg-[#FCE1AC] max-w-7xl mx-auto mt-10">   
-     </section>
+     
 
      
 
