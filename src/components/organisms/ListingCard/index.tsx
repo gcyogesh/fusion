@@ -9,6 +9,7 @@ import { fetchAPI } from "@/utils/apiService";
 import Pagination from "@/components/atoms/pagination";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import Alert from "@/components/atoms/alert";
 
 // Define a generic type for items
 export interface ItemBase {
@@ -17,6 +18,8 @@ export interface ItemBase {
   title?: string;
   name?: string;
   image?: string;
+  imageUrl?:string;
+  imageUrls:string;
   gallery?: string[];
   [key: string]: unknown;
 }
@@ -61,10 +64,14 @@ interface AdminTableProps<T> {
   data: T[];
   columns: Column<T>[];
   endpoint: string;
+  destinationId?: string;
 }
 
 // Helper: recursively blank out all values but keep structure
 function deepTemplateClone(template) {
+  const skipKeys = [
+    'isfeatured', 'isFeatured', 'totaltrips', 'totalTrips'
+  ];
   if (Array.isArray(template)) {
     if (template.length > 0 && typeof template[0] === 'object' && template[0] !== null) {
       return [deepTemplateClone(template[0])];
@@ -73,6 +80,7 @@ function deepTemplateClone(template) {
   } else if (template && typeof template === 'object') {
     const result = {};
     for (const k in template) {
+      if (skipKeys.includes(k) || skipKeys.includes(k.toLowerCase())) continue;
       const val = template[k];
       if (Array.isArray(val)) result[k] = deepTemplateClone(val);
       else if (typeof val === 'object' && val !== null) result[k] = deepTemplateClone(val);
@@ -89,6 +97,7 @@ export function AdminTable<T extends ItemBase>({
   data: initialData,
   columns,
   endpoint,
+  destinationId,
 }: AdminTableProps<T>) {
   const [items, setItems] = useState<T[]>(initialData);
   const [showForm, setShowForm] = useState(false);
@@ -97,11 +106,20 @@ export function AdminTable<T extends ItemBase>({
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const [showSuccess, setShowSuccess] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
+  const [fetchError, setFetchError] = useState<string | null>(null);
   
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 8;
   const totalPages = Math.ceil(items.length / itemsPerPage);
   const paginatedItems = items.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+  const [alert, setAlert] = useState({
+    show: false,
+    type: "confirm" as "confirm" | "success" | "error" | "warning",
+    message: "",
+    onConfirm: () => {},
+    onCancel: () => {},
+  });
 
   const showSuccessMessage = (message: string) => {
     setSuccessMessage(message);
@@ -111,6 +129,7 @@ export function AdminTable<T extends ItemBase>({
 
   const refreshData = async () => {
     try {
+      setFetchError(null);
       const response = await fetchAPI<any>({ endpoint });
       let data: T[] = [];
       if (response && Array.isArray(response.data)) {
@@ -120,8 +139,8 @@ export function AdminTable<T extends ItemBase>({
       }
       setItems(data);
     } catch (error) {
-      console.error("Failed to refresh data", error);
       setItems([]);
+      setFetchError("Packages not available");
     }
   };
 
@@ -134,25 +153,52 @@ export function AdminTable<T extends ItemBase>({
     setShowForm(true);
   };
 
-  const handleDelete = async (item: T) => {
-    if (!confirm(`Are you sure you want to delete this item?`)) return;
-    setIsDeleting(true);
-    setDeleteError(null);
-    try {
-      await fetchAPI({ endpoint, method: "DELETE", id: item._id || item.id });
-      await refreshData();
-      showSuccessMessage("Item deleted successfully!");
-    } catch (err) {
-      setDeleteError(err instanceof Error ? err.message : "Failed to delete.");
-    } finally {
-      setIsDeleting(false);
-    }
+  const handleDelete = (item: T) => {
+    setAlert({
+      show: true,
+      type: "confirm",
+      message: "Are you sure you want to delete this item?",
+      onConfirm: async () => {
+        setAlert((prev) => ({ ...prev, show: false })); // Hide alert immediately
+        setIsDeleting(true);
+        setDeleteError(null);
+        try {
+          await fetchAPI({ endpoint, method: "DELETE", id: item._id || item.id });
+          await refreshData();
+          setAlert({
+            show: true,
+            type: "success",
+            message: "Item deleted successfully!",
+            onConfirm: () => setAlert((prev) => ({ ...prev, show: false })),
+            onCancel: undefined,
+          });
+        } catch (err) {
+          setAlert({
+            show: true,
+            type: "error",
+            message: "Failed to delete item.",
+            onConfirm: () => setAlert((prev) => ({ ...prev, show: false })),
+            onCancel: undefined,
+          });
+        } finally {
+          setIsDeleting(false);
+        }
+      },
+      onCancel: () => setAlert((prev) => ({ ...prev, show: false })),
+    });
   };
 
   const handleAddNew = () => {
-    if (!items.length) return; // or show a message
-    const template = items[0];
-    const emptyItem = deepTemplateClone(template);
+    let emptyItem;
+    if (items.length) {
+      const template = items[0];
+      emptyItem = deepTemplateClone(template);
+    } else {
+      emptyItem = { title: "" };
+    }
+    if (destinationId) {
+      emptyItem.destination = destinationId;
+    }
     setCurrentItem(emptyItem);
     setShowForm(true);
   };
@@ -166,6 +212,13 @@ export function AdminTable<T extends ItemBase>({
 
   return (
     <div className="w-full min-h-screen bg-slate-50">
+      <Alert
+        show={alert.show}
+        type={alert.type}
+        message={alert.message}
+        onConfirm={alert.onConfirm}
+        onCancel={alert.onCancel}
+      />
       <div className="max-w-7xl mx-auto px-4">
         {showSuccess && (
           <div className="fixed top-4 right-4 z-50 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg text-sm">
@@ -176,7 +229,13 @@ export function AdminTable<T extends ItemBase>({
           <h2 className="text-2xl font-bold flex items-center gap-2">{title}</h2>
           <Button text={buttonText} variant="primary" onClick={handleAddNew} />
         </div>
-        <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+        {((items.length === 0) || fetchError) && (
+          <div className="flex flex-col items-center justify-center py-20">
+            <div className="text-gray-500 text-lg mb-4">{fetchError || "Packages not available"}</div>
+            <Button text={buttonText} variant="primary" onClick={handleAddNew} />
+          </div>
+        )}
+        <div className={`grid gap-8 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5${items.length === 0 ? ' hidden' : ''}`}>
           {paginatedItems.map((item) => {
             const itemId = item._id || item.id;
             const cardContent = (
@@ -185,7 +244,7 @@ export function AdminTable<T extends ItemBase>({
               >
                 <div className="relative h-56">
                   <img
-                    src={safeString(item.image) || item.gallery?.[0] || '/fallback.jpg'}
+                    src={safeString(item.image) || item.gallery?.[0] || item.imageUrl || item.imageUrls}
                     alt={safeString(item.title)}
                     className="w-full h-full object-cover"
                     onError={e => { (e.currentTarget as HTMLImageElement).src = '/fallback.jpg'; }}
@@ -201,11 +260,7 @@ export function AdminTable<T extends ItemBase>({
                   </div>
                   {/* See Packages button overlay - enhanced professional UI */}
                   {itemId && (
-                    <Link
-                      href={`/dashboard/packages/${itemId}`}
-                      className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 z-20"
-                      style={{ pointerEvents: 'auto' }}
-                    >
+                
                       <span className="flex items-center gap-2 px-7 py-3 rounded-xl bg-white border border-blue-100 shadow-xl text-blue-700 font-bold text-lg hover:scale-105 hover:brightness-110 transition-all duration-200"
                         style={{ boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.10)' }}
                         title="See Packages"
@@ -217,7 +272,7 @@ export function AdminTable<T extends ItemBase>({
                           <line x1="12" y1="22.08" x2="12" y2="12" />
                         </svg>
                       </span>
-                    </Link>
+                  
                   )}
                   <div className="absolute bottom-0 left-0 w-full p-4 flex items-center gap-2">
                     <MdLocationOn className="text-yellow-400 text-xl drop-shadow" />
@@ -228,7 +283,7 @@ export function AdminTable<T extends ItemBase>({
                 </div>
               </div>
             );
-            return itemId ? (
+            return itemId ? ( 
               <div key={itemId} className="block">
                 {cardContent}
               </div>

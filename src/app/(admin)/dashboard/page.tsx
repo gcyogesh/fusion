@@ -9,6 +9,7 @@ import {
   FaPhoneAlt,
 } from "react-icons/fa";
 import Link from "next/link";
+import { FiArrowRight } from 'react-icons/fi';
 
 export default async function Dashboard() {
   const dashboard = await fetchAPI({ endpoint: "stats/dashboard" });
@@ -164,7 +165,7 @@ export default async function Dashboard() {
               href="/dashboard/customise-destinations"
               className="text-blue-600 hover:text-blue-800 text-sm font-medium mt-4 inline-block"
             >
-              View all destinations →
+              View all destinations <FiArrowRight className="inline ml-1 align-middle" />
             </Link>
           </div>
 
@@ -185,7 +186,7 @@ export default async function Dashboard() {
               href="/dashboard/customise-activities"
               className="text-orange-600 hover:text-orange-800 text-sm font-medium mt-4 inline-block"
             >
-              View all activities →
+              View all activities <FiArrowRight className="inline ml-1 align-middle" />
             </Link>
           </div>
         </div>

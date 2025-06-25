@@ -8,7 +8,7 @@ export default async function CustomiseDestinations() {
     <>
       <AdminTable
         title="Destination Management"
-        buttonText="Add Destination"
+        buttonText="Add New Destination"
         data={destinationdata.data}
         columns={[
           { label: "title", accessor: "title" },
