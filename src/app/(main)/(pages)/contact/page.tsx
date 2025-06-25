@@ -12,24 +12,9 @@ import Breadcrumb from "@/components/atoms/breadcrumb";
 import ContactForm from "@/components/organisms/Form/Contactform";
 
 const socialLinks = [
-  {
-    icon: (
-      <FaInstagram className="text-white bg-primary p-2 rounded-xl w-8 h-8" />
-    ),
-    link: "#",
-  },
-  {
-    icon: (
-      <FaFacebookF className="text-white bg-primary p-2 rounded-xl w-8 h-8" />
-    ),
-    link: "#",
-  },
-  {
-    icon: (
-      <FaYoutube className="text-white bg-primary p-2 rounded-xl w-8 h-8" />
-    ),
-    link: "#",
-  },
+  { icon: <FaFacebookF className="text-white backdrop-blur-[12.6px] border border-white/16 bg-white/15 p-2 rounded-xl w-9.5 h-9.5 " />, link: "https://www.facebook.com/FusionExpeditions" },
+  { icon: <FaInstagram className="text-white backdrop-blur-[12.6px] border border-white/16 bg-white/15 p-2 rounded-xl w-9.5 h-9.5" />, link: "https://www.instagram.com/fusionexpeditions/" },
+  { icon: <FaYoutube className="text-white backdrop-blur-[12.6px] border border-white/16 bg-white/15 p-2 rounded-xl w-9.5 h-9.5 " />, link: "#" },
 ];
 
 export default async function Contact() {

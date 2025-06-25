@@ -113,7 +113,7 @@ export default async function Page({ params }: { params: { id: string } }) {
   return (
     <>
       <Breadcrumb currentnavlink="Destinations" />
-      <section className="mx-auto max-w-7xl mt-5">
+      <section className="mx-auto max-w-7xl mt-5 px-4 md:px-6">
         <span className="flex items-center gap-2 text-[#7e7e7e] text-xl font-medium mb-2">
           <MapPin className="w-6 h-6" />
           {destination.location.city}
@@ -168,7 +168,7 @@ export default async function Page({ params }: { params: { id: string } }) {
 
       <MidNavbar tabs={trekTabs}  />
 
-      <section id="Overview" className="mx-auto max-w-7xl">
+      <section id="Overview" className="mx-auto max-w-7xl px-4 md:px-6">
         <div className="flex flex-col md:flex-row justify-between gap-6">
           <div className="flex-1 max-w-4xl pr-2">
             <TextDescription text={destination.description} />
@@ -215,7 +215,7 @@ export default async function Page({ params }: { params: { id: string } }) {
               </div>
             </div>
 
-           <div className="w-full max-w-4xl px-4 sm:px-6 py-6 mx-auto">
+           <div className="w-full max-w-4xl  py-6 mx-auto">
 
               <DepartureCalendar />
             </div>
@@ -258,7 +258,7 @@ export default async function Page({ params }: { params: { id: string } }) {
 
           
 
-          <aside className="w-auto">
+          <aside className="w-auto px-6 mb-6 md:mb-0 lg:mb-0 md:px-0 lg:px-0 ">
             <div className="sticky top-24 w-full">
               <div className="max-w-xs flex flex-col items-center rounded-xl border border-black bg-white shadow p-1 text-center space-y-3">
                 <div className="bg-[#002D62] text-white p-2 h-[45px] w-[300px] text-xl font-medium rounded-xl">Best Price</div>

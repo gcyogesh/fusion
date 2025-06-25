@@ -96,7 +96,7 @@ export default function DurationPackages() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
               {packagesByDuration[group.slug].map((pkg) => (
                 <Link 
-                  href={`/destinations/${pkg.slug }`} 
+                  href={`/itinerary/${pkg._id}`}
                   key={pkg._id} 
                   className="flex flex-col gap-4"
                 >
