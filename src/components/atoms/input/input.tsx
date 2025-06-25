@@ -12,6 +12,7 @@ const Input = ({
   validate,
   errorMessage,
   phone = false,
+  isError = false,
 }) => {
   const [isTouched, setIsTouched] = useState(false);
 
@@ -61,25 +62,23 @@ const Input = ({
   };
 
   return (
-    <div className="w-full flex flex-col gap-2">
+    <div className="w-full flex flex-col gap-1">
       {label && (
-        <label className="text-sm font-medium text-stone-800">
+        <label className="text-[11px] font-medium text-gray-500 uppercase tracking-widest mb-1">
           {label}
           {required && <span className="text-red-500"> *</span>}
         </label>
       )}
 
       <div
-        className={`p-3 bg-neutral-50 rounded border transition-all duration-200 ${
-          isTouched && !isValid ? "border-red-500" : "border-slate-300"
-        }`}
+        className={`px-1 pt-2 pb-1 bg-white rounded-none border-b transition-all duration-200 focus-within:border-blue-400 focus-within:ring-0 hover:border-blue-300 ${isError ? 'border-red-500' : 'border-slate-200'}`}
       >
         {renderInputField()}
       </div>
 
-      {isTouched && !isValid && (
-        <span className="text-red-500 text-sm mt-1">{errorMessage}</span>
-      )}
+      {(isError && errorMessage) || (isTouched && !isValid) ? (
+        <span className="text-red-500 text-xs mt-1">{errorMessage}</span>
+      ) : null}
     </div>
   );
 };

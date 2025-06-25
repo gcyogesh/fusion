@@ -41,6 +41,9 @@ export default function SettingsPage() {
   const [logoUrls, setLogoUrls] = useState<string[]>(["", ""]);
   const [logoFiles, setLogoFiles] = useState<(File | null)[]>([null, null]);
 
+  const [googleMapUrl, setGoogleMapUrl] = useState("");
+  const [googleMapFile, setGoogleMapFile] = useState<File | null>(null);
+
   useEffect(() => {
     setHeroLoading(true);
     setHeroError("");
@@ -57,6 +60,7 @@ export default function SettingsPage() {
             buttonLink: data.buttonLink || "",
             bannerImage: data.bannerImage || "",
           });
+          setGoogleMapUrl(data.googleMapUrl || "");
         }
       })
       .catch(() => setHeroError("Failed to fetch hero banner."))
@@ -101,6 +105,13 @@ export default function SettingsPage() {
     }
   };
 
+  const handleGoogleMapChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setGoogleMapFile(e.target.files[0]);
+      setGoogleMapUrl(URL.createObjectURL(e.target.files[0]));
+    }
+  };
+
   const handleSaveHero = async () => {
     setHeroSaving(true);
     setHeroError("");
@@ -117,7 +128,17 @@ export default function SettingsPage() {
         });
         bannerImageUrl = uploadRes?.url || bannerImageUrl;
       }
-
+      let googleMapImageUrl = googleMapUrl;
+      if (googleMapFile) {
+        const formData = new FormData();
+        formData.append("googleMapUrl", googleMapFile);
+        const uploadRes: any = await fetchAPI({
+          endpoint: "upload",
+          method: "POST",
+          data: formData,
+        });
+        googleMapImageUrl = uploadRes?.url || googleMapImageUrl;
+      }
       await fetchAPI({
         endpoint: `herobanner/${selectedHeroPage}`,
         method: "PUT",
@@ -128,10 +149,12 @@ export default function SettingsPage() {
           buttonText: heroData.buttonText,
           buttonLink: heroData.buttonLink,
           bannerImage: bannerImageUrl,
+          googleMapUrl: googleMapImageUrl,
         },
       });
       setHeroSuccess("Hero banner updated!");
       setHeroImageFile(null);
+      setGoogleMapFile(null);
     } catch (e: any) {
       setHeroError(e.message || "Failed to update hero banner.");
     } finally {
@@ -141,7 +164,7 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white flex items-center justify-center px-4 py-10 overflow-y-auto">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white flex items-center justify-center px-4 py-10">
       <div className="w-full max-w-7xl">
         <h1 className="text-4xl font-extrabold text-gray-900 mb-2 text-center">
           Site Settings
@@ -149,56 +172,45 @@ export default function SettingsPage() {
         <p className="text-gray-500 mb-10 text-lg text-center">
           Manage your website's branding, hero section, and contact information.
         </p>
-        <div className="bg-white rounded-3xl shadow-2xl border border-gray-100 p-0 flex flex-col lg:flex-row overflow-hidden">
-          {/* Logo Management */}
-          <div className="flex-1 bg-gradient-to-b from-primary/5 to-white p-10 flex flex-col items-center justify-center min-w-[340px] gap-8 border-r border-gray-100">
-            <h2 className="text-2xl font-bold text-primary mb-6 tracking-tight flex items-center gap-2">
+        <div className="bg-white rounded-3xl shadow-2xl border border-gray-100 p-10 flex flex-col lg:flex-row items-center justify-center gap-10">
+          {/* Left: Logo Management */}
+          <div className="flex-1 w-full max-w-md bg-gradient-to-b from-primary/5 to-white p-6 rounded-xl shadow-md">
+            <h2 className="text-2xl font-bold text-primary mb-6 flex items-center gap-2">
               <FiImage className="w-7 h-7" /> Logo Management
             </h2>
-            <div className="flex flex-row gap-8 w-full justify-center">
-              {[0, 1].map((idx) => (
-                <div key={idx} className="flex flex-col items-center w-44">
-                  <span className="text-base font-semibold text-gray-700 mb-2">
-                    {idx === 0 ? "Primary Logo" : "Secondary Logo"}
-                  </span>
-                  <label className="block cursor-pointer group w-full relative">
-                    <div className="w-full h-32 bg-gray-50 border-2 border-dashed border-gray-200 rounded-xl flex flex-col items-center justify-center gap-2 transition group-hover:border-primary group-hover:bg-primary/5 overflow-hidden relative shadow-sm">
-                      {logoUrls[idx] ? (
-                        <>
-                          <img
-                            src={logoUrls[idx]}
-                            alt={idx === 0 ? "Primary Logo" : "Secondary Logo"}
-                            className="h-full object-contain mx-auto rounded-lg"
-                          />
-                          <span className="absolute top-2 right-2 bg-white rounded-full shadow p-1 cursor-pointer group-hover:bg-primary/10 transition">
-                            <MdEdit className="w-5 h-5 text-primary" />
-                          </span>
-                        </>
-                      ) : (
-                        <>
-                          <FiUploadCloud className="w-8 h-8 text-primary mb-1" />
-                          <span className="text-gray-700 font-medium">
-                            Click or drag logo here to upload
-                          </span>
-                          <span className="text-xs text-gray-400">
-                            PNG, JPG, SVG. Max 1MB.
-                          </span>
-                        </>
-                      )}
-                    </div>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={(e) => handleLogoChange(e, idx)}
-                    />
-                  </label>
-                </div>
-              ))}
-            </div>
-            <div className="flex justify-center mt-8 w-full">
-              <Button text="Save Logos" className="w-full max-w-xs" />
-            </div>
+            {[0, 1].map((idx) => (
+              <div key={idx} className="mb-6 text-center">
+                <p className="text-base font-semibold text-gray-700 mb-2">
+                  {idx === 0 ? "Primary Logo" : "Secondary Logo"}
+                </p>
+                <label className="block relative cursor-pointer group">
+                  <div className="w-full h-28 bg-gray-50 border-2 border-dashed border-gray-200 rounded-lg flex items-center justify-center overflow-hidden group-hover:border-primary">
+                    {logoUrls[idx] ? (
+                      <>
+                        <img
+                          src={logoUrls[idx]}
+                          alt={`Logo ${idx}`}
+                          className="h-full object-contain"
+                        />
+                        <MdEdit className="absolute top-2 right-2 text-primary bg-white rounded-full shadow p-1" />
+                      </>
+                    ) : (
+                      <div className="text-center">
+                        <FiUploadCloud className="w-8 h-8 text-primary mx-auto" />
+                        <p className="text-sm text-gray-700">Upload logo</p>
+                      </div>
+                    )}
+                  </div>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => handleLogoChange(e, idx)}
+                  />
+                </label>
+              </div>
+            ))}
+            <Button text="Save Logos" className="w-full mt-4" />
           </div>
 
           {/* Hero Section & Contact */}
@@ -285,6 +297,44 @@ export default function SettingsPage() {
                       )}
                     </div>
                     <input type="file" accept="image/*" className="hidden" onChange={handleHeroImageChange} />
+                  </label>
+                  <label className="text-sm font-medium text-gray-700 mt-2">Google Map URL</label>
+                  <input
+                    type="text"
+                    name="googleMapUrl"
+                    className="w-full border border-gray-200 rounded-lg px-4 py-2 focus:ring-2 focus:ring-primary focus:border-primary outline-none text-base bg-white"
+                    value={googleMapUrl}
+                    onChange={e => setGoogleMapUrl(e.target.value)}
+                    placeholder="Paste Google Maps embed URL here"
+                  />
+                  <label className="font-semibold text-gray-700 mt-4">Google Map Image</label>
+                  <label className="block cursor-pointer group w-full relative">
+                    <div className="w-full bg-gray-50 border-2 border-dashed border-gray-200 rounded-xl flex flex-col items-center justify-center gap-2 transition group-hover:border-primary group-hover:bg-primary/5 overflow-hidden relative shadow-sm">
+                      {googleMapUrl ? (
+                        <>
+                          <img
+                            src={googleMapUrl}
+                            alt="Google Map Preview"
+                            className="object-cover mx-auto rounded-lg w-full max-h-40"
+                          />
+                        </>
+                      ) : (
+                        <>
+                          <FiUploadCloud className="w-8 h-8 text-primary mb-1" />
+                          <span className="text-gray-700 font-medium">
+                            Click or choose Google Map image to upload
+                          </span>
+                          <span className="text-xs text-gray-400">
+                            PNG, JPG. Max 2MB.
+                          </span>
+                        </>
+                      )}
+                    </div>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleGoogleMapChange}
+                    />
                   </label>
                 </div>
               </div>

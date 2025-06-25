@@ -64,17 +64,29 @@ export const fetchAPI = async <T = unknown>({
         const json = JSON.parse(errorText);
         if (json?.message) userMessage = json.message;
         else if (json?.error) userMessage = json.error;
+        else if (typeof json === 'string') userMessage = json;
       } catch {
         const preMatch = errorText.match(/<pre>([\s\S]*?)<\/pre>/i);
         if (preMatch?.[1]) userMessage = preMatch[1].trim();
         else if (errorText.length < 200) userMessage = errorText.trim();
+        else userMessage = errorText;
       }
+      // Extract user-friendly validation error if present
+      const validationMatch = userMessage.match(/Validation failed: ([^:]+: Path `[^`]+` is required\.)/i);
+      if (validationMatch) {
+        // e.g., 'tag: Path `tag` is required.' => 'tag is required.'
+        const fieldMsg = validationMatch[1].replace(/: Path `([^`]+)` is required\./, ' is required.');
+        userMessage = fieldMsg.charAt(0).toUpperCase() + fieldMsg.slice(1);
+      }
+      // Remove stack traces and technical details
+      userMessage = userMessage.split('<br>')[0].trim();
       throw new Error(userMessage);
     }
 
     return response.json();
   } catch (error) {
-    console.error("Global API error:", error);
-    throw new Error("A network or server error occurred. Please check your connection or try again later.");
+    // Only throw the original error message, don't override with a generic one
+    if (error instanceof Error) throw error;
+    throw new Error(String(error));
   }
 };
