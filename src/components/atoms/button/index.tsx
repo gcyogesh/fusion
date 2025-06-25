@@ -14,7 +14,7 @@ interface ButtonProps<T = unknown> {
   borderColor?: string;
   textColor?: string;
   buttonLink?: string;
-  disableHover?: boolean; // ✅ New prop
+  disableHover?: boolean;
 }
 
 const Button = <T,>({
@@ -53,17 +53,17 @@ const Button = <T,>({
   const content = (
     <div
       className={`
-        ${baseClasses} 
-        ${variants[variant].bg} 
-        ${textColor || variants[variant].text} 
-        ${borderColor || variants[variant].border} 
-        ${!disableHover ? variants[variant].hoverBg : ''} 
-        ${!disableHover ? variants[variant].hoverBorder : ''} 
-        ${className}
+        ${variants[variant].bg}
+        ${textColor || variants[variant].text}
+        ${borderColor || variants[variant].border}
+        ${!disableHover ? variants[variant].hoverBg : ''}
+        ${!disableHover ? variants[variant].hoverBorder : ''}
+        ${baseClasses}
+        ${className}  
       `}
     >
       {leftIcon && (
-        <span className="mr-2">
+        <span className="mr-2 flex items-center">
           {typeof leftIcon === 'string' ? (
             <img src={leftIcon} alt="left-icon" className="w-5 h-5" />
           ) : (
@@ -71,24 +71,15 @@ const Button = <T,>({
           )}
         </span>
       )}
-      {text}
+      <span>{text}</span>
       {rightIcon && (
-        <span
-          className={`${
-            !disableHover
-              ? 'absolute right-4 opacity-0 group-hover:opacity-100'
-              : ''
-          } transition-opacity duration-300`}
-        >
+        <span className="ml-2 flex items-center">
           {typeof rightIcon === 'string' ? (
             <img src={rightIcon} alt="right-icon" className="w-5 h-5" />
           ) : (
             rightIcon
           )}
         </span>
-      )}
-      {!disableHover && (
-        <div className="absolute right-0 top-0 bottom-0 w-1/4 hover:bg-transparent"></div>
       )}
     </div>
   );

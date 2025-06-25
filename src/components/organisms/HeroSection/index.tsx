@@ -17,7 +17,7 @@ interface HeroData {
 }
 
 const HeroSection = ({ herodata }: { herodata: HeroData }) => {
-  const { title, description, buttonText, bannerImage } = herodata;
+  const { title, description, buttonText, bannerImage, buttonLink } = herodata;
   const isGif = bannerImage.toLowerCase().endsWith(".gif");
 
   const [location, setLocation] = useState("");
@@ -119,17 +119,20 @@ const HeroSection = ({ herodata }: { herodata: HeroData }) => {
             {description}
           </p>
 
-          <div className="flex justify-center md:justify-end">
-            <Button
-              text={buttonText}
-              variant="secondary"
-              textColor="text-white"
-              className="border border-white w-[200px] h-[55px] mt-4"
-               
-            />
-
+           <div className="flex justify-center md:justify-end gap-1">
+            
+           <Button
+  text={buttonText}
+  onClick={() => window.location.href = buttonLink}
+  variant="secondary"
+  textColor="text-white"
+  className="border border-white w-full h-[55px] mt-4 !px-[15px]"
+  rightIcon={<ArrowIcon direction="up-right" variant="primary" size={14} />}
+/>
             
           </div>
+
+          
         </div>
       </div>
 
@@ -237,7 +240,7 @@ const HeroSection = ({ herodata }: { herodata: HeroData }) => {
 
         {/* Search Results Dropdown */}
         {showResults && (
-          <div className="mt-4 backdrop-blur-xl bg-white/20 rounded-2xl shadow-xl max-h-96 overflow-y-auto">
+          <div className="mt-4  bg-white rounded-2xl shadow-xl max-h-96 overflow-y-auto">
             {/* Header */}
             <div className="flex justify-between items-center px-6 py-4 border-b border-gray-200">
               <h3 className="text-lg font-semibold text-gray-800">
