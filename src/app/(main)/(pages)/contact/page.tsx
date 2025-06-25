@@ -48,7 +48,7 @@ export default async function Contact() {
   {/* Right Image */}
   <div className="w-full lg:w-auto flex justify-end mt-10 lg:mt-0">
     <Image
-      src="/images/contactImage.png"
+      src="/images/contactphoto.png"
       alt="Hikers on a trail"
       width={600}
       height={500}
