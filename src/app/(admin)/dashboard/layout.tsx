@@ -1,8 +1,9 @@
 import { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
-
 import DashboardShell from "../DashboardShell";
 import "../../../app/globals.css";
+
+
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",
   subsets: ["latin"],
@@ -19,6 +20,9 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  // Get the current path from headers (works in server components)
+
+
   return (
     <html lang="en" className={dmSans.variable}>
       <body>

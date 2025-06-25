@@ -14,6 +14,7 @@ export default async function CustomiseDestinations() {
           { label: "title", accessor: "title" },
         ]} 
         endpoint={"destinations"}
+        linkType="dashboard"
       />
     </>
   )

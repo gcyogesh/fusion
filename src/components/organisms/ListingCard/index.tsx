@@ -7,7 +7,7 @@ import Button from "@/components/atoms/button";
 import DynamicForm from "@/components/molecules/adminForm/DynamicForm";
 import { fetchAPI } from "@/utils/apiService";
 import Pagination from "@/components/atoms/pagination";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import Link from "next/link";
 import Alert from "@/components/atoms/alert";
 
@@ -21,6 +21,7 @@ export interface ItemBase {
   imageUrl?:string;
   imageUrls:string;
   gallery?: string[];
+  slug?: string;
   [key: string]: unknown;
 }
 
@@ -120,6 +121,8 @@ export function AdminTable<T extends ItemBase>({
     onConfirm: () => {},
     onCancel: () => {},
   });
+
+  const pathname = usePathname();
 
   const showSuccessMessage = (message: string) => {
     setSuccessMessage(message);
@@ -259,23 +262,35 @@ export function AdminTable<T extends ItemBase>({
                       <FiTrash className="text-red-600" />
                     </button>
                   </div>
-                  {/* See Packages button overlay - only this is a link now */}
-                  {itemId && !isBlog && (
-                    <Link href={`/dashboard/customise-packages/${itemId}`} legacyBehavior>
-                      <a
-                        className="flex items-center justify-center p-2 rounded-full bg-white/80 border border-blue-200 shadow-lg text-blue-600 absolute left-1/2 -translate-x-1/2 bottom-16 opacity-0 group-hover:opacity-100 group-hover:bottom-20 z-20 transition-all duration-300 hover:scale-110 hover:bg-blue-100"
-                        style={{ boxShadow: '0 4px 16px 0 rgba(31, 38, 135, 0.10)' }}
-                        title="See Packages"
-                      >
-                        {/* Package/Box Icon */}
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-7 h-7">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
-                          <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
-                          <line x1="12" y1="22.08" x2="12" y2="12" />
-                        </svg>
-                      </a>
-                    </Link>
-                  )}
+                  {/* Unified button logic: dashboard or packages */}
+                  {itemId && !isBlog && (() => {
+                    let href = '';
+                    let title = '';
+                    const slug = item.slug || (safeString(item.title)?.toLowerCase().replace(/\s+/g, '-') || itemId);
+                    if (pathname && pathname.includes('/dashboard')) {
+                      href = `/dashboard/customise-packages/${slug}`;
+                      title = 'See Dashboard Custom Package';
+                    } else {
+                      href = `/customise-packages/${slug}/${slug}`;
+                      title = 'See Custom Package';
+                    }
+                    return (
+                      <Link href={href} legacyBehavior>
+                        <a
+                          className="flex items-center justify-center p-2 rounded-full bg-white/80 border border-blue-200 shadow-lg text-blue-600 absolute left-1/2 -translate-x-1/2 bottom-16 opacity-0 group-hover:opacity-100 group-hover:bottom-20 z-20 transition-all duration-300 hover:scale-110 hover:bg-blue-100"
+                          style={{ boxShadow: '0 4px 16px 0 rgba(31, 38, 135, 0.10)' }}
+                          title={title}
+                        >
+                          {/* Package/Box Icon */}
+                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-7 h-7">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                            <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+                            <line x1="12" y1="22.08" x2="12" y2="12" />
+                          </svg>
+                        </a>
+                      </Link>
+                    );
+                  })()}
                   <div className="absolute bottom-0 left-0 w-full p-4 flex items-center gap-2">
                     <MdLocationOn className="text-yellow-400 text-xl drop-shadow" />
                     <span className="text-white font-bold text-lg drop-shadow">

@@ -19,9 +19,8 @@ const Sidebar = ({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen: (open: boo
   const router = useRouter();
 
   const handleLogout = () => {
-    Cookies.remove("access_token"); // Remove token from cookies
-    sessionStorage.removeItem("accessToken"); // Remove from session storage
-    router.push("/auth/login"); // Redirect to login page
+    Cookies.remove("token"); // Remove correct token from cookies
+    router.push("/login"); // Redirect to login page
   };
 
   return (
@@ -73,7 +72,8 @@ const Sidebar = ({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen: (open: boo
         <div className="border-t border-slate-800 pt-4">
           <button
             onClick={handleLogout}
-            className="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-slate-800/50 transition-colors duration-200 w-full text-left"
+            className="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-slate-800/50 transition-colors duration-200 w-full text-left cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-400"
+            tabIndex={0}
           >
             <FaSignOutAlt className="text-slate-400" />
             <span className="text-slate-300 font-medium">Logout</span>

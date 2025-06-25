@@ -1,8 +1,6 @@
 import Image from "next/image";
 import { FaInstagram, FaFacebookF, FaYoutube } from "react-icons/fa";
-import { HiOutlineClock } from 'react-icons/hi';
 import HeroSection from "@/components/organisms/HeroSection";
-import { HiOutlineCurrencyDollar } from 'react-icons/hi';
 // Atom Components
 import ImageDisplay from "@/components/atoms/ImageCard";
 import Button from "@/components/atoms/button";
@@ -18,7 +16,6 @@ import PartnerSection from "@/components/organisms/partners";
 
 import TextDescription from "@/components/atoms/description";
 import Link from "next/link";
-import ArrowIcon from "@/components/atoms/arrowIcon";
 
 //molecules components
 import TopCategoriesSection from "@/components/molecules/TopCategoriesSection";

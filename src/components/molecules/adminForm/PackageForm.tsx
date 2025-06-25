@@ -40,6 +40,12 @@ interface TourPackageFormData {
   destination: string;
 }
 
+interface TourPackageFormProps {
+  initialData?: Partial<TourPackageFormData>;
+  onClose: () => void;
+  destinationId?: string;
+}
+
 // Move InputField component outside
 const InputField = ({ 
   label, 
@@ -53,7 +59,8 @@ const InputField = ({
   icon = null,
   errors = {},
   min,
-  max
+  max,
+  readOnly = false
 }) => (
   <div className={`mb-4 ${className}`}>
     <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -76,6 +83,7 @@ const InputField = ({
         className={`w-full pl-10 pr-3 py-3 border rounded-lg shadow-sm ${
           errors[name] ? 'border-red-500' : 'border-gray-300'
         }`}
+        readOnly={readOnly}
       />
     </div>
     {errors[name] && (
@@ -234,8 +242,8 @@ const ArrayField = ({ label, name, value, onChange, placeholder, required = fals
   </div>
 );
 
-const TourPackageForm = ({ initialData = undefined, onClose }) => {
-  const [formData, setFormData] = useState<TourPackageFormData>(initialData || {
+const TourPackageForm = ({ initialData = undefined, onClose, destinationId }: TourPackageFormProps) => {
+  const [formData, setFormData] = useState<TourPackageFormData>({
     title: '',
     description: '',
     overview: '',
@@ -262,7 +270,7 @@ const TourPackageForm = ({ initialData = undefined, onClose }) => {
     type: 'tour',
     tags: [],
     rating: '',
-    destination: '',
+    destination: initialData?.destination || destinationId || "",
   });
 
   const [galleryFiles, setGalleryFiles] = useState([]);
@@ -312,6 +320,12 @@ const TourPackageForm = ({ initialData = undefined, onClose }) => {
       });
     }
   }, [initialData]);
+
+  useEffect(() => {
+    if (destinationId) {
+      setFormData((prev) => ({ ...prev, destination: destinationId }));
+    }
+  }, [destinationId]);
 
   useEffect(() => {
     if (submitStatus && submitStatus.type === 'success') {
@@ -609,8 +623,9 @@ const TourPackageForm = ({ initialData = undefined, onClose }) => {
           name="destination"
           value={formData.destination}
           onChange={handleChange}
-          placeholder="Enter destination"
+          placeholder="Enter destination ID"
           required
+          readOnly={!!destinationId}
           icon={<FiFlag />}
           errors={errors} min={undefined} max={undefined}        />
         <InputField 

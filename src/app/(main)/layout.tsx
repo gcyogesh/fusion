@@ -5,7 +5,6 @@ import '../../app/globals.css';
 
 import Footer from "@/components/organisms/Footer";
 import Navbar from "@/components/organisms/NavBar";
-import FAQAccordion from "@/components/organisms/faq";
 
 const dmSans = DM_Sans({
   variable: "--font-dm-sans", // This links to your CSS variable

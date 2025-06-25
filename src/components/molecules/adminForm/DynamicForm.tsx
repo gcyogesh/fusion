@@ -28,6 +28,9 @@ function CategorySelect({ value, onChange, endpoint, allowAdd = true, label = "C
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [justAddedId, setJustAddedId] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setLoading(true);
@@ -36,6 +39,21 @@ function CategorySelect({ value, onChange, endpoint, allowAdd = true, label = "C
       .catch(() => setCategories([]))
       .finally(() => setLoading(false));
   }, [endpoint]);
+
+  // Close modal on outside click
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setShowDropdown(false);
+      }
+    }
+    if (showDropdown) {
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
+    }
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showDropdown]);
 
   // Helper to get label for current value
   const getCurrentCategoryLabel = (val: any) => {
@@ -89,22 +107,107 @@ function CategorySelect({ value, onChange, endpoint, allowAdd = true, label = "C
     setJustAddedId(null);
   };
 
+  const handleDeleteCategory = async (catId: string) => {
+    setDeletingId(catId);
+    setError(null);
+  };
+
+  const confirmDeleteCategory = async () => {
+    try {
+      await fetchAPI({ endpoint: `${endpoint}/${deletingId}`, method: 'DELETE' });
+      setCategories(prev => prev.filter(cat => (cat._id || cat.id || cat.slug) !== deletingId));
+    } catch (err) {
+      setError('Failed to delete category');
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
+  // Helper: Spinner for delete button
+  const Spinner = () => (
+    <svg className="animate-spin h-4 w-4 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+    </svg>
+  );
+
   return (
     <div className="flex flex-col gap-2">
-      <select
-        value={getCurrentCategoryValue(value) || ""}
-        onChange={handleSelect}
-        className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
-        disabled={loading}
-      >
-        <option value="">Select a {label.toLowerCase()}</option>
-        {allCategories.map(cat => (
-          <option key={cat._id || cat.id || cat.slug} value={cat._id || cat.id || cat.slug}>
-            {cat.name || cat.title || cat.slug}
-            {justAddedId === (cat._id || cat.id || cat.slug) ? " (new)" : ""}
-          </option>
-        ))}
-      </select>
+      <div className="relative">
+        <select
+          value={getCurrentCategoryValue(value) || ""}
+          onChange={handleSelect}
+          className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+          disabled={loading}
+        >
+          <option value="">Select a {label.toLowerCase()}</option>
+          {allCategories.map(cat => {
+            const key = 'id' in cat ? cat.id : ('slug' in cat ? cat.slug : ('_id' in cat ? cat._id : ''));
+            const valueId = '_id' in cat ? cat._id : ('id' in cat ? cat.id : ('slug' in cat ? cat.slug : ''));
+            const labelText = 'name' in cat ? cat.name : ('title' in cat ? cat.title : ('slug' in cat ? cat.slug : ''));
+            const isSelected = getCurrentCategoryValue(value) === valueId;
+            return (
+              <option key={key ?? ''} value={valueId ?? ''}>
+                {labelText ?? ''}
+                {justAddedId === (valueId ?? '') ? " (new)" : ""}
+              </option>
+            );
+          })}
+        </select>
+        <button
+          type="button"
+          className="mt-2 text-xs text-primary underline"
+          onClick={() => setShowDropdown((v) => !v)}
+        >
+          Show Categories
+        </button>
+        {showDropdown && (
+          <>
+            {/* Overlay */}
+            <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm" onClick={() => setShowDropdown(false)} />
+            {/* Modal */}
+            <div ref={dropdownRef} className="fixed z-50 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-2xl shadow-2xl border border-primary/20 w-full max-w-md p-0 flex flex-col">
+              <div className="px-6 pt-5 pb-2 flex items-center justify-between border-b border-gray-100 bg-primary/5 rounded-t-2xl">
+                <div className="font-semibold text-lg text-gray-800">Manage Categories</div>
+                <button onClick={() => setShowDropdown(false)} className="text-gray-400 hover:text-primary p-2 rounded-full bg-white shadow border border-gray-200">
+                  <FiX className="w-5 h-5" />
+                </button>
+              </div>
+              {error && (
+                <div className="px-6 py-2 text-red-600 bg-red-50 border-b border-red-200 text-sm">{error}</div>
+              )}
+              <div className="overflow-y-auto max-h-60 px-2 py-2 bg-white rounded-b-2xl">
+                {allCategories.map(cat => {
+                  const valueId = '_id' in cat ? cat._id : ('id' in cat ? cat.id : ('slug' in cat ? cat.slug : ''));
+                  const labelText = 'name' in cat ? cat.name : ('title' in cat ? cat.title : ('slug' in cat ? cat.slug : ''));
+                  const isSelected = getCurrentCategoryValue(value) === valueId;
+                  return (
+                    <div
+                      key={valueId ?? ''}
+                      className="flex items-center justify-between px-3 py-2 rounded-lg transition hover:bg-primary/10 cursor-pointer"
+                    >
+                      <span className="truncate text-gray-800 text-sm font-medium">{labelText ?? ''}</span>
+                      {!isSelected && (
+                        <button
+                          type="button"
+                          className="text-red-500 hover:text-red-700 text-xs ml-2 disabled:opacity-50 rounded-full p-1 bg-red-50 hover:bg-red-100 border border-transparent hover:border-red-200 transition flex items-center justify-center"
+                          disabled={deletingId === valueId}
+                          onClick={() => handleDeleteCategory(String(valueId))}
+                        >
+                          {deletingId === valueId ? <Spinner /> : <FiTrash className="w-4 h-4" />}
+                        </button>
+                      )}
+                    </div>
+                  );
+                })}
+                {allCategories.length === 0 && (
+                  <div className="text-gray-400 text-center py-6">No categories found.</div>
+                )}
+              </div>
+            </div>
+          </>
+        )}
+      </div>
       {allowAdd && (
         <div className="flex gap-2 mt-1">
           <input
@@ -118,7 +221,7 @@ function CategorySelect({ value, onChange, endpoint, allowAdd = true, label = "C
           <button
             type="button"
             onClick={handleAddCategory}
-            className="px-4 py-2 bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition-colors"
+            className="px-4 py-2 bg-primary text-white rounded-xl hover:bg-primary/80 transition-colors"
             disabled={loading || !newCategory.trim()}
           >
             Add
@@ -279,10 +382,11 @@ export default function DynamicForm<T extends { _id?: string }>({
     if (key === 'description') {
       return (
         <textarea
-          className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all min-h-[120px]"
+          className="w-full px-4 py-2 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all resize-none h-[44px] min-h-0 max-h-[44px] leading-[44px] text-base"
           value={formData[key] || ''}
           onChange={e => handleChange(key, e.target.value)}
           placeholder="Enter description..."
+          rows={1}
         />
       );
     }
@@ -323,40 +427,25 @@ export default function DynamicForm<T extends { _id?: string }>({
       } else if (formData[key]) {
         files = [formData[key]];
       }
+      // Determine max images based on endpoint/type
+      let maxImages = 1;
+      if (endpoint.includes('destination')) maxImages = 5;
+      else if (endpoint.includes('blog')) maxImages = 1;
+      else if (endpoint.includes('activity')) maxImages = 1;
+      // Fill slots up to maxImages
+      const slots = Array.from({ length: maxImages }, (_, i) => files[i] || null);
+      const showImageError = error === 'Image is required' && endpoint.includes('blog');
       return (
-        <div className="space-y-6">
-          {/* Helper text for clarity */}
-          <div className="text-xs text-gray-500 mb-1">
-            {key.toLowerCase().includes('gallery')
-              ? 'You can add multiple images. Select more files to add.'
-              : 'You can add another image after uploading one.'}
-          </div>
-          {/* Visible file input */}
-          <input
-            type="file"
-            accept="image/*"
-            multiple={key.toLowerCase().includes('gallery')}
-            onChange={e => {
-              const filesInput = (e.target as HTMLInputElement).files;
-              if (filesInput && filesInput.length > 0) {
-                if (key.toLowerCase().includes('gallery')) {
-                  handleChange(key, [...files, ...Array.from(filesInput)]);
-                } else {
-                  handleChange(key, [filesInput[0]]);
-                }
-              }
-            }}
-            className="block mb-2"
-          />
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {files.map((file, index) => (
-              <div key={index} className="group relative aspect-square">
+        <div className={`space-y-4 ${showImageError ? 'border border-red-500 rounded-xl p-2' : ''}`}>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+            {slots.map((file, index) => (
+              <div key={index} className="group relative aspect-square flex items-center justify-center border-2 border-dashed border-primary/30 rounded-xl bg-primary/5">
                 {file ? (
                   <>
                     <img
-                      src={file instanceof File ? URL.createObjectURL(file) : file}
+                      src={(file && typeof window !== 'undefined' && ((file as any) instanceof File)) ? URL.createObjectURL(file as any) : String(file ?? '')}
                       alt={`${key} ${index + 1}`}
-                      className="w-full h-full object-cover rounded-2xl border border-gray-200 shadow-sm"
+                      className="w-full h-full object-cover rounded-xl"
                     />
                     {/* Replace icon on hover */}
                     <button
@@ -375,7 +464,7 @@ export default function DynamicForm<T extends { _id?: string }>({
                         };
                         input.click();
                       }}
-                      className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl z-10"
+                      className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl z-10"
                       title="Replace Image"
                     >
                       <FiCamera className="w-8 h-8 text-white" />
@@ -393,33 +482,31 @@ export default function DynamicForm<T extends { _id?: string }>({
                       <FiTrash className="w-5 h-5 text-red-600" />
                     </button>
                   </>
-                ) : null}
+                ) : (
+                  // Empty slot: show add button if not at max
+                  files.length < maxImages && (
+                    <label className="flex flex-col items-center justify-center w-full h-full cursor-pointer">
+                      <FiCamera className="w-10 h-10 text-primary mb-1" />
+                      <span className="text-xs text-primary font-semibold">Add Image</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={e => {
+                          const filesInput = (e.target as HTMLInputElement).files;
+                          if (filesInput && filesInput.length > 0) {
+                            const newFiles = [...files];
+                            newFiles[index] = filesInput[0];
+                            handleChange(key, newFiles);
+                          }
+                        }}
+                      />
+                    </label>
+                  )
+                )}
               </div>
             ))}
           </div>
-          {/* Add another image icon button for single-image fields */}
-          {!key.toLowerCase().includes('gallery') && (
-            <button
-              type="button"
-              className="mt-2 flex items-center justify-center w-10 h-10 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors shadow-md"
-              title="Add another image"
-              aria-label="Add another image"
-              onClick={() => {
-                const input = document.createElement('input');
-                input.type = 'file';
-                input.accept = 'image/*';
-                input.onchange = (e) => {
-                  const filesInput = (e.target as HTMLInputElement).files;
-                  if (filesInput && filesInput.length > 0) {
-                    handleChange(key, [...files, filesInput[0]]);
-                  }
-                };
-                input.click();
-              }}
-            >
-              <FiPlus className="w-6 h-6" />
-            </button>
-          )}
         </div>
       );
     }
@@ -483,7 +570,7 @@ export default function DynamicForm<T extends { _id?: string }>({
                 />
                 <button
                   type="button"
-                  className="px-3 py-2 bg-red-500 text-white rounded-xl hover:bg-red-600"
+                  className="px-3 py-2 bg-primary text-white rounded-xl hover:bg-primary/80"
                   onClick={() => {
                     const updated = value.filter((_, i) => i !== idx);
                     handleChange(key, updated);
@@ -495,7 +582,7 @@ export default function DynamicForm<T extends { _id?: string }>({
             ))}
             <button
               type="button"
-              className="px-4 py-2 bg-blue-500 text-white rounded-xl hover:bg-blue-600"
+              className="px-4 py-2 bg-primary text-white rounded-xl hover:bg-primary/80"
               onClick={() => handleChange(key, [...value, ''])}
             >
               Add
@@ -533,7 +620,7 @@ export default function DynamicForm<T extends { _id?: string }>({
                         />
                         {item[k] && (
                           <img
-                            src={item[k] instanceof File ? URL.createObjectURL(item[k]) : String(item[k])}
+                            src={(typeof File !== 'undefined' && item[k] instanceof File) ? URL.createObjectURL(item[k]) : String(item[k])}
                             alt={k}
                             className="w-24 h-24 object-cover rounded border"
                           />
@@ -542,9 +629,7 @@ export default function DynamicForm<T extends { _id?: string }>({
                     ) : (
                       <input
                         type="text"
-                        value={typeof item[k] === 'string' || typeof item[k] === 'number' || typeof item[k] === 'boolean'
-                          ? String(item[k])
-                          : JSON.stringify(item[k])}
+                        value={String(item[k] ?? '')}
                         onChange={e => {
                           let newValue = e.target.value;
                           if (typeof item[k] === 'object' && item[k] !== null) {
@@ -567,7 +652,7 @@ export default function DynamicForm<T extends { _id?: string }>({
             ))}
             <button
               type="button"
-              className="px-4 py-2 bg-blue-500 text-white rounded-xl hover:bg-blue-600"
+              className="px-4 py-2 bg-primary text-white rounded-xl hover:bg-primary/80"
               onClick={() => {
                 const newObj = {};
                 Object.keys(templateObj).forEach(k => {
@@ -588,7 +673,7 @@ export default function DynamicForm<T extends { _id?: string }>({
           <div className="space-y-2">
             <button
               type="button"
-              className="px-4 py-2 bg-blue-500 text-white rounded-xl hover:bg-blue-600"
+              className="px-4 py-2 bg-primary text-white rounded-xl hover:bg-primary/80"
               onClick={() => {
                 handleChange(key, ['']);
               }}
@@ -639,6 +724,16 @@ export default function DynamicForm<T extends { _id?: string }>({
     if (Array.isArray(value) && value.length === 0) {
       return null;
     }
+    if (key.toLowerCase() === 'totaltrips') {
+      return (
+        <input
+          type="text"
+          value={String(formData[key] ?? '')}
+          readOnly
+          className="w-full px-4 py-2 bg-gray-100 border border-gray-200 rounded-xl text-gray-500 cursor-not-allowed"
+        />
+      );
+    }
     return (
       <input
         type="text"
@@ -662,6 +757,24 @@ export default function DynamicForm<T extends { _id?: string }>({
         setError('Please select a valid category.');
         setIsSubmitting(false);
         return;
+      }
+      // Blog image required validation
+      if (endpoint.includes('blog')) {
+        const hasImage = (
+          (Array.isArray(formData['image']) && formData['image'].length > 0) ||
+          (Array.isArray(formData['gallery']) && formData['gallery'].length > 0) ||
+          (Array.isArray(formData['imageUrls']) && formData['imageUrls'].length > 0) ||
+          (Array.isArray(formData['blogImage']) && formData['blogImage'].length > 0) ||
+          (typeof formData['image'] === 'string' && formData['image']) ||
+          (typeof formData['gallery'] === 'string' && formData['gallery']) ||
+          (typeof formData['imageUrls'] === 'string' && formData['imageUrls']) ||
+          (typeof formData['blogImage'] === 'string' && formData['blogImage'])
+        );
+        if (!hasImage) {
+          setError('Image is required');
+          setIsSubmitting(false);
+          return;
+        }
       }
       let hasFile = false;
       const fileFields = new Set(['image', 'imageUrls', 'gallery', 'cover', 'blogImage']);
@@ -728,101 +841,107 @@ export default function DynamicForm<T extends { _id?: string }>({
 
   // ========== Render ==========
   return (
-    <div className="fixed inset-0 z-50 w-screen h-screen bg-white flex flex-col">
-      {/* Error Alert */}
-      <Alert
-        show={!!error}
-        type="error"
-        message={Array.isArray(error) ? error.join("\n") : error || ""}
-        onConfirm={() => setError(null)}
-        onCancel={() => setError(null)}
-      />
-      {/* Success Alert */}
-      <Alert
-        show={!!success}
-        type="success"
-        message={success || ""}
-        onConfirm={() => {
-          setSuccess(null);
-          if (lastResponse.current) {
-            onSave(lastResponse.current);
-            lastResponse.current = null;
-          }
-        }}
-      />
-      {/* Header */}
-      <div className="flex justify-between items-center px-8 py-6 border-b border-gray-100 bg-white/90 backdrop-blur-sm">
-        <div>
-          <h2 className="text-3xl font-bold text-gray-800 tracking-tight">
-            {formData._id ? "Edit Item" : "Add New Item"}
-          </h2>
-          <p className="text-gray-500 mt-2 text-lg">
-            {formData._id ? "Update the details below" : "Fill in the details below"}
-          </p>
-        </div>
-        <button
-          onClick={onCancel}
-          className="text-gray-400 hover:text-gray-600 transition-all duration-200 p-2 hover:bg-gray-100 rounded-xl"
-        >
-          <FiX className="w-6 h-6" />
-        </button>
-      </div>
-      {/* Form Content */}
-      <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto px-8 py-6 w-full">
-        <div className="space-y-10 w-full">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 w-full">
-            {Object.entries(formData).map(([key, value]) => {
-              if (shouldSkipField(key)) return null;
-              const isFullWidth =
-                key.toLowerCase().includes('image') ||
-                key.toLowerCase().includes('photo') ||
-                key.toLowerCase().includes('description') ||
-                Array.isArray(value);
-              return (
-                <div
-                  key={key}
-                  className={`flex flex-col gap-3 ${isFullWidth ? 'md:col-span-2' : ''}`}
-                >
-                  <label className="text-sm font-semibold text-gray-700 uppercase tracking-wider">
-                    {getFieldLabel(key)}
-                  </label>
-                  {renderField(key, value)}
-                </div>
-              );
-            })}
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
+      {/* Overlay */}
+      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity animate-fadeIn" />
+      {/* Modal */}
+      <div className="relative w-full max-w-4xl min-h-[120px] bg-white rounded-2xl shadow-2xl border border-primary/20 px-16 py-8 flex flex-col animate-scaleIn overflow-y-auto max-h-[80vh]">
+        {/* Error Alert */}
+        <Alert
+          show={!!error}
+          type="error"
+          message={Array.isArray(error) ? error.join("\n") : error || ""}
+          onConfirm={() => setError(null)}
+          onCancel={() => setError(null)}
+        />
+        {/* Success Alert */}
+        <Alert
+          show={!!success}
+          type="success"
+          message={success || ""}
+          onConfirm={() => {
+            setSuccess(null);
+            if (lastResponse.current) {
+              onSave(lastResponse.current);
+              lastResponse.current = null;
+            }
+          }}
+        />
+        {/* Header */}
+        <div className="flex justify-between items-center mb-6">
+          <div className="flex flex-row items-center gap-3 w-full min-w-0 h-[44px]">
+            <h2 className="text-2xl font-bold text-gray-800 tracking-tight whitespace-nowrap leading-[44px] h-[44px] flex items-center">
+              {formData._id ? "Edit Item" : "Add New Item"}
+            </h2>
+            <span className="text-base text-gray-400 font-normal whitespace-nowrap overflow-hidden text-ellipsis leading-[44px] h-[44px] flex items-center">
+              {formData._id ? "Update the details below" : "Fill in the details below"}
+            </span>
           </div>
-          {error && (
-            <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 flex items-center gap-2">
-              <FiAlertCircle className="w-5 h-5 flex-shrink-0" />
-              <div>
-                {Array.isArray(error) ? (
-                  <ul className="list-disc pl-5">
-                    {error.map((errMsg, idx) => (
-                      <li key={idx}>{errMsg}</li>
-                    ))}
-                  </ul>
-                ) : (
-                  <span>{error}</span>
-                )}
-              </div>
-            </div>
-          )}
+          <button
+            onClick={onCancel}
+            className="text-gray-400 hover:text-primary transition-all duration-200 p-2 hover:bg-primary/10 rounded-xl absolute top-4 right-4"
+            style={{ position: 'absolute', top: 16, right: 16 }}
+          >
+            <FiX className="w-6 h-6" />
+          </button>
         </div>
-      </form>
-      {/* Sticky Footer Actions */}
-      <div className="flex justify-end gap-4 px-8 py-6 border-t border-gray-100 bg-white/90 backdrop-blur-sm">
-        <Button
-          text="Cancel"
-          variant="secondary"
-          onClick={onCancel}
-          className="px-6 py-2.5"
-        />
-        <Button
-          text={isSubmitting ? "Saving..." : "Save"}
-          variant="primary"
-          onClick={handleSubmit}
-          className={`px-6 py-2.5 ${isSubmitting ? "opacity-50 cursor-not-allowed" : ""}`}
-        />
+        {/* Form Content */}
+        <form onSubmit={handleSubmit} className="w-full">
+          <div className="space-y-8 w-full">
+            <div className="grid grid-cols-1 gap-8 w-full">
+              {Object.entries(formData).map(([key, value]) => {
+                if (shouldSkipField(key)) return null;
+                const isFullWidth =
+                  key.toLowerCase().includes('image') ||
+                  key.toLowerCase().includes('photo') ||
+                  key.toLowerCase().includes('description') ||
+                  Array.isArray(value);
+                return (
+                  <div
+                    key={key}
+                    className={`flex flex-col gap-2 ${isFullWidth ? '' : ''}`}
+                  >
+                    <label className="text-sm font-semibold text-gray-700 uppercase tracking-wider">
+                      {getFieldLabel(key)}
+                    </label>
+                    {renderField(key, value)}
+                  </div>
+                );
+              })}
+            </div>
+            {error && (
+              <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 flex items-center gap-2">
+                <FiAlertCircle className="w-5 h-5 flex-shrink-0" />
+                <div>
+                  {Array.isArray(error) ? (
+                    <ul className="list-disc pl-5">
+                      {error.map((errMsg, idx) => (
+                        <li key={idx}>{errMsg}</li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <span>{error}</span>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+          {/* Actions */}
+          <div className="flex justify-end gap-4 mt-8">
+            <Button
+              text="Cancel"
+              variant="secondary"
+              onClick={onCancel}
+              className="px-6 py-2.5"
+            />
+            <Button
+              text={isSubmitting ? "Saving..." : "Save"}
+              variant="primary"
+              onClick={handleSubmit}
+              className={`px-6 py-2.5 ${isSubmitting ? "opacity-50 cursor-not-allowed" : ""}`}
+            />
+          </div>
+        </form>
       </div>
     </div>
   );
