@@ -1,77 +1,24 @@
-import { AdminTable } from "@/components/organisms/ListingCard"
-import { fetchAPI } from "@/utils/apiService"
-export default async function dashboard() {
-  const packagesdata = await fetchAPI({ endpoint: "tour/tour-packages" });
+"use client"
+import TourPackageForm from "@/components/molecules/adminForm/PackageForm";
+import React, { useState } from "react";
 
-    return (
-        <>
-          <AdminTable
-            title="Packages Management"
-            buttonText="Add Packages"
-            data={packagesdata.data}
-            columns={[
-              { label: "Packages title", accessor: "title" },
-            ]} 
-            endpoint="tour/tour-packages"
-            template={{
-              title: "",
-              description: "",
-              overview: "",
-              location: {
-                coordinates: { lat: '', lng: '' },
-                city: '',
-                country: ''
-              },
-              duration: { days: '', nights: '' },
-              basePrice: '',
-              currency: '',
-              gallery: [''],
-              googleMapUrl: '',
-              itinerary: [
-                {
-                  day: '',
-                  title: '',
-                  description: '',
-                  activities: [''],
-                  image: ''
-                }
-              ],
-              inclusions: [''],
-              exclusions: [''],
-              highlights: [''],
-              quickfacts: [''],
-              feature: {
-                groupSize: { min: '' },
-                tripDuration: '',
-                tripDifficulty: '',
-                meals: [''],
-                activities: [''],
-                accommodation: [''],
-                maxAltitude: '',
-                bestSeason: [''],
-                startEndPoint: ''
-              },
-              type: '',
-              tags: [''],
-              rating: '',
-              destination: {
-                _id: '',
-                title: '',
-                subtitle: '',
-                imageUrls: [''],
-                tag: '',
-                isFeatured: false,
-                slug: '',
-                totalTrips: '',
-                createdAt: '',
-                updatedAt: '',
-                __v: ''
-              },
-              createdAt: '',
-              updatedAt: '',
-              __v: ''
-            }}
-          />
-        </>
-    )
+export default async function dashboard() {
+
+  // Add state for showing the form
+  const [showForm, setShowForm] = useState(false);
+
+  return (
+    <>
+      <button
+        className="px-4 py-2 bg-primary text-white rounded-lg mb-4"
+        onClick={() => setShowForm(true)}
+      >
+        Add New Package
+      </button>
+      {showForm && (
+        <TourPackageForm initialData={undefined} onClose={() => setShowForm(false)} />
+      )}
+      {/* You can render AdminTable or other content here */}
+    </>
+  );
 }

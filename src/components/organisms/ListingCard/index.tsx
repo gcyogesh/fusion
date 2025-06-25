@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { FiEdit, FiTrash, FiCamera, FiX, FiAlertCircle } from "react-icons/fi";
 import { MdStar, MdFavorite, MdAddCircle, MdWorkspacePremium, MdLocationOn } from "react-icons/md";
 import Button from "@/components/atoms/button";
-import DynamicForm from "@/components/molecules/DynamicForm";
+import DynamicForm from "@/components/molecules/adminForm/DynamicForm";
 import { fetchAPI } from "@/utils/apiService";
 import Pagination from "@/components/atoms/pagination";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -238,9 +238,10 @@ export function AdminTable<T extends ItemBase>({
         <div className={`grid gap-8 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5${items.length === 0 ? ' hidden' : ''}`}>
           {paginatedItems.map((item) => {
             const itemId = item._id || item.id;
+            const isBlog = endpoint === 'blogs';
             const cardContent = (
               <div
-                className="relative rounded-xl overflow-hidden shadow group bg-white cursor-pointer"
+                className="relative rounded-xl overflow-hidden shadow group bg-white"
               >
                 <div className="relative h-56">
                   <img
@@ -258,21 +259,22 @@ export function AdminTable<T extends ItemBase>({
                       <FiTrash className="text-red-600" />
                     </button>
                   </div>
-                  {/* See Packages button overlay - enhanced professional UI */}
-                  {itemId && (
-                
-                      <span className="flex items-center gap-2 px-7 py-3 rounded-xl bg-white border border-blue-100 shadow-xl text-blue-700 font-bold text-lg hover:scale-105 hover:brightness-110 transition-all duration-200"
-                        style={{ boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.10)' }}
+                  {/* See Packages button overlay - only this is a link now */}
+                  {itemId && !isBlog && (
+                    <Link href={`/dashboard/customise-packages/${itemId}`} legacyBehavior>
+                      <a
+                        className="flex items-center justify-center p-2 rounded-full bg-white/80 border border-blue-200 shadow-lg text-blue-600 absolute left-1/2 -translate-x-1/2 bottom-16 opacity-0 group-hover:opacity-100 group-hover:bottom-20 z-20 transition-all duration-300 hover:scale-110 hover:bg-blue-100"
+                        style={{ boxShadow: '0 4px 16px 0 rgba(31, 38, 135, 0.10)' }}
                         title="See Packages"
                       >
-                        {/* Clean Lucide/Feather-style package icon */}
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8">
-                          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                        {/* Package/Box Icon */}
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-7 h-7">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
                           <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
                           <line x1="12" y1="22.08" x2="12" y2="12" />
                         </svg>
-                      </span>
-                  
+                      </a>
+                    </Link>
                   )}
                   <div className="absolute bottom-0 left-0 w-full p-4 flex items-center gap-2">
                     <MdLocationOn className="text-yellow-400 text-xl drop-shadow" />
@@ -283,12 +285,12 @@ export function AdminTable<T extends ItemBase>({
                 </div>
               </div>
             );
-            return itemId ? ( 
+            return itemId ? (
               <div key={itemId} className="block">
                 {cardContent}
               </div>
             ) : (
-              <div key={itemId || Math.random()}>{cardContent}</div>
+              <div key={itemId || Math.random()}> {cardContent} </div>
             );
           })}
         </div>
