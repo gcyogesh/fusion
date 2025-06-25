@@ -208,7 +208,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
                       <ImageDisplay
                         src={card.imageUrl}
                         variant="smallrectangle"
-                        title={card.title}
+                        title={card.subtitle}
                         description={card.description}
                       />
                       <div className="mt-4 h-[150px]">

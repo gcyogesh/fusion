@@ -61,7 +61,7 @@ export default function FAQSection() {
         className="cursor-pointer "
       />
 
-      <div className="space-y-4 w-[710px]">
+      <div className="w-full max-w-[400px] md:max-w-[710px] px-2 md:px-0 space-y-4">
         {faqs.map((faq) => {
           const isOpen = openId === faq.id;
           return (
@@ -92,7 +92,7 @@ export default function FAQSection() {
                   isOpen ? 'max-h-96 mt-2' : 'max-h-0 overflow-hidden'
                 }`}
               >
-                <p className="text-sm text-gray-800 w-[600px] mr-1">
+               <p className="text-sm text-gray-800 w-full max-w-[600px] mr-1">
                   {faq.answer}
                 </p>
 

@@ -23,11 +23,11 @@ const profile = teamsdata.data;
       <Breadcrumb currentnavlink="About" />
       <HeroBanner herodata={herodata.data} />
 
-      <section className="h-[580px]">
+      <section className="h-[580px] px-6">
         <div className="relative top-1 max-w-7xl mx-auto ">
           <div className=" w-[1300px] h-[555px] bg-[#FEF2D6] rounded-3xl p-10 ">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-70 justify-center items-center">
-              <div className="flex flex-col ">
+            <div className="grid grid-row-1 md:grid-cols-2 gap-70 justify-center items-center">
+              <div >
                 <TextHeader
                   text="Fusion Expeditions – Crafted in the Heart of Nepal"
                   specialWordsIndices=""
@@ -36,7 +36,7 @@ const profile = teamsdata.data;
                   width="420px"
                   textcolor="Black"
                   buttonText="Company Overview"
-
+                  className="mb-2"
 
                 />
 

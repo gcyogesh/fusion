@@ -108,6 +108,7 @@ export default async function Home() {
   const blogsdata = await fetchAPI({ endpoint: "blogs" });
   const destinationdata = await fetchAPI({ endpoint: "destinations" });
     const packagesdata = await fetchAPI({ endpoint: "tour/tour-packages" });
+    const acctivitiesdata = await fetchAPI({ endpoint: "tour/tour-packages" });
 
  
 
@@ -246,7 +247,7 @@ export default async function Home() {
                 </div>
 
                 {/* Right Side Image */}
-                <div className="w-full flex flex-row justify-end  pl-10 md:pl-0 lg:pl-0">
+                <div className="w-full flex flex-row items-center justify-end  pl-10 md:pl-0 lg:pl-0">
                   <div className="rounded-xl shadow-md  border border-gray-400  backdrop-blur-md p-2 md:p-3 lg:p-3 ">
                     <ImageDisplay
                       src="/images/pokharaflight.png"
@@ -264,8 +265,8 @@ export default async function Home() {
         </div>
       </section>
 
-      <section>
-      <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-12">
+     
+     <div className="max-w-7xl mx-auto px-6 md:px-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-12 place-items-center md:place-items-start py-2 mb-4 ">
         {stats.map((stat, index) => (
           <StatCard
             key={index}
@@ -276,7 +277,7 @@ export default async function Home() {
           />
         ))}
       </div>
-    </section>
+   
 
 
 
@@ -295,6 +296,9 @@ export default async function Home() {
        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
  
   <div className="lg:col-span-2">
+     <Link
+              href={`/destinations/${destinationdata.data[0].slug}`}
+              className="lg:col-span-2 block"  >
     <ImageDisplay 
       src={destinationdata.data[0].imageUrls[0]} 
       variant="rectangle" 
@@ -305,10 +309,14 @@ export default async function Home() {
       description={destinationdata.data[0].subtitle} 
       totalTrips={destinationdata.data[0].totalTrips}  // ✅ Uses [0]'s data
     />
+    </Link>
   </div>
 
   
   <div>
+         <Link
+              href={`/destinations/${destinationdata.data[1].slug}`}
+              className="lg:col-span-2 block"  >
     <ImageDisplay 
       src={destinationdata.data[1].imageUrls[0]} 
       variant="square" 
@@ -317,6 +325,7 @@ export default async function Home() {
       description={destinationdata.data[1].subtitle} 
       totalTrips={destinationdata.data[1].totalTrips}  // ✅ Changed to [1]'s data
     />
+    </Link>
   </div>
 </div>
 
@@ -324,6 +333,9 @@ export default async function Home() {
 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
   {destinationdata.data.slice(2, 5).map((card, index) => (
     <div key={index}>
+       <Link
+              href={`/destinations/${card.slug}`}
+              className="lg:col-span-2 block"  >
       <ImageDisplay 
         src={card.imageUrls[0]} 
         variant="square" 
@@ -333,6 +345,7 @@ export default async function Home() {
         showDefaultTitle={true}
         totalTrips={card.totalTrips}  // ✅ Uses current card's data
       />
+      </Link>
     </div>
   ))}
 </div>
