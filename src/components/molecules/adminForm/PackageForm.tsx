@@ -20,7 +20,7 @@ interface Feature {
 }
 
 // Type for formData
-interface TourPackageFormData {
+export interface TourPackageFormData {
   title: string;
   description: string;
   overview: string;
@@ -44,6 +44,7 @@ interface TourPackageFormProps {
   initialData?: Partial<TourPackageFormData>;
   onClose: () => void;
   destinationId?: string;
+  destinationTitle?: string;
 }
 
 // Move InputField component outside
@@ -242,7 +243,7 @@ const ArrayField = ({ label, name, value, onChange, placeholder, required = fals
   </div>
 );
 
-const TourPackageForm = ({ initialData = undefined, onClose, destinationId }: TourPackageFormProps) => {
+const TourPackageForm = ({ initialData = undefined, onClose, destinationId, destinationTitle }: TourPackageFormProps) => {
   const [formData, setFormData] = useState<TourPackageFormData>({
     title: '',
     description: '',
@@ -276,12 +277,11 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId }: To
   const [galleryFiles, setGalleryFiles] = useState([]);
   const [googleMapImage, setGoogleMapImage] = useState(null);
   const [itineraryImages, setItineraryImages] = useState([]);
-  const [success, setSuccess] = useState<string | null>(null);
+  const [alert, setAlert] = useState<{ show: boolean; type: 'success' | 'error' | 'confirm' | 'warning'; message: string }>({ show: false, type: 'success', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitStatus, setSubmitStatus] = useState(null);
   const [activeTab, setActiveTab] = useState('basic');
-  const [showAlert, setShowAlert] = useState(false);
 
   useEffect(() => {
     if (initialData) {
@@ -329,7 +329,7 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId }: To
 
   useEffect(() => {
     if (submitStatus && submitStatus.type === 'success') {
-      setShowAlert(true);
+      setAlert({ show: true, type: 'success', message: submitStatus.message });
     }
   }, [submitStatus]);
 
@@ -574,10 +574,10 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId }: To
     if (!submitStatus || submitStatus.type !== 'success') return null;
     return (
       <Alert
-        show={showAlert}
-        type="success"
-        message={submitStatus.message}
-        onConfirm={() => setShowAlert(false)}
+        show={alert.show}
+        type={alert.type}
+        message={alert.message}
+        onConfirm={() => setAlert({ ...alert, show: false })}
       />
     );
   };
@@ -620,14 +620,14 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId }: To
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <InputField 
           label="Destination"
-          name="destination"
-          value={formData.destination}
-          onChange={handleChange}
-          placeholder="Enter destination ID"
+          name="destinationTitle"
+          value={destinationTitle || ''}
+          onChange={() => {}}
+          readOnly
           required
-          readOnly={!!destinationId}
           icon={<FiFlag />}
-          errors={errors} min={undefined} max={undefined}        />
+        />
+        <input type="hidden" name="destination" value={destinationId} />
         <InputField 
           label="Rating (1-5)" 
           name="rating"
