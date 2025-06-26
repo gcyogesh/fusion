@@ -13,6 +13,7 @@ import DepartureCalendar from "@/components/organisms/DepartureCalender";
 import ItinerarySection from "@/components/molecules/ItinerarySection";
 import Breadcrumb from "@/components/atoms/breadcrumb";
 import FAQAccordion from "@/components/organisms/faq";
+import Link from "next/link";
 
 
 
@@ -276,7 +277,9 @@ export default async function Page({ params }: { params: { id: string } }) {
                 </p>
                 <div className="py-4 space-y-2 pb-4 items-center flex flex-col">
                   <Button text="Book this Trip" variant="primary" className="text-xs sm:text-sm w-[175px] h-[42px] font-semibold" />
+                  <Link  href="/contact" className="w-full">
                   <Button text="Make an Enquiry" variant="secondary" className="text-xs sm:text-sm border border-black text-[#0E334F] !p-[10px] w-[175px] h-[42px] font-medium" />
+                  </Link>
                 </div>
               </div>
             </div>

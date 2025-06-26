@@ -49,7 +49,7 @@ const PartnerSection = ({ partnersdata }: PartnerSectionProps) => {
       {/* Big logos shown together in one big container */}
       {isHovered && (
         <div
-          className="flex flex-wrap justify-center items-center gap-10 max-w-5xl mx-auto transition-all duration-300 "
+          className="flex flex-wrap justify-center items-center gap-10  max-w-5xl mx-auto transition-all duration-300 "
           onMouseLeave={() => setIsHovered(false)}
         >
           {partnersdata.map((partner, idx) => (

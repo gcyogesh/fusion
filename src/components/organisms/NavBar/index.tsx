@@ -107,7 +107,7 @@ export default function Navbar() {
 
   const getNavbarClasses = () => {
     if (pathname === '/' && scrollY === 0) {
-      return 'backdrop-blur-xl bg-white/20 text-white shadow-lg'
+      return 'backdrop-blur-sm bg-white/20  text-white shadow-lg'
     }
     return 'bg-[#0F7BBA] text-white'
   }

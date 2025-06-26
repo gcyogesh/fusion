@@ -4,14 +4,16 @@ import ImageDisplay from "@/components/atoms/ImageCard";
 import TextHeader from "@/components/atoms/headings";
 import TextDescription from "@/components/atoms/description";
 import Breadcrumb from "@/components/atoms/breadcrumb";
+import Link from "next/link";
 
-interface Activity {
+interface Destination {
   [x: string]: unknown;
   _id: string;
   title: string;
   subtitle: string;
   description: string;
   image: string;
+  imageUrls?: string[];
   slug: string;
 }
 
@@ -22,37 +24,42 @@ interface Params {
 export default async function Page({ params }: Params) {
   const { slug } = params;
 
-  
-  const activitiesdata = await fetchAPI({ endpoint: "destinations" });
+  const destinationData = await fetchAPI({ endpoint: "destinations" });
+  const destinations: Destination[] = destinationData?.data || [];
 
-  const activities: Activity[] = activitiesdata?.data || [];
-  console.log("activity:",activitiesdata);
+  const destination: Destination | undefined = destinations.find(
+    (item) => item.slug === slug
+  );
 
-  const activity: Activity | undefined = activities.find((item) => item.slug === slug);
-
-  // Debug logs
-  console.log("Slug param:", slug);
-  console.log("Activity found:", activity);
+  const herodata = await fetchAPI({ endpoint: "herobanner/destinations" });
 
   return (
     <>
-      <Breadcrumb currentnavlink={activity?.title || "Activity"} />
+      <Breadcrumb currentnavlink={destination?.title || "Destination"} />
+      <HeroBanner herodata={herodata?.data || []} />
 
       <section className="max-w-7xl mx-auto px-4">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Column */}
           <div className="lg:col-span-2 space-y-4">
-            {activity ? (
+            {destination ? (
               <div className="flex flex-col">
-                <ImageDisplay src={activity.imageUrls[0]} variant="smallrectangle" />
+                <ImageDisplay
+                  src={destination.imageUrls?.[0] || destination.image}
+                  variant="smallrectangle"
+                />
                 <div className="mt-4">
-                  <TextHeader text={activity.title} size="small" align="left" />
-                  <h3 className="text-lg font-medium text-gray-600">{activity.subtitle}</h3>
-                  <TextDescription text={activity.description} />
+                  <TextHeader text={destination.title} size="small" align="left" />
+                  <h3 className="text-lg font-medium text-gray-600">
+                    {destination.subtitle}
+                  </h3>
+                  <TextDescription text={destination.description} />
                 </div>
               </div>
             ) : (
-              <div className="text-red-600 text-lg">No activity found for slug: {slug}</div>
+              <div className="text-red-600 text-lg">
+                No destination found for slug: {slug}
+              </div>
             )}
           </div>
 
@@ -61,23 +68,26 @@ export default async function Page({ params }: Params) {
             <div className="sticky top-24">
               <TextHeader text="Other Destinations" size="small" align="left" />
               <div className="space-y-4 mt-4">
-                 {activities
+                {destinations
                   .filter((item) => item.slug !== slug)
                   .map((item) => (
-                    <div key={item._id}>
-                      {/* Display first image if imageUrls exist, fallback to image */}
-                      <ImageDisplay
-                        src={item.imageUrls?.[0] || item.image}
-                        variant="smallrectangle"
-                      />
-                      <TextHeader
-                        text={item.title}
-                        size="small"
-                        align="left"
-                        className="mt-2"
-                      />
-                      <h3 className="text-lg font-medium text-gray-600">{item.subtitle}</h3>
-                    </div>
+                    <Link key={item._id} href={`/destinations/${item.slug}`}>
+                      <div className="cursor-pointer">
+                        <ImageDisplay
+                          src={item.imageUrls?.[0] || item.image}
+                          variant="smallrectangle"
+                        />
+                        <TextHeader
+                          text={item.title}
+                          size="small"
+                          align="left"
+                          className="mt-2"
+                        />
+                        <h3 className="text-lg font-medium text-gray-600">
+                          {item.subtitle}
+                        </h3>
+                      </div>
+                    </Link>
                   ))}
               </div>
             </div>
