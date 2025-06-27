@@ -6,6 +6,7 @@ import TourPackageForm from "@/components/molecules/adminForm/PackageForm";
 import { FiEdit, FiTrash } from "react-icons/fi";
 import { FaMapMarkerAlt, FaClock } from "react-icons/fa";
 import type { TourPackageFormData } from '@/components/molecules/adminForm/PackageForm';
+import Alert from "@/components/atoms/alert";
 
 interface Package {
   _id: string;
@@ -177,6 +178,14 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
   const [showForm, setShowForm] = useState(false);
   const [editingPackage, setEditingPackage] = useState<Partial<TourPackageFormData> | null>(null);
   const [loading, setLoading] = useState(false);
+  const [alert, setAlert] = useState<{
+    show: boolean;
+    type: 'confirm' | 'success' | 'error' | 'warning';
+    message: string;
+    onConfirm?: () => void;
+    onCancel?: () => void;
+  }>({ show: false, type: 'confirm', message: '' });
+  const [deletingPackageId, setDeletingPackageId] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -217,6 +226,12 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
   const handleEdit = (pkg: Package) => {
     setEditingPackage(mapPackageToFormData(pkg, destination?._id || ''));
     setShowForm(true);
+    setAlert({
+      show: true,
+      type: 'success',
+      message: `Editing package: ${pkg.title}`,
+      onConfirm: () => setAlert((a) => ({ ...a, show: false })),
+    });
   };
 
   const handleAdd = () => {
@@ -225,11 +240,49 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
   };
 
   const handleDelete = (pkg: Package) => {
-    alert(`Delete package: ${pkg.title}`);
+    setAlert({
+      show: true,
+      type: 'confirm',
+      message: `Are you sure you want to delete the package "${pkg.title}"? This action cannot be undone!`,
+      onConfirm: async () => {
+        setAlert((a) => ({ ...a, show: false }));
+        setDeletingPackageId(pkg._id);
+        try {
+          await fetchAPI({
+            endpoint: `tour/tour-packages/${pkg._id}`,
+            method: 'DELETE',
+          });
+          setRelatedPackages((prev) => prev.filter((p) => p._id !== pkg._id));
+          setAlert({
+            show: true,
+            type: 'success',
+            message: `Package "${pkg.title}" deleted successfully!`,
+            onConfirm: () => setAlert((a) => ({ ...a, show: false })),
+          });
+        } catch (error: any) {
+          setAlert({
+            show: true,
+            type: 'error',
+            message: error.message || 'Failed to delete package.',
+            onConfirm: () => setAlert((a) => ({ ...a, show: false })),
+          });
+        } finally {
+          setDeletingPackageId(null);
+        }
+      },
+      onCancel: () => setAlert((a) => ({ ...a, show: false })),
+    });
   };
 
   return (
     <div className="w-full min-h-screen bg-gray-100 text-gray-900 py-10 px-4">
+      <Alert
+        show={alert.show}
+        type={alert.type}
+        message={alert.message}
+        onConfirm={alert.onConfirm || (() => setAlert((a) => ({ ...a, show: false })))}
+        onCancel={alert.onCancel}
+      />
       <div className="max-w-6xl mx-auto">
         {/* Destination Info */}
         {destination && (
