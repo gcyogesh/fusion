@@ -18,7 +18,6 @@ export default async function Dashboard() {
     totalBlogs,
     totalDestination,
     totalTestimonial,
-    totalPackages,
     totalBookings,
     totalPartners,
     recent,
@@ -77,13 +76,6 @@ export default async function Dashboard() {
       href: "/dashboard/customise-activities",
       color: "bg-orange-500 hover:bg-orange-600",
     },
-    {
-      title: "Add Package",
-      description: "Create a new package",
-      icon: <FaPlus className="text-xl" />,
-      href: "/dashboard/customise-packages",
-      color: "bg-yellow-500 hover:bg-yellow-600",
-    },
   ];
 
   return (
@@ -127,7 +119,7 @@ export default async function Dashboard() {
           <h2 className="text-xl font-semibold text-gray-900 mb-4">
             Quick Actions
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {quickActions.map((action, index) => (
               <Link key={index} href={action.href}>
                 <div
@@ -174,14 +166,25 @@ export default async function Dashboard() {
             <h2 className="text-xl font-semibold text-gray-900 mb-4">
               Recent Activities
             </h2>
-            <div className="space-y-3">
-              {recent?.activities?.filter(Boolean).slice(0, 5).map((item, index) => (
-                <div key={index} className="flex items-center space-x-3 p-3 bg-gray-50 rounded">
-                  <FaHiking className="text-orange-500" />
-                  <p className="font-medium text-gray-900">{item}</p>
-                </div>
-              ))}
-            </div>
+            {recent?.activities?.filter(Boolean).length > 0 ? (
+              <div className="space-y-3">
+                {recent.activities.filter(Boolean).slice(0, 5).map((item, index) => (
+                  <div key={index} className="flex items-center space-x-3 p-3 bg-gray-50 rounded">
+                    <FaHiking className="text-orange-500" />
+                    <p className="font-medium text-gray-900">{item}</p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center py-8 bg-orange-50 rounded-xl border border-orange-100">
+                <FaHiking className="text-5xl text-orange-300 mb-3" />
+                <p className="text-lg font-semibold text-orange-700 mb-1">No recent activities found</p>
+                <p className="text-sm text-orange-500 mb-4">Start by adding a new activity to engage your users!</p>
+                <Link href="/dashboard/customise-activities">
+                  <button className="px-5 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg font-medium transition">Add Activity</button>
+                </Link>
+              </div>
+            )}
             <Link
               href="/dashboard/customise-activities"
               className="text-orange-600 hover:text-orange-800 text-sm font-medium mt-4 inline-block"

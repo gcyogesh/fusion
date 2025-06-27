@@ -9,7 +9,12 @@ interface LogoType {
   height: number;
 }
 
-const Logo = () => {
+interface LogoProps {
+  width?: number;
+  height?: number;
+}
+
+const Logo = ({ width = 180, height }: LogoProps) => {
   const [logo, setLogo] = useState<LogoType | null>(null);
   const [, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -49,8 +54,8 @@ const Logo = () => {
       <img
         src={`${logo?.url}`}
         alt={logo?.alt}
-        width={180}
-        height={logo?.height}
+        width={width}
+        height={height || logo?.height}
         className="h-auto"
       />
     </div>

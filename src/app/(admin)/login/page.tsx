@@ -38,7 +38,7 @@ export default function AdminLoginPage() {
       {/* Left: Branding/Welcome */}
       <div className="md:w-1/2 flex flex-col justify-center items-center bg-primary text-white px-8 py-16 md:min-h-screen border-r-0 md:border-r md:border-white/20">
         <div className="max-w-xs w-full flex flex-col items-center gap-6">
-          <div className="mb-4 w-20 h-20 mx-auto animate-fade-in">
+          <div className="mb-4 w-32 h-32 md:w-40 md:h-40 mx-auto animate-fade-in">
             <Logo />
           </div>
           <h2 className="text-3xl font-bold mb-2 text-center">Welcome Back!</h2>

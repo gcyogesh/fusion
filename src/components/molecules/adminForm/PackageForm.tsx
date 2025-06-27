@@ -1,3 +1,4 @@
+
 'use client'
 
 import React, { useState, useEffect } from 'react';
@@ -20,7 +21,7 @@ interface Feature {
 }
 
 // Type for formData
-interface TourPackageFormData {
+export interface TourPackageFormData {
   title: string;
   description: string;
   overview: string;
@@ -42,8 +43,9 @@ interface TourPackageFormData {
 
 interface TourPackageFormProps {
   initialData?: Partial<TourPackageFormData>;
-  onClose: () => void;
   destinationId?: string;
+  destinationTitle?: string;
+  onClose?: () => void;
 }
 
 // Move InputField component outside
@@ -137,60 +139,116 @@ const TextareaField = ({
   </div>
 );
 
-// Move FileUploadField component outside
-const FileUploadField = ({ label, name, onChange, multiple = false, accept = 'image/*', files }) => (
-  <div className="mb-4">
-    <label className="block text-sm font-medium text-gray-700 mb-1">
-      {label}
-    </label>
-    <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed border-gray-300 rounded-lg">
-      <div className="space-y-1 text-center">
-        <FiCamera className="mx-auto h-12 w-12 text-gray-400" />
-        <div className="flex text-sm text-gray-600">
-          <label className="relative cursor-pointer bg-white rounded-md font-medium text-primary hover:text-primary/80">
-            <span>Upload files</span>
+// Enhanced FileUploadField for single image (Google Map Image)
+const SingleImageUploadField = ({ label, name, onChange, file }) => {
+  let previewUrl = '';
+  if (file) {
+    if (typeof file === 'string') {
+      previewUrl = file;
+    } else {
+      previewUrl = URL.createObjectURL(file);
+    }
+  }
+  return (
+    <div className="mb-4">
+      <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
+      <div className="mt-1 flex flex-col items-center justify-center px-6 pt-5 pb-6 border-2 border-dashed border-gray-300 rounded-lg">
+        {file ? (
+          <div className="flex flex-col items-center gap-2">
+            <img
+              src={previewUrl}
+              alt="Preview"
+              className="w-48 h-32 object-cover rounded-lg border"
+            />
+            <button
+              type="button"
+              onClick={() => onChange({ target: { files: [] } })}
+              className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+            >
+              Replace
+            </button>
+          </div>
+        ) : (
+          <label className="flex flex-col items-center cursor-pointer">
+            <FiCamera className="mx-auto h-12 w-12 text-gray-400" />
+            <span className="text-primary font-medium">Upload Google Map Image</span>
             <input
               type="file"
               name={name}
               className="sr-only"
               onChange={onChange}
-              multiple={multiple}
-              accept={accept}
+              accept="image/*"
             />
+            <span className="text-xs text-gray-500 mt-2">PNG, JPG, WEBP up to 5MB</span>
           </label>
-          <p className="pl-1">or drag and drop</p>
-        </div>
-        <p className="text-xs text-gray-500">
-          PNG, JPG, WEBP up to 5MB
-        </p>
-        {files && files.length > 0 && (
-          <div className="mt-4 flex flex-wrap gap-2">
-            {files.map((file, index) => (
-              <div key={index} className="flex items-center bg-primary/10 rounded-lg px-3 py-2">
-                <span className="text-sm text-primary truncate max-w-xs">{file.name}</span>
-                <button 
-                  type="button" 
-                  onClick={() => {
-                    if (multiple) {
-                      const newFiles = [...files];
-                      newFiles.splice(index, 1);
-                      onChange({ target: { files: newFiles } });
-                    } else {
-                      onChange({ target: { files: [] } });
-                    }
-                  }}
-                  className="ml-2 text-red-500 hover:text-red-700"
-                >
-                  <FiX />
-                </button>
-              </div>
-            ))}
-          </div>
         )}
       </div>
     </div>
-  </div>
-);
+  );
+};
+
+// Enhanced MultiImageUploadField for dynamic slots (show only current images + 1 add slot if under max)
+const MultiImageUploadField = ({ label, name, onChange, files, max = 10 }) => {
+  // Show slots for current images + 1 add slot if under max
+  const slots = files.length < max ? [...files, null] : files;
+  return (
+    <div className="mb-4">
+      <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
+      <div className="mt-1 flex flex-wrap gap-4 justify-center px-6 pt-5 pb-6 border-2 border-dashed border-gray-300 rounded-lg">
+        {slots.map((file, index) => {
+          let previewUrl = '';
+          if (file) {
+            previewUrl = typeof file === 'string' ? file : URL.createObjectURL(file);
+          }
+          return (
+            <div key={index} className="flex flex-col items-center gap-2 bg-primary/10 rounded-lg px-3 py-2 relative w-32 h-32 justify-center">
+              {file ? (
+                <>
+                  <img
+                    src={previewUrl}
+                    alt={`Gallery Preview ${index + 1}`}
+                    className="w-28 h-20 object-cover rounded border"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const newFiles = [...files];
+                      newFiles.splice(index, 1);
+                      onChange({ target: { files: newFiles } });
+                    }}
+                    className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 text-xs"
+                  >
+                    Remove
+                  </button>
+                </>
+              ) : (
+                <label htmlFor={`gallery-upload-${name}-${index}`} className="flex flex-col items-center cursor-pointer w-full h-full justify-center">
+                  <FiCamera className="mx-auto h-8 w-8 text-gray-400" />
+                  <span className="text-primary font-medium text-xs">Add Image</span>
+                  <input
+                    type="file"
+                    name={name}
+                    className="sr-only"
+                    id={`gallery-upload-${name}-${index}`}
+                    onChange={e => {
+                      const newFiles = [...files];
+                      const fileInput = e.target.files && e.target.files[0];
+                      if (fileInput) {
+                        newFiles[index] = fileInput;
+                        onChange({ target: { files: newFiles } });
+                      }
+                    }}
+                    accept="image/*"
+                  />
+                </label>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
 
 // Move ArrayField component outside
 const ArrayField = ({ label, name, value, onChange, placeholder, required = false, errors = {} }) => (
@@ -242,7 +300,7 @@ const ArrayField = ({ label, name, value, onChange, placeholder, required = fals
   </div>
 );
 
-const TourPackageForm = ({ initialData = undefined, onClose, destinationId }: TourPackageFormProps) => {
+const TourPackageForm = ({ initialData = undefined, onClose, destinationId, destinationTitle }: TourPackageFormProps) => {
   const [formData, setFormData] = useState<TourPackageFormData>({
     title: '',
     description: '',
@@ -275,49 +333,62 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId }: To
 
   const [galleryFiles, setGalleryFiles] = useState([]);
   const [googleMapImage, setGoogleMapImage] = useState(null);
-  const [itineraryImages, setItineraryImages] = useState([]);
-  const [success, setSuccess] = useState<string | null>(null);
+  const [alert, setAlert] = useState<{ show: boolean; type: 'success' | 'error' | 'confirm' | 'warning'; message: string }>({ show: false, type: 'success', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitStatus, setSubmitStatus] = useState(null);
   const [activeTab, setActiveTab] = useState('basic');
-  const [showAlert, setShowAlert] = useState(false);
 
   useEffect(() => {
     if (initialData) {
-      setFormData({
+      setFormData(prev => ({
+        ...prev,
         ...initialData,
+        title: initialData.title ?? '',
+        description: initialData.description ?? '',
+        overview: initialData.overview ?? '',
+        location: initialData.location ?? { city: '', country: '', coordinates: { lat: '', lng: '' } },
+        duration: initialData.duration ?? { days: '', nights: '' },
+        basePrice: initialData.basePrice ?? '',
+        currency: initialData.currency ?? 'npr',
+        itinerary: initialData.itinerary ?? [],
         inclusions: Array.isArray(initialData.inclusions)
           ? initialData.inclusions
-          : (initialData.inclusions ? initialData.inclusions.split(',').map(s => s.trim()).filter(Boolean) : []),
+          : (typeof initialData.inclusions === 'string' && !!initialData.inclusions ? (initialData.inclusions as string).split(',').map(s => s.trim()).filter(Boolean) : []),
         exclusions: Array.isArray(initialData.exclusions)
           ? initialData.exclusions
-          : (initialData.exclusions ? initialData.exclusions.split(',').map(s => s.trim()).filter(Boolean) : []),
+          : (typeof initialData.exclusions === 'string' && !!initialData.exclusions ? (initialData.exclusions as string).split(',').map(s => s.trim()).filter(Boolean) : []),
         highlights: Array.isArray(initialData.highlights)
           ? initialData.highlights
-          : (initialData.highlights ? initialData.highlights.split(',').map(s => s.trim()).filter(Boolean) : []),
+          : (typeof initialData.highlights === 'string' && !!initialData.highlights ? (initialData.highlights as string).split(',').map(s => s.trim()).filter(Boolean) : []),
         quickfacts: Array.isArray(initialData.quickfacts)
           ? initialData.quickfacts
-          : (initialData.quickfacts ? initialData.quickfacts.split(',').map(s => s.trim()).filter(Boolean) : []),
+          : (typeof initialData.quickfacts === 'string' && !!initialData.quickfacts ? (initialData.quickfacts as string).split(',').map(s => s.trim()).filter(Boolean) : []),
         tags: Array.isArray(initialData.tags)
           ? initialData.tags
-          : (initialData.tags ? initialData.tags.split(',').map(s => s.trim()).filter(Boolean) : []),
+          : (typeof initialData.tags === 'string' && !!initialData.tags ? (initialData.tags as string).split(',').map(s => s.trim()).filter(Boolean) : []),
         feature: {
+          ...prev.feature,
           ...initialData.feature,
           meals: Array.isArray(initialData.feature?.meals)
             ? initialData.feature.meals
-            : (initialData.feature?.meals ? initialData.feature.meals.split(',').map(s => s.trim()).filter(Boolean) : []),
+            : (typeof initialData.feature?.meals === 'string' && !!initialData.feature.meals ? (initialData.feature.meals as string).split(',').map(s => s.trim()).filter(Boolean) : []),
           activities: Array.isArray(initialData.feature?.activities)
             ? initialData.feature.activities
-            : (initialData.feature?.activities ? initialData.feature.activities.split(',').map(s => s.trim()).filter(Boolean) : []),
+            : (typeof initialData.feature?.activities === 'string' && !!initialData.feature.activities ? (initialData.feature.activities as string).split(',').map(s => s.trim()).filter(Boolean) : []),
           accommodation: Array.isArray(initialData.feature?.accommodation)
             ? initialData.feature.accommodation
-            : (initialData.feature?.accommodation ? initialData.feature.accommodation.split(',').map(s => s.trim()).filter(Boolean) : []),
+            : (typeof initialData.feature?.accommodation === 'string' && !!initialData.feature.accommodation ? (initialData.feature.accommodation as string).split(',').map(s => s.trim()).filter(Boolean) : []),
           bestSeason: Array.isArray(initialData.feature?.bestSeason)
             ? initialData.feature.bestSeason
-            : (initialData.feature?.bestSeason ? initialData.feature.bestSeason.split(',').map(s => s.trim()).filter(Boolean) : []),
+            : (typeof initialData.feature?.bestSeason === 'string' && !!initialData.feature.bestSeason ? (initialData.feature.bestSeason as string).split(',').map(s => s.trim()).filter(Boolean) : []),
         }
-      });
+      }));
+      // Gallery and map image: check property existence and type
+      const gallery = 'gallery' in initialData ? initialData.gallery : undefined;
+      setGalleryFiles(Array.isArray(gallery) ? gallery : (typeof gallery === 'string' ? [gallery] : []));
+      const mapImg = 'googleMapImage' in initialData ? initialData.googleMapImage : undefined;
+      setGoogleMapImage(typeof mapImg === 'string' ? mapImg : null);
     }
   }, [initialData]);
 
@@ -329,56 +400,124 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId }: To
 
   useEffect(() => {
     if (submitStatus && submitStatus.type === 'success') {
-      setShowAlert(true);
+      setAlert({ show: true, type: 'success', message: submitStatus.message });
     }
   }, [submitStatus]);
 
   // Validation function
-  const validateForm = () => {
+  const validateForm = (tab = activeTab) => {
     const newErrors: Record<string, string> = {};
-    
-    if (!formData.title.trim()) newErrors.title = 'Title is required';
-    if (!formData.description.trim()) newErrors.description = 'Description is required';
-    if (!formData.overview.trim()) newErrors.overview = 'Overview is required';
-    if (!formData.location.city.trim()) newErrors.city = 'City is required';
-    if (!formData.location.country.trim()) newErrors.country = 'Country is required';
-    if (!formData.duration.days) newErrors.days = 'Duration days is required';
-    if (!formData.duration.nights) newErrors.nights = 'Duration nights is required';
-    if (!formData.basePrice) newErrors.basePrice = 'Base price is required';
-    if (!formData.destination.trim()) newErrors.destination = 'Destination is required';
-
-    if (formData.basePrice && isNaN(parseFloat(formData.basePrice))) {
-      newErrors.basePrice = 'Base price must be a number';
+    // Basic tab validation
+    if (tab === 'basic' || tab === undefined) {
+      if (!formData.title.trim()) newErrors.title = 'Title is required';
+      if (!formData.description.trim()) newErrors.description = 'Description is required';
+      if (!formData.overview.trim()) newErrors.overview = 'Overview is required';
+      if (!formData.destination.trim()) newErrors.destination = 'Destination is required';
     }
-    if (formData.duration.days && isNaN(parseInt(formData.duration.days))) {
-      newErrors.days = 'Days must be a number';
+    // Location tab validation
+    if (tab === 'location') {
+      if (!formData.location.city.trim()) newErrors.city = 'City is required';
+      if (!formData.location.country.trim()) newErrors.country = 'Country is required';
+      const lat = parseFloat(formData.location.coordinates.lat);
+      const lng = parseFloat(formData.location.coordinates.lng);
+      if (!formData.location.coordinates.lat) newErrors.lat = 'Latitude is required';
+      else if (isNaN(lat)) newErrors.lat = 'Latitude must be a number';
+      else if (lat < -90 || lat > 90) newErrors.lat = 'Latitude must be between -90 and 90';
+      if (!formData.location.coordinates.lng) newErrors.lng = 'Longitude is required';
+      else if (isNaN(lng)) newErrors.lng = 'Longitude must be a number';
+      else if (lng < -180 || lng > 180) newErrors.lng = 'Longitude must be between -180 and 180';
     }
-    if (formData.duration.nights && isNaN(parseInt(formData.duration.nights))) {
-      newErrors.nights = 'Nights must be a number';
-    }
-    if (formData.location.coordinates.lat && isNaN(parseFloat(formData.location.coordinates.lat))) {
-      newErrors.lat = 'Latitude must be a number';
-    }
-    if (formData.location.coordinates.lng && isNaN(parseFloat(formData.location.coordinates.lng))) {
-      newErrors.lng = 'Longitude must be a number';
-    }
-
-    const maxFileSize = 5 * 1024 * 1024;
-    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
-
-    [...galleryFiles, googleMapImage, ...itineraryImages].forEach((file, index) => {
-      if (file) {
-        if (file.size > maxFileSize) {
-          newErrors.fileSize = `File "${file.name}" is too large. Maximum size is 5MB.`;
-        }
-        if (!allowedTypes.includes(file.type)) {
-          newErrors.fileType = `File "${file.name}" is not a supported image type.`;
-        }
+    // Pricing tab validation
+    if (tab === 'pricing') {
+      if (!formData.duration.days) newErrors.days = 'Duration days is required';
+      if (!formData.duration.nights) newErrors.nights = 'Duration nights is required';
+      if (!formData.basePrice) newErrors.basePrice = 'Base price is required';
+      if (formData.basePrice && isNaN(parseFloat(formData.basePrice))) {
+        newErrors.basePrice = 'Base price must be a number';
       }
-    });
-
+      if (formData.duration.days && isNaN(parseInt(formData.duration.days))) {
+        newErrors.days = 'Days must be a number';
+      }
+      if (formData.duration.nights && isNaN(parseInt(formData.duration.nights))) {
+        newErrors.nights = 'Nights must be a number';
+      }
+    }
+    // Details tab validation
+    if (tab === 'details') {
+      if (!formData.inclusions.length) newErrors.inclusions = 'At least one inclusion is required';
+      if (!formData.exclusions.length) newErrors.exclusions = 'At least one exclusion is required';
+      if (!formData.highlights.length) newErrors.highlights = 'At least one highlight is required';
+      if (!formData.quickfacts.length) newErrors.quickfacts = 'At least one quick fact is required';
+      if (!formData.tags.length) newErrors.tags = 'At least one tag is required';
+    }
+    // Features tab validation
+    if (tab === 'features') {
+      if (!formData.feature.groupSize.min) newErrors.min = 'Min group size is required';
+      if (!formData.feature.tripDuration) newErrors.tripDuration = 'Trip duration is required';
+      if (!formData.feature.tripDifficulty) newErrors.tripDifficulty = 'Trip difficulty is required';
+      if (!formData.feature.maxAltitude) newErrors.maxAltitude = 'Max altitude is required';
+      if (!formData.feature.startEndPoint) newErrors.startEndPoint = 'Start/End point is required';
+      if (!formData.feature.meals.length) newErrors.meals = 'At least one meal is required';
+      if (!formData.feature.activities.length) newErrors.activities = 'At least one activity is required';
+      if (!formData.feature.accommodation.length) newErrors.accommodation = 'At least one accommodation is required';
+      if (!formData.feature.bestSeason.length) newErrors.bestSeason = 'At least one best season is required';
+    }
+    // Itinerary tab validation - FIXED: Check for 'image' instead of 'itineraryImage'
+    if (tab === 'itinerary') {
+      if (!formData.itinerary.length) newErrors.itinerary = 'At least one itinerary day is required';
+      formData.itinerary.forEach((day, idx) => {
+        if (!day.day) newErrors[`itinerary-day-${idx}`] = 'Day number is required';
+        if (!day.title) newErrors[`itinerary-title-${idx}`] = 'Title is required';
+        if (!day.description) newErrors[`itinerary-description-${idx}`] = 'Description is required';
+        if (!day.activities || !day.activities.length) newErrors[`itinerary-activities-${idx}`] = 'At least one activity is required';
+        // FIXED: Check for 'image' instead of 'itineraryImage'
+        if (!day.image || (typeof day.image !== 'string' && !(day.image instanceof File))) {
+          newErrors[`itinerary-image-${idx}`] = 'Image is required';
+        }
+      });
+    }
+    // Media tab validation
+    if (tab === 'media') {
+      if (!galleryFiles.length) newErrors.gallery = 'At least one gallery image is required';
+      if (!googleMapImage) newErrors.googleMapImage = 'Google Map image is required';
+    }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
+  };
+
+  // Focus/scroll to first error input
+  const focusFirstError = () => {
+    const firstErrorKey = Object.keys(errors)[0];
+    if (firstErrorKey) {
+      const el = document.querySelector(`[name="${firstErrorKey}"]`);
+      if (el && typeof (el as HTMLElement).focus === 'function') {
+        (el as HTMLElement).focus();
+        (el as HTMLElement).scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+  };
+
+  // Helper to get all error messages as a string
+  const getAllErrorMessages = () => {
+    return Object.values(errors).filter(Boolean).join('\n');
+  };
+
+  // Next/Back navigation
+  const tabOrder = ['basic', 'location', 'pricing', 'details', 'features', 'itinerary', 'media'];
+  const isLastTab = activeTab === tabOrder[tabOrder.length - 1];
+  const isFirstTab = activeTab === tabOrder[0];
+  const goToNextTab = () => {
+    if (validateForm(activeTab)) {
+      const idx = tabOrder.indexOf(activeTab);
+      if (idx < tabOrder.length - 1) setActiveTab(tabOrder[idx + 1]);
+    } else {
+      focusFirstError();
+      setAlert({ show: true, type: 'error', message: getAllErrorMessages() || 'Please fix the errors above before continuing.' });
+    }
+  };
+  const goToPrevTab = () => {
+    const idx = tabOrder.indexOf(activeTab);
+    if (idx > 0) setActiveTab(tabOrder[idx - 1]);
   };
 
   const handleChange = (e) => {
@@ -460,8 +599,18 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId }: To
     setSubmitStatus(null);
     setErrors({});
 
-    if (!validateForm()) {
-      setSubmitStatus({ type: 'error', message: 'Please fix the errors above before submitting.' });
+    // Validate all tabs before submission
+    let hasErrors = false;
+    for (const tab of tabOrder) {
+      if (!validateForm(tab)) {
+        hasErrors = true;
+        break;
+      }
+    }
+
+    if (hasErrors) {
+      focusFirstError();
+      setAlert({ show: true, type: 'error', message: getAllErrorMessages() || 'Please fix the errors above before submitting.' });
       return;
     }
 
@@ -488,13 +637,20 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId }: To
           accommodation: formData.feature.accommodation,
           bestSeason: formData.feature.bestSeason
         },
-        itinerary: [],
+        itinerary: formData.itinerary.map(day => ({
+          day: day.day,
+          title: day.title,
+          description: day.description,
+          activities: day.activities
+          // Don't include image in JSON - it will be handled by FormData
+        })),
         inclusions: formData.inclusions,
         exclusions: formData.exclusions,
         highlights: formData.highlights,
         quickfacts: formData.quickfacts,
         tags: formData.tags
       };
+      console.log('Final JSON fields:', jsonFields);
 
       Object.entries(jsonFields).forEach(([key, value]) => {
         form.append(key, JSON.stringify(value));
@@ -510,10 +666,16 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId }: To
         form.append('googleMapImage', googleMapImage);
       }
 
-      if (itineraryImages.length > 0) {
-        itineraryImages.forEach((file) => {
-          form.append('itineraryImages', file);
-        });
+      // FIXED: Append itinerary images with correct field name that matches your backend
+      formData.itinerary.forEach((day, idx) => {
+        if (day.image && day.image instanceof File) {
+          form.append('itineraryImages', day.image);
+        }
+      });
+
+      // Console log all FormData
+      for (let pair of form.entries()) {
+        console.log(pair[0]+ ':', pair[1]);
       }
 
       await fetchAPI({
@@ -523,12 +685,15 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId }: To
       });
 
       setSubmitStatus({ type: 'success', message: 'Tour Package Created Successfully!' });
+      setAlert({ show: true, type: 'success', message: 'Tour Package Created Successfully!' });
       resetForm();
     } catch (err) {
       let errorMessage = 'Failed to create tour package.';
       if (err instanceof Error) {
         errorMessage = err.message;
       }
+      // Show alert for backend validation errors
+      setAlert({ show: true, type: 'error', message: errorMessage });
       setSubmitStatus({ type: 'error', message: errorMessage });
     } finally {
       setIsSubmitting(false);
@@ -571,13 +736,13 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId }: To
   };
 
   const renderStatus = () => {
-    if (!submitStatus || submitStatus.type !== 'success') return null;
+    if (!alert.show) return null;
     return (
       <Alert
-        show={showAlert}
-        type="success"
-        message={submitStatus.message}
-        onConfirm={() => setShowAlert(false)}
+        show={alert.show}
+        type={alert.type}
+        message={alert.message}
+        onConfirm={() => setAlert({ ...alert, show: false })}
       />
     );
   };
@@ -620,14 +785,17 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId }: To
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <InputField 
           label="Destination"
-          name="destination"
-          value={formData.destination}
-          onChange={handleChange}
-          placeholder="Enter destination ID"
+          name="destinationTitle"
+          value={destinationTitle || ''}
+          onChange={() => {}}
+          readOnly
           required
-          readOnly={!!destinationId}
           icon={<FiFlag />}
-          errors={errors} min={undefined} max={undefined}        />
+          placeholder="Destination"
+          min={undefined}
+          max={undefined}
+        />
+        <input type="hidden" name="destination" value={destinationId} />
         <InputField 
           label="Rating (1-5)" 
           name="rating"
@@ -668,7 +836,6 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId }: To
           icon={<FiMapPin />}
           errors={errors} min={undefined} max={undefined}        />
       </div>
-      
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <InputField 
           label="Latitude"
@@ -705,12 +872,11 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId }: To
           icon={<FiNavigation />}
           errors={errors} min={undefined} max={undefined}        />
       </div>
-      
-      <FileUploadField 
-        label="Google Map Image" 
-        name="googleMapImage" 
-        onChange={handleMapImageChange} 
-        files={googleMapImage ? [googleMapImage] : []} 
+      <SingleImageUploadField
+        label="Google Map Image"
+        name="googleMapImage"
+        onChange={handleMapImageChange}
+        file={googleMapImage}
       />
     </div>
   );
@@ -868,7 +1034,6 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId }: To
             >
               <option value="Easy">Easy</option>
               <option value="Moderate">Moderate</option>
-              <option value="Challenging">Challenging</option>
               <option value="Difficult">Difficult</option>
             </select>
           </div>
@@ -970,13 +1135,11 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId }: To
             onChange={val => handleItineraryActivitiesChange(idx, val)}
             placeholder="Add activity"
           />
-          <FileUploadField
+          <SingleImageUploadField
             label="Image"
             name={`image-${idx}`}
             onChange={e => handleItineraryImageChange(idx, e)}
-            multiple={false}
-            files={item.image ? [item.image] : []}
-            accept="image/*"
+            file={item.image || null}
           />
         </div>
       ))}
@@ -986,12 +1149,12 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId }: To
 
   const renderMediaTab = () => (
     <div className="space-y-4">
-      <FileUploadField 
-        label="Gallery Images" 
-        name="gallery" 
-        onChange={handleGalleryChange} 
-        multiple 
-        files={galleryFiles} 
+      <MultiImageUploadField
+        label="Gallery Images"
+        name="gallery"
+        onChange={handleGalleryChange}
+        files={galleryFiles}
+        max={10}
       />
       {(errors.fileSize || errors.fileType) && (
         <div className="p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2">
@@ -1059,23 +1222,32 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId }: To
               {activeTab === 'media' && renderMediaTab()}
               <div className="pt-6 border-t border-gray-200 flex justify-between">
                 <Button
-                  text="Reset Form"
-                  onClick={resetForm}
+                  text="Back"
+                  onClick={goToPrevTab}
                   variant="secondary"
                   className="!px-6 !py-3"
+                  disabled={isFirstTab}
                 />
-                <Button
-                  text={isSubmitting ? 'Processing...' : (initialData ? 'Update Package' : 'Create Tour Package')}
-                  disabled={isSubmitting}
-                  onClick={handleSubmit}
-                  leftIcon={isSubmitting ? (
-                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                  ) : undefined}
-                  className="!py-3 !px-8 font-bold"
-                />
+                {isLastTab ? (
+                  <Button
+                    type="submit"
+                    text={isSubmitting ? 'Processing...' : (initialData ? 'Update Package' : 'Create Tour Package')}
+                    disabled={isSubmitting}
+                    leftIcon={isSubmitting ? (
+                      <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                    ) : undefined}
+                    className="!py-3 !px-8 font-bold"
+                  />
+                ) : (
+                  <Button
+                    text="Next"
+                    onClick={goToNextTab}
+                    className="!py-3 !px-8 font-bold"
+                  />
+                )}
               </div>
             </form>
           </div>
@@ -1085,3 +1257,7 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId }: To
   );
 };
 export default TourPackageForm;
+
+function setItineraryImages(arg0: undefined[]) {
+  throw new Error('Function not implemented.');
+}

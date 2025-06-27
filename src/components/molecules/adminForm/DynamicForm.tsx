@@ -1,4 +1,4 @@
-       "use client";
+"use client";
 
 import { useState, useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
@@ -764,7 +764,7 @@ export default function DynamicForm<T extends { _id?: string }>({
           (Array.isArray(formData['image']) && formData['image'].length > 0) ||
           (Array.isArray(formData['gallery']) && formData['gallery'].length > 0) ||
           (Array.isArray(formData['imageUrls']) && formData['imageUrls'].length > 0) ||
-          (Array.isArray(formData['blogImage']) && formData['blogImage'].length > 0) ||
+          (Array.isArray(formData['image']) && formData['image'].length > 0) ||
           (typeof formData['image'] === 'string' && formData['image']) ||
           (typeof formData['gallery'] === 'string' && formData['gallery']) ||
           (typeof formData['imageUrls'] === 'string' && formData['imageUrls']) ||

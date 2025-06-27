@@ -16,6 +16,7 @@ interface ButtonProps<T = unknown> {
   buttonLink?: string;
   disableHover?: boolean;
   disabled?: boolean;
+  type?: 'button' | 'submit' | 'reset';
 }
 
 const Button = <T,>({
@@ -31,6 +32,7 @@ const Button = <T,>({
   buttonLink,
   disableHover = false,
   disabled = false,
+  type,
 }: ButtonProps<T>) => {
   const variants = {
     primary: {
@@ -92,7 +94,7 @@ const Button = <T,>({
     </Link>
   ) : (
     <button
-      type="button"
+      type={type || 'button'}
       onClick={(e) => onClick?.(e, extraData)}
       className="relative"
       disabled={disabled}
