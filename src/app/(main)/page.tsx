@@ -57,22 +57,6 @@ interface DestinationData {
   data: DestinationCard[];
 }
 
-interface DestinationsData {
-  data: DestinationItem[];
-}
-
-interface PartnersData {
-  data: any[];
-}
-
-interface BlogsData {
-  data: any[];
-}
-
-interface HeroBannerData {
-  data: any;
-}
-
 const stats = [
   {
     iconSrc: "/images/stat1.png",
@@ -150,7 +134,7 @@ export default async function Home() {
   return (
     <>
 
-      <HeroSection herodata={herosectiondata.data} />
+      <HeroSection herodata={herosectiondata.data } />
 
 
       {/*Value secction */}
