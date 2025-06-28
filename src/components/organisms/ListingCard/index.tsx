@@ -251,8 +251,12 @@ export function AdminTable<T extends ItemBase>({
               >
                 <div className="relative h-56">
                   <img
-                    src={safeString(item.image) || item.gallery?.[0] || item.imageUrl || item.imageUrls}
-                    alt={safeString(item.title)}
+                    src={
+                      typeof item.profileImage === 'string' && item.profileImage
+                        ? item.profileImage
+                        : safeString(item.image) || item.gallery?.[0] || item.imageUrl || item.imageUrls
+                    }
+                    alt={safeString(item.title) || item.name || 'Profile'}
                     className="w-full h-full object-cover"
                     onError={e => { (e.currentTarget as HTMLImageElement).src = '/fallback.jpg'; }}
                   />
