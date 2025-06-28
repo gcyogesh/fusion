@@ -263,7 +263,7 @@ export function AdminTable<T extends ItemBase>({
                     </button>
                   </div>
                   {/* Unified button logic: dashboard or packages */}
-                  {itemId && !isBlog && (() => {
+                  {itemId && !isBlog && (endpoint === 'activities' || endpoint === 'destinations') && (() => {
                     let href = '';
                     let title = '';
                     const slug = item.slug || (safeString(item.title)?.toLowerCase().replace(/\s+/g, '-') || itemId);
@@ -291,8 +291,8 @@ export function AdminTable<T extends ItemBase>({
                       </Link>
                     );
                   })()}
+                  {/* Removed location icon from every card */}
                   <div className="absolute bottom-0 left-0 w-full p-4 flex items-center gap-2">
-                    <MdLocationOn className="text-yellow-400 text-xl drop-shadow" />
                     <span className="text-white font-bold text-lg drop-shadow">
                       {safeString(item.title) || safeString(item.name) || 'Untitled'}
                     </span>

@@ -40,10 +40,37 @@ interface DestinationCard {
   };
   overview: string;
   basePrice: number;
+  type?: string;
+  category?: string;
+}
+
+interface DestinationItem {
+  _id: string;
+  title: string;
+  subtitle: string;
+  slug: string;
+  imageUrls: string[];
+  totalTrips: number;
 }
 
 interface DestinationData {
   data: DestinationCard[];
+}
+
+interface DestinationsData {
+  data: DestinationItem[];
+}
+
+interface PartnersData {
+  data: any[];
+}
+
+interface BlogsData {
+  data: any[];
+}
+
+interface HeroBannerData {
+  data: any;
 }
 
 const stats = [
@@ -104,15 +131,21 @@ const socialLinks = [
 ];
 
 export default async function Home() {
-  const partnersdata = await fetchAPI({ endpoint: "partners" });
-  const blogsdata = await fetchAPI({ endpoint: "blogs" });
-  const destinationdata = await fetchAPI({ endpoint: "destinations" });
-    const packagesdata = await fetchAPI({ endpoint: "tour/tour-packages" });
-    const acctivitiesdata = await fetchAPI({ endpoint: "tour/tour-packages" });
+  const partnersdata = await fetchAPI({ endpoint: "partners" }) as PartnersData;
+  const blogsdata = await fetchAPI({ endpoint: "blogs" }) as BlogsData;
+  const destinationdata = await fetchAPI({ endpoint: "destinations" }) as DestinationsData;
+  const packagesdata = await fetchAPI({ endpoint: "tour/tour-packages" }) as DestinationData;
+  const acctivitiesdata = await fetchAPI({ endpoint: "tour/tour-packages" }) as DestinationData;
 
- 
+  // Filter packages to exclude activities and destinations
+  const filteredPackages = packagesdata?.data?.filter((card) => {
+    // Exclude if it's an activity or destination
+    const isActivity = card.type === 'activity' || card.category === 'activity';
+    const isDestination = card.type === 'destination' || card.category === 'destination';
+    return !isActivity && !isDestination;
+  }) || [];
 
-  const herosectiondata = await fetchAPI({ endpoint: "herobanner/home" });
+  const herosectiondata = await fetchAPI({ endpoint: "herobanner/home" }) as HeroBannerData;
     
   return (
     <>
@@ -138,7 +171,7 @@ export default async function Home() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10 "> {/* Consistent gap */}
 
-{(packagesdata as DestinationData)?.data.map((card, index) => (
+{filteredPackages.map((card, index) => (
   <Link href={`/itinerary/${card._id}`} key={index} className="flex flex-col gap-4">
     <div className="aspect-video ">
       <ImageDisplay
@@ -154,7 +187,6 @@ export default async function Home() {
     <div className="flex flex-col gap-3">
       <div className="flex justify-between text-sm ">
         <span className="flex items-center gap-1 font-medium text-[20px] text-[#7E7E7E] ">
-          <Image src={"/images/location.svg"} alt="Location" width={22} height={22}/>
           {card.location.city}, {card.location.country}
         </span>
         <span className="flex items-center gap-2 font-medium text-[20px]  text-[#7E7E7E]  ">
@@ -445,7 +477,7 @@ export default async function Home() {
                 textcolor="white"
               />
 
-              <TextDescription text="Show us your #BestFamilyMoments by tagging us @Fusion Expeditions for a chance to be featured!" className="w-[300px] md:w-[400px] lg:w-[400px] text-[#FFFFFF] opacity-90" />
+              <TextDescription text="Show us your #BestFamilyMoments by tagging us @Fusion Expeditions for a chance to be featured!" className="w-[300px] md:w-[400px] lg:w-[400px] text-[#FFFFFF] opacity-90" />
             </div>
 
             {/* Right Side: Social Links */}

@@ -1,9 +1,9 @@
-
 'use client'
 
 import React, { useState, useEffect } from 'react';
 import { fetchAPI } from '@/utils/apiService';
 import { FiX, FiCamera, FiPlus, FiMapPin, FiDollarSign, FiInfo, FiList, FiFlag, FiImage, FiCalendar, FiUsers, FiActivity, FiHome, FiSun, FiNavigation, FiAlertCircle } from 'react-icons/fi';
+import { FaStar } from 'react-icons/fa';
 import Button from '@/components/atoms/button';
 import Alert from '@/components/atoms/alert';
 
@@ -171,7 +171,7 @@ const SingleImageUploadField = ({ label, name, onChange, file }) => {
         ) : (
           <label className="flex flex-col items-center cursor-pointer">
             <FiCamera className="mx-auto h-12 w-12 text-gray-400" />
-            <span className="text-primary font-medium">Upload Google Map Image</span>
+            <span className="text-primary font-medium">{label ? `Upload ${label}` : 'Upload Image'}</span>
             <input
               type="file"
               name={name}
@@ -300,6 +300,31 @@ const ArrayField = ({ label, name, value, onChange, placeholder, required = fals
   </div>
 );
 
+// StarRating component
+const StarRating = ({ value, onChange, max = 5 }) => (
+  <div className="flex items-center gap-1">
+    {[...Array(max)].map((_, i) => (
+      <button
+        type="button"
+        key={i}
+        onClick={() => onChange((i + 1).toString())}
+        className="focus:outline-none"
+        aria-label={`Rate ${i + 1} star${i === 0 ? '' : 's'}`}
+      >
+        <FaStar
+          className={
+            'w-6 h-6 ' +
+            (i < Number(value)
+              ? 'text-yellow-400'
+              : 'text-gray-300 hover:text-yellow-400')
+          }
+        />
+      </button>
+    ))}
+    <span className="ml-2 text-sm text-gray-600">{value || 0}/5</span>
+  </div>
+);
+
 const TourPackageForm = ({ initialData = undefined, onClose, destinationId, destinationTitle }: TourPackageFormProps) => {
   const [formData, setFormData] = useState<TourPackageFormData>({
     title: '',
@@ -387,7 +412,7 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
       // Gallery and map image: check property existence and type
       const gallery = 'gallery' in initialData ? initialData.gallery : undefined;
       setGalleryFiles(Array.isArray(gallery) ? gallery : (typeof gallery === 'string' ? [gallery] : []));
-      const mapImg = 'googleMapImage' in initialData ? initialData.googleMapImage : undefined;
+      const mapImg = 'googleMapUrl' in initialData ? initialData.googleMapUrl : undefined;
       setGoogleMapImage(typeof mapImg === 'string' ? mapImg : null);
     }
   }, [initialData]);
@@ -479,7 +504,7 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
     // Media tab validation
     if (tab === 'media') {
       if (!galleryFiles.length) newErrors.gallery = 'At least one gallery image is required';
-      if (!googleMapImage) newErrors.googleMapImage = 'Google Map image is required';
+      if (!googleMapImage) newErrors.googleMapUrl = 'Google Map image is required';
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -627,22 +652,17 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
       form.append('rating', formData.rating);
       form.append('destination', formData.destination);
 
+      // JSON fields
       const jsonFields = {
         location: formData.location,
         duration: formData.duration,
-        feature: {
-          ...formData.feature,
-          meals: formData.feature.meals,
-          activities: formData.feature.activities,
-          accommodation: formData.feature.accommodation,
-          bestSeason: formData.feature.bestSeason
-        },
+        feature: formData.feature,
         itinerary: formData.itinerary.map(day => ({
           day: day.day,
           title: day.title,
           description: day.description,
           activities: day.activities
-          // Don't include image in JSON - it will be handled by FormData
+          // DO NOT include image here!
         })),
         inclusions: formData.inclusions,
         exclusions: formData.exclusions,
@@ -650,28 +670,17 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
         quickfacts: formData.quickfacts,
         tags: formData.tags
       };
-      console.log('Final JSON fields:', jsonFields);
-
       Object.entries(jsonFields).forEach(([key, value]) => {
         form.append(key, JSON.stringify(value));
       });
 
-      if (galleryFiles.length > 0) {
-        galleryFiles.forEach((file) => {
-          form.append('gallery', file);
-        });
-      }
+      // Gallery images
+      galleryFiles.forEach(file => form.append('gallery', file));
 
-      if (googleMapImage) {
-        form.append('googleMapImage', googleMapImage);
-      }
+      // Google Map image
+      if (googleMapImage) form.append('googleMapUrl', googleMapImage);
 
-      // FIXED: Append itinerary images with correct field name that matches your backend
-      formData.itinerary.forEach((day, idx) => {
-        if (day.image && day.image instanceof File) {
-          form.append('itineraryImages', day.image);
-        }
-      });
+      // SKIP itinerary images for now
 
       // Console log all FormData
       for (let pair of form.entries()) {
@@ -732,7 +741,6 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
     });
     setGalleryFiles([]);
     setGoogleMapImage(null);
-    setItineraryImages([]);
   };
 
   const renderStatus = () => {
@@ -796,20 +804,19 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
           max={undefined}
         />
         <input type="hidden" name="destination" value={destinationId} />
-        <InputField 
-          label="Rating (1-5)" 
-          name="rating"
-          value={formData.rating} 
-          onChange={handleChange} 
-          placeholder="Enter rating" 
-          type="number" 
-          min="1"
-          max="5"
-          icon={<svg className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-          </svg>}
-          errors={errors}
-        />
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Rating</label>
+          <StarRating
+            value={formData.rating}
+            onChange={val => setFormData(f => ({ ...f, rating: val }))}
+          />
+          {errors.rating && (
+            <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
+              <FiAlertCircle className="flex-shrink-0" />
+              {errors.rating}
+            </p>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -874,7 +881,7 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
       </div>
       <SingleImageUploadField
         label="Google Map Image"
-        name="googleMapImage"
+        name="googleMapUrl"
         onChange={handleMapImageChange}
         file={googleMapImage}
       />
@@ -1257,7 +1264,3 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
   );
 };
 export default TourPackageForm;
-
-function setItineraryImages(arg0: undefined[]) {
-  throw new Error('Function not implemented.');
-}

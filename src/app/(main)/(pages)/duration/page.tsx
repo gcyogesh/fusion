@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import ImageDisplay from "@/components/atoms/ImageCard";
 import TextHeader from "@/components/atoms/headings";
-import { CiLocationOn } from "react-icons/ci";
 import { HiOutlineClock } from "react-icons/hi";
 interface Package {
   _id: string;
@@ -114,7 +113,6 @@ export default function DurationPackages() {
                   <div className="flex flex-col gap-3">
                     <div className="flex justify-between text-sm text-[#5A5A5A]">
                       <span className="flex items-center gap-1 font-bold">
-                        <CiLocationOn className="w-4 h-4" />
                         {pkg.location.city}
                       </span>
                       <span className="flex items-center font-bold gap-1">
