@@ -15,6 +15,7 @@ import Button from "@/components/atoms/button";
 import { fetchAPI } from "@/utils/apiService";
 import { AdminTable } from "@/components/organisms/ListingCard";
 import Loader from "@/components/atoms/Loader";
+import Alert from "@/components/atoms/alert";
 
 const HERO_PAGES = [
   { label: "Home", value: "home" },
@@ -52,6 +53,12 @@ export default function SettingsPage() {
   // FAQ tab state
   const [faqData, setFaqData] = useState<any[]>([]);
   const [faqLoading, setFaqLoading] = useState(false);
+
+  const [alert, setAlert] = useState<{
+    show: boolean;
+    type: 'success' | 'error' | 'warning' | 'confirm';
+    message: string;
+  }>({ show: false, type: 'success', message: '' });
 
   useEffect(() => {
     if (activeTab === "general") {
@@ -132,6 +139,11 @@ export default function SettingsPage() {
   };
 
   const handleSaveHero = async () => {
+    // Validation
+    if (!heroData.title || !heroData.subTitle || !heroData.buttonText || !heroData.buttonLink || !heroData.description) {
+      setAlert({ show: true, type: 'warning', message: 'All fields are required for the hero section.' });
+      return;
+    }
     setHeroSaving(true);
     setHeroError("");
     setHeroSuccess("");
@@ -151,6 +163,8 @@ export default function SettingsPage() {
         endpoint: `herobanner/${selectedHeroPage}`,
         method: "PUT",
         data: {
+          _id: heroData._id,
+          page: selectedHeroPage,
           title: heroData.title,
           subTitle: heroData.subTitle,
           description: heroData.description,
@@ -159,13 +173,41 @@ export default function SettingsPage() {
           bannerImage: bannerImageUrl,
         },
       });
-      setHeroSuccess("Hero banner updated!");
+      setAlert({ show: true, type: 'success', message: 'Hero banner updated!' });
       setHeroImageFile(null);
     } catch (e: any) {
-      setHeroError(e.message || "Failed to update hero banner.");
+      setAlert({ show: true, type: 'error', message: e.message || 'Failed to update hero banner.' });
     } finally {
       setHeroSaving(false);
-      setTimeout(() => setHeroSuccess(""), 2500);
+    }
+  };
+
+  const handleSaveLogos = async () => {
+    if (!logoFiles[0] && !logoFiles[1]) {
+      setAlert({ show: true, type: 'warning', message: 'Please select at least one logo to upload.' });
+      return;
+    }
+    try {
+      const formData = new FormData();
+      if (logoFiles[0]) formData.append('logo', logoFiles[0]);
+      if (logoFiles[1]) formData.append('logo', logoFiles[1]);
+      const res: any = await fetchAPI({
+        endpoint: 'logo',
+        method: 'POST',
+        data: formData,
+      });
+      if (res?.data?.image?.urls) {
+        setLogoUrls([
+          res.data.image.urls[0] || '',
+          res.data.image.urls[1] || '',
+        ]);
+        setLogoFiles([null, null]);
+        setAlert({ show: true, type: 'success', message: 'Logos uploaded successfully!' });
+      } else {
+        setAlert({ show: true, type: 'error', message: 'Failed to upload logos.' });
+      }
+    } catch (e: any) {
+      setAlert({ show: true, type: 'error', message: e.message || 'Failed to upload logos.' });
     }
   };
 
@@ -176,6 +218,14 @@ export default function SettingsPage() {
 
   const renderGeneralTab = () => (
     <section className="bg-white rounded-xl shadow-md border border-gray-200 w-full px-8 md:px-16 py-12">
+      {alert.show && (
+        <Alert
+          show={alert.show}
+          type={alert.type}
+          message={alert.message}
+          onConfirm={() => setAlert({ ...alert, show: false })}
+        />
+      )}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
         {/* Logo Management */}
         <div className="flex flex-col gap-4">
@@ -217,7 +267,7 @@ export default function SettingsPage() {
             ))}
           </div>
           <div className="flex justify-start mt-3">
-            <Button text="Save Logos" className="px-8 py-2 rounded-lg shadow-sm text-base font-semibold bg-primary text-white transition hover:bg-primary/90" />
+            <Button text="Save Logos" onClick={handleSaveLogos} className="px-8 py-2 rounded-lg shadow-sm text-base font-semibold bg-primary text-white transition hover:bg-primary/90" />
           </div>
         </div>
         {/* Hero Section */}
@@ -306,8 +356,6 @@ export default function SettingsPage() {
               </div>
               <input type="file" accept="image/*" className="hidden" onChange={handleHeroImageChange} />
             </label>
-            {heroError && <div className="text-red-500 text-xs mt-2">{heroError}</div>}
-            {heroSuccess && <div className="text-green-600 text-xs mt-2">{heroSuccess}</div>}
             <div className="flex justify-start mt-3">
               <Button text={heroSaving ? "Saving..." : "Save Hero Section"} onClick={handleSaveHero} disabled={heroSaving || heroLoading} className="px-8 py-2 rounded-lg shadow-sm text-base font-semibold bg-primary text-white transition hover:bg-primary/90" />
             </div>

@@ -213,6 +213,9 @@ export function AdminTable<T extends ItemBase>({
     showSuccessMessage(savedItem._id ? "Item updated!" : "Item added!");
   };
 
+  // Helper: endpoints that should be view-only (no add/edit/delete)
+  const isViewOnly = endpoint.startsWith('herobanner') || endpoint === 'pages';
+
   return (
     <div className="w-full min-h-screen bg-slate-50">
       <Alert
@@ -230,12 +233,12 @@ export function AdminTable<T extends ItemBase>({
         )}
         <div className="flex justify-between items-center mb-6 flex-wrap gap-2">
           <h2 className="text-2xl font-bold flex items-center gap-2">{title}</h2>
-          <Button text={buttonText} variant="primary" onClick={handleAddNew} />
+          {!isViewOnly && <Button text={buttonText} variant="primary" onClick={handleAddNew} />}
         </div>
         {((items.length === 0) || fetchError) && (
           <div className="flex flex-col items-center justify-center py-20">
             <div className="text-gray-500 text-lg mb-4">{fetchError || "Packages not available"}</div>
-            <Button text={buttonText} variant="primary" onClick={handleAddNew} />
+            {!isViewOnly && <Button text={buttonText} variant="primary" onClick={handleAddNew} />}
           </div>
         )}
         <div className={`grid gap-8 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5${items.length === 0 ? ' hidden' : ''}`}>
@@ -254,14 +257,16 @@ export function AdminTable<T extends ItemBase>({
                     onError={e => { (e.currentTarget as HTMLImageElement).src = '/fallback.jpg'; }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
-                  <div className="absolute top-3 right-3 flex gap-2 z-10">
-                    <button className="bg-white/90 hover:bg-blue-100 p-2 rounded-full shadow" onClick={() => handleEdit(item)}>
-                      <FiEdit className="text-blue-600" />
-                    </button>
-                    <button className="bg-white/90 hover:bg-red-100 p-2 rounded-full shadow" onClick={() => handleDelete(item)}>
-                      <FiTrash className="text-red-600" />
-                    </button>
-                  </div>
+                  {!isViewOnly && (
+                    <div className="absolute top-3 right-3 flex gap-2 z-10">
+                      <button className="bg-white/90 hover:bg-blue-100 p-2 rounded-full shadow" onClick={() => handleEdit(item)}>
+                        <FiEdit className="text-blue-600" />
+                      </button>
+                      <button className="bg-white/90 hover:bg-red-100 p-2 rounded-full shadow" onClick={() => handleDelete(item)}>
+                        <FiTrash className="text-red-600" />
+                      </button>
+                    </div>
+                  )}
                   {/* Unified button logic: dashboard or packages */}
                   {itemId && !isBlog && (endpoint === 'activities' || endpoint === 'destinations') && (() => {
                     let href = '';
@@ -309,7 +314,7 @@ export function AdminTable<T extends ItemBase>({
             );
           })}
         </div>
-        {showForm && currentItem && (
+        {!isViewOnly && showForm && currentItem && (
           <DynamicForm
             data={currentItem}
             columns={columns}

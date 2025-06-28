@@ -1,4 +1,4 @@
-
+  
 import TextHeader from "@/components/atoms/headings";
 import ImageDisplay from "@/components/atoms/ImageCard";
 import { fetchAPI } from "@/utils/apiService";
