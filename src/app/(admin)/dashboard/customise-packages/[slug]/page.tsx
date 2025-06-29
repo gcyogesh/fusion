@@ -50,10 +50,12 @@ function PackageCard({
   pkg,
   onEdit,
   onDelete,
+  onViewDetail,
 }: {
   pkg: Package;
   onEdit: () => void;
   onDelete: () => void;
+  onViewDetail: () => void;
 }) {
   const imageSrc = (pkg.gallery && pkg.gallery[0]) || "/fallback.jpg";
 
@@ -117,7 +119,7 @@ function PackageCard({
 
       {/* Footer */}
       <div className="border-t border-gray-100 p-3 text-center bg-gray-50 group-hover:bg-primary/5 transition">
-        <button className="text-primary hover:underline font-semibold text-sm tracking-wide transition">
+        <button className="text-primary hover:underline font-semibold text-sm tracking-wide transition" onClick={onViewDetail}>
           View Detail
         </button>
       </div>
@@ -165,7 +167,83 @@ function mapPackageToFormData(pkg: Package, destinationId: string): TourPackageF
     tags: pkg.tags || [],
     rating: pkg.rating || '',
     destination: destinationId,
+    googleMapUrl: pkg.googleMapUrl || '',
+    gallery: pkg.gallery || [],
   };
+}
+
+function PackageDetailsModal({ pkg, onClose }) {
+  if (!pkg) return null;
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+      <div className="bg-white max-w-4xl w-full rounded-2xl shadow-2xl p-8 relative overflow-y-auto max-h-[90vh]">
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 hover:bg-primary/10 text-primary border border-gray-200"
+        >
+          ×
+        </button>
+        <h2 className="text-3xl font-bold mb-4">{pkg.title}</h2>
+        <p className="mb-3 text-gray-700 text-lg">{pkg.description}</p>
+        <p className="mb-3 text-gray-600 italic">{pkg.overview}</p>
+        <div className="mb-3 text-base text-gray-500">
+          <strong>Location:</strong> {pkg.location?.city}, {pkg.location?.country} <br/>
+          <strong>Coordinates:</strong> {pkg.location?.coordinates?.lat}, {pkg.location?.coordinates?.lng}
+        </div>
+        <div className="mb-3 text-base text-gray-500">
+          <strong>Duration:</strong> {pkg.duration?.days} Days {pkg.duration?.nights} Nights
+        </div>
+        <div className="mb-3 text-base text-gray-500">
+          <strong>Price:</strong> {pkg.currency?.toUpperCase()} {pkg.basePrice}
+        </div>
+        {pkg.gallery && pkg.gallery.length > 0 && (
+          <div className="mb-6">
+            <h3 className="font-semibold mb-2 text-lg">Gallery</h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {pkg.gallery.map((img, idx) => (
+                <img key={idx} src={img} alt={pkg.title + ' ' + (idx+1)} className="w-full h-40 object-cover rounded border" />
+              ))}
+            </div>
+          </div>
+        )}
+        {pkg.googleMapUrl && (
+          <div className="mb-6">
+            <h3 className="font-semibold mb-2 text-lg">Google Map Image</h3>
+            <img src={pkg.googleMapUrl} alt="Google Map" className="w-72 h-48 object-cover rounded border" />
+          </div>
+        )}
+        <div className="mb-3 text-base text-gray-500">
+          <strong>Features:</strong>
+          <ul className="list-disc ml-6">
+            <li>Group Size: {pkg.feature?.groupSize?.min}</li>
+            <li>Trip Duration: {pkg.feature?.tripDuration}</li>
+            <li>Difficulty: {pkg.feature?.tripDifficulty}</li>
+            <li>Max Altitude: {pkg.feature?.maxAltitude}</li>
+            <li>Start/End Point: {pkg.feature?.startEndPoint}</li>
+            <li>Best Season: {pkg.feature?.bestSeason?.join(', ')}</li>
+            <li>Meals: {pkg.feature?.meals?.join(', ')}</li>
+            <li>Activities: {pkg.feature?.activities?.join(', ')}</li>
+            <li>Accommodation: {pkg.feature?.accommodation?.join(', ')}</li>
+          </ul>
+        </div>
+        <div className="mb-3 text-base text-gray-500">
+          <strong>Inclusions:</strong> {pkg.inclusions?.join(', ')}
+        </div>
+        <div className="mb-3 text-base text-gray-500">
+          <strong>Exclusions:</strong> {pkg.exclusions?.join(', ')}
+        </div>
+        <div className="mb-3 text-base text-gray-500">
+          <strong>Highlights:</strong> {pkg.highlights?.join(', ')}
+        </div>
+        <div className="mb-3 text-base text-gray-500">
+          <strong>Quick Facts:</strong> {pkg.quickfacts?.join(', ')}
+        </div>
+        <div className="mb-3 text-base text-gray-500">
+          <strong>Tags:</strong> {pkg.tags?.join(', ')}
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default function Page({ params }: { params: Promise<{ slug: string }> }) {
@@ -186,6 +264,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
     onCancel?: () => void;
   }>({ show: false, type: 'confirm', message: '' });
   const [deletingPackageId, setDeletingPackageId] = useState<string | null>(null);
+  const [selectedPackage, setSelectedPackage] = useState<Package | null>(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -283,6 +362,9 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
         onConfirm={alert.onConfirm || (() => setAlert((a) => ({ ...a, show: false })))}
         onCancel={alert.onCancel}
       />
+      {selectedPackage && (
+        <PackageDetailsModal pkg={selectedPackage} onClose={() => setSelectedPackage(null)} />
+      )}
       <div className="max-w-6xl mx-auto">
         {/* Destination Info */}
         {destination && (
@@ -342,6 +424,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                   pkg={pkg}
                   onEdit={() => handleEdit(pkg)}
                   onDelete={() => handleDelete(pkg)}
+                  onViewDetail={() => setSelectedPackage(pkg)}
                 />
               ))}
             </div>
