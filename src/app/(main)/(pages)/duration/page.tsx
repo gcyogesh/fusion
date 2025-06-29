@@ -34,29 +34,25 @@ const durationGroups = [
   }
 ];
 
-
 export default function DurationPage() {
-    
   return (
     <>
-    
-    <Breadcrumb currentnavlink="duration" />
-    <section className="max-w-7xl mx-auto px-6 py-12">
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-        {durationGroups.map((group) => (
-          <Link href={`/duration/${group.slug}`} key={group.slug}>
-            <ImageDisplay
-              src={group.image}
-              variant="square"
-              snippet={group.label}
-              title={group.label}
-              description={group.description}
-            />
-          </Link>
-        ))}
-      </div>
-     
-    </section>
-     </>
+      <Breadcrumb currentnavlink="duration" />
+      <section className="max-w-7xl mx-auto px-6 py-12">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          {durationGroups.map((group) => (
+            <Link href={`/duration/${group.slug}`} key={group.slug}>
+              <ImageDisplay
+                src={group.image}
+                variant="square"
+                snippet={group.label}
+                title={group.label}
+                description={group.description}
+              />
+            </Link>
+          ))}
+        </div>
+      </section>
+    </>
   );
 }

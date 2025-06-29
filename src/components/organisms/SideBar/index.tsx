@@ -11,7 +11,10 @@ import {
   FaChevronRight,
   FaChartLine,
   FaBox,
-  FaWallet, 
+  FaWallet,
+  FaUserFriends,
+  FaStar,
+  FaInbox,
 } from "react-icons/fa";
 import Logo from "@/components/atoms/Logo";
 
@@ -48,10 +51,13 @@ const Sidebar = ({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen: (open: boo
         <nav className="space-y-1 flex-1">
           {[
             { icon: FaTachometerAlt, text: "Dashboard", link: "/dashboard" },
+            { icon: FaInbox, text: "Bookings", link: "/dashboard/bookings" },
             { icon: FaUsers, text: "Destiantions", link: "/dashboard/customise-destinations" },
             { icon: FaWallet, text: "Blog Collection", link: "/dashboard/customise-blogs" },
             { icon: FaChartLine, text: "Contact Form", link: "/dashboard/contact" },
-             { icon: FaBox, text: "Activities", link: "/dashboard/customise-activities" },
+            { icon: FaBox, text: "Activities", link: "/dashboard/customise-activities" },
+            { icon: FaStar, text: "Testimonials", link: "/dashboard/customise-testimonials" },
+            { icon: FaUserFriends, text: " Team", link: "/dashboard/customise-team" },
             { icon: FaCog, text: "Settings", link: "/dashboard/settings" },
           ].map(({ icon: Icon, text, link }, index) => (
             <Link
@@ -79,6 +85,7 @@ const Sidebar = ({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen: (open: boo
             <span className="text-slate-300 font-medium">Logout</span>
           </button>
         </div>
+
       </div>
     </aside>
   );

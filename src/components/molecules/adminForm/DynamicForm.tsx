@@ -6,7 +6,9 @@ import dynamic from "next/dynamic";
 const Button = dynamic(() => import("@/components/atoms/button"), { ssr: false });
 import { fetchAPI } from "@/utils/apiService";
 import { FiEdit, FiTrash, FiPlus, FiX, FiAlertCircle, FiCamera } from "react-icons/fi";
+import { FaStar } from 'react-icons/fa';
 import Alert from "@/components/atoms/alert";
+import Loader from "@/components/atoms/Loader";
 
 // ===================== Helper Components =====================
 interface Category {
@@ -125,10 +127,7 @@ function CategorySelect({ value, onChange, endpoint, allowAdd = true, label = "C
 
   // Helper: Spinner for delete button
   const Spinner = () => (
-    <svg className="animate-spin h-4 w-4 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-    </svg>
+    <Loader size="sm" color="gray" />
   );
 
   return (
@@ -326,6 +325,31 @@ function deepReset(obj: any): any {
   return '';
 }
 
+// StarRating component
+const StarRating = ({ value, onChange, max = 5 }) => (
+  <div className="flex items-center gap-1">
+    {[...Array(max)].map((_, i) => (
+      <button
+        type="button"
+        key={i}
+        onClick={() => onChange((i + 1).toString())}
+        className="focus:outline-none"
+        aria-label={`Rate ${i + 1} star${i === 0 ? '' : 's'}`}
+      >
+        <FaStar
+          className={
+            'w-6 h-6 ' +
+            (i < Number(value)
+              ? 'text-yellow-400'
+              : 'text-gray-300 hover:text-yellow-400')
+          }
+        />
+      </button>
+    ))}
+    <span className="ml-2 text-sm text-gray-600">{value || 0}/5</span>
+  </div>
+);
+
 export default function DynamicForm<T extends { _id?: string }>({
   data,
   endpoint,
@@ -361,32 +385,53 @@ export default function DynamicForm<T extends { _id?: string }>({
   };
 
   const shouldSkipField = (key: string) => {
-    // Skip all system and internal fields
+    // Skip certain fields based on endpoint
+    if (endpoint.includes('faq')) {
+      // Skip image-related fields for FAQs
+      if (key.toLowerCase().includes('image') || key.toLowerCase().includes('photo') || key.toLowerCase().includes('gallery')) {
+        return true;
+      }
+    }
+    
+    // Skip internal fields
     return [
       '_id',
-      '__v',
-      'slug',
+      'id',
       'createdAt',
       'updatedAt',
-      'id',
-      'created_at',
-      'updated_at',
-      'created_by',
-      'updated_by'
+      '__v',
+      'slug',
+      'totaltrips',
+      'totalTrips',
+      'isfeatured',
+      'isFeatured'
     ].includes(key);
   };
 
   // ========== Field Renderer ==========
   const renderField = (key: string, value: unknown) => {
+    // FAQ answer field - make it a large textarea
+    if (endpoint.includes('faq') && key === 'answer') {
+      return (
+        <textarea
+          className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all resize-none min-h-[120px] text-base"
+          value={formData[key] || ''}
+          onChange={e => handleChange(key, e.target.value)}
+          placeholder="Enter answer..."
+          rows={5}
+        />
+      );
+    }
+    
     // Description textarea
     if (key === 'description') {
       return (
         <textarea
-          className="w-full px-4 py-2 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all resize-none h-[44px] min-h-0 max-h-[44px] leading-[44px] text-base"
+          className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all resize-y min-h-[80px] text-base"
           value={formData[key] || ''}
           onChange={e => handleChange(key, e.target.value)}
           placeholder="Enter description..."
-          rows={1}
+          rows={3}
         />
       );
     }
@@ -525,16 +570,11 @@ export default function DynamicForm<T extends { _id?: string }>({
               />
               <input
                 type="text"
-                value={typeof v === 'string' || typeof v === 'number' || typeof v === 'boolean' ? String(v) : JSON.stringify(v)}
+                value={String(typeof v === 'string' || typeof v === 'number' || typeof v === 'boolean' ? v : JSON.stringify(v))}
                 onChange={e => {
                   let newValue: any = e.target.value;
-                  // Try to parse JSON if original value was object/array
                   if (typeof v === 'object' && v !== null) {
-                    try {
-                      newValue = JSON.parse(e.target.value);
-                    } catch {
-                      newValue = e.target.value;
-                    }
+                    try { newValue = JSON.parse(e.target.value); } catch { newValue = e.target.value; }
                   } else if (typeof v === 'number') {
                     newValue = Number(e.target.value);
                   } else if (typeof v === 'boolean') {
@@ -631,7 +671,7 @@ export default function DynamicForm<T extends { _id?: string }>({
                         type="text"
                         value={String(item[k] ?? '')}
                         onChange={e => {
-                          let newValue = e.target.value;
+                          let newValue: any = e.target.value;
                           if (typeof item[k] === 'object' && item[k] !== null) {
                             try { newValue = JSON.parse(e.target.value); } catch { newValue = e.target.value; }
                           } else if (typeof item[k] === 'number') {
@@ -704,7 +744,7 @@ export default function DynamicForm<T extends { _id?: string }>({
       return (
         <input
           type="number"
-          value={typeof formData[key] === 'number' ? formData[key] : 0}
+          value={String(typeof formData[key] === 'number' ? formData[key] : 0)}
           onChange={(e) => handleChange(key, Number(e.target.value))}
           className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
         />
@@ -734,10 +774,22 @@ export default function DynamicForm<T extends { _id?: string }>({
         />
       );
     }
+    // Rating star selector
+    if (key === 'rating') {
+      return (
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Rating</label>
+          <StarRating
+            value={formData[key] || ''}
+            onChange={val => handleChange(key, val)}
+          />
+        </div>
+      );
+    }
     return (
       <input
         type="text"
-        value={typeof formData[key] === 'string' ? formData[key] as string : ''}
+        value={String(formData[key] ?? '')}
         onChange={(e) => handleChange(key, e.target.value)}
         className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
       />
@@ -777,41 +829,41 @@ export default function DynamicForm<T extends { _id?: string }>({
         }
       }
       let hasFile = false;
-      const fileFields = new Set(['image', 'imageUrls', 'gallery', 'cover', 'blogImage']);
       const formDataToSend = new FormData();
       Object.entries(formData).forEach(([key, value]) => {
-        let uploadKey = key;
-        // For blogs, always send the image as 'image'
-        if (endpoint.includes('blog') && fileFields.has(key)) {
-          uploadKey = 'image';
-        }
+        const isFileField = /image|photo|gallery/i.test(key);
+        // Helper: type guard for File
+        const isFile = (v: any): v is File => typeof File !== 'undefined' && v && typeof v === 'object' && 'name' in v && 'size' in v && 'type' in v;
+        const uploadKey = (endpoint.includes('blog') && isFileField) ? 'imageUrl' : key;
         if (
-          fileFields.has(key) &&
+          isFileField &&
           Array.isArray(value) &&
           value.length &&
           value[0] &&
           typeof value[0] === 'object' &&
-          (value[0] as File) instanceof File
+          isFile(value[0])
         ) {
           hasFile = true;
           value.forEach((file) => {
-            formDataToSend.append(uploadKey, file);
+            if (isFile(file)) formDataToSend.append(uploadKey, file);
           });
         } else if (
-          fileFields.has(key) &&
+          isFileField &&
           typeof value === 'object' &&
-          (value as File) instanceof File
+          isFile(value)
         ) {
           hasFile = true;
           formDataToSend.append(uploadKey, value);
         } else {
           // Special handling for destinationId: always send as plain string
           if (key === 'destinationId') {
-            formDataToSend.append(key, value ? value.toString() : '');
+            formDataToSend.append(key, value ? String(value) : '');
           } else if (typeof value === 'object' && value !== null && !(value instanceof Date)) {
             formDataToSend.append(key, JSON.stringify(value));
+          } else if (typeof value === 'boolean') {
+            formDataToSend.append(key, value ? 'true' : 'false');
           } else if (typeof value !== 'undefined' && value !== null) {
-            formDataToSend.append(key, value.toString());
+            formDataToSend.append(key, String(value));
           } else {
             formDataToSend.append(key, '');
           }
@@ -946,4 +998,3 @@ export default function DynamicForm<T extends { _id?: string }>({
     </div>
   );
 }
-// ===================== End of File =====================

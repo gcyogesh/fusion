@@ -14,7 +14,7 @@ export default function FormPage() {
   const [files, setFiles] = useState<File[]>([]);
   const [status, setStatus] = useState('');
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -72,12 +72,12 @@ export default function FormPage() {
           className="w-full p-2 border rounded"
           required
         />
-        <input
+        <textarea
           name="subtitle"
           placeholder="Subtitle"
           value={formData.subtitle}
           onChange={handleChange}
-          className="w-full p-2 border rounded"
+          className="w-full p-2 border rounded min-h-[60px]"
           required
         />
         <input

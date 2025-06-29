@@ -271,6 +271,19 @@ export default async function Dashboard() {
             </div>
           </div>
         </div>
+
+        {/* Add a navigation link or card for Bookings */}
+        <div className="bg-white rounded-lg border p-6">
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">
+            Bookings
+          </h2>
+          <Link
+            href="/dashboard/bookings"
+            className="text-blue-600 hover:text-blue-800 text-sm font-medium mt-4 inline-block"
+          >
+            View all bookings →
+          </Link>
+        </div>
       </div>
     </div>
   );
