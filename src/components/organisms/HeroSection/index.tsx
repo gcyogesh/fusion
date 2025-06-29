@@ -149,7 +149,13 @@ const HeroSection = ({ herodata }: { herodata: HeroData }) => {
           {/* Location Input */}
           <div className="flex items-center space-x-1 flex-shrink-0 min-w-[100px] sm:min-w-[160px] md:min-w-[200px]">
             <span className="bg-[#FEF2D6] p-1 md:p-4 rounded-full">
-              <FaMapMarkerAlt className="text-[#0E334F] text-xs md:text-2xl" />
+              <Image
+                src="/images/tdesign_location-filled.svg" 
+                alt="Location Icon"
+                width={35} 
+                height={35} 
+                className="inline-block align-middle"
+              />
             </span>
             <div className="flex flex-col text-[10px] sm:text-sm md:text-base w-full truncate">
               <label htmlFor="location" className="font-bold">
@@ -169,7 +175,13 @@ const HeroSection = ({ herodata }: { herodata: HeroData }) => {
           {/* Min Duration Input */}
           <div className="flex items-center space-x-1 flex-shrink-0 min-w-[100px] sm:min-w-[160px] md:min-w-[200px]">
             <span className="bg-[#FEF2D6] p-1 md:p-4 rounded-full">
-              <FaBusinessTime className="text-[#0E334F] text-xs md:text-2xl" />
+              <Image
+                src="/images/uis_calender.svg" 
+                alt="Location Icon"
+                width={35} 
+                height={35} 
+                className="inline-block align-middle"
+              />
             </span>
             <div className="flex flex-col text-[10px] sm:text-sm md:text-base w-full truncate">
               <label htmlFor="minDuration" className="font-bold">
@@ -190,7 +202,13 @@ const HeroSection = ({ herodata }: { herodata: HeroData }) => {
           {/* Max Duration Input */}
           <div className="flex items-center space-x-1 flex-shrink-0 min-w-[100px] sm:min-w-[160px] md:min-w-[200px]">
             <span className="bg-[#FEF2D6] p-1 md:p-4 rounded-full">
-              <FaBusinessTime className="text-[#0E334F] text-xs md:text-2xl" />
+              <Image
+                src="/images/uis_calender.svg" 
+                alt="Location Icon"
+                width={35} 
+                height={35} 
+                className="inline-block align-middle"
+              />
             </span>
             <div className="flex flex-col text-[10px] sm:text-sm md:text-base w-full truncate">
               <label htmlFor="maxDuration" className="font-bold">
