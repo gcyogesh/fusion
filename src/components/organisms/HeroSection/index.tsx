@@ -145,7 +145,7 @@ const HeroSection = ({ herodata }: { herodata: HeroData }) => {
       </div>
 
       <div className="absolute w-full max-w-[1100px] mx-auto left-0 right-0 top-[97%] md:top-[96%] lg:top-[95%] z-50 px-2">
-        <div className="flex items-center justify-between bg-white rounded-full px-2 sm:px-4 py-2 sm:py-3 shadow-lg gap-2 overflow-x-auto">
+        <div className="flex items-center justify-between bg-white rounded-full px-2 sm:px-4 py-2 sm:py-3 shadow-lg gap-0 md:gap-2 overflow-x-auto">
           {/* Location Input */}
           <div className="flex items-center space-x-1 flex-shrink-0 min-w-[100px] sm:min-w-[160px] md:min-w-[200px]">
             <span className="bg-[#FEF2D6] p-1 md:p-4 rounded-full">
