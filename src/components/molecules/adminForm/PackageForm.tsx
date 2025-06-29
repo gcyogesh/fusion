@@ -430,9 +430,21 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
       }));
       // Gallery and map image: check property existence and type
       const gallery = 'gallery' in initialData ? initialData.gallery : undefined;
-      setGalleryFiles(Array.isArray(gallery) ? gallery : (typeof gallery === 'string' ? [gallery] : []));
+      const baseUrl = process.env.NEXT_PUBLIC_IMAGE_BASE_URL || '';
+      let galleryArr = Array.isArray(gallery) ? gallery : (typeof gallery === 'string' ? [gallery] : []);
+      galleryArr = galleryArr.map(img => {
+        if (typeof img === 'string' && img && !img.startsWith('http')) {
+          return `${baseUrl}${img}`;
+        }
+        return img;
+      });
+      setGalleryFiles(galleryArr);
       const mapImg = 'googleMapUrl' in initialData ? initialData.googleMapUrl : undefined;
-      setGoogleMapImage(typeof mapImg === 'string' ? mapImg : null);
+      let mapImgUrl = null;
+      if (typeof mapImg === 'string' && mapImg) {
+        mapImgUrl = mapImg.startsWith('http') ? mapImg : `${process.env.NEXT_PUBLIC_IMAGE_BASE_URL || ''}${mapImg}`;
+      }
+      setGoogleMapImage(mapImgUrl);
       
       // NEW: Initialize itinerary images
       if (initialData.itinerary && Array.isArray(initialData.itinerary)) {
@@ -1208,7 +1220,7 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
             label="Image"
             name={`image-${idx}`}
             onChange={e => handleItineraryImageChange(idx, e)}
-            file={item.image || null}
+            file={itineraryImages[idx] || null}
           />
         </div>
       ))}
@@ -1216,26 +1228,29 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
     </div>
   );
 
-  const renderMediaTab = () => (
-    <div className="space-y-4">
-      <MultiImageUploadField
-        label="Gallery Images"
-        name="gallery"
-        onChange={handleGalleryChange}
-        files={galleryFiles}
-        max={10}
-      />
-      {(errors.fileSize || errors.fileType) && (
-        <div className="p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2">
-          <FiAlertCircle className="text-red-500 flex-shrink-0" />
-          <div>
-            {errors.fileSize && <p className="text-red-600">{errors.fileSize}</p>}
-            {errors.fileType && <p className="text-red-600">{errors.fileType}</p>}
+  const renderMediaTab = () => {
+    const gallerySlots = galleryFiles.length < 10 ? [...galleryFiles, ...Array(10 - galleryFiles.length).fill(null)] : galleryFiles;
+    return (
+      <div className="space-y-4">
+        <MultiImageUploadField
+          label="Gallery Images"
+          name="gallery"
+          onChange={handleGalleryChange}
+          files={gallerySlots}
+          max={10}
+        />
+        {(errors.fileSize || errors.fileType) && (
+          <div className="p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2">
+            <FiAlertCircle className="text-red-500 flex-shrink-0" />
+            <div>
+              {errors.fileSize && <p className="text-red-600">{errors.fileSize}</p>}
+              {errors.fileType && <p className="text-red-600">{errors.fileType}</p>}
+            </div>
           </div>
-        </div>
-      )}
-    </div>
-  );
+        )}
+      </div>
+    );
+  };
 
   const tabIcons = {
     basic: <FiInfo className="w-5 h-5" />,
