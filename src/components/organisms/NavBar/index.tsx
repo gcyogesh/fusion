@@ -119,10 +119,12 @@ export default function Navbar() {
       } ${getNavbarClasses()}`}
     >
       <div className="max-w-7xl mx-auto flex justify-between items-center px-4 py-3 h-20">
+        <div>
         <Link href="/">
           <Logo />
         </Link>
-
+        </div>
+        
         {/* Desktop Nav */}
         <ul className="hidden md:flex gap-8 font-medium text-base relative">
           {navLinks.map((link) => (
