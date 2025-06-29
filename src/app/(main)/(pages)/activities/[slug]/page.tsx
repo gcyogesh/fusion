@@ -27,6 +27,7 @@ export default async function Page({ params }: Params) {
   const activities: Activity[] = activitiesdata?.data || [];
 
   const activity: Activity | undefined = activities.find((item) => item.slug === slug);
+  
 
   // Debug logs
   console.log("Slug param:", slug);
@@ -81,6 +82,7 @@ export default async function Page({ params }: Params) {
         <div className="max-w-7xl mx-auto   ">
             <TextHeader text="Related Packages" align="left" />
         </div>
+
       </section>
     </>
   );

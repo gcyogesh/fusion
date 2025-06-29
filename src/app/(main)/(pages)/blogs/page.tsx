@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import HeroBanner from '@/components/organisms/Banner/HeroBanner'; //kapil push
+import HeroBanner , { HeroBannerData } from '@/components/organisms/Banner/HeroBanner';
 import { fetchAPI } from '@/utils/apiService';
 import TextDescription from '@/components/atoms/description';
 import ImageDisplay from '@/components/atoms/ImageCard';
@@ -15,21 +15,65 @@ type Props = {
   };
 };
 
-const blogstab = [
-  "All Blogs",
-  "Adventure Travel",
-  "Food",
-  "Responsible Tourism",
-  "Culture & Tradition",
-  "Travel trips",
-  "Travel Experience",
-];
+interface BlogCategory {
+  _id: string;
+  name: string;
+  slug: string;
+}
+
+interface Blog {
+  _id: string;
+  title: string;
+  subtitle: string;
+  description: string;
+  imageUrl: string;
+  category: BlogCategory;
+  isFeatured: boolean;
+  slug: string;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
+
+interface BlogAPIResponse {
+  success: boolean;
+  message: string;
+  data: Blog[];
+}
+
+
+interface Category {
+ _id: string;
+  name: string;
+  slug: string;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+   
+}
+interface CategoryAPIResponse {
+  success: boolean;
+  message: string;
+  data: Category[];
+}
+
+interface HeroBannerAPIResponse {
+  success: boolean;
+  message: string;
+  data: HeroBannerData;
+}
 
 const Blogs = async ({ searchParams }: Props) => {
-  const blogsdata = await fetchAPI({ endpoint: "blogs" });
-  const herodata = await fetchAPI({ endpoint: "herobanner/blog" });
+  const blogsData = await fetchAPI({ endpoint: "blogs" }) as  BlogAPIResponse;
+  const heroData = await fetchAPI({ endpoint: "herobanner/blog" }) as HeroBannerAPIResponse;
+  const categoriesData = await fetchAPI({ endpoint: "category/blogs" }) as CategoryAPIResponse ;
 
-  const blogs = blogsdata?.data || [];
+  const blogs = blogsData?.data || [];
+  const categories = categoriesData?.data || [];
+
+
+  const blogTabs = ["All Blogs", ...categories.map((category: Category) => category.name)];
+
   const currentPage = parseInt(searchParams?.page || '1', 10);
   const blogsPerPage = 3;
   const totalPages = Math.ceil(blogs.length / blogsPerPage);
@@ -39,12 +83,11 @@ const Blogs = async ({ searchParams }: Props) => {
   return (
     <>
       <Breadcrumb currentnavlink="Blogs" />
-      <HeroBanner herodata={herodata?.data} />
+      <HeroBanner herodata={heroData?.data} />
 
-      <MidNavbar tabs={blogstab} />
+      <MidNavbar tabs={blogTabs} />
+
       <section className="max-w-7xl mx-auto px-8">
-       
-
         <div className="flex flex-col gap-12">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {currentBlogs[0] && (
@@ -68,7 +111,7 @@ const Blogs = async ({ searchParams }: Props) => {
 
             <div className="flex flex-col gap-6">
               {currentBlogs.slice(1).map((card: any) => (
-                <Link href={`/blogs/${card.slug}`} key={card.id}>
+                <Link href={`/blogs/${card.slug}`} key={card._id}>
                   <div className="flex flex-col cursor-pointer">
                     <ImageDisplay
                       src={card.imageUrl}

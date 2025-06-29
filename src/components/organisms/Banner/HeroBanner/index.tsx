@@ -2,7 +2,26 @@ import React from 'react';
 import TextHeader from '@/components/atoms/headings';
 import Image from 'next/image';
 
-const HeroBanner = ({ herodata }) => {
+export interface HeroBannerData {
+  _id: string;
+  page: string;
+  title: string;
+  subTitle?: string;
+  description?: string;
+  buttonText?: string;
+  buttonLink?: string;
+  bannerImage: string;
+  image?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  __v?: number;
+}
+
+interface HeroBannerProps {
+  herodata: HeroBannerData | null | undefined;
+}
+
+const HeroBanner: React.FC<HeroBannerProps> = ({ herodata }) => {
   if (!herodata) return null;
 
   return (

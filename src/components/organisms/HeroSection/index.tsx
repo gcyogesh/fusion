@@ -103,6 +103,14 @@ const HeroSection = ({ herodata }: { herodata: HeroData }) => {
           priority
         />
       )}
+  
+      <div className="relative w-auto h-full ">
+        <Image
+    src="/images/Blurtext.png"
+    alt="Text Background"
+    fill
+    className="object-cover"
+  />
 
       <TextHeader
         text={title}
@@ -112,7 +120,7 @@ const HeroSection = ({ herodata }: { herodata: HeroData }) => {
         textcolor="white"
         className="absolute top-[52%] left-1/2 transform -translate-x-1/2 -translate-y-1/2"
       />
-
+     </div>
       <div className="absolute top-[72%] md:top-[73%] lg:top-[73%] left-1/2 transform -translate-x-1/2 w-full max-w-7xl mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-4 md:gap-10 text-center md:text-left mb-10">
           <p className="text-white text-base md:text-lg max-w-[486px] mx-auto md:mx-0">

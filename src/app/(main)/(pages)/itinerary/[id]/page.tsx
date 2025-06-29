@@ -55,6 +55,8 @@ export default async function Page({ params }: { params: { id: string } }) {
   const response = await fetchAPI({ endpoint });
   const destination = response?.data;
 
+   
+
   if (!destination) notFound();
 
   const itinerary = destination.itinerary || [];

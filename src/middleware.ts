@@ -18,10 +18,17 @@ export function middleware(request: NextRequest) {
     }
   }
 
+    if (pathname === '/home') {
+    const url = request.nextUrl.clone();
+    url.pathname = '/';
+    return NextResponse.redirect(url);
+  }
+
+
   return NextResponse.next();
 }
 
 // Specify the matcher for middleware
 export const config = {
-  matcher: ['/dashboard/:path*'],
+  matcher: ['/dashboard/:path*', '/home'],
 }; 
