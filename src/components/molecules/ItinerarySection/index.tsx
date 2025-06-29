@@ -139,7 +139,8 @@ const ItinerarySection: FC<Props> = ({ itinerary }) => {
 
                 {/* Activities Section */}
               <div className="mt-4 overflow-x-auto">
-  <div className="min-w-[600px] sm:min-w-full flex flex-wrap sm:flex-nowrap justify-between text-xl text-gray-600 items-center bg-white p-5 border border-black rounded-xl shadow-sm">
+                <div className="inline-flex min-w-[600px] sm:min-w-full bg-white p-5 border border-black rounded-xl shadow-sm">
+  <div className="flex flex-wrap sm:flex-nowrap items-center text-xl text-gray-600 gap-3">
     {item.activities.map((activityText, idx) => {
       const matched = activityMap.find(({ keyword }) =>
         activityText.toLowerCase().includes(keyword)
@@ -164,6 +165,7 @@ const ItinerarySection: FC<Props> = ({ itinerary }) => {
         </div>
       );
     })}
+  </div>
   </div>
 </div>
 

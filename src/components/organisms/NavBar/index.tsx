@@ -107,7 +107,7 @@ export default function Navbar() {
 
   const getNavbarClasses = () => {
     if (pathname === '/' && scrollY === 0) {
-      return 'backdrop-blur-sm bg-white/20  text-white shadow-lg'
+      return ' blur-base bg-white/20  text-white shadow-lg'
     }
     return 'bg-[#0F7BBA] text-white'
   }
@@ -118,7 +118,7 @@ export default function Navbar() {
         showNavbar ? 'translate-y-0' : '-translate-y-full'
       } ${getNavbarClasses()}`}
     >
-      <div className="max-w-7xl mx-auto flex justify-between items-center px-4 py-3 h-20">
+      <div className="max-w-7xl mx-auto flex justify-between items-center px-4 py-4 h-20">
         <div>
         <Link href="/">
           <Logo />
@@ -140,7 +140,7 @@ export default function Navbar() {
 
               {link.hasDropdown && dropdownOpen === link.name && (
                 <ul
-                  className="absolute top-8 left-0 w-44 backdrop-blur-xl bg-white/20 text-white shadow-lg  py-2 z-50"
+                  className="absolute top-8 left-0 right-4 w-40 backdrop-blur-xl bg-white/20 rounded-md text-white shadow-lg  py-2 z-50"
                   onMouseLeave={() => setDropdownOpen(null)}
                 >
                   {link.subLinks?.map((sublink) => (
