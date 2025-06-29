@@ -9,7 +9,7 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Protect all other /admin routes
+  // Protect all /dashboard routes
   if (pathname.startsWith('/dashboard')) {
     const token = request.cookies.get('token');
     if (!token) {
@@ -18,17 +18,16 @@ export function middleware(request: NextRequest) {
     }
   }
 
-    if (pathname === '/home') {
+  // Redirect /home to root
+  if (pathname === '/home') {
     const url = request.nextUrl.clone();
     url.pathname = '/';
     return NextResponse.redirect(url);
   }
 
-
   return NextResponse.next();
 }
 
-// Specify the matcher for middleware
 export const config = {
   matcher: ['/dashboard/:path*', '/home'],
-}; 
+};
