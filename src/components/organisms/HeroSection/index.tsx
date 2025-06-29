@@ -104,14 +104,13 @@ const HeroSection = ({ herodata }: { herodata: HeroData }) => {
         />
       )}
   
-      <div className="relative w-full max-w-4xl">
-      <Image
-        src="/images/Blurtext.png"
-        alt="Text Background"
-        fill
-        className="object-cover rounded-lg"
-        priority 
-      />
+      <div className="relative w-auto h-full ">
+        <Image
+    src="/images/Blurtext.png"
+    alt="Text Background"
+    fill
+    className="object-cover"
+  />
 
       <TextHeader
         text={title}
