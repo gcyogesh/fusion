@@ -88,7 +88,7 @@ const HeroSection = ({ herodata }: { herodata: HeroData }) => {
 
   return (
     <div className="mx-auto relative w-full h-[860px]">
-      {isGif ? (
+      {/* {isGif ? (
         <img
           src={bannerImage}
           alt="Hero Background"
@@ -102,16 +102,16 @@ const HeroSection = ({ herodata }: { herodata: HeroData }) => {
           objectFit="cover"
           priority
         />
-      )}
+      )} */}
   
       <div className="relative w-full max-w-4xl">
-      <Image
+      {/* <Image
         src="/images/Blurtext.png"
         alt="Text Background"
         fill
         className="object-cover rounded-lg"
         priority 
-      />
+      /> */}
 
       <TextHeader
         text={title}
