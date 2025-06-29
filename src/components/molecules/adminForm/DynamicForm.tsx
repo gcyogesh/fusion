@@ -841,30 +841,13 @@ export default function DynamicForm<T extends { _id?: string }>({
         setIsSubmitting(false);
         return;
       }
-      // Blog image required validation
-      if (endpoint.includes('blog')) {
-        const hasImage = (
-          (Array.isArray(formData['image']) && formData['image'].length > 0) ||
-          (Array.isArray(formData['gallery']) && formData['gallery'].length > 0) ||
-          (Array.isArray(formData['imageUrls']) && formData['imageUrls'].length > 0) ||
-          (Array.isArray(formData['image']) && formData['image'].length > 0) ||
-          (typeof formData['image'] === 'string' && formData['image']) ||
-          (typeof formData['gallery'] === 'string' && formData['gallery']) ||
-          (typeof formData['imageUrls'] === 'string' && formData['imageUrls']) ||
-          (typeof formData['blogImage'] === 'string' && formData['blogImage'])
-        );
-        if (!hasImage) {
-          setError('Image is required');
-          setIsSubmitting(false);
-          return;
-        }
-      }
       let hasFile = false;
       const formDataToSend = new FormData();
       Object.entries(formData).forEach(([key, value]) => {
         const isFileField = /image|photo|gallery/i.test(key);
         // Helper: type guard for File
         const isFile = (v: any): v is File => typeof File !== 'undefined' && v && typeof v === 'object' && 'name' in v && 'size' in v && 'type' in v;
+        // For blogs, always use 'imageUrl' as the key for image fields
         const uploadKey = (endpoint.includes('blog') && isFileField) ? 'imageUrl' : key;
         if (
           isFileField &&
@@ -1011,18 +994,21 @@ export default function DynamicForm<T extends { _id?: string }>({
           </div>
           {/* Actions */}
           <div className="flex justify-end gap-4 mt-8">
-            <Button
-              text="Cancel"
-              variant="secondary"
+            <button
+              type="button"
+              className="px-6 py-2.5 rounded-xl bg-gray-100 text-gray-700 font-semibold hover:bg-gray-200 transition"
               onClick={onCancel}
-              className="px-6 py-2.5"
-            />
-            <Button
-              text={isSubmitting ? "Saving..." : "Save"}
-              variant="primary"
-              onClick={handleSubmit}
-              className={`px-6 py-2.5 ${isSubmitting ? "opacity-50 cursor-not-allowed" : ""}`}
-            />
+              disabled={isSubmitting}
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className={`px-6 py-2.5 rounded-xl bg-primary text-white font-semibold hover:bg-primary/90 transition ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? 'Saving...' : 'Save'}
+            </button>
           </div>
         </form>
       </div>
