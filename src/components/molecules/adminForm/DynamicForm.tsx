@@ -141,12 +141,12 @@ function CategorySelect({ value, onChange, endpoint, allowAdd = true, label = "C
         >
           <option value="">Select a {label.toLowerCase()}</option>
           {allCategories.map(cat => {
-            const key = 'id' in cat ? cat.id : ('slug' in cat ? cat.slug : ('_id' in cat ? cat._id : ''));
-            const valueId = '_id' in cat ? cat._id : ('id' in cat ? cat.id : ('slug' in cat ? cat.slug : ''));
+            const valueId = cat._id;
+            const isRealCategory = !!valueId && typeof valueId === 'string' && valueId.length >= 12;
             const labelText = 'name' in cat ? cat.name : ('title' in cat ? cat.title : ('slug' in cat ? cat.slug : ''));
             const isSelected = getCurrentCategoryValue(value) === valueId;
             return (
-              <option key={key ?? ''} value={valueId ?? ''}>
+              <option key={valueId ?? ''} value={valueId ?? ''}>
                 {labelText ?? ''}
                 {justAddedId === (valueId ?? '') ? " (new)" : ""}
               </option>
@@ -177,7 +177,8 @@ function CategorySelect({ value, onChange, endpoint, allowAdd = true, label = "C
               )}
               <div className="overflow-y-auto max-h-60 px-2 py-2 bg-white rounded-b-2xl">
                 {allCategories.map(cat => {
-                  const valueId = '_id' in cat ? cat._id : ('id' in cat ? cat.id : ('slug' in cat ? cat.slug : ''));
+                  const valueId = cat._id;
+                  const isRealCategory = !!valueId && typeof valueId === 'string' && valueId.length >= 12;
                   const labelText = 'name' in cat ? cat.name : ('title' in cat ? cat.title : ('slug' in cat ? cat.slug : ''));
                   const isSelected = getCurrentCategoryValue(value) === valueId;
                   return (
@@ -186,12 +187,16 @@ function CategorySelect({ value, onChange, endpoint, allowAdd = true, label = "C
                       className="flex items-center justify-between px-3 py-2 rounded-lg transition hover:bg-primary/10 cursor-pointer"
                     >
                       <span className="truncate text-gray-800 text-sm font-medium">{labelText ?? ''}</span>
-                      {!isSelected && (
+                      {!isSelected && isRealCategory && (
                         <button
                           type="button"
                           className="text-red-500 hover:text-red-700 text-xs ml-2 disabled:opacity-50 rounded-full p-1 bg-red-50 hover:bg-red-100 border border-transparent hover:border-red-200 transition flex items-center justify-center"
                           disabled={deletingId === valueId}
-                          onClick={() => handleDeleteCategory(String(valueId))}
+                          onClick={async () => {
+                            setDeletingId(String(valueId));
+                            setError(null);
+                            await confirmDeleteCategory();
+                          }}
                         >
                           {deletingId === valueId ? <Spinner /> : <FiTrash className="w-4 h-4" />}
                         </button>
@@ -370,6 +375,7 @@ export default function DynamicForm<T extends { _id?: string }>({
   const [customKeys, setCustomKeys] = useState<string[]>([]);
   const [showKeyInput, setShowKeyInput] = useState(false);
   const [keyInputValue, setKeyInputValue] = useState('');
+  const [arrayFieldErrors, setArrayFieldErrors] = useState<Record<string, string>>({});
 
   // ========== Handlers ==========
   const handleChange = (key: string, value: unknown) => {
@@ -518,6 +524,12 @@ export default function DynamicForm<T extends { _id?: string }>({
                     <button
                       type="button"
                       onClick={() => {
+                        // Prevent deletion if there's only one image left (for all endpoints)
+                        if (files.length === 1) {
+                          setArrayFieldErrors(prev => ({ ...prev, [key]: 'At least one image is required.' }));
+                          return;
+                        }
+                        setArrayFieldErrors(prev => ({ ...prev, [key]: '' }));
                         const newFiles = files.filter((_, i) => i !== index);
                         handleChange(key, newFiles);
                       }}
@@ -591,138 +603,157 @@ export default function DynamicForm<T extends { _id?: string }>({
       );
     }
     // Array fields
-    if (Array.isArray(value)) {
-      // Handle array of strings (e.g., quickfacts)
-      if (value.length === 0 || value.every(v => typeof v === 'string')) {
-        return (
-          <div className="space-y-2">
-            {value.map((item, idx) => (
-              <div key={idx} className="flex gap-2 items-center">
-                <input
-                  type="text"
-                  value={String(item)}
-                  onChange={e => {
-                    const updated = [...value];
-                    updated[idx] = e.target.value;
-                    handleChange(key, updated);
-                  }}
-                  className="flex-1 px-3 py-2 border border-gray-200 rounded-xl"
-                />
-                <button
-                  type="button"
-                  className="px-3 py-2 bg-primary text-white rounded-xl hover:bg-primary/80"
-                  onClick={() => {
-                    const updated = value.filter((_, i) => i !== idx);
-                    handleChange(key, updated);
-                  }}
-                >
-                  Remove
-                </button>
-              </div>
-            ))}
-            <button
-              type="button"
-              className="px-4 py-2 bg-primary text-white rounded-xl hover:bg-primary/80"
-              onClick={() => handleChange(key, [...value, ''])}
-            >
-              Add
-            </button>
-          </div>
-        );
-      }
-      if (value.length > 0 && typeof value[0] === 'object') {
-        const templateObj = value[0];
-        return (
-          <div className="space-y-4">
-            {value.map((item, idx) => (
-              <div key={idx} className="p-4 border rounded-xl mb-2 bg-gray-50">
-                {Object.keys(templateObj).map(k => (
-                  <div key={k} className="flex gap-2 items-center mb-2">
+    if (Array.isArray(value) && (value.length === 0 || value.every(v => typeof v === 'string'))) {
+      return (
+        <div className="space-y-2">
+          {value.map((item, idx) => (
+            <div key={idx} className="flex gap-2 items-center">
+              <input
+                type="text"
+                value={String(item)}
+                onChange={e => {
+                  const updated = [...value];
+                  updated[idx] = e.target.value;
+                  handleChange(key, updated);
+                }}
+                className="flex-1 px-3 py-2 border border-gray-200 rounded-xl"
+              />
+              <button
+                type="button"
+                className="px-3 py-2 bg-primary text-white rounded-xl hover:bg-primary/80"
+                onClick={() => {
+                  // Prevent deletion if there's only one item left (for all endpoints)
+                  console.log('Attempting to delete item:', { key, currentLength: value.length, idx });
+                  if (value.length === 1) {
+                    console.log('Preventing deletion - only one item left');
+                    setArrayFieldErrors(prev => ({ ...prev, [key]: 'At least one item is required.' }));
+                    return;
+                  }
+                  console.log('Allowing deletion - multiple items exist');
+                  setArrayFieldErrors(prev => ({ ...prev, [key]: '' }));
+                  const updated = value.filter((_, i) => i !== idx);
+                  handleChange(key, updated);
+                }}
+              >
+                Remove
+              </button>
+            </div>
+          ))}
+          {arrayFieldErrors[key] && (
+            <div className="text-red-600 text-xs mt-1">{arrayFieldErrors[key]}</div>
+          )}
+          <button
+            type="button"
+            className="px-4 py-2 bg-primary text-white rounded-xl hover:bg-primary/80"
+            onClick={() => {
+              setArrayFieldErrors(prev => ({ ...prev, [key]: '' }));
+              handleChange(key, [...value, '']);
+            }}
+          >
+            Add
+          </button>
+        </div>
+      );
+    }
+    if (Array.isArray(value) && value.length > 0 && typeof value[0] === 'object') {
+      const templateObj = value[0];
+      return (
+        <div className="space-y-4">
+          {value.map((item, idx) => (
+            <div key={idx} className="p-4 border rounded-xl mb-2 bg-gray-50">
+              {Object.keys(templateObj).map(k => (
+                <div key={k} className="flex gap-2 items-center mb-2">
+                  <input
+                    type="text"
+                    value={k}
+                    readOnly
+                    className="w-1/3 px-3 py-2 border border-gray-200 rounded-xl bg-gray-100 text-gray-500"
+                  />
+                  {(k.toLowerCase() === 'image' || k.toLowerCase().includes('image')) ? (
+                    <div className="flex flex-col gap-2 w-full">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={e => {
+                          const filesInput = (e.target as HTMLInputElement).files;
+                          if (filesInput && filesInput.length > 0) {
+                            const updatedArray = [...value];
+                            updatedArray[idx] = { ...item, [k]: filesInput[0] };
+                            handleChange(key, updatedArray);
+                          }
+                        }}
+                      />
+                      {item[k] && (
+                        <img
+                          src={(typeof File !== 'undefined' && item[k] instanceof File) ? URL.createObjectURL(item[k]) : String(item[k])}
+                          alt={k}
+                          className="w-24 h-24 object-cover rounded border"
+                        />
+                      )}
+                    </div>
+                  ) : (
                     <input
                       type="text"
-                      value={k}
-                      readOnly
-                      className="w-1/3 px-3 py-2 border border-gray-200 rounded-xl bg-gray-100 text-gray-500"
+                      value={String(item[k] ?? '')}
+                      onChange={e => {
+                        let newValue: any = e.target.value;
+                        if (typeof item[k] === 'object' && item[k] !== null) {
+                          try { newValue = JSON.parse(e.target.value); } catch { newValue = e.target.value; }
+                        } else if (typeof item[k] === 'number') {
+                          newValue = e.target.value;
+                        } else if (typeof item[k] === 'boolean') {
+                          newValue = e.target.value === 'true';
+                        }
+                        const updatedArray = [...value];
+                        updatedArray[idx] = { ...item, [k]: newValue };
+                        handleChange(key, updatedArray);
+                      }}
+                      className="flex-1 px-3 py-2 border border-gray-200 rounded-xl"
                     />
-                    {(k.toLowerCase() === 'image' || k.toLowerCase().includes('image')) ? (
-                      <div className="flex flex-col gap-2 w-full">
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={e => {
-                            const filesInput = (e.target as HTMLInputElement).files;
-                            if (filesInput && filesInput.length > 0) {
-                              const updatedArray = [...value];
-                              updatedArray[idx] = { ...item, [k]: filesInput[0] };
-                              handleChange(key, updatedArray);
-                            }
-                          }}
-                        />
-                        {item[k] && (
-                          <img
-                            src={(typeof File !== 'undefined' && item[k] instanceof File) ? URL.createObjectURL(item[k]) : String(item[k])}
-                            alt={k}
-                            className="w-24 h-24 object-cover rounded border"
-                          />
-                        )}
-                      </div>
-                    ) : (
-                      <input
-                        type="text"
-                        value={String(item[k] ?? '')}
-                        onChange={e => {
-                          let newValue: any = e.target.value;
-                          if (typeof item[k] === 'object' && item[k] !== null) {
-                            try { newValue = JSON.parse(e.target.value); } catch { newValue = e.target.value; }
-                          } else if (typeof item[k] === 'number') {
-                            newValue = e.target.value;
-                          } else if (typeof item[k] === 'boolean') {
-                            newValue = e.target.value === 'true';
-                          }
-                          const updatedArray = [...value];
-                          updatedArray[idx] = { ...item, [k]: newValue };
-                          handleChange(key, updatedArray);
-                        }}
-                        className="flex-1 px-3 py-2 border border-gray-200 rounded-xl"
-                      />
-                    )}
-                  </div>
-                ))}
-              </div>
-            ))}
-            <button
-              type="button"
-              className="px-4 py-2 bg-primary text-white rounded-xl hover:bg-primary/80"
-              onClick={() => {
-                const newObj = {};
-                Object.keys(templateObj).forEach(k => {
-                  newObj[k] = '';
-                });
-                const updatedArray = [...value, newObj];
-                handleChange(key, updatedArray);
-              }}
-            >
-              Add New Object
-            </button>
-          </div>
-        );
-      }
-      // If array is empty, render Add New button that adds an empty string
-      if (value.length === 0) {
-        return (
-          <div className="space-y-2">
-            <button
-              type="button"
-              className="px-4 py-2 bg-primary text-white rounded-xl hover:bg-primary/80"
-              onClick={() => {
-                handleChange(key, ['']);
-              }}
-            >
-              Add
-            </button>
-          </div>
-        );
-      }
+                  )}
+                </div>
+              ))}
+              <button
+                type="button"
+                className="mt-2 px-3 py-2 bg-primary text-white rounded-xl hover:bg-primary/80"
+                onClick={() => {
+                  // Prevent deletion if there's only one item left (for all endpoints)
+                  console.log('Attempting to delete item:', { key, currentLength: value.length, idx });
+                  if (value.length === 1) {
+                    console.log('Preventing deletion - only one item left');
+                    setArrayFieldErrors(prev => ({ ...prev, [key]: 'At least one item is required.' }));
+                    return;
+                  }
+                  console.log('Allowing deletion - multiple items exist');
+                  setArrayFieldErrors(prev => ({ ...prev, [key]: '' }));
+                  const updated = value.filter((_, i) => i !== idx);
+                  handleChange(key, updated);
+                }}
+              >
+                Remove
+              </button>
+            </div>
+          ))}
+          {arrayFieldErrors[key] && (
+            <div className="text-red-600 text-xs mt-1">{arrayFieldErrors[key]}</div>
+          )}
+          <button
+            type="button"
+            className="px-4 py-2 bg-primary text-white rounded-xl hover:bg-primary/80"
+            onClick={() => {
+              setArrayFieldErrors(prev => ({ ...prev, [key]: '' }));
+              const newObj = {};
+              Object.keys(templateObj).forEach(k => {
+                newObj[k] = '';
+              });
+              const updatedArray = [...value, newObj];
+              handleChange(key, updatedArray);
+            }}
+          >
+            Add New Object
+          </button>
+        </div>
+      );
     }
     // Boolean fields
     if (typeof value === "boolean") {
@@ -858,7 +889,7 @@ export default function DynamicForm<T extends { _id?: string }>({
           // Special handling for destinationId: always send as plain string
           if (key === 'destinationId') {
             formDataToSend.append(key, value ? String(value) : '');
-          } else if (typeof value === 'object' && value !== null && !(value instanceof Date)) {
+          } else if (typeof value === 'object' && value !== null && Object.prototype.toString.call(value) !== '[object Date]') {
             formDataToSend.append(key, JSON.stringify(value));
           } else if (typeof value === 'boolean') {
             formDataToSend.append(key, value ? 'true' : 'false');

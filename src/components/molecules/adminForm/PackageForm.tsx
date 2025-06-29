@@ -1,3 +1,4 @@
+
 'use client'
 
 import React, { useState, useEffect } from 'react';
@@ -140,7 +141,7 @@ const TextareaField = ({
 );
 
 // Enhanced FileUploadField for single image (Google Map Image)
-const SingleImageUploadField = ({ label, name, onChange, file }) => {
+const SingleImageUploadField = ({ label, name, onChange, file, errors = {} }) => {
   let previewUrl = '';
   if (file) {
     if (typeof file === 'string') {
@@ -151,8 +152,12 @@ const SingleImageUploadField = ({ label, name, onChange, file }) => {
   }
   return (
     <div className="mb-4">
-      <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
-      <div className="mt-1 flex flex-col items-center justify-center px-6 pt-5 pb-6 border-2 border-dashed border-gray-300 rounded-lg">
+      <label className="block text-sm font-medium text-gray-700 mb-1">
+        {label} <span className="text-red-500">*</span>
+      </label>
+      <div className={`mt-1 flex flex-col items-center justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-lg ${
+        errors[name] ? 'border-red-500 bg-red-50' : 'border-gray-300'
+      }`}>
         {file ? (
           <div className="flex flex-col items-center gap-2">
             <img
@@ -163,9 +168,9 @@ const SingleImageUploadField = ({ label, name, onChange, file }) => {
             <button
               type="button"
               onClick={() => onChange({ target: { files: [] } })}
-              className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+              className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 text-sm"
             >
-              Replace
+              Replace Image
             </button>
           </div>
         ) : (
@@ -183,18 +188,28 @@ const SingleImageUploadField = ({ label, name, onChange, file }) => {
           </label>
         )}
       </div>
+      {errors[name] && (
+        <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
+          <FiAlertCircle className="flex-shrink-0" /> 
+          {errors[name]}
+        </p>
+      )}
     </div>
   );
 };
 
 // Enhanced MultiImageUploadField for dynamic slots (show only current images + 1 add slot if under max)
-const MultiImageUploadField = ({ label, name, onChange, files, max = 10 }) => {
+const MultiImageUploadField = ({ label, name, onChange, files, max = 10, errors = {} }) => {
   // Show slots for current images + 1 add slot if under max
   const slots = files.length < max ? [...files, null] : files;
   return (
     <div className="mb-4">
-      <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
-      <div className="mt-1 flex flex-wrap gap-4 justify-center px-6 pt-5 pb-6 border-2 border-dashed border-gray-300 rounded-lg">
+      <label className="block text-sm font-medium text-gray-700 mb-1">
+        {label} <span className="text-red-500">*</span>
+      </label>
+      <div className={`mt-1 flex flex-wrap gap-4 justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-lg ${
+        errors[name] ? 'border-red-500 bg-red-50' : 'border-gray-300'
+      }`}>
         {slots.map((file, index) => {
           let previewUrl = '';
           if (file) {
@@ -246,6 +261,12 @@ const MultiImageUploadField = ({ label, name, onChange, files, max = 10 }) => {
           );
         })}
       </div>
+      {errors[name] && (
+        <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
+          <FiAlertCircle className="flex-shrink-0" /> 
+          {errors[name]}
+        </p>
+      )}
     </div>
   );
 };
@@ -358,6 +379,7 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
 
   const [galleryFiles, setGalleryFiles] = useState([]);
   const [googleMapImage, setGoogleMapImage] = useState(null);
+  const [itineraryImages, setItineraryImages] = useState([]); // NEW: Store itinerary images separately
   const [alert, setAlert] = useState<{ show: boolean; type: 'success' | 'error' | 'confirm' | 'warning'; message: string }>({ show: false, type: 'success', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -414,6 +436,12 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
       setGalleryFiles(Array.isArray(gallery) ? gallery : (typeof gallery === 'string' ? [gallery] : []));
       const mapImg = 'googleMapUrl' in initialData ? initialData.googleMapUrl : undefined;
       setGoogleMapImage(typeof mapImg === 'string' ? mapImg : null);
+      
+      // NEW: Initialize itinerary images
+      if (initialData.itinerary && Array.isArray(initialData.itinerary)) {
+        const images = initialData.itinerary.map(item => item.image || null);
+        setItineraryImages(images);
+      }
     }
   }, [initialData]);
 
@@ -451,6 +479,7 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
       if (!formData.location.coordinates.lng) newErrors.lng = 'Longitude is required';
       else if (isNaN(lng)) newErrors.lng = 'Longitude must be a number';
       else if (lng < -180 || lng > 180) newErrors.lng = 'Longitude must be between -180 and 180';
+      if (!googleMapImage) newErrors.googleMapUrl = 'Google Map image is required';
     }
     // Pricing tab validation
     if (tab === 'pricing') {
@@ -487,7 +516,7 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
       if (!formData.feature.accommodation.length) newErrors.accommodation = 'At least one accommodation is required';
       if (!formData.feature.bestSeason.length) newErrors.bestSeason = 'At least one best season is required';
     }
-    // Itinerary tab validation - FIXED: Check for 'image' instead of 'itineraryImage'
+    // Itinerary tab validation
     if (tab === 'itinerary') {
       if (!formData.itinerary.length) newErrors.itinerary = 'At least one itinerary day is required';
       formData.itinerary.forEach((day, idx) => {
@@ -495,8 +524,8 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
         if (!day.title) newErrors[`itinerary-title-${idx}`] = 'Title is required';
         if (!day.description) newErrors[`itinerary-description-${idx}`] = 'Description is required';
         if (!day.activities || !day.activities.length) newErrors[`itinerary-activities-${idx}`] = 'At least one activity is required';
-        // FIXED: Check for 'image' instead of 'itineraryImage'
-        if (!day.image || (typeof day.image !== 'string' && !(day.image instanceof File))) {
+        // Check if corresponding itinerary image exists
+        if (!itineraryImages[idx] || (typeof itineraryImages[idx] !== 'string' && !(itineraryImages[idx] instanceof File))) {
           newErrors[`itinerary-image-${idx}`] = 'Image is required';
         }
       });
@@ -504,7 +533,6 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
     // Media tab validation
     if (tab === 'media') {
       if (!galleryFiles.length) newErrors.gallery = 'At least one gallery image is required';
-      if (!googleMapImage) newErrors.googleMapUrl = 'Google Map image is required';
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -569,20 +597,31 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
   const handleGalleryChange = (e) => {
     const files = Array.from(e.target.files);
     setGalleryFiles(files);
+    if (errors.gallery) {
+      setErrors(prev => ({ ...prev, gallery: '' }));
+    }
   };
 
   const handleMapImageChange = (e) => {
     const file = e.target.files[0];
     setGoogleMapImage(file);
+    if (errors.googleMapUrl) {
+      setErrors(prev => ({ ...prev, googleMapUrl: '' }));
+    }
   };
 
+  // NEW: Handle itinerary image changes
   const handleItineraryImageChange = (idx, e) => {
     const file = e.target.files[0];
-    setFormData((prev) => {
-      const updated = [...prev.itinerary];
-      updated[idx] = { ...updated[idx], image: file };
-      return { ...prev, itinerary: updated };
+    setItineraryImages(prev => {
+      const updated = [...prev];
+      updated[idx] = file;
+      return updated;
     });
+    // Clear error for this specific itinerary image
+    if (errors[`itinerary-image-${idx}`]) {
+      setErrors(prev => ({ ...prev, [`itinerary-image-${idx}`]: '' }));
+    }
   };
 
   const handleItineraryChange = (idx, field, value) => {
@@ -591,6 +630,10 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
       updated[idx] = { ...updated[idx], [field]: value };
       return { ...prev, itinerary: updated };
     });
+    // Clear related errors
+    if (errors[`itinerary-${field}-${idx}`]) {
+      setErrors(prev => ({ ...prev, [`itinerary-${field}-${idx}`]: '' }));
+    }
   };
 
   const handleItineraryActivitiesChange = (idx, activities) => {
@@ -599,6 +642,10 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
       updated[idx] = { ...updated[idx], activities };
       return { ...prev, itinerary: updated };
     });
+    // Clear related errors
+    if (errors[`itinerary-activities-${idx}`]) {
+      setErrors(prev => ({ ...prev, [`itinerary-activities-${idx}`]: '' }));
+    }
   };
 
   const handleAddItineraryDay = () => {
@@ -606,16 +653,28 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
       ...prev,
       itinerary: [
         ...prev.itinerary,
-        { day: prev.itinerary.length + 1, title: '', description: '', activities: [], image: '' },
+        { day: prev.itinerary.length + 1, title: '', description: '', activities: [] },
       ],
     }));
+    // Add corresponding image slot
+    setItineraryImages(prev => [...prev, null]);
   };
 
   const handleRemoveItineraryDay = (idx) => {
     setFormData((prev) => {
       const updated = [...prev.itinerary];
       updated.splice(idx, 1);
+      // Update day numbers
+      updated.forEach((item, index) => {
+        item.day = index + 1;
+      });
       return { ...prev, itinerary: updated };
+    });
+    // Remove corresponding image
+    setItineraryImages(prev => {
+      const updated = [...prev];
+      updated.splice(idx, 1);
+      return updated;
     });
   };
 
@@ -642,45 +701,51 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
     setIsSubmitting(true);
 
     try {
-      const form = new FormData();
-      form.append('title', formData.title);
-      form.append('description', formData.description);
-      form.append('overview', formData.overview);
-      form.append('basePrice', formData.basePrice);
-      form.append('currency', formData.currency);
-      form.append('type', formData.type);
-      form.append('rating', formData.rating);
-      form.append('destination', formData.destination);
+    const form = new FormData();
+    form.append('title', formData.title);
+    form.append('description', formData.description);
+    form.append('overview', formData.overview);
+    form.append('basePrice', formData.basePrice);
+    form.append('currency', formData.currency);
+    form.append('type', formData.type);
+    form.append('rating', formData.rating);
+    form.append('destination', formData.destination);
 
-      // JSON fields
-      const jsonFields = {
-        location: formData.location,
-        duration: formData.duration,
-        feature: formData.feature,
-        itinerary: formData.itinerary.map(day => ({
-          day: day.day,
-          title: day.title,
-          description: day.description,
-          activities: day.activities
-          // DO NOT include image here!
-        })),
-        inclusions: formData.inclusions,
-        exclusions: formData.exclusions,
-        highlights: formData.highlights,
-        quickfacts: formData.quickfacts,
-        tags: formData.tags
-      };
-      Object.entries(jsonFields).forEach(([key, value]) => {
-        form.append(key, JSON.stringify(value));
-      });
+    // JSON fields
+    const jsonFields = {
+      location: formData.location,
+      duration: formData.duration,
+      feature: formData.feature,
+      itinerary: formData.itinerary.map(day => ({
+        day: day.day,
+        title: day.title,
+        description: day.description,
+        activities: day.activities
+        // DO NOT include image here!
+      })),
+      inclusions: formData.inclusions,
+      exclusions: formData.exclusions,
+      highlights: formData.highlights,
+      quickfacts: formData.quickfacts,
+      tags: formData.tags
+    };
+    Object.entries(jsonFields).forEach(([key, value]) => {
+      form.append(key, JSON.stringify(value));
+    });
 
       // Gallery images
-      galleryFiles.forEach(file => form.append('gallery', file));
+       galleryFiles.forEach(file => form.append('gallery', file));
 
       // Google Map image
-      if (googleMapImage) form.append('googleMapUrl', googleMapImage);
+     if (googleMapImage) form.append('googleMapImage', googleMapImage);
 
-      // SKIP itinerary images for now
+
+     
+        itineraryImages.forEach((file, index) => {
+      if (file) {
+        form.append('itineraryImages', file);
+      }
+    });
 
       // Console log all FormData
       for (let pair of form.entries()) {

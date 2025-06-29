@@ -266,7 +266,19 @@ export function AdminTable<T extends ItemBase>({
                       <button className="bg-white/90 hover:bg-blue-100 p-2 rounded-full shadow" onClick={() => handleEdit(item)}>
                         <FiEdit className="text-blue-600" />
                       </button>
-                      <button className="bg-white/90 hover:bg-red-100 p-2 rounded-full shadow" onClick={() => handleDelete(item)}>
+                      <button className="bg-white/90 hover:bg-red-100 p-2 rounded-full shadow" onClick={() => {
+                        if (items.length === 1) {
+                          setAlert({
+                            show: true,
+                            type: "error",
+                            message: "At least one item is required. You cannot delete the last item.",
+                            onConfirm: () => setAlert((prev) => ({ ...prev, show: false })),
+                            onCancel: undefined,
+                          });
+                          return;
+                        }
+                        handleDelete(item);
+                      }}>
                         <FiTrash className="text-red-600" />
                       </button>
                     </div>

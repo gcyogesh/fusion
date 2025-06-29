@@ -1,6 +1,5 @@
 'use client';
 import React, { useState } from 'react';
-import Button from '@/components/atoms/button';
 import { fetchAPI } from '@/utils/apiService';
 import Alert from '@/components/atoms/alert';
 import { FiUser, FiMail, FiPhone, FiCalendar, FiCheckCircle, FiClock, FiEye, FiX, FiChevronDown, FiTrash2 } from 'react-icons/fi';
@@ -20,7 +19,7 @@ export interface Booking {
   paymentStatus: string;
   totalAmount: number;
   createdAt: string;
-  updatedAt: string;
+  updatedAt: string;p
 }
 
 interface BookingInfoCardProps {

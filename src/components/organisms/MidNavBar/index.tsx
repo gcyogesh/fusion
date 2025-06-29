@@ -1,13 +1,21 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import useScrollSpy from '@/hooks/useScrollSpy';
 
 type MidNavbarProps = {
   tabs: string[];
+  blogCategories?: Array<{
+    _id: string;
+    name: string;
+    slug: string;
+    createdAt: string;
+    updatedAt: string;
+    __v: number;
+  }>;
 };
 
-const MidNavbar = ({ tabs }: MidNavbarProps) => {
+const MidNavbar = ({ tabs, blogCategories = [] }: MidNavbarProps) => {
   const navItems = tabs.map((tab) => ({
     id: tab.replace(/\s+/g, '-').replace('/', '-'),
   }));
@@ -16,6 +24,11 @@ const MidNavbar = ({ tabs }: MidNavbarProps) => {
 
   const navRef = useRef<HTMLDivElement | null>(null);
   const navListRef = useRef<HTMLDivElement | null>(null);
+
+  const searchParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : undefined;
+  const searchQuery = searchParams?.get('search') || '';
+
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
     if (navRef.current) {
@@ -105,6 +118,31 @@ const MidNavbar = ({ tabs }: MidNavbarProps) => {
           </div>
         </div>
       </div>
+
+      {/* Blog Categories (render only if blogCategories are provided) */}
+      {blogCategories.length > 0 && (
+        <div className="my-2">
+          <input
+            type="text"
+            placeholder="Search categories..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            className="border px-2 py-1 rounded"
+          />
+          <ul className="flex flex-wrap gap-2 mt-2">
+            {filteredCategories.map(cat => (
+              <li key={cat._id}>
+                <span className="px-3 py-1 rounded bg-[#F7931E] text-white">
+                  {cat.name}
+                </span>
+              </li>
+            ))}
+            {filteredCategories.length === 0 && (
+              <li className="text-gray-500">No categories found.</li>
+            )}
+          </ul>
+        </div>
+      )}
     </>
   );
 };

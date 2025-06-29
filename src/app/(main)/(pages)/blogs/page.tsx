@@ -4,7 +4,6 @@ import HeroBanner from '@/components/organisms/Banner/HeroBanner'; //kapil push
 import { fetchAPI } from '@/utils/apiService';
 import TextDescription from '@/components/atoms/description';
 import ImageDisplay from '@/components/atoms/ImageCard';
-import TextHeader from '@/components/atoms/headings';
 import Breadcrumb from "@/components/atoms/breadcrumb";
 import Pagination from '@/components/atoms/pagination';
 import MidNavbar from '@/components/organisms/MidNavBar';
