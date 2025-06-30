@@ -104,7 +104,7 @@ const Blogs = async ({ searchParams }: Props) => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {currentBlogs[0] && (
               <div className="lg:col-span-2">
-                <Link href={`/blogs/${currentBlogs[0].slug}`}>
+              <Link scroll={false} href={`/blogs/${currentBlogs[0].slug}`}>
                   <div className="aspect-video w-full cursor-pointer">
                     <ImageDisplay
                       src={currentBlogs[0].imageUrl}
