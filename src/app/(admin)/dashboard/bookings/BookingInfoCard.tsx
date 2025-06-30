@@ -95,7 +95,7 @@ const BookingInfoCard: React.FC<BookingInfoCardProps> = ({ booking, onStatusChan
 
   return (
     <>
-      <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-0 mb-2 w-full transition hover:shadow-2xl hover:-translate-y-1 duration-200 flex flex-col overflow-hidden group relative min-w-0">
+      <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-0 mb-2 w-full max-w-5xl mx-auto transition hover:shadow-2xl hover:-translate-y-1 duration-200 flex flex-col overflow-hidden group relative min-w-0">
         {alert.show && (
           <Alert show={alert.show} type={alert.type} message={alert.message} onConfirm={() => setAlert({ ...alert, show: false })} />
         )}

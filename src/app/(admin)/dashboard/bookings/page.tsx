@@ -3,9 +3,7 @@ import { fetchAPI } from '@/utils/apiService';
 import BookingInfoCard, { Booking } from './BookingInfoCard';
 import { FiInbox, FiSearch, FiChevronDown } from 'react-icons/fi';
 import Pagination from '@/components/atoms/pagination';
-import React, { useState, useMemo } from 'react';
-
-export const dynamic = 'force-dynamic'; // for SSR
+import React, { useState, useEffect } from 'react';
 
 const sortOptions = [
   { value: 'newest', label: 'Newest' },
@@ -16,61 +14,39 @@ const sortOptions = [
   { value: 'amountLow', label: 'Amount Low-High' },
 ];
 
-export default async function BookingsPage() {
-  let bookings: Booking[] = [];
-  try {
-    const res = await fetchAPI<{ data: Booking[] }>({ endpoint: 'tour/bookings' });
-    bookings = res.data || [];
-  } catch {
-    bookings = [];
-  }
-
-  // Client-side state for search, sort, and pagination
-  // Use a Client Component for interactivity
-  return <BookingsClient bookings={bookings} />;
-}
-
-function BookingsClient({ bookings }: { bookings: Booking[] }) {
+export default function BookingsPage() {
+  const [bookings, setBookings] = useState<Booking[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [search, setSearch] = useState('');
   const [sort, setSort] = useState('newest');
+  const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(false);
+
   const bookingsPerPage = 9;
 
-  const filteredSortedBookings = useMemo(() => {
-    let filtered = bookings.filter((b) => {
-      const q = search.toLowerCase();
-      return (
-        b.guestInfo.name.toLowerCase().includes(q) ||
-        b.guestInfo.email.toLowerCase().includes(q) ||
-        (b.specialRequests && b.specialRequests.toLowerCase().includes(q))
-      );
-    });
-    switch (sort) {
-      case 'oldest':
-        filtered = filtered.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
-        break;
-      case 'az':
-        filtered = filtered.sort((a, b) => a.guestInfo.name.localeCompare(b.guestInfo.name));
-        break;
-      case 'za':
-        filtered = filtered.sort((a, b) => b.guestInfo.name.localeCompare(a.guestInfo.name));
-        break;
-      case 'amountHigh':
-        filtered = filtered.sort((a, b) => b.totalAmount - a.totalAmount);
-        break;
-      case 'amountLow':
-        filtered = filtered.sort((a, b) => a.totalAmount - b.totalAmount);
-        break;
-      default:
-        filtered = filtered.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-    }
-    return filtered;
-  }, [bookings, search, sort]);
+  useEffect(() => {
+    setLoading(true);
+    fetchAPI<{ data: Booking[]; total: number }>({
+      endpoint: 'tour/bookings',
+      params: {
+        page: currentPage,
+        limit: bookingsPerPage,
+        search,
+        sort,
+      },
+    })
+      .then((res) => {
+        setBookings(res.data || []);
+        setTotalPages(Math.ceil((res.total || 0) / bookingsPerPage));
+      })
+      .catch(() => {
+        setBookings([]);
+        setTotalPages(1);
+      })
+      .finally(() => setLoading(false));
+  }, [currentPage, search, sort]);
 
-  const totalPages = Math.ceil(filteredSortedBookings.length / bookingsPerPage);
-  const paginatedBookings = filteredSortedBookings.slice((currentPage - 1) * bookingsPerPage, currentPage * bookingsPerPage);
-
-  React.useEffect(() => {
+  useEffect(() => {
     setCurrentPage(1);
   }, [search, sort]);
 
@@ -87,7 +63,7 @@ function BookingsClient({ bookings }: { bookings: Booking[] }) {
             <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
             <input
               type="text"
-              placeholder="Search by guest, email, or request..."
+            placeholder="Search by guest, email, or request..."
               className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 shadow-sm focus:ring-2 focus:ring-primary focus:border-primary text-sm"
               value={search}
               onChange={e => setSearch(e.target.value)}
@@ -108,7 +84,11 @@ function BookingsClient({ bookings }: { bookings: Booking[] }) {
           </div>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {paginatedBookings.length === 0 ? (
+          {loading ? (
+            <div className="col-span-full flex flex-col items-center justify-center py-24 bg-white rounded-2xl shadow-lg border border-dashed border-primary w-full">
+              <div className="text-2xl font-bold text-primary mb-2">Loading...</div>
+            </div>
+          ) : bookings.length === 0 ? (
             <div className="col-span-full flex flex-col items-center justify-center py-24 bg-white rounded-2xl shadow-lg border border-dashed border-primary w-full">
               <FiSearch className="w-20 h-20 text-primary mb-6" />
               <div className="text-2xl font-bold text-primary mb-2">No Bookings Found</div>
@@ -118,7 +98,7 @@ function BookingsClient({ bookings }: { bookings: Booking[] }) {
               </div>
             </div>
           ) : (
-            paginatedBookings.map((booking) => (
+            bookings.map((booking) => (
               <BookingInfoCard key={booking._id} booking={booking} />
             ))
           )}
