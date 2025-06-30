@@ -57,6 +57,16 @@ interface DestinationData {
   data: DestinationCard[];
 }
 
+interface Activity {
+  _id: string;
+  title: string;
+  subtitle: string;
+  description: string;
+  image: string;
+  slug: string;
+  price?: number;
+}
+
 const stats = [
   {
     iconSrc: "/images/stat1.png",
@@ -115,11 +125,12 @@ const socialLinks = [
 ];
 
 export default async function Home() {
-  const partnersdata = await fetchAPI({ endpoint: "partners" }) as PartnersData;
-  const blogsdata = await fetchAPI({ endpoint: "blogs" }) as BlogsData;
-  const destinationdata = await fetchAPI({ endpoint: "destinations" }) as DestinationsData;
-  const packagesdata = await fetchAPI({ endpoint: "tour/tour-packages" }) as DestinationData;
-  const acctivitiesdata = await fetchAPI({ endpoint: "tour/tour-packages" }) as DestinationData;
+  const partnersdata: any = await fetchAPI({ endpoint: "partners" });
+  const blogsdata: any = await fetchAPI({ endpoint: "blogs" });
+  const destinationdata: any = await fetchAPI({ endpoint: "destinations" });
+  const packagesdata: DestinationData = await fetchAPI({ endpoint: "tour/tour-packages" });
+  const acctivitiesdata: any = await fetchAPI({ endpoint: "activities" });
+  const activities: Activity[] = acctivitiesdata?.data || [];
 
   // Filter packages to exclude activities and destinations
   const filteredPackages = packagesdata?.data?.filter((card) => {
@@ -129,7 +140,7 @@ export default async function Home() {
     return !isActivity && !isDestination;
   }) || [];
 
-  const herosectiondata = await fetchAPI({ endpoint: "herobanner/home" }) as HeroBannerData;
+  const herosectiondata: any = await fetchAPI({ endpoint: "herobanner/home" });
     
   return (
     <>
@@ -155,7 +166,7 @@ export default async function Home() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10 "> {/* Consistent gap */}
 
-{filteredPackages.map((card, index) => (
+{filteredPackages.slice(0, 3).map((card, index) => (
   <Link href={`/itinerary/${card._id}`} key={index} className="flex flex-col gap-4">
     <div className="aspect-video ">
       <ImageDisplay
@@ -222,7 +233,6 @@ export default async function Home() {
                         alt="Search Icon"
                         width={40}
                         height={40}
-
                       />
                       <h1 className="text-white opacity-70 text-base md:text-2xl font-semibold">
                         Feel the freedom<br />in the sky
@@ -230,7 +240,7 @@ export default async function Home() {
                     </div>
 
                     <TextHeader
-                      text="Pokhara Ultralight Flight Adventure"
+                      text={filteredPackages?.[3]?.title || "Pokhara Ultralight Flight Adventure"}
                       specialWordsIndices="1"
                       align="left"
                       size="medium"
@@ -245,19 +255,19 @@ export default async function Home() {
                     <div className="space-y-2 md:space-y-4 text-sm md:text-xl lg:text-xl ">
                       <div className="flex items-center gap-2">
                         <Image src={"/images/clocky.svg"} alt="Location" width={22} height={22}/>
-                        <span>30 Minutes – 90 Minutes</span>
+                        <span>{filteredPackages?.[3]?.duration?.days ? `${filteredPackages[3].duration.days} Minutes` : "30 Minutes – 90 Minutes"}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <Image src={"/images/dollars.svg"} alt="Location" width={22} height={22}/>
                         <span className="flex items-center gap-x-2 md:gap-x-4">
-                          Start From <span className="text-primary font-semibold">$120 – $250</span>
+                          Start From <span className="text-primary font-semibold">{filteredPackages?.[3]?.basePrice ? `$${filteredPackages[3].basePrice}` : "$120 – $250"}</span>
                         </span>
 
                       </div>
                     </div>
 
                     <div className="flex justify-start sm:justify-end items-end mr-0 md:mr-25 mt-4 md:mt-0 lg:mt-0 ">
-                      <Button text="Book Now" variant="primary" className="text-base text-[#FFFFFF]"  buttonLink="/itinary" />
+                      <Button text="Book Now" variant="primary" className="text-base text-[#FFFFFF]"  buttonLink={filteredPackages?.[3]?._id ? `/itinerary/${filteredPackages[3]._id}` : "/itinary"} />
                     </div>
                   </div>
                 </div>
@@ -266,8 +276,8 @@ export default async function Home() {
                 <div className="w-full flex flex-row items-center justify-end  pl-10 md:pl-0 lg:pl-0">
                   <div className="rounded-xl shadow-md  border border-gray-400  backdrop-blur-md p-2 md:p-3 lg:p-3 ">
                     <ImageDisplay
-                      src="/images/pokharaflight.png"
-                      alt="Ultralight Flight"
+                      src={filteredPackages?.[3]?.gallery?.[0] || "/images/pokharaflight.png"}
+                      alt={filteredPackages?.[3]?.title || "Ultralight Flight"}
                       variant="smallsquare"
                       width={568}
                       height={400}
@@ -370,8 +380,8 @@ export default async function Home() {
 
       {/*Tour Categories */}
       <TopCategoriesSection
-
         buttonText="Tour Categories"
+        activities={activities}
       />
 
 
@@ -428,6 +438,7 @@ export default async function Home() {
               text="Start Your Adventure"
               variant="primary"
               className="mt-8 mx-auto text-base p-2"
+              buttonLink="/activities"
             />
           </div>
         </div>

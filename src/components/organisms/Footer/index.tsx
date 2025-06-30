@@ -135,9 +135,9 @@ export default function Footer({ destinations = [], activities = [] }: FooterPro
               <a href="/privacy-policy" className="hover:text-[#06ab86]">Privacy Policy</a>
               <a href="/site-map" className="hover:text-[#06ab86]">Site Map</a>
             </div>
-            <p className="text-sm mt-4 md:mt-0">
-              Designed & Developed by: Lishnu Tech
-            </p>
+            <a href="https://lishnutech.com/" target="blank" className="text-sm mt-4 md:mt-0">
+              Designed & Develoaed by: Lishnu Tech
+            </a>
           </div>
         </div>
       </div>
