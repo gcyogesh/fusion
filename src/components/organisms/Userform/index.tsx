@@ -1,8 +1,10 @@
 "use client";
 import React, { useState, FormEvent, useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Button from "@/components/atoms/button";
 import TextDescription from "@/components/atoms/description";
+import { loadStripe } from '@stripe/stripe-js';
+import { fetchAPI } from '@/utils/apiService';
 
 interface TourPackage {
   _id: string;
@@ -24,12 +26,17 @@ interface TourPackage {
 const UserForm = () => {
   const params = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const [tourPackageId, setTourPackageId] = useState<string | null>(null);
   const [tourPackage, setTourPackage] = useState<TourPackage | null>(null);
   const [loading, setLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [payLoading, setPayLoading] = useState(false);
+  const [payError, setPayError] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
+    bookingDate: "",
     date: "",
     name: "",
     email: "",
@@ -39,6 +46,8 @@ const UserForm = () => {
     message: "",
     agree: false,
   });
+
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://yourdomain.com';
 
   // Extract tour package ID from URL
   useEffect(() => {
@@ -72,72 +81,51 @@ const UserForm = () => {
     fetchTourPackage();
   }, [tourPackageId]);
 
+  // Sync formData.date and formData.bookingDate with URL params
+  useEffect(() => {
+    const urlDate = searchParams.get('date');
+    const urlBookingDate = searchParams.get('bookingDate');
+    if (urlDate && urlDate !== formData.date) {
+      setFormData((prev) => ({ ...prev, date: urlDate }));
+    }
+    if (urlBookingDate && urlBookingDate !== formData.bookingDate) {
+      setFormData((prev) => ({ ...prev, bookingDate: urlBookingDate }));
+    }
+  }, [searchParams]);
+
   const handleChange = (field: string, value: string | boolean) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
+    setShowModal(true);
+  };
 
-    const payload = {
-      name: formData.name,
-      email: formData.email,
-      phone: formData.phone,
-      country: formData.country,
-      tourPackageId: tourPackageId,
-      travelDate: formData.date,
-      totalPeople:
-        formData.travellers === "5+" ? 5 : parseInt(formData.travellers),
-      specialRequests: formData.message,
-    };
-
+  const handlePayNow = async () => {
+    setPayLoading(true);
+    setPayError(null);
     try {
-      const response = await fetch(
-        "https://yogeshbhai.ddns.net/api/tour/bookings",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        }
-      );
-
-      const contentType = response.headers.get("content-type");
-
-      if (!response.ok) {
-        let errorText = "Unknown error";
-        if (contentType?.includes("application/json")) {
-          const errorData = await response.json();
-          errorText = JSON.stringify(errorData, null, 2);
-        } else {
-          const html = await response.text();
-          errorText = `Non-JSON error response:\n${html}`;
-        }
-
-        console.error(`Booking failed:\n${errorText}`);
-        alert(`Booking failed: ${errorText}`);
-        return;
-      }
-
-      const result = await response.json();
-      console.log("✅ Booking successful:", result);
-
-      // Reset form
-      setFormData({
-        date: "",
-        name: "",
-        email: "",
-        phone: "",
-        travellers: "",
-        country: "",
-        message: "",
-        agree: false,
+      const bookingId = tourPackageId;
+      const data = await fetchAPI({
+        endpoint: 'payments/create-checkout-session',
+        method: 'POST',
+        data: {
+          bookingId,
+          successUrl: `${BASE_URL}/payment-success?bookingId=${bookingId}`,
+          cancelUrl: `${BASE_URL}/payment-cancel`,
+        },
       });
-
-      // Redirect to booking success page
-      router.push(`/booking-success/${tourPackageId}`);
-    } catch (error) {
-      console.error("❌ Submission error:", error);
-      alert("Something went wrong. Check console for details.");
+      if (data.success && data.data?.sessionId) {
+        const stripe = await loadStripe('pk_test_...'); // <-- Replace with your Stripe public key
+        await stripe.redirectToCheckout({ sessionId: data.data.sessionId });
+      } else {
+        setPayError(data.message || 'Failed to create session');
+      }
+    } catch (err: any) {
+      setPayError(err.message || 'Payment error');
+    } finally {
+      setPayLoading(false);
     }
   };
 
@@ -223,6 +211,58 @@ const UserForm = () => {
         </div>
       )}
 
+      {/* Modern Checkout Popup (no dark overlay) */}
+      {showModal && (
+        <div className="fixed left-1/2 top-1/2 z-50 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-3xl">
+          <div className="bg-white rounded-2xl shadow-2xl p-0 relative border border-gray-200 flex flex-col md:flex-row overflow-hidden">
+            <button
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-2xl z-10"
+              onClick={() => setShowModal(false)}
+              aria-label="Close"
+            >
+              &times;
+            </button>
+            {/* LEFT: Package Details */}
+            <div className="w-full md:w-[350px] bg-gray-50 p-8 flex flex-col items-center justify-center border-b md:border-b-0 md:border-r border-gray-200">
+              {tourPackage && (
+                <>
+                  <img
+                    src={tourPackage.gallery[0]}
+                    alt={tourPackage.title}
+                    className="w-full h-32 object-cover rounded-lg mb-4"
+                  />
+                  <div className="font-bold text-lg mb-1 text-center">{tourPackage.title}</div>
+                  <div className="text-gray-600 mb-1 text-center">{tourPackage.location.city}, {tourPackage.location.country}</div>
+                  <div className="mb-1 text-center">Base Price: <span className="font-semibold text-[#F7941D]">{tourPackage.currency.toUpperCase()} {tourPackage.basePrice}</span></div>
+                  <div className="mb-1 text-center">Duration: <span className="font-semibold text-[#0E334F]">{tourPackage.duration.days}D/{tourPackage.duration.nights}N</span></div>
+                  <div className="mb-2 text-center text-gray-700 text-sm">{tourPackage.description}</div>
+                </>
+              )}
+            </div>
+            {/* RIGHT: Booking Details */}
+            <div className="flex-1 p-8 flex flex-col justify-center min-w-[250px]">
+              <h2 className="text-xl font-bold mb-4 text-[#0E334F]">Booking Details</h2>
+              <div className="mb-2"><span className="font-semibold">Booking Date:</span> {formData.bookingDate}</div>
+              <div className="mb-2"><span className="font-semibold">Travel Date:</span> {formData.date}</div>
+              <div className="mb-2"><span className="font-semibold">Name:</span> {formData.name}</div>
+              <div className="mb-2"><span className="font-semibold">Email:</span> {formData.email}</div>
+              <div className="mb-2"><span className="font-semibold">Phone:</span> {formData.phone}</div>
+              <div className="mb-2"><span className="font-semibold">No. of Travellers Booked:</span> {formData.travellers}</div>
+              <div className="mb-2"><span className="font-semibold">Country:</span> {formData.country}</div>
+              <div className="mb-2"><span className="font-semibold">Message:</span> {formData.message}</div>
+              <button
+                className="w-full bg-[#F7941D] hover:bg-[#E47312] text-white font-bold py-3 rounded-full text-lg mt-6 shadow-md disabled:opacity-60"
+                onClick={handlePayNow}
+                disabled={payLoading}
+              >
+                {payLoading ? "Redirecting..." : "Pay Now"}
+              </button>
+              {payError && <div className="text-red-600 text-sm mt-2 text-center">{payError}</div>}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Booking Form */}
       <form
         onSubmit={handleSubmit}
@@ -233,18 +273,28 @@ const UserForm = () => {
           className="w-full max-w-[850px] mb-10 text-left"
         />
 
-        <div className="grid md:grid-cols-2 gap-4 mb-4">
-          <select
-            required
+        {/* Show Booking Date as read-only */}
+        <div className="mb-4">
+          <label className="block text-gray-700 font-semibold mb-1">Booking Date</label>
+          <input
+            type="text"
+            value={formData.bookingDate}
+            readOnly
+            className="border border-gray-300 p-2 rounded w-full bg-gray-100 text-gray-700 cursor-not-allowed"
+          />
+        </div>
+        {/* Show Travel Date as read-only */}
+        <div className="mb-4">
+          <label className="block text-gray-700 font-semibold mb-1">Travel Date</label>
+          <input
+            type="text"
             value={formData.date}
-            onChange={(e) => handleChange("date", e.target.value)}
-            className="border border-gray-300 p-2 rounded w-full text-gray-700"
-          >
-            <option value="">Choose your own date</option>
-            <option value="2025-06-10">June 10, 2025</option>
-            <option value="2025-06-20">June 20, 2025</option>
-          </select>
+            readOnly
+            className="border border-gray-300 p-2 rounded w-full bg-gray-100 text-gray-700 cursor-not-allowed"
+          />
+        </div>
 
+        <div className="grid md:grid-cols-2 gap-4 mb-4">
           <input
             required
             type="text"

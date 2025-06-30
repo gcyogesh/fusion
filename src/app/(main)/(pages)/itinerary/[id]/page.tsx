@@ -1,21 +1,18 @@
-  
-import TextHeader from "@/components/atoms/headings";
-import ImageDisplay from "@/components/atoms/ImageCard";
-import { fetchAPI } from "@/utils/apiService";
-import { MapPin } from "lucide-react";
-import { notFound } from "next/navigation";
-import MidNavbar from "@/components/organisms/MidNavBar";
-import Button from "@/components/atoms/button";
-import TextDescription from "@/components/atoms/description";
-import Image from "next/image";
-import UserForm from "@/components/organisms/Userform";
-import DepartureCalendar from "@/components/organisms/DepartureCalender";
-import ItinerarySection from "@/components/molecules/ItinerarySection";
-import Breadcrumb from "@/components/atoms/breadcrumb";
-import FAQAccordion from "@/components/organisms/faq";
-import Link from "next/link";
-
-
+import { fetchAPI } from '@/utils/apiService';
+import Breadcrumb from '@/components/atoms/breadcrumb';
+import { MapPin } from 'lucide-react';
+import TextHeader from '@/components/atoms/headings';
+import ImageDisplay from '@/components/atoms/ImageCard';
+import MidNavbar from '@/components/organisms/MidNavBar';
+import { notFound } from 'next/navigation';
+import TextDescription from '@/components/atoms/description';
+import Button from '@/components/atoms/button';
+import UserForm from '@/components/organisms/Userform';
+import DepartureCalendar from '@/components/organisms/DepartureCalender';
+import ItinerarySection from '@/components/molecules/ItinerarySection';
+import FAQAccordion from '@/components/organisms/faq';
+import Link from 'next/link';
+import Image from 'next/image';
 
 const trekTabs = [
   "Overview",
@@ -55,63 +52,59 @@ export default async function Page({ params }: { params: { id: string } }) {
   const response = await fetchAPI({ endpoint });
   const destination = response?.data;
 
-   
-
   if (!destination) notFound();
 
   const itinerary = destination.itinerary || [];
   const gallery = destination.gallery || [];
   const feature = destination.feature || {};
 
-
   const featureData = [
-  {
-    label: "Group Size",
-    value: feature?.groupSize?.min,
-    icon: "/images/iterate/min.png",
-  },
-  {
-    label: "Trip Duration",
-    value: feature?.tripDuration,
-    icon: "/images/iterate/Days.png",
-  },
-  {
-    label: "Trip Difficulty",
-    value: feature?.tripDifficulty,
-    icon: "/images/iterate/Moderate.png",
-  },
-  {
-    label: "Meals",
-    value: feature?.meals?.join(", "),
-    icon: "/images/iterate/BreakFast.png",
-  },
-  {
-    label: "Activities",
-    value: feature?.activities?.join(", "),
-    icon: "/images/iterate/Trekking.png",
-  },
-  {
-    label: "Accommodation",
-    value: feature?.accommodation?.join(" / "),
-    icon: "/images/iterate/Bed.png",
-  },
-  {
-    label: "Max Altitude",
-    value: feature?.maxAltitude,
-    icon: "/images/iterate/meters.png",
-  },
-  {
-    label: "Best Season",
-    value: feature?.bestSeason?.join(", "),
-    icon: "/images/iterate/Seasons.png",
-  },
-  {
-    label: "Start/End Point",
-    value: feature?.startEndPoint,
-    icon: "/images/iterate/kathmandu.png",
-  },
-];
-
+    {
+      label: "Group Size",
+      value: feature?.groupSize?.min,
+      icon: "/images/iterate/min.png",
+    },
+    {
+      label: "Trip Duration",
+      value: feature?.tripDuration,
+      icon: "/images/iterate/Days.png",
+    },
+    {
+      label: "Trip Difficulty",
+      value: feature?.tripDifficulty,
+      icon: "/images/iterate/Moderate.png",
+    },
+    {
+      label: "Meals",
+      value: feature?.meals?.join(", "),
+      icon: "/images/iterate/BreakFast.png",
+    },
+    {
+      label: "Activities",
+      value: feature?.activities?.join(", "),
+      icon: "/images/iterate/Trekking.png",
+    },
+    {
+      label: "Accommodation",
+      value: feature?.accommodation?.join(" / "),
+      icon: "/images/iterate/Bed.png",
+    },
+    {
+      label: "Max Altitude",
+      value: feature?.maxAltitude,
+      icon: "/images/iterate/meters.png",
+    },
+    {
+      label: "Best Season",
+      value: feature?.bestSeason?.join(", "),
+      icon: "/images/iterate/Seasons.png",
+    },
+    {
+      label: "Start/End Point",
+      value: feature?.startEndPoint,
+      icon: "/images/iterate/kathmandu.png",
+    },
+  ];
 
   return (
     <>
@@ -219,11 +212,11 @@ export default async function Page({ params }: { params: { id: string } }) {
             </div>
 
            <div className="w-full max-w-4xl  py-6 mx-auto">
-
               <DepartureCalendar />
             </div>
 
-            <div id="Book-Now" className="py-6">
+            <div id="Book-Now"></div>
+            <div className="py-6">
               <UserForm />
             </div>
           {/*trips maps */}
