@@ -9,18 +9,19 @@ const socialLinks = [
   { Icon: FaYoutube, link: "#", label: "YouTube" },
 ];
 
-const destinations = [
-  "Everest-Region",
-  "Annapurna-Region",
-  "Kangchenjunga-Region",
-  "Langtang-Region",
-  "Manaslu-Region",
-  "Dolpa-Region",
+const companyLinks = [
+  { label: "About Us", href: "/about" },
+  { label: "Contact Us", href: "/contact" },
+  { label: "Blog", href: "/blogs" },
+  { label: "Terms and Conditions", href: "/terms-and-conditions" },
 ];
 
-const companyLinks = ["About Us", "Contact Us", "Blog", "Terms and Conditions"];
+interface FooterProps {
+  destinations?: any[];
+  activities?: any[];
+}
 
-export default function Footer() {
+export default function Footer({ destinations = [], activities = [] }: FooterProps) {
   return (
     <footer className="bg-gradient-to-t from-[#85cdf4] to-[#fef9ee]">
       <Image
@@ -86,28 +87,27 @@ export default function Footer() {
             <div className="flex flex-col space-y-4">
               <h1 className="text-2xl font-semibold">Company</h1>
               <ul className="space-y-3">
-                {companyLinks.map((item, index) => (
-                  <li key={index}>
-                    <a href="#" className="hover:text-[#06ab86] transition-colors">
-                      {item}
+                {companyLinks.map((item) => (
+                  <li key={item.href}>
+                    <a href={item.href} className="hover:text-[#06ab86] transition-colors">
+                      {item.label}
                     </a>
                   </li>
                 ))}
               </ul>
             </div>
 
-             
-             {/* Destinations */}
+            {/* Destinations */}
             <div className="flex flex-col space-y-4">
-          <h1 className="text-2xl font-semibold">Destinations</h1>
-          <ul className="space-y-3">
-            {destinations.map((place, index) => (
-              <li key={index}>
-                <a href="#" className="hover:text-[#06ab86] transition-colors">{place}</a>
-              </li>
-            ))}
-          </ul>
-        </div>
+              <h1 className="text-2xl font-semibold">Destinations</h1>
+              <ul className="space-y-3">
+                {destinations.map((place: any) => (
+                  <li key={place._id || place.slug || place.title}>
+                    <a href={place.slug ? `/destinations/${place.slug}` : '#'} className="hover:text-[#06ab86] transition-colors">{place.title || place.name || 'Untitled'}</a>
+                  </li>
+                ))}
+              </ul>
+            </div>
 
             {/* Contact Details & Payment */}
             <div className="flex flex-col space-y-4">
@@ -135,9 +135,9 @@ export default function Footer() {
               <a href="/privacy-policy" className="hover:text-[#06ab86]">Privacy Policy</a>
               <a href="/site-map" className="hover:text-[#06ab86]">Site Map</a>
             </div>
-            <p className="text-sm mt-4 md:mt-0">
-              Designed & Developed by: Lishnu Tech
-            </p>
+            <a href="https://lishnutech.com/" target="blank" className="text-sm mt-4 md:mt-0">
+              Designed & Develoaed by: Lishnu Tech
+            </a>
           </div>
         </div>
       </div>

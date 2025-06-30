@@ -216,6 +216,12 @@ export default function SettingsPage() {
     { key: "answer", label: "Answer", type: "textarea", accessor: "answer" as keyof any },
   ];
 
+  // Map FAQ data to ensure 'question' field is present (fallback to 'title')
+  const mappedFaqData = faqData.map(faq => ({
+    ...faq,
+    question: faq.question || faq.title || '',
+  }));
+
   const renderGeneralTab = () => (
     <section className="bg-white rounded-xl shadow-md border border-gray-200 w-full px-8 md:px-16 py-12">
       {alert.show && (
@@ -405,8 +411,7 @@ export default function SettingsPage() {
         <AdminTable
           title="Frequently Asked Questions"
           buttonText="Add New FAQ"
-          data={faqData}
-          
+          data={mappedFaqData}
           columns={faqColumns}
           endpoint="faqs"
         />

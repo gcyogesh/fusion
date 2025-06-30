@@ -16,7 +16,12 @@ type NavLink = {
   subLinks?: { name: string; href: string }[]
 }
 
-export default function Navbar() {
+interface NavbarProps {
+  destinations: any[];
+  activities: any[];
+}
+
+export default function Navbar({ destinations = [], activities = [] }: NavbarProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [dropdownOpen, setDropdownOpen] = useState<string | null>(null)
   const [mobileDropdown, setMobileDropdown] = useState<string | null>(null)
@@ -35,55 +40,48 @@ export default function Navbar() {
   }
 
   useEffect(() => {
-    const fetchData = async () => {
-      const activitiesRes = await fetchAPI({ endpoint: 'activities' })
-      const destinationsRes = await fetchAPI({ endpoint: 'destinations' })
+    const formattedActivities = activities?.map((item: any) => ({
+      name: item?.title || 'Untitled',
+      href: `/activities/${item?.slug || ''}`
+    }))
 
-      const formattedActivities = activitiesRes?.data?.map((item: any) => ({
-        name: item?.title || 'Untitled',
-        href: `/activities/${item?.slug || ''}`
-      }))
+    const formattedDestinations = destinations?.map((item: any) => ({
+      name: item?.title || 'Untitled',
+      href: `/destinations/${item?.slug || ''}`
+    }))
 
-      const formattedDestinations = destinationsRes?.data?.map((item: any) => ({
-        name: item?.title || 'Untitled',
-        href: `/destinations/${item?.slug || ''}`
-      }))
+    const links: NavLink[] = [
+      {
+        name: 'Destinations',
+        href: '/destinations',
+        hasDropdown: true,
+        subLinks: formattedDestinations
+      },
+      {
+        name: 'Activities',
+        href: '/activities',
+        hasDropdown: true,
+        subLinks: formattedActivities
+      },
+      {
+        name: 'About',
+        href: '/about',
+        hasDropdown: false
+      },
+      {
+        name: 'Blogs',
+        href: '/blogs',
+        hasDropdown: false
+      },
+      {
+        name: 'Duration',
+        href: '/duration',
+        hasDropdown: false
+      }
+    ]
 
-      const links: NavLink[] = [
-        {
-          name: 'Destinations',
-          href: '/destinations',
-          hasDropdown: true,
-          subLinks: formattedDestinations
-        },
-        {
-          name: 'Activities',
-          href: '/activities',
-          hasDropdown: true,
-          subLinks: formattedActivities
-        },
-        {
-          name: 'About',
-          href: '/about',
-          hasDropdown: false
-        },
-        {
-          name: 'Blogs',
-          href: '/blogs',
-          hasDropdown: false
-        },
-        {
-          name: 'Duration',
-          href: '/duration',
-          hasDropdown: false
-        }
-      ]
-
-      setNavLinks(links)
-    }
-
-    fetchData()
-  }, [])
+    setNavLinks(links)
+  }, [destinations, activities])
 
   useEffect(() => {
     const handleScroll = () => {
