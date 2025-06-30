@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import HeroBanner , { HeroBannerData } from '@/components/organisms/Banner/HeroBanner';
+import HeroBanner, { HeroBannerData } from '@/components/organisms/Banner/HeroBanner';
 import { fetchAPI } from '@/utils/apiService';
 import TextDescription from '@/components/atoms/description';
 import ImageDisplay from '@/components/atoms/ImageCard';
@@ -11,6 +11,7 @@ import MidNavbar from '@/components/organisms/MidNavBar';
 type Props = {
   searchParams?: {
     page?: string;
+    category?: string;
   };
 };
 
@@ -40,16 +41,15 @@ interface BlogAPIResponse {
   data: Blog[];
 }
 
-
 interface Category {
- _id: string;
+  _id: string;
   name: string;
   slug: string;
   createdAt: string;
   updatedAt: string;
   __v: number;
-   
 }
+
 interface CategoryAPIResponse {
   success: boolean;
   message: string;
@@ -63,17 +63,30 @@ interface HeroBannerAPIResponse {
 }
 
 const Blogs = async ({ searchParams }: Props) => {
-  const blogsData = await fetchAPI({ endpoint: "blogs" }) as  BlogAPIResponse;
-  const heroData = await fetchAPI({ endpoint: "herobanner/blog" }) as HeroBannerAPIResponse;
-  const categoriesData = await fetchAPI({ endpoint: "category/blogs" }) as CategoryAPIResponse ;
+  const currentPage = parseInt(searchParams?.page || '1', 10);
+  const selectedCategoryId = searchParams?.category || 'all';
 
-  const blogs = blogsData?.data || [];
+  const [heroData, categoriesData] = await Promise.all([
+    fetchAPI({ endpoint: "herobanner/blog" }) as Promise<HeroBannerAPIResponse>,
+    fetchAPI({ endpoint: "category/blogs" }) as Promise<CategoryAPIResponse>
+  ]);
+
   const categories = categoriesData?.data || [];
 
+  // Prepare blogTabs with { label, value }
+  const blogTabs = [
+    { label: "All Blogs", value: "all" },
+    ...categories.map((cat) => ({ label: cat.name, value: cat._id }))
+  ];
 
-  const blogTabs = ["All Blogs", ...categories.map((category: Category) => category.name)];
+  //  filtering fetch logic
+  const blogsData = selectedCategoryId === 'all'
+    ? await fetchAPI({ endpoint: "blogs" }) as BlogAPIResponse
+    : await fetchAPI({ endpoint: `blogs/category/${selectedCategoryId}` }) as BlogAPIResponse;
 
-  const currentPage = parseInt(searchParams?.page || '1', 10);
+  const blogs = blogsData?.data || [];
+
+  // Pagination
   const blogsPerPage = 3;
   const totalPages = Math.ceil(blogs.length / blogsPerPage);
   const startIndex = (currentPage - 1) * blogsPerPage;
@@ -84,7 +97,7 @@ const Blogs = async ({ searchParams }: Props) => {
       <Breadcrumb currentnavlink="Blogs" />
       <HeroBanner herodata={heroData?.data} />
 
-      <MidNavbar tabs={blogTabs} />
+      <MidNavbar tabs={blogTabs} isBlogPage={true} />
 
       <section className="max-w-7xl mx-auto px-8">
         <div className="flex flex-col gap-12">
@@ -109,7 +122,7 @@ const Blogs = async ({ searchParams }: Props) => {
             )}
 
             <div className="flex flex-col gap-6">
-              {currentBlogs.slice(1).map((card: any) => (
+              {currentBlogs.slice(1).map((card) => (
                 <Link href={`/blogs/${card.slug}`} key={card._id}>
                   <div className="flex flex-col cursor-pointer">
                     <ImageDisplay
@@ -135,7 +148,11 @@ const Blogs = async ({ searchParams }: Props) => {
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
-          getPageUrl={(page) => `/blogs?page=${page}`}
+          getPageUrl={(page) =>
+            selectedCategoryId === 'all'
+              ? `/blogs?page=${page}`
+              : `/blogs?page=${page}&category=${selectedCategoryId}`
+          }
         />
       </section>
     </>

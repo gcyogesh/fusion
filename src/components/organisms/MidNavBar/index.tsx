@@ -1,46 +1,32 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
-import useScrollSpy from '@/hooks/useScrollSpy';
+import React, { useEffect, useRef } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 type MidNavbarProps = {
-  tabs: string[];
-  blogCategories?: Array<{
-    _id: string;
-    name: string;
-    slug: string;
-    createdAt: string;
-    updatedAt: string;
-    __v: number;
-  }>;
+  tabs: { label: string; value: string }[];
+  isBlogPage?: boolean; // Use this to control filtering logic
 };
 
-const MidNavbar = ({ tabs, blogCategories = [] }: MidNavbarProps) => {
-  const navItems = tabs.map((tab) => ({
-    id: tab.replace(/\s+/g, '-').replace('/', '-'),
-  }));
-
-  const { activeSection: activeTab, scrollToSection: setActiveTab } = useScrollSpy(navItems);
-
+const MidNavbar = ({ tabs, isBlogPage = false }: MidNavbarProps) => {
   const navRef = useRef<HTMLDivElement | null>(null);
   const navListRef = useRef<HTMLDivElement | null>(null);
 
-  const searchParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : undefined;
-  const searchQuery = searchParams?.get('search') || '';
-
-  const [search, setSearch] = useState('');
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const activeCategory = searchParams.get('category') || 'all';
 
   useEffect(() => {
     if (navRef.current) {
       setTimeout(() => {
-        navRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        navRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }, 100);
     }
   }, []);
 
   useEffect(() => {
-    if (navListRef.current && activeTab) {
-      const activeElement = document.getElementById(`nav-${activeTab}`);
+    if (navListRef.current) {
+      const activeElement = document.getElementById(`nav-${activeCategory}`);
       if (activeElement) {
         navListRef.current.scrollTo({
           left: activeElement.offsetLeft - navListRef.current.offsetWidth / 2 + activeElement.offsetWidth / 2,
@@ -48,7 +34,20 @@ const MidNavbar = ({ tabs, blogCategories = [] }: MidNavbarProps) => {
         });
       }
     }
-  }, [activeTab]);
+  }, [activeCategory]);
+
+  const handleTabClick = (value: string) => {
+    const current = new URLSearchParams(searchParams.toString());
+    if (isBlogPage) {
+      if (value === 'all') {
+        current.delete('category');
+      } else {
+        current.set('category', value);
+      }
+      current.delete('page'); // Reset to page 1 on tab change
+      router.push(`/blogs?${current.toString()}`);
+    }
+  };
 
   return (
     <>
@@ -58,30 +57,20 @@ const MidNavbar = ({ tabs, blogCategories = [] }: MidNavbarProps) => {
         className="fixed bottom-0 left-0 z-50 w-full bg-[#FDE3B0] border-t border-[#DEBC7E] md:hidden"
       >
         <div className="max-w-7xl mx-auto overflow-x-auto scroll-smooth">
-          <div
-            ref={navListRef}
-            className="flex flex-nowrap overflow-x-auto scrollbar-none py-2 px-3"
-          >
+          <div ref={navListRef} className="flex flex-nowrap overflow-x-auto scrollbar-none py-2 px-3">
             {tabs.map((tab) => {
-              const tabId = tab.replace(/\s+/g, '-').replace('/', '-');
-              const isActive = activeTab === tabId;
+              const isActive = activeCategory === tab.value;
 
               return (
                 <button
-                  key={tab}
-                  id={`nav-${tabId}`}
-                  onClick={() => {
-                    const el = document.getElementById(tabId);
-                    if (el) {
-                      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                      setActiveTab(tabId);
-                    }
-                  }}
+                  key={tab.value}
+                  id={`nav-${tab.value}`}
+                  onClick={() => handleTabClick(tab.value)}
                   className={`text-sm font-semibold px-5 py-2 transition-all whitespace-nowrap rounded-full ${
                     isActive ? 'bg-[#F7931E] text-white' : 'text-black hover:bg-[#fcd59d]'
                   }`}
                 >
-                  {tab.replace('-', ' ')}
+                  {tab.label}
                 </button>
               );
             })}
@@ -94,55 +83,23 @@ const MidNavbar = ({ tabs, blogCategories = [] }: MidNavbarProps) => {
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-wrap justify-start overflow-x-auto">
             {tabs.map((tab) => {
-              const tabId = tab.replace(/\s+/g, '-').replace('/', '-');
-              const isActive = activeTab === tabId;
+              const isActive = activeCategory === tab.value;
 
               return (
                 <button
-                  key={tab}
-                  onClick={() => {
-                    const el = document.getElementById(tabId);
-                    if (el) {
-                      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                      setActiveTab(tabId);
-                    }
-                  }}
+                  key={tab.value}
+                  onClick={() => handleTabClick(tab.value)}
                   className={`text-sm sm:text-base md:text-lg font-semibold px-7 py-3 transition-all whitespace-nowrap rounded-full ${
                     isActive ? 'bg-[#F7931E] text-white' : 'text-black hover:bg-[#fcd59d]'
                   }`}
                 >
-                  {tab.replace('-', ' ')}
+                  {tab.label}
                 </button>
               );
             })}
           </div>
         </div>
       </div>
-
-      {/* Blog Categories (render only if blogCategories are provided) */}
-      {blogCategories.length > 0 && (
-        <div className="my-2">
-          <input
-            type="text"
-            placeholder="Search categories..."
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            className="border px-2 py-1 rounded"
-          />
-          <ul className="flex flex-wrap gap-2 mt-2">
-            {filteredCategories.map(cat => (
-              <li key={cat._id}>
-                <span className="px-3 py-1 rounded bg-[#F7931E] text-white">
-                  {cat.name}
-                </span>
-              </li>
-            ))}
-            {filteredCategories.length === 0 && (
-              <li className="text-gray-500">No categories found.</li>
-            )}
-          </ul>
-        </div>
-      )}
     </>
   );
 };
