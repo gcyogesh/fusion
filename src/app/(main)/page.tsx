@@ -323,7 +323,7 @@ export default async function Home() {
       title={destinationdata.data[0].title} 
       showDefaultTitle={true} 
       description={destinationdata.data[0].subtitle} 
-      totalTrips={destinationdata.data[0].totalTrips}  // ✅ Uses [0]'s data
+      totalTrips={destinationdata.data[0].totalTrips}  
     />
     </Link>
   </div>

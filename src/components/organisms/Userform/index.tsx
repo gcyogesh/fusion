@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, FormEvent, useEffect } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Button from "@/components/atoms/button";
 import TextDescription from "@/components/atoms/description";
 
@@ -23,10 +23,12 @@ interface TourPackage {
 
 const UserForm = () => {
   const params = useParams();
+  const router = useRouter();
+
   const [tourPackageId, setTourPackageId] = useState<string | null>(null);
   const [tourPackage, setTourPackage] = useState<TourPackage | null>(null);
   const [loading, setLoading] = useState(false);
-  
+
   const [formData, setFormData] = useState({
     date: "",
     name: "",
@@ -42,7 +44,6 @@ const UserForm = () => {
   useEffect(() => {
     if (params?.id) {
       setTourPackageId(params.id as string);
-      console.log("Tour Package ID extracted:", params.id);
     }
   }, [params]);
 
@@ -50,14 +51,14 @@ const UserForm = () => {
   useEffect(() => {
     const fetchTourPackage = async () => {
       if (!tourPackageId) return;
-      
       setLoading(true);
       try {
-        const response = await fetch(`https://yogeshbhai.ddns.net/api/tour/packages/${tourPackageId}`);
+        const response = await fetch(
+          `https://yogeshbhai.ddns.net/api/tour/packages/${tourPackageId}`
+        );
         if (response.ok) {
           const result = await response.json();
           setTourPackage(result.data);
-          console.log("Tour package fetched:", result.data);
         } else {
           console.error("Failed to fetch tour package");
         }
@@ -78,30 +79,30 @@ const UserForm = () => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    // Updated payload structure to match backend expectations
     const payload = {
       name: formData.name,
       email: formData.email,
       phone: formData.phone,
       country: formData.country,
-      tourPackageId: tourPackageId, // Use the ID extracted from URL
+      tourPackageId: tourPackageId,
       travelDate: formData.date,
-      totalPeople: formData.travellers === "5+" ? 5 : parseInt(formData.travellers),
+      totalPeople:
+        formData.travellers === "5+" ? 5 : parseInt(formData.travellers),
       specialRequests: formData.message,
     };
 
-    console.log("Submitting payload:", payload);
-
     try {
-      const response = await fetch("https://yogeshbhai.ddns.net/api/tour/bookings", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+      const response = await fetch(
+        "https://yogeshbhai.ddns.net/api/tour/bookings",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        }
+      );
 
       const contentType = response.headers.get("content-type");
 
-      // Handle HTML error response instead of JSON
       if (!response.ok) {
         let errorText = "Unknown error";
         if (contentType?.includes("application/json")) {
@@ -112,17 +113,15 @@ const UserForm = () => {
           errorText = `Non-JSON error response:\n${html}`;
         }
 
-        console.error(`Booking failed with status ${response.status}:\n${errorText}`);
+        console.error(`Booking failed:\n${errorText}`);
         alert(`Booking failed: ${errorText}`);
         return;
       }
 
-      // Success path
       const result = await response.json();
       console.log("✅ Booking successful:", result);
-      alert("Booking submitted successfully!");
-      
-      // Reset form after successful submission
+
+      // Reset form
       setFormData({
         date: "",
         name: "",
@@ -133,15 +132,18 @@ const UserForm = () => {
         message: "",
         agree: false,
       });
+
+      // Redirect to booking success page
+      router.push(`/booking-success/${tourPackageId}`);
     } catch (error) {
-      console.error("❌ An error occurred while submitting the form:", error);
-      alert("Something went wrong. Please check console for details.");
+      console.error("❌ Submission error:", error);
+      alert("Something went wrong. Check console for details.");
     }
   };
 
   return (
     <div className="max-w-6xl mx-auto p-6">
-      {/* Tour Package Details Section */}
+      {/* Loading Spinner */}
       {loading && (
         <div className="mb-8 text-center">
           <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-[#F7941D]"></div>
@@ -149,9 +151,9 @@ const UserForm = () => {
         </div>
       )}
 
+      {/* Tour Package Details */}
       {tourPackage && (
         <div className="mb-8 bg-white rounded-xl shadow-lg border border-[#0E334F] overflow-hidden">
-          {/* Header with main image */}
           <div className="relative h-64 md:h-80">
             <img
               src={tourPackage.gallery[0]}
@@ -168,7 +170,6 @@ const UserForm = () => {
             </div>
           </div>
 
-          {/* Package details */}
           <div className="p-6">
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
               <div className="text-center p-4 bg-gray-50 rounded-lg">
@@ -177,30 +178,27 @@ const UserForm = () => {
                 </div>
                 <div className="text-sm text-gray-600">Base Price</div>
               </div>
-              
+
               <div className="text-center p-4 bg-gray-50 rounded-lg">
                 <div className="text-2xl font-bold text-[#0E334F]">
                   {tourPackage.duration.days}D/{tourPackage.duration.nights}N
                 </div>
                 <div className="text-sm text-gray-600">Duration</div>
               </div>
-              
+
               <div className="text-center p-4 bg-gray-50 rounded-lg">
                 <div className="text-2xl font-bold text-green-600">
                   {tourPackage.gallery.length}
                 </div>
                 <div className="text-sm text-gray-600">Gallery Images</div>
               </div>
-              
+
               <div className="text-center p-4 bg-gray-50 rounded-lg">
-                <div className="text-2xl font-bold text-blue-600">
-                  Available
-                </div>
+                <div className="text-2xl font-bold text-blue-600">Available</div>
                 <div className="text-sm text-gray-600">Status</div>
               </div>
             </div>
 
-            {/* Gallery thumbnails */}
             <div className="mb-4">
               <h3 className="text-lg font-semibold mb-3">Package Gallery</h3>
               <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
@@ -215,7 +213,6 @@ const UserForm = () => {
               </div>
             </div>
 
-            {/* Description */}
             <div>
               <h3 className="text-lg font-semibold mb-2">Description</h3>
               <p className="text-gray-700 leading-relaxed">
@@ -236,99 +233,94 @@ const UserForm = () => {
           className="w-full max-w-[850px] mb-10 text-left"
         />
 
-      {/* First row: Date and Name */}
-      <div className="grid md:grid-cols-2 gap-4 mb-4">
-        <select
-          required
-          value={formData.date}
-          onChange={(e) => handleChange("date", e.target.value)}
-          className="border border-gray-300 p-2 rounded w-full text-gray-700"
-        >
-          <option value="">Choose your own date</option>
-          <option value="2025-06-10">June 10, 2025</option>
-          <option value="2025-06-20">June 20, 2025</option>
-        </select>
+        <div className="grid md:grid-cols-2 gap-4 mb-4">
+          <select
+            required
+            value={formData.date}
+            onChange={(e) => handleChange("date", e.target.value)}
+            className="border border-gray-300 p-2 rounded w-full text-gray-700"
+          >
+            <option value="">Choose your own date</option>
+            <option value="2025-06-10">June 10, 2025</option>
+            <option value="2025-06-20">June 20, 2025</option>
+          </select>
 
-        <input
-          required
-          type="text"
-          placeholder="Traveler's Full Name"
-          value={formData.name}
-          onChange={(e) => handleChange("name", e.target.value)}
-          className="border border-gray-300 p-2 rounded w-full"
+          <input
+            required
+            type="text"
+            placeholder="Traveler's Full Name"
+            value={formData.name}
+            onChange={(e) => handleChange("name", e.target.value)}
+            className="border border-gray-300 p-2 rounded w-full"
+          />
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-4 mb-4">
+          <input
+            required
+            type="email"
+            placeholder="Type Your Email"
+            value={formData.email}
+            onChange={(e) => handleChange("email", e.target.value)}
+            className="border border-gray-300 p-2 rounded w-full"
+          />
+
+          <input
+            required
+            type="tel"
+            placeholder="Type your Phone Number"
+            value={formData.phone}
+            onChange={(e) => handleChange("phone", e.target.value)}
+            className="border border-gray-300 p-2 rounded w-full"
+          />
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-4 mb-4">
+          <select
+            required
+            value={formData.travellers}
+            onChange={(e) => handleChange("travellers", e.target.value)}
+            className="border border-gray-300 p-2 rounded w-full"
+          >
+            <option value="">No. of Travellers</option>
+            <option value="1">1</option>
+            <option value="2-4">2-4</option>
+            <option value="5+">5+</option>
+          </select>
+
+          <select
+            required
+            value={formData.country}
+            onChange={(e) => handleChange("country", e.target.value)}
+            className="border border-gray-300 p-2 rounded w-full"
+          >
+            <option value="">Country</option>
+            <option value="Nepal">Nepal</option>
+            <option value="USA">USA</option>
+            <option value="India">India</option>
+          </select>
+        </div>
+
+        <textarea
+          placeholder="Place your Comments Here"
+          value={formData.message}
+          onChange={(e) => handleChange("message", e.target.value)}
+          className="border border-gray-300 p-2 rounded w-full h-[185px] mb-4 resize-none"
         />
-      </div>
 
-      {/* Second row: Email and Phone */}
-      <div className="grid md:grid-cols-2 gap-4 mb-4">
-        <input
-          required
-          type="email"
-          placeholder="Type Your Email"
-          value={formData.email}
-          onChange={(e) => handleChange("email", e.target.value)}
-          className="border border-gray-300 p-2 rounded w-full"
-        />
-
-        <input
-          required
-          type="tel"
-          placeholder="Type your Phone Number"
-          value={formData.phone}
-          onChange={(e) => handleChange("phone", e.target.value)}
-          className="border border-gray-300 p-2 rounded w-full"
-        />
-      </div>
-
-      {/* Third row: No. of Travellers and Country */}
-      <div className="grid md:grid-cols-2 gap-4 mb-4">
-        <select
-          required
-          value={formData.travellers}
-          onChange={(e) => handleChange("travellers", e.target.value)}
-          className="border border-gray-300 p-2 rounded w-full"
-        >
-          <option value="">No. of Travellers</option>
-          <option value="1">1</option>
-          <option value="2-4">2-4</option>
-          <option value="5+">5+</option>
-        </select>
-
-        <select
-          required
-          value={formData.country}
-          onChange={(e) => handleChange("country", e.target.value)}
-          className="border border-gray-300 p-2 rounded w-full"
-        >
-          <option value="">Country</option>
-          <option value="Nepal">Nepal</option>
-          <option value="USA">USA</option>
-          <option value="India">India</option>
-        </select>
-      </div>
-
-      {/* Message */}
-      <textarea
-        placeholder="Place your Comments Here"
-        value={formData.message}
-        onChange={(e) => handleChange("message", e.target.value)}
-        className="border border-gray-300 p-2 rounded w-full h-[185px] mb-4 resize-none"
-      />
-
-      {/* Checkbox */}
-      <div className="flex items-start mb-6">
-        <input
-          id="terms"
-          type="checkbox"
-          checked={formData.agree}
-          onChange={(e) => handleChange("agree", e.target.checked)}
-          className="mr-2 mt-1"
-          required
-        />
-        <label htmlFor="terms" className="text-sm text-gray-700">
-          I agree to Ace the Himalaya Terms and Conditions
-        </label>
-      </div>
+        <div className="flex items-start mb-6">
+          <input
+            id="terms"
+            type="checkbox"
+            checked={formData.agree}
+            onChange={(e) => handleChange("agree", e.target.checked)}
+            className="mr-2 mt-1"
+            required
+          />
+          <label htmlFor="terms" className="text-sm text-gray-700">
+            I agree to Ace the Himalaya Terms and Conditions
+          </label>
+        </div>
 
         <div>
           <button
