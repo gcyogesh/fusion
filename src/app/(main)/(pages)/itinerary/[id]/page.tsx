@@ -14,7 +14,7 @@ import ItinerarySection from "@/components/molecules/ItinerarySection";
 import Breadcrumb from "@/components/atoms/breadcrumb";
 import FAQAccordion from "@/components/organisms/faq";
 import Link from "next/link";
-
+import TestimonialList from "@/components/organisms/testimonial/testimonialList";
 
 
 const trekTabs = [
@@ -54,7 +54,8 @@ export default async function Page({ params }: { params: { id: string } }) {
   const endpoint = `tour/tour-packages/${params.id}`;
   const response = await fetchAPI({ endpoint });
   const destination = response?.data;
-
+const testimonials = await fetchAPI({ endpoint: "testimonials" });
+const testimonialData = testimonials?.data || [];
    
 
   if (!destination) notFound();
@@ -288,7 +289,10 @@ export default async function Page({ params }: { params: { id: string } }) {
           </aside>
         </div>
       </section>
-      <FAQAccordion />
+      <div id="FAQs"><FAQAccordion /></div>
+      <div></div>
+      
+      
     </>
   );
 }
