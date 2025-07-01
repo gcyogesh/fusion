@@ -19,7 +19,7 @@ export interface Booking {
   paymentStatus: string;
   totalAmount: number;
   createdAt: string;
-  updatedAt: string;p
+  updatedAt: string;
 }
 
 interface BookingInfoCardProps {

@@ -49,18 +49,6 @@ export default function FAQSection() {
   return (
    
 
-
-<div className="max-w-7xl mx-auto flex flex-col md:flex-row lg:flex-row gap-10 px-4 " >
-      <TextHeader
-        text="Need Help? We've Got Answers!"
-        specialWordsIndices="4"
-        align="left"
-        size="medium"
-        width="500px"
-        buttonText="FAQ"
-        className="cursor-pointer "
-      />
-
       <div className="w-full max-w-[400px] md:max-w-[710px] px-2 md:px-0 space-y-4">
         {faqs.map((faq) => {
           const isOpen = openId === faq.id;
@@ -101,7 +89,7 @@ export default function FAQSection() {
             </div>
           );
         })}
-      </div>
+     
 
      
       <style jsx>{`

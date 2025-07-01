@@ -136,6 +136,7 @@ export default async function Page({ params }: Params) {
                         <h3 className="text-lg font-medium text-gray-600">
                           {item.subtitle}
                         </h3>
+                        
                       </div>
                     </Link>
                   ))}

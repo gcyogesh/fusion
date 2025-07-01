@@ -118,7 +118,7 @@ export default function Navbar({ destinations = [], activities = [] }: NavbarPro
       <div className="max-w-7xl mx-auto flex justify-between items-center px-4 py-4 h-20">
         <div>
           <Link href="/" className="cursor-pointer">
-            <Logo />
+            <Logo/>
           </Link>
         </div>
 

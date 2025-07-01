@@ -569,7 +569,17 @@ const testimonialData = (await fetchAPI({ endpoint: "testimonials" })) || [];
         </div>
       </section>
 
-<section> <FAQAccordion /></section>
+<section className="max-w-7xl mx-auto flex flex-col md:flex-row lg:flex-row gap-10 px-4 " > 
+  <TextHeader
+        text="Need Help? We've Got Answers!"
+        specialWordsIndices="4"
+        align="left"
+        size="medium"
+        width="500px"
+        buttonText="FAQ"
+      />
+  <FAQAccordion />
+  </section>
     
 
 

@@ -22,7 +22,6 @@ const trekTabs = [
   "Trip Map",
   "Book Now",
   "FAQs",
-  "Reviews",
 ];
 
 export async function generateMetadata({ params }: { params: { id: string } }) {
@@ -218,7 +217,10 @@ export default async function Page({ params }: { params: { id: string } }) {
 
             <div id="Book-Now"></div>
             <div className="py-6" id="user-form-section">
-              <UserForm />
+              <UserForm 
+                availableBookingDates={["2024-07-01", "2024-07-10", "2024-07-15"]}
+                availableTravelDates={["2024-07-05", "2024-07-12", "2024-07-20"]}
+              />
             </div>
           {/*trips maps */}
             <div id="Trip-Map" className="py-6">
@@ -251,6 +253,19 @@ export default async function Page({ params }: { params: { id: string } }) {
               </div>
             </div>
             
+      <div className="w-full max-w-4xl  py-6 mx-auto " id="FAQs">
+        <TextHeader
+        text="Need Help? We've Got Answers!"
+        specialWordsIndices="4"
+        align="left"
+        size="large"
+        width="500px"
+        buttonText="FAQ"
+        className="mb-2"
+      />
+        <FAQAccordion />
+        </div>
+      
           </div>
 
           
@@ -262,8 +277,6 @@ export default async function Page({ params }: { params: { id: string } }) {
           </aside>
         </div>
       </section>
-      <div id="FAQs"><FAQAccordion /></div>
-      <div></div>
       
       
     </>

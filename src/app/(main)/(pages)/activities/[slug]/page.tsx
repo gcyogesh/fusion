@@ -4,7 +4,7 @@ import ImageDisplay from "@/components/atoms/ImageCard";
 import TextHeader from "@/components/atoms/headings";
 import TextDescription from "@/components/atoms/description";
 import Breadcrumb from "@/components/atoms/breadcrumb";
-
+import Link from "next/link";
 interface Activity {
   _id: string;
   title: string;
@@ -61,17 +61,24 @@ export default async function Page({ params }: Params) {
             <div className="sticky top-24">
               <TextHeader text="Other Tour Categories" size="small" align="left" />
               <div className="space-y-4 mt-4">
-                {activities
-                  .filter((item) => item.slug !== slug)
-                  .slice(0, 3)
-                  .map((item) => (
-                    <div key={item._id}>
-                      <ImageDisplay src={item.image} variant="smallrectangle" />
-                      <TextHeader text={item.title} size="small" align="left" className="mt-2" />
-                      <h3 className="text-lg font-medium text-gray-600">{item.subtitle}</h3>
-                    </div>
-                  ))}
-              </div>
+  {activities
+    .filter((item) => item.slug !== slug)
+    .slice(0, 3)
+    .map((item) => (
+      <Link
+        key={item._id}
+        href={`/activities/${item.slug}`}
+        className="block"
+      >
+        <div className="cursor-pointer">
+          <ImageDisplay src={item.image} variant="smallrectangle" />
+          <TextHeader text={item.title} size="small" align="left" className="mt-2" />
+          <h3 className="text-lg font-medium text-gray-600">{item.subtitle}</h3>
+          <TextDescription text={item.description} className="mt-1 line-clamp-3" />
+        </div>
+      </Link>
+    ))}
+</div>
             </div>
           </div>
         </div>

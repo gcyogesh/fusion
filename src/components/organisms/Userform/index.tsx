@@ -5,8 +5,8 @@ import Button from "@/components/atoms/button";
 import TextDescription from "@/components/atoms/description";
 import { loadStripe } from '@stripe/stripe-js';
 import { fetchAPI } from '@/utils/apiService';
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 interface TourPackage {
   _id: string;
@@ -25,7 +25,12 @@ interface TourPackage {
   };
 }
 
-const UserForm = () => {
+interface UserFormProps {
+  availableBookingDates: string[];
+  availableTravelDates: string[];
+}
+
+const UserForm: React.FC<UserFormProps> = ({ availableBookingDates = [], availableTravelDates = [] }) => {
   const params = useParams();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -48,6 +53,9 @@ const UserForm = () => {
     message: "",
     agree: false,
   });
+
+  const [showBookingDatePicker, setShowBookingDatePicker] = useState(false);
+  const [showTravelDatePicker, setShowTravelDatePicker] = useState(false);
 
   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://yourdomain.com';
 
@@ -85,7 +93,7 @@ const UserForm = () => {
 
   // Sync formData.date and formData.bookingDate with URL params
   useEffect(() => {
-    const urlDate = searchParams.get('date');
+    const urlDate = searchParams.get('date') || searchParams.get('travelDate');
     const urlBookingDate = searchParams.get('bookingDate');
     if (urlDate && urlDate !== formData.date) {
       setFormData((prev) => ({ ...prev, date: urlDate }));
@@ -118,17 +126,35 @@ const UserForm = () => {
           cancelUrl: `${BASE_URL}/payment-cancel`,
         },
       });
-      if (data.success && data.data?.sessionId) {
+      // Type guard for API response
+      const resp = data as { success?: boolean; data?: { sessionId?: string }; message?: string };
+      if (resp.success && resp.data?.sessionId) {
         const stripe = await loadStripe('pk_test_...'); // <-- Replace with your Stripe public key
-        await stripe.redirectToCheckout({ sessionId: data.data.sessionId });
+        await stripe.redirectToCheckout({ sessionId: resp.data.sessionId });
       } else {
-        setPayError(data.message || 'Failed to create session');
+        setPayError(resp.message || 'Failed to create session');
       }
     } catch (err: any) {
       setPayError(err.message || 'Payment error');
     } finally {
       setPayLoading(false);
     }
+  };
+
+  // Helper to get dropdown options including custom date from searchParams
+  const getBookingDateOptions = () => {
+    const options = [...availableBookingDates];
+    if (formData.bookingDate && !options.includes(formData.bookingDate)) {
+      options.push(formData.bookingDate);
+    }
+    return options;
+  };
+  const getTravelDateOptions = () => {
+    const options = [...availableTravelDates];
+    if (formData.date && !options.includes(formData.date)) {
+      options.push(formData.date);
+    }
+    return options;
   };
 
   return (
@@ -245,26 +271,75 @@ const UserForm = () => {
             <div className="flex-1 p-8 flex flex-col justify-center min-w-[250px]">
               <h2 className="text-xl font-bold mb-4 text-[#0E334F]">Booking Details</h2>
               <div className="grid md:grid-cols-2 gap-4 mb-4">
-                <div>
+                <div className="relative">
                   <label className="block text-gray-700 font-semibold mb-1">Booking Date</label>
-                  <input
-                    type="text"
-                    value={formData.bookingDate}
-                    readOnly
-                    className="border border-gray-300 p-2 rounded w-full bg-gray-100 text-gray-700 cursor-not-allowed h-[44px]"
-                  />
-                </div>
-                <div>
-                  <label className="block text-gray-700 font-semibold mb-1">Travel Date</label>
-                  <DatePicker
-                    selected={formData.date ? new Date(formData.date) : null}
-                    onChange={date => handleChange("date", date ? date.toISOString().split('T')[0] : "")}
-                    placeholderText="Choose your own date"
-                    className="border border-gray-300 p-2 rounded w-full bg-white text-gray-700 h-[44px]"
-                    dateFormat="yyyy-MM-dd"
-                    minDate={new Date()}
+                  <select
                     required
-                  />
+                    value={formData.bookingDate}
+                    onChange={e => {
+                      if (e.target.value === '__custom__') {
+                        setShowBookingDatePicker(true);
+                      } else {
+                        setShowBookingDatePicker(false);
+                        handleChange('bookingDate', e.target.value);
+                      }
+                    }}
+                    className="border border-gray-300 p-2 rounded w-full bg-white text-gray-700 h-[44px]"
+                  >
+                    <option value="">Select Booking Date</option>
+                    {getBookingDateOptions().map(date => (
+                      <option key={date} value={date}>{date}</option>
+                    ))}
+                    <option value="__custom__">Pick a custom date...</option>
+                  </select>
+                  {showBookingDatePicker && (
+                    <div className="absolute z-50 bg-white p-2 rounded shadow border mt-2">
+                      <DatePicker
+                        selected={formData.bookingDate ? new Date(formData.bookingDate) : null}
+                        onChange={date => {
+                          setShowBookingDatePicker(false);
+                          handleChange('bookingDate', date ? date.toISOString().split('T')[0] : '');
+                        }}
+                        inline
+                        minDate={new Date()}
+                      />
+                    </div>
+                  )}
+                </div>
+                <div className="relative">
+                  <label className="block text-gray-700 font-semibold mb-1">Travel Date</label>
+                  <select
+                    required
+                    value={formData.date}
+                    onChange={e => {
+                      if (e.target.value === '__custom__') {
+                        setShowTravelDatePicker(true);
+                      } else {
+                        setShowTravelDatePicker(false);
+                        handleChange('date', e.target.value);
+                      }
+                    }}
+                    className="border border-gray-300 p-2 rounded w-full bg-white text-gray-700 h-[44px]"
+                  >
+                    <option value="">Select Travel Date</option>
+                    {getTravelDateOptions().map(date => (
+                      <option key={date} value={date}>{date}</option>
+                    ))}
+                    <option value="__custom__">Pick a custom date...</option>
+                  </select>
+                  {showTravelDatePicker && (
+                    <div className="absolute z-50 bg-white p-2 rounded shadow border mt-2">
+                      <DatePicker
+                        selected={formData.date ? new Date(formData.date) : null}
+                        onChange={date => {
+                          setShowTravelDatePicker(false);
+                          handleChange('date', date ? date.toISOString().split('T')[0] : '');
+                        }}
+                        inline
+                        minDate={new Date()}
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="mb-2"><span className="font-semibold">Name:</span> {formData.name}</div>
@@ -298,26 +373,75 @@ const UserForm = () => {
 
         {/* Booking Date and Travel Date side by side */}
         <div className="grid md:grid-cols-2 gap-4 mb-4">
-          <div>
+          <div className="relative">
             <label className="block text-gray-700 font-semibold mb-1">Booking Date</label>
-            <input
-              type="text"
-              value={formData.bookingDate}
-              readOnly
-              className="border border-gray-300 p-2 rounded w-full bg-gray-100 text-gray-700 cursor-not-allowed h-[44px]"
-            />
-          </div>
-          <div>
-            <label className="block text-gray-700 font-semibold mb-1">Travel Date</label>
-            <DatePicker
-              selected={formData.date ? new Date(formData.date) : null}
-              onChange={date => handleChange("date", date ? date.toISOString().split('T')[0] : "")}
-              placeholderText="Choose your own date"
-              className="border border-gray-300 p-2 rounded w-full bg-white text-gray-700 h-[44px]"
-              dateFormat="yyyy-MM-dd"
-              minDate={new Date()}
+            <select
               required
-            />
+              value={formData.bookingDate}
+              onChange={e => {
+                if (e.target.value === '__custom__') {
+                  setShowBookingDatePicker(true);
+                } else {
+                  setShowBookingDatePicker(false);
+                  handleChange('bookingDate', e.target.value);
+                }
+              }}
+              className="border border-gray-300 p-2 rounded w-full bg-white text-gray-700 h-[44px]"
+            >
+              <option value="">Select Booking Date</option>
+              {getBookingDateOptions().map(date => (
+                <option key={date} value={date}>{date}</option>
+              ))}
+              <option value="__custom__">Pick a custom date...</option>
+            </select>
+            {showBookingDatePicker && (
+              <div className="absolute z-50 bg-white p-2 rounded shadow border mt-2">
+                <DatePicker
+                  selected={formData.bookingDate ? new Date(formData.bookingDate) : null}
+                  onChange={date => {
+                    setShowBookingDatePicker(false);
+                    handleChange('bookingDate', date ? date.toISOString().split('T')[0] : '');
+                  }}
+                  inline
+                  minDate={new Date()}
+                />
+              </div>
+            )}
+          </div>
+          <div className="relative">
+            <label className="block text-gray-700 font-semibold mb-1">Travel Date</label>
+            <select
+              required
+              value={formData.date}
+              onChange={e => {
+                if (e.target.value === '__custom__') {
+                  setShowTravelDatePicker(true);
+                } else {
+                  setShowTravelDatePicker(false);
+                  handleChange('date', e.target.value);
+                }
+              }}
+              className="border border-gray-300 p-2 rounded w-full bg-white text-gray-700 h-[44px]"
+            >
+              <option value="">Select Travel Date</option>
+              {getTravelDateOptions().map(date => (
+                <option key={date} value={date}>{date}</option>
+              ))}
+              <option value="__custom__">Pick a custom date...</option>
+            </select>
+            {showTravelDatePicker && (
+              <div className="absolute z-50 bg-white p-2 rounded shadow border mt-2">
+                <DatePicker
+                  selected={formData.date ? new Date(formData.date) : null}
+                  onChange={date => {
+                    setShowTravelDatePicker(false);
+                    handleChange('date', date ? date.toISOString().split('T')[0] : '');
+                  }}
+                  inline
+                  minDate={new Date()}
+                />
+              </div>
+            )}
           </div>
         </div>
 
@@ -395,18 +519,17 @@ const UserForm = () => {
             required
           />
           <label htmlFor="terms" className="text-sm text-gray-700">
-            I agree to Ace the Himalaya Terms and Conditions
+            I agree to Fusion Expeditions Terms and Conditions
           </label>
         </div>
 
-        <div>
-          <button
-            type="submit"
-            className="bg-[#F7941D] hover:bg-[#E47312] text-white font-semibold py-2 px-6 rounded-full"
-          >
-            Submit
-          </button>
-        </div>
+        <Button
+          type="submit"
+          text="Submit"
+          variant="primary"
+          className="w-full bg-[#F7941D] hover:bg-[#E47312] text-white font-bold py-3 rounded-full text-lg mt-6 shadow-md disabled:opacity-60"
+          disabled={loading}
+        />
       </form>
     </div>
   );
