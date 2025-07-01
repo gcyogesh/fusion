@@ -32,7 +32,7 @@ const TopCategoriesSection = ({ buttonText, activities }: Props) => {
    
      <div className="grid grid-cols-1 md:grid-cols-3 gap-10 ">
        {activities.slice(0, 3).map((card) => (
-         <Link key={card._id} href={`/activities/${card.slug}`} className="flex flex-col gap-2">
+         <Link key={card._id} href={`/customise-packages/activities/${card.slug}`} className="flex flex-col gap-2">
            <div className="aspect-square">
              <ImageDisplay
                src={card.image}

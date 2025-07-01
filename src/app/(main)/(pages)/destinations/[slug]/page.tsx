@@ -98,7 +98,7 @@ export default async function Page({ params }: Params) {
                     {destination.subtitle}
                   </h3>
                   {destination.description && (
-                    <TextDescription text={destination.description} />
+                    <TextDescription text={destination.description} className="line-clamp-3" />
                   )}
                 </div>
 
@@ -119,6 +119,7 @@ export default async function Page({ params }: Params) {
               <div className="space-y-4 mt-4">
                 {destinations
                   .filter((item) => item.slug !== slug)
+                  .slice(0, 3)
                   .map((item) => (
                     <Link key={item._id} href={`/destinations/${item.slug}`}>
                       <div className="cursor-pointer">
