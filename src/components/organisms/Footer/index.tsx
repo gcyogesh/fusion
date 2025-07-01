@@ -38,7 +38,7 @@ export default function Footer({ destinations = [], activities = [] }: FooterPro
           <div className="w-full lg:w-4/12 flex flex-col space-y-6">
             {/* Logo */}
             <div className="w-[150px] md:w-[180px]">
-              <Logo />
+              <Logo index={1}/>
             </div>
 
             {/* Newsletter */}

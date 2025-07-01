@@ -12,9 +12,10 @@ interface LogoType {
 interface LogoProps {
   width?: number;
   height?: number;
+  index?: number;
 }
 
-const Logo = ({ width = 180, height }: LogoProps) => {
+const Logo = ({ width = 180, height, index }: LogoProps) => {
   const [logo, setLogo] = useState<LogoType | null>(null);
   const [, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -30,7 +31,7 @@ const Logo = ({ width = 180, height }: LogoProps) => {
         const imageData = result.data.image;
         console.log(imageData.urls)
         setLogo({
-          url: imageData.urls && imageData.urls.length > 0 ? imageData.urls[0] : '',
+          url: imageData.urls?.[index ?? 0] || '',
           alt: imageData.alt || 'Logo',
           width: imageData.width,
           height: imageData.height,
