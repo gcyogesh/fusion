@@ -108,11 +108,10 @@ export function AdminTable<T extends ItemBase>({
   const [showSuccess, setShowSuccess] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [fetchError, setFetchError] = useState<string | null>(null);
-  
   const [currentPage, setCurrentPage] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
   const itemsPerPage = 8;
-  const totalPages = Math.ceil(items.length / itemsPerPage);
-  const paginatedItems = items.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
 
   const [alert, setAlert] = useState({
     show: false,
@@ -133,23 +132,31 @@ export function AdminTable<T extends ItemBase>({
   const refreshData = async () => {
     try {
       setFetchError(null);
-      const response = await fetchAPI<any>({ endpoint });
+      const response = await fetchAPI<any>({
+        endpoint,
+        params: { page: currentPage, limit: itemsPerPage }
+      });
       let data: T[] = [];
+      let total = 0;
       if (response && Array.isArray(response.data)) {
         data = response.data;
+        total = response.total || response.data.length;
       } else if (response && Array.isArray(response)) {
         data = response;
+        total = response.length;
       }
       setItems(data);
+      setTotalItems(total);
     } catch (error) {
       setItems([]);
+      setTotalItems(0);
       setFetchError("Packages not available");
     }
   };
 
   useEffect(() => {
     refreshData();
-  }, [endpoint]);
+  }, [endpoint, currentPage]);
 
   const handleEdit = (item: T) => {
     setCurrentItem(item);
@@ -242,7 +249,7 @@ export function AdminTable<T extends ItemBase>({
           </div>
         )}
         <div className={`grid gap-8 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5${items.length === 0 ? ' hidden' : ''}`}>
-          {paginatedItems.map((item) => {
+          {items.map((item) => {
             const itemId = item._id || item.id;
             const isBlog = endpoint === 'blogs';
             const cardContent = (
@@ -347,6 +354,14 @@ export function AdminTable<T extends ItemBase>({
             method={currentItem._id ? "PUT" : "POST"}
             onCancel={() => setShowForm(false)}
             onSave={handleSave}
+          />
+        )}
+        {totalPages > 1 && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            getPageUrl={() => '#'}
+            onPageChange={setCurrentPage}
           />
         )}
       </div>

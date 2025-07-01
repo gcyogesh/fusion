@@ -5,6 +5,8 @@ import Button from "@/components/atoms/button";
 import TextDescription from "@/components/atoms/description";
 import { loadStripe } from '@stripe/stripe-js';
 import { fetchAPI } from '@/utils/apiService';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 interface TourPackage {
   _id: string;
@@ -242,8 +244,29 @@ const UserForm = () => {
             {/* RIGHT: Booking Details */}
             <div className="flex-1 p-8 flex flex-col justify-center min-w-[250px]">
               <h2 className="text-xl font-bold mb-4 text-[#0E334F]">Booking Details</h2>
-              <div className="mb-2"><span className="font-semibold">Booking Date:</span> {formData.bookingDate}</div>
-              <div className="mb-2"><span className="font-semibold">Travel Date:</span> {formData.date}</div>
+              <div className="grid md:grid-cols-2 gap-4 mb-4">
+                <div>
+                  <label className="block text-gray-700 font-semibold mb-1">Booking Date</label>
+                  <input
+                    type="text"
+                    value={formData.bookingDate}
+                    readOnly
+                    className="border border-gray-300 p-2 rounded w-full bg-gray-100 text-gray-700 cursor-not-allowed h-[44px]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-700 font-semibold mb-1">Travel Date</label>
+                  <DatePicker
+                    selected={formData.date ? new Date(formData.date) : null}
+                    onChange={date => handleChange("date", date ? date.toISOString().split('T')[0] : "")}
+                    placeholderText="Choose your own date"
+                    className="border border-gray-300 p-2 rounded w-full bg-white text-gray-700 h-[44px]"
+                    dateFormat="yyyy-MM-dd"
+                    minDate={new Date()}
+                    required
+                  />
+                </div>
+              </div>
               <div className="mb-2"><span className="font-semibold">Name:</span> {formData.name}</div>
               <div className="mb-2"><span className="font-semibold">Email:</span> {formData.email}</div>
               <div className="mb-2"><span className="font-semibold">Phone:</span> {formData.phone}</div>
@@ -273,25 +296,29 @@ const UserForm = () => {
           className="w-full max-w-[850px] mb-10 text-left"
         />
 
-        {/* Show Booking Date as read-only */}
-        <div className="mb-4">
-          <label className="block text-gray-700 font-semibold mb-1">Booking Date</label>
-          <input
-            type="text"
-            value={formData.bookingDate}
-            readOnly
-            className="border border-gray-300 p-2 rounded w-full bg-gray-100 text-gray-700 cursor-not-allowed"
-          />
-        </div>
-        {/* Show Travel Date as read-only */}
-        <div className="mb-4">
-          <label className="block text-gray-700 font-semibold mb-1">Travel Date</label>
-          <input
-            type="text"
-            value={formData.date}
-            readOnly
-            className="border border-gray-300 p-2 rounded w-full bg-gray-100 text-gray-700 cursor-not-allowed"
-          />
+        {/* Booking Date and Travel Date side by side */}
+        <div className="grid md:grid-cols-2 gap-4 mb-4">
+          <div>
+            <label className="block text-gray-700 font-semibold mb-1">Booking Date</label>
+            <input
+              type="text"
+              value={formData.bookingDate}
+              readOnly
+              className="border border-gray-300 p-2 rounded w-full bg-gray-100 text-gray-700 cursor-not-allowed h-[44px]"
+            />
+          </div>
+          <div>
+            <label className="block text-gray-700 font-semibold mb-1">Travel Date</label>
+            <DatePicker
+              selected={formData.date ? new Date(formData.date) : null}
+              onChange={date => handleChange("date", date ? date.toISOString().split('T')[0] : "")}
+              placeholderText="Choose your own date"
+              className="border border-gray-300 p-2 rounded w-full bg-white text-gray-700 h-[44px]"
+              dateFormat="yyyy-MM-dd"
+              minDate={new Date()}
+              required
+            />
+          </div>
         </div>
 
         <div className="grid md:grid-cols-2 gap-4 mb-4">

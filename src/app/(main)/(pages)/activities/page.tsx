@@ -18,7 +18,7 @@ export default async function ActivitiesPage() {
       <HeroBanner herodata={herodata?.data || []} />
 
       <section className="max-w-7xl mx-auto px-4">
-        <h2 className="text-3xl font-bold mb-8 text-center">{heading}</h2>
+
         {/* First Row: Rectangle + Square */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
           {activitiesData[0] && (
