@@ -196,7 +196,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
                   </div>
                   <div className="mt-3">
                     <h1 className="text-xl font-bold">{relatedBlogs[0].subtitle}</h1>
-                    <p className="mt-2 h-[155px]">{relatedBlogs[0].description}</p>
+                    <TextDescription text={relatedBlogs[0].description} className="mt-2 line-clamp-5" />
                   </div>
                 </Link>
               </div>
@@ -210,10 +210,11 @@ export default async function Page({ params }: { params: { slug: string } }) {
                         variant="smallrectangle"
                         title={card.subtitle}
                         description={card.description}
+                      
                       />
                       <div className="mt-4 h-[150px]">
                         <h1 className="text-lg font-semibold">{card.title}</h1>
-                        <TextDescription text={card.description} className="text-justify" />
+                        <TextDescription text={card.description} className="text-justify line-clamp-3" />
                       </div>
                     </div>
                   </Link>

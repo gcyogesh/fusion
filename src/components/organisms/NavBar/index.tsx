@@ -7,7 +7,6 @@ import { IoMdClose } from 'react-icons/io'
 import { FiMenu } from 'react-icons/fi'
 import { usePathname } from 'next/navigation'
 import { FaWhatsapp } from 'react-icons/fa'
-import { fetchAPI } from '@/utils/apiService'
 
 type NavLink = {
   name: string
@@ -105,7 +104,7 @@ export default function Navbar({ destinations = [], activities = [] }: NavbarPro
 
   const getNavbarClasses = () => {
     if (pathname === '/' && scrollY === 0) {
-      return ' blur-base bg-white/20  text-white shadow-lg'
+      return 'blur-base bg-white/20 text-white shadow-lg'
     }
     return 'bg-[#0F7BBA] text-white'
   }
@@ -118,11 +117,11 @@ export default function Navbar({ destinations = [], activities = [] }: NavbarPro
     >
       <div className="max-w-7xl mx-auto flex justify-between items-center px-4 py-4 h-20">
         <div>
-        <Link href="/">
-          <Logo />
-        </Link>
+          <Link href="/" className="cursor-pointer">
+            <Logo />
+          </Link>
         </div>
-        
+
         {/* Desktop Nav */}
         <ul className="hidden md:flex gap-8 font-medium text-base relative">
           {navLinks.map((link) => (
@@ -132,20 +131,20 @@ export default function Navbar({ destinations = [], activities = [] }: NavbarPro
               onMouseEnter={() => setDropdownOpen(link.hasDropdown ? link.name : null)}
             >
               <div className="flex items-center gap-1 cursor-pointer">
-                <Link href={link.href}>{link.name}</Link>
-                {link.hasDropdown && <ChevronDown className="w-3 h-4 mt-[2px] " />}
+                <Link href={link.href} className="cursor-pointer">{link.name}</Link>
+                {link.hasDropdown && <ChevronDown className="w-3 h-4 mt-[2px]" />}
               </div>
 
               {link.hasDropdown && dropdownOpen === link.name && (
                 <ul
-                  className="absolute top-8 left-0 right-4 w-40 backdrop-blur-xl bg-white/20 rounded-md text-white shadow-lg  py-2 z-50"
+                  className="absolute top-8 left-0 right-4 w-40 backdrop-blur-xl bg-white/20 rounded-md text-white shadow-lg py-2 z-50"
                   onMouseLeave={() => setDropdownOpen(null)}
                 >
                   {link.subLinks?.map((sublink) => (
                     <li key={sublink.name}>
                       <Link
                         href={sublink.href}
-                        className="block px-4 py-2  hover:bg-[#E47312]"
+                        className="block px-4 py-2 hover:bg-[#E47312] cursor-pointer"
                         onClick={() => setDropdownOpen(null)}
                       >
                         {sublink.name}
@@ -159,12 +158,17 @@ export default function Navbar({ destinations = [], activities = [] }: NavbarPro
         </ul>
 
         <div className="flex items-center gap-4">
-          <Link href="https://wa.me/977985-1167629" target="_blank" rel="noopener noreferrer">
-            <FaWhatsapp className="text-white text-3xl hover:text-green-400 transition-colors cursor-pointer" />
+          <Link
+            href="https://wa.me/977985-1167629"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="cursor-pointer"
+          >
+            <FaWhatsapp className="text-white text-3xl hover:text-green-400 transition-colors" />
           </Link>
 
-          <Link href="/contact">
-            <button className="hidden lg:block bg-primary hover:bg-gradient-to-r from-[#D35400] to-[#A84300] text-white text-base font-medium h-[46px] w-[160px] rounded-full transition">
+          <Link href="/contact" className="cursor-pointer">
+            <button className="hidden lg:block bg-primary hover:bg-gradient-to-r from-[#D35400] to-[#A84300] text-white text-base font-medium h-[46px] w-[160px] rounded-full transition cursor-pointer">
               Contact
             </button>
           </Link>
@@ -188,7 +192,7 @@ export default function Navbar({ destinations = [], activities = [] }: NavbarPro
                 className="flex justify-between items-center cursor-pointer py-2"
                 onClick={() => setMobileDropdown(mobileDropdown === link.name ? null : link.name)}
               >
-                <Link href={link.href} onClick={toggleMenu}>
+                <Link href={link.href} onClick={toggleMenu} className="cursor-pointer">
                   {link.name}
                 </Link>
                 {link.hasDropdown &&
@@ -205,7 +209,7 @@ export default function Navbar({ destinations = [], activities = [] }: NavbarPro
                       <Link
                         href={sublink.href}
                         onClick={toggleMenu}
-                        className="block py-1 text-sm"
+                        className="block py-1 text-sm cursor-pointer"
                       >
                         {sublink.name}
                       </Link>
@@ -216,8 +220,8 @@ export default function Navbar({ destinations = [], activities = [] }: NavbarPro
             </div>
           ))}
 
-          <Link href="/contact" onClick={toggleMenu}>
-            <button className="w-full bg-primary hover:bg-gradient-to-r from-[#D35400] to-[#A84300] text-white font-medium h-[46px] rounded-full">
+          <Link href="/contact" onClick={toggleMenu} className="cursor-pointer">
+            <button className="w-full bg-primary hover:bg-gradient-to-r from-[#D35400] to-[#A84300] text-white font-medium h-[46px] rounded-full cursor-pointer">
               Contact
             </button>
           </Link>

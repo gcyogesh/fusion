@@ -1,3 +1,4 @@
+
 import Image from "next/image";
 import { FaInstagram, FaFacebookF, FaYoutube } from "react-icons/fa";
 import HeroSection from "@/components/organisms/HeroSection";
@@ -131,6 +132,7 @@ export default async function Home() {
   const packagesdata: DestinationData = await fetchAPI({ endpoint: "tour/tour-packages" });
   const acctivitiesdata: any = await fetchAPI({ endpoint: "activities" });
   const activities: Activity[] = acctivitiesdata?.data || [];
+const testimonialData = (await fetchAPI({ endpoint: "testimonials" })) || [];
 
   // Filter packages to exclude activities and destinations
   const filteredPackages = packagesdata?.data?.filter((card) => {
@@ -182,6 +184,7 @@ export default async function Home() {
     <div className="flex flex-col gap-3">
       <div className="flex justify-between text-sm ">
         <span className="flex items-center gap-1 font-medium text-[20px] text-[#7E7E7E]">
+          <Image src={"/images/Location.svg"} alt="Clock" width={20} height={20}/>
           {card.location.city}, {card.location.country}
         </span>
         <span className="flex items-center gap-2 font-medium text-[20px]  text-[#7E7E7E]  ">
@@ -448,7 +451,7 @@ export default async function Home() {
       <section><PartnerSection partnersdata={partnersdata.data} /></section>
 
      
- <TestimonialsSection />
+ <TestimonialsSection testimonialData={testimonialData} />
 
 
 
@@ -534,7 +537,7 @@ export default async function Home() {
               <div className="mt-3">
                 <TextHeader size="small" text={String(blogsdata.data[0].subtitle)} align="left" />
                 
-                <p className="mt-2 h-[155px]"></p>
+               <TextDescription text={blogsdata.data[0].description} className="text-justify line-clamp-4" />
               
                 
               </div>

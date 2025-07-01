@@ -111,10 +111,11 @@ const Blogs = async ({ searchParams }: Props) => {
                       variant="rectangle"
                       title={currentBlogs[0].subtitle}
                       description={currentBlogs[0].subtitle}
+                      createdAt={currentBlogs[0].createdAt}
                     />
                     <div className="mt-3">
                       <h1 className="text-xl font-bold">{currentBlogs[0].subtitle}</h1>
-                      <p className="mt-2">{currentBlogs[0].description}</p>
+                      <TextDescription text={currentBlogs[0].description} className="mt-2 line-clamp-5" />
                     </div>
                   </div>
                 </Link>
@@ -130,6 +131,7 @@ const Blogs = async ({ searchParams }: Props) => {
                       variant="smallrectangle"
                       title={card.subtitle}
                       description={card.description}
+                      createdAt={card.createdAt}
                     />
                     <div className="mt-2 h-[150px]">
                       <h1 className="text-lg font-semibold">{card.subtitle}</h1>

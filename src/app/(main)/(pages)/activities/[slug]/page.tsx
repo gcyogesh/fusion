@@ -63,11 +63,12 @@ export default async function Page({ params }: Params) {
               <div className="space-y-4 mt-4">
                 {activities
                   .filter((item) => item.slug !== slug)
+                  .slice(0, 3)
                   .map((item) => (
                     <div key={item._id}>
                       <ImageDisplay src={item.image} variant="smallrectangle" />
-                                 <TextHeader text={activity.title} size="small" align="left" className="mt-2" />
-                  <h3 className="text-lg font-medium text-gray-600">{activity.subtitle}</h3>
+                      <TextHeader text={item.title} size="small" align="left" className="mt-2" />
+                      <h3 className="text-lg font-medium text-gray-600">{item.subtitle}</h3>
                     </div>
                   ))}
               </div>

@@ -281,7 +281,10 @@ export default async function Page({ params }: { params: { id: string } }) {
           </aside>
         </div>
       </section>
-      <FAQAccordion />
+      <div id="FAQs"><FAQAccordion /></div>
+      <div></div>
+      
+      
     </>
   );
 }
