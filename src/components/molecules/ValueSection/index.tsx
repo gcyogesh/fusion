@@ -41,8 +41,7 @@ const ValuesSection = () => {
   specialWordsIndices="1,2"
   align="left"
   width="100%"
-  buttonText="Why Fusion Expedition"
-  buttonLink="/about" 
+  buttonText="Why Fusion Expedition" 
 />
 
           <div className="flex flex-col justify-end h-full mt-6 md:mt-80 lg:mt-80">

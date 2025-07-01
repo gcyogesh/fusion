@@ -1,3 +1,4 @@
+
 import Image from "next/image";
 import { FaInstagram, FaFacebookF, FaYoutube } from "react-icons/fa";
 import HeroSection from "@/components/organisms/HeroSection";
@@ -536,7 +537,7 @@ const testimonialData = (await fetchAPI({ endpoint: "testimonials" })) || [];
               <div className="mt-3">
                 <TextHeader size="small" text={String(blogsdata.data[0].subtitle)} align="left" />
                 
-                <p className="mt-2 h-[155px]"></p>
+               <TextDescription text={blogsdata.data[0].description} className="text-justify line-clamp-4" />
               
                 
               </div>
