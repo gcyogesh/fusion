@@ -44,6 +44,7 @@ interface TourPackageFormProps {
   destinationId?: string;
   destinationTitle?: string;
   onClose?: () => void;
+  type?: string;
 }
 
 // Move InputField component outside
@@ -343,7 +344,7 @@ const StarRating = ({ value, onChange, max = 5 }) => (
   </div>
 );
 
-const TourPackageForm = ({ initialData = undefined, onClose, destinationId, destinationTitle }: TourPackageFormProps) => {
+const TourPackageForm = ({ initialData = undefined, onClose, destinationId, destinationTitle, type }: TourPackageFormProps) => {
   const [formData, setFormData] = useState<TourPackageFormData>({
     title: '',
     description: '',
@@ -866,14 +867,14 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <InputField 
-          label="Destination"
+          label={type === 'activities' ? 'Activity' : 'Destination'}
           name="destinationTitle"
           value={destinationTitle || ''}
           onChange={() => {}}
           readOnly
           required
           icon={<FiFlag />}
-          placeholder="Destination"
+          placeholder={type === 'activities' ? 'Activity' : 'Destination'}
           min={undefined}
           max={undefined}
         />
@@ -1296,7 +1297,13 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
           
           <div className="flex-1 overflow-y-auto p-6">
             {renderStatus()}
-            <form onSubmit={handleSubmit} autoComplete="off" className="space-y-6">
+            <form onSubmit={handleSubmit} 
+              onKeyDown={e => {
+                if (e.key === 'Enter' && activeTab !== 'media') {
+                  e.preventDefault();
+                }
+              }}
+              autoComplete="off" className="space-y-6">
               {activeTab === 'basic' && renderBasicInfoTab()}
               {activeTab === 'location' && renderLocationTab()}
               {activeTab === 'pricing' && renderPricingTab()}
@@ -1306,6 +1313,7 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
               {activeTab === 'media' && renderMediaTab()}
               <div className="pt-6 border-t border-gray-200 flex justify-between">
                 <Button
+                  type="button"
                   text="Back"
                   onClick={goToPrevTab}
                   variant="secondary"
@@ -1327,6 +1335,7 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
                   />
                 ) : (
                   <Button
+                    type="button"
                     text="Next"
                     onClick={goToNextTab}
                     className="!py-3 !px-8 font-bold"

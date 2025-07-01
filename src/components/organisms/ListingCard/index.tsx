@@ -289,8 +289,16 @@ export function AdminTable<T extends ItemBase>({
                     let title = '';
                     const slug = item.slug || (safeString(item.title)?.toLowerCase().replace(/\s+/g, '-') || itemId);
                     if (pathname && pathname.includes('/dashboard')) {
-                      href = `/dashboard/customise-packages/${slug}`;
-                      title = 'See Dashboard Custom Package';
+                      if (endpoint === 'activities') {
+                        href = `/dashboard/customise-packages/activities/${slug}`;
+                        title = 'See Dashboard Custom Activity Package';
+                      } else if (endpoint === 'destinations') {
+                        href = `/dashboard/customise-packages/destinations/${slug}`;
+                        title = 'See Dashboard Custom Destination Package';
+                      } else {
+                        href = `/dashboard/customise-packages/${slug}`;
+                        title = 'See Dashboard Custom Package';
+                      }
                     } else {
                       href = `/customise-packages/${slug}/${slug}`;
                       title = 'See Custom Package';

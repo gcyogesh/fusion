@@ -40,7 +40,7 @@ interface Package {
   [key: string]: any;
 }
 
-interface Destination {
+interface DestinationOrActivity {
   _id: string;
   title: string;
   [key: string]: any;
@@ -167,7 +167,6 @@ function mapPackageToFormData(pkg: Package, destinationId: string): TourPackageF
     tags: pkg.tags || [],
     rating: pkg.rating || '',
     destination: destinationId,
-    googleMapUrl: pkg.googleMapUrl || '',
     gallery: pkg.gallery || [],
   };
 }
@@ -246,11 +245,10 @@ function PackageDetailsModal({ pkg, onClose }) {
   );
 }
 
-export default function Page({ params }: { params: Promise<{ slug: string }> }) {
-  const resolvedParams = use(params);
-  const slug = resolvedParams.slug;
+export default function Page({ params }: { params: { type: string; slug: string } }) {
+  const { type, slug } = params;
 
-  const [destination, setDestination] = useState<Destination | null>(null);
+  const [entity, setEntity] = useState<DestinationOrActivity | null>(null);
   const [relatedPackages, setRelatedPackages] = useState<Package[]>([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [showForm, setShowForm] = useState(false);
@@ -270,40 +268,38 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
     async function fetchData() {
       try {
         setLoading(true);
-        console.log("Fetching destination for slug:", slug);
-        const destRes: any = await fetchAPI({
-          endpoint: `destinations/${slug}`,
-        });
-        console.log("Destination response:", destRes);
-        const fetchedDestination = destRes.data.destination;
-        setDestination(fetchedDestination);
-        const relatedIds = destRes.data.relatedPackages?.map(
-          (pkg: { _id: string }) => pkg._id
-        ) || [];
-        console.log("Related package IDs:", relatedIds);
+        let endpoint = '';
+        if (type === 'destinations') {
+          endpoint = `destinations/${slug}`;
+        } else if (type === 'activities') {
+          endpoint = `activities/${slug}`;
+        } else {
+          setErrorMessage('Unknown type.');
+          setLoading(false);
+          return;
+        }
+        const res: any = await fetchAPI({ endpoint });
+        const entity = res.data.destination || res.data.activity || res.data;
+        setEntity(entity);
+        const relatedIds = res.data.relatedPackages?.map((pkg: { _id: string }) => pkg._id) || [];
         const packages = await Promise.all(
           relatedIds.map(async (id: string) => {
-            const pkgRes: any = await fetchAPI({
-              endpoint: `tour/tour-packages/${id}`,
-            });
-            console.log("Fetched package:", pkgRes.data);
+            const pkgRes: any = await fetchAPI({ endpoint: `tour/tour-packages/${id}` });
             return pkgRes.data;
           })
         );
-        console.log("All fetched packages:", packages);
         setRelatedPackages(packages);
       } catch (error: any) {
-        console.error("Error fetching data:", error);
         setErrorMessage(error.message || "Failed to fetch data.");
       } finally {
         setLoading(false);
       }
     }
-    if (slug) fetchData();
-  }, [slug]);
+    if (slug && type) fetchData();
+  }, [slug, type]);
 
   const handleEdit = (pkg: Package) => {
-    setEditingPackage(mapPackageToFormData(pkg, destination?._id || ''));
+    setEditingPackage(mapPackageToFormData(pkg, entity?._id || ''));
     setShowForm(true);
     setAlert({
       show: true,
@@ -366,17 +362,19 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
         <PackageDetailsModal pkg={selectedPackage} onClose={() => setSelectedPackage(null)} />
       )}
       <div className="max-w-6xl mx-auto">
-        {/* Destination Info */}
-        {destination && (
+        {/* Entity Info */}
+        {entity && (
           <div className="mb-8">
             <h1 className="text-3xl font-bold border-b border-gray-300 pb-2">
-              {destination.title}
+              {entity.title}
             </h1>
             <p className="text-gray-700 mt-2 text-sm">
-              This type of trip includes many destinations and varieties of
-              activities within Nepal. They are mostly the experiences that are
-              easier to undertake as compared to mountain activities, jungle
-              safari, helicopter tours, and other activities.
+              {type === 'destinations' && (
+                <>This type of trip includes many destinations and varieties of activities within Nepal. They are mostly the experiences that are easier to undertake as compared to mountain activities, jungle safari, helicopter tours, and other activities.</>
+              )}
+              {type === 'activities' && (
+                <>This section is for managing packages related to the selected activity.</>
+              )}
             </p>
           </div>
         )}
@@ -399,8 +397,9 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
             <TourPackageForm 
               onClose={() => setShowForm(false)} 
               initialData={editingPackage || undefined} 
-              destinationId={destination?._id || ''}
-              destinationTitle={destination?.title || ''}
+              destinationId={entity?._id || ''}
+              destinationTitle={entity?.title || ''}
+              type={type}
             />
           </div>
         )}
@@ -446,4 +445,4 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
       </div>
     </div>
   );
-}
+} 
