@@ -28,7 +28,7 @@ interface TourPackage {
   };
   basePrice: number;
   currency: string;
-  gallery: string[];
+  gallery: string;
   duration: {
     days: number;
     nights: number;
@@ -124,7 +124,7 @@ export default async function Page({ params }: Params) {
                     <Link key={item._id} href={`/destinations/${item.slug}`}>
                       <div className="cursor-pointer">
                         <ImageDisplay
-                          src={item.imageUrls?.[0] || item.image}
+                          src={item.imageUrls?.[0]}
                           variant="smallrectangle"
                         />
                         <TextHeader
@@ -150,14 +150,13 @@ export default async function Page({ params }: Params) {
 
 <div className="w-full h-[1.5px] bg-[#C2C2C2]" />
       
-      <section>
-        <TextHeader text="Related packages" align="left" size="large" width={855} className="mb-1" />
-       <div className="grid grid-cols-1 md:grid-cols-3 gap-10 ">
+     
+       <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mt-4 md:mt-6 ">
       {relatedPackages.map((card, index) => (
         <Link href={`/itinerary/${card._id}`} key={index} className="flex flex-col gap-4">
           <div className="aspect-video">
             <ImageDisplay
-              src={card.imageUrls?.[0]}
+              src={card.gallery?.[0]}
               variant="square"
               snippet="popular"
               snippetPosition="start"
@@ -189,14 +188,14 @@ export default async function Page({ params }: Params) {
             <div className="w-full h-[1.5px] bg-[#C2C2C2]" />
 
              <div className="flex flex-row  text-lg font-medium text-[#7E7E7E] text-[20px] mt-1">
-        Start From <span className="text-primary font-semibold ml-5">$120 - ${card.basePrice}</span>
+        Starting Price: <span className="text-primary font-semibold ml-5">$120 - ${card.basePrice}</span>
             </div>
           </div>
         </Link>
       ))}
     </div>
     </section>
-      </section>
+      
     </>
   );
 }

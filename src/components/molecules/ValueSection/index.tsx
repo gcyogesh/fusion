@@ -1,29 +1,62 @@
 'use client';
-import { FaUsers, FaLeaf, FaMountain, FaCompass } from "react-icons/fa";
+import { Star, Leaf, User } from 'lucide-react';
 import TextHeader from "@/components/atoms/headings";
 import TextDescription from "@/components/atoms/description";
+import Image from "next/image";
 
 const values = [
   {
-    icon: <FaUsers className="text-3xl text-[#002B45]" />,
+   icon: (
+      <Image
+        src="/images/bxs_user.png"
+        alt="Customer-Centeric"
+        width={32}
+        height={32}
+        className="w-21 h-8.5"
+      />
+    ),
     title: "Customer-Centric",
     description:
       "Your experience is at the heart of everything we do. We listen, care, and curate every trip based on what matters most to you — making your travel seamless and memorable.",
   },
   {
-    icon: <FaLeaf className="text-3xl text-[#002B45]" />,
+    icon: (
+      <Image
+        src="/images/mdi_leaf.png"
+        alt="Sustainable Travel Icon"
+        width={32}
+        height={32}
+        className="w-23 h-8.5"
+      />
+    ),
     title: "Sustainable Travel",
     description:
       "We believe in preserving the beauty of Nepal for generations to come. Our trips focus on eco-conscious travel, supporting local communities, and minimizing our environmental impact.",
   },
   {
-    icon: <FaMountain className="text-3xl text-[#002B45]" />,
+    icon: (
+      <Image
+        src="/images/mdi_flight.png"
+        alt="Authentic Experiences Icon"
+        width={32}
+        height={32}
+        className="w-23 h-8.5"
+      />
+    ),
     title: "Authentic Experiences",
     description:
       "Go beyond the ordinary. We craft journeys that connect you deeply with Nepal’s rich culture, warm people, and breathtaking landscapes — experiences that leave a lasting impact.",
   },
   {
-    icon: <FaCompass className="text-3xl text-[#002B45]" />,
+    icon: (
+      <Image
+        src="/images/material-symbols_star-rounded.png"
+        alt="Expert Local Guides Icon"
+        width={32}
+        height={32}
+        className="w-21 h-8.5"
+      />
+    ),
     title: "Expert Local Guides",
     description:
       "Explore Nepal with passionate, knowledgeable local experts who bring destinations to life and ensure your safety, comfort, and enjoyment every step of the way.",
