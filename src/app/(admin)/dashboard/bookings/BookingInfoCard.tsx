@@ -19,7 +19,7 @@ export interface Booking {
   paymentStatus: string;
   totalAmount: number;
   createdAt: string;
-  updatedAt: string;p
+  updatedAt: string;
 }
 
 interface BookingInfoCardProps {
@@ -55,6 +55,9 @@ const BookingInfoCard: React.FC<BookingInfoCardProps> = ({ booking, onStatusChan
   const [showModal, setShowModal] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleted, setDeleted] = useState(false);
+  const [showPackageDetails, setShowPackageDetails] = useState(false);
+  const [packageDetails, setPackageDetails] = useState<any>(null);
+  const [packageLoading, setPackageLoading] = useState(false);
 
   const handleStatusUpdate = async (newStatus: string) => {
     setLoading(true);
@@ -89,6 +92,21 @@ const BookingInfoCard: React.FC<BookingInfoCardProps> = ({ booking, onStatusChan
       setLoading(false);
       setShowDeleteConfirm(false);
     }
+  };
+
+  const handlePackageDropdown = async () => {
+    if (!showPackageDetails && !packageDetails && booking.tourPackage) {
+      setPackageLoading(true);
+      try {
+        const res = await fetchAPI({ endpoint: 'tour/tour-packages/' + booking.tourPackage });
+        setPackageDetails(res.data);
+      } catch (e) {
+        setPackageDetails(null);
+      } finally {
+        setPackageLoading(false);
+      }
+    }
+    setShowPackageDetails((prev) => !prev);
   };
 
   if (deleted) return null;
@@ -167,6 +185,28 @@ const BookingInfoCard: React.FC<BookingInfoCardProps> = ({ booking, onStatusChan
                 </span>
               </div>
             </div>
+            {/* Package Details Dropdown */}
+            <div className="mt-2 font-semibold text-primary/80 flex items-center cursor-pointer select-none" onClick={handlePackageDropdown}>
+              <span>Package Details</span>
+              <FiChevronDown className={`ml-2 transition-transform ${showPackageDetails ? 'rotate-180' : ''}`} />
+            </div>
+            {showPackageDetails && (
+              <div className="p-4 bg-gray-50 rounded-lg border mt-2">
+                {packageLoading ? (
+                  <div>Loading package details...</div>
+                ) : packageDetails ? (
+                  <>
+                    <div className="font-bold text-lg mb-1">{packageDetails.title}</div>
+                    <div className="mb-1 text-gray-600">{packageDetails.location?.city}, {packageDetails.location?.country}</div>
+                    <div className="mb-1">Base Price: <span className="font-semibold text-[#F7941D]">{packageDetails.currency?.toUpperCase()} {packageDetails.basePrice}</span></div>
+                    <div className="mb-1">Duration: <span className="font-semibold text-[#0E334F]">{packageDetails.duration?.days}D/{packageDetails.duration?.nights}N</span></div>
+                    <div className="mb-2 text-gray-700 text-sm">{packageDetails.description}</div>
+                  </>
+                ) : (
+                  <div className="text-red-500">No package details found.</div>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -1,4 +1,4 @@
-import { fetchAPI } from '@/utils/apiService';
+import { fetchAPI, APIResponse } from '@/utils/apiService';
 import Breadcrumb from '@/components/atoms/breadcrumb';
 import { MapPin } from 'lucide-react';
 import TextHeader from '@/components/atoms/headings';
@@ -13,7 +13,8 @@ import ItinerarySection from '@/components/molecules/ItinerarySection';
 import FAQAccordion from '@/components/organisms/faq';
 import Link from 'next/link';
 import Image from 'next/image';
-
+import React from 'react';
+import PricingCard from '@/components/atoms/pricingcard';
 const trekTabs = [
   "Overview",
   "Itinerary",
@@ -48,7 +49,7 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
 
 export default async function Page({ params }: { params: { id: string } }) {
   const endpoint = `tour/tour-packages/${params.id}`;
-  const response = await fetchAPI({ endpoint });
+  const response = await fetchAPI<APIResponse<any>>({ endpoint });
   const destination = response?.data;
 
   if (!destination) notFound();
@@ -215,8 +216,11 @@ export default async function Page({ params }: { params: { id: string } }) {
             </div>
 
             <div id="Book-Now"></div>
-            <div className="py-6">
-              <UserForm />
+            <div className="py-6" id="user-form-section">
+              <UserForm 
+                availableBookingDates={["2024-07-01", "2024-07-10", "2024-07-15"]}
+                availableTravelDates={["2024-07-05", "2024-07-12", "2024-07-20"]}
+              />
             </div>
           {/*trips maps */}
             <div id="Trip-Map" className="py-6">
@@ -268,27 +272,7 @@ export default async function Page({ params }: { params: { id: string } }) {
 
           <aside className="w-auto px-6 mb-6 md:mb-0 lg:mb-0 md:px-0 lg:px-0 ">
             <div className="sticky top-24 w-full">
-              <div className="max-w-xs flex flex-col items-center rounded-xl border border-black bg-white shadow p-1 text-center space-y-3">
-                <div className="bg-[#002D62] text-white p-2 h-[45px] w-[300px] text-xl font-medium rounded-xl">Best Price</div>
-                <div className="flex items-center gap-4 mt-4">
-                  <p className="text-gray-700 font-semibold text-xl">USD</p>
-                  <p className="text-4xl font-bold text-gray-800">{destination.basePrice}</p>
-                  <p className="text-sm leading-tight">
-                    <span>Per</span>
-                    <span>Person</span>
-                  </p>
-                </div>
-                <hr className="border-t border-dashed border-gray-300 w-full" />
-                <p className="text-base text-gray-500">
-                  Price May Vary According<br />To The Group Size.
-                </p>
-                <div className="py-4 space-y-2 pb-4 items-center flex flex-col">
-                  <Button text="Book this Trip" variant="primary" className="text-xs sm:text-sm w-[175px] h-[42px] font-semibold" />
-                  <Link  href="/contact" className="w-full">
-                  <Button text="Make an Enquiry" variant="secondary" className="text-xs sm:text-sm border border-black text-[#0E334F] !p-[10px] w-[175px] h-[42px] font-medium" />
-                  </Link>
-                </div>
-              </div>
+              <PricingCard basePrice={destination.basePrice} />
             </div>
           </aside>
         </div>

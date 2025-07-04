@@ -383,6 +383,7 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitStatus, setSubmitStatus] = useState(null);
   const [activeTab, setActiveTab] = useState('basic');
+  const [pendingSubmit, setPendingSubmit] = useState(false);
 
   useEffect(() => {
     if (initialData) {
@@ -542,7 +543,7 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
     }
     // Media tab validation
     if (tab === 'media') {
-      if (!galleryFiles.length) newErrors.gallery = 'At least one gallery image is required';
+      // Gallery validation removed as per user request
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -690,6 +691,12 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!pendingSubmit) {
+      setAlert({ show: true, type: 'confirm', message: 'Are you sure you want to submit this tour package?' });
+      setPendingSubmit(true);
+      return;
+    }
+    setPendingSubmit(false);
     setSubmitStatus(null);
     setErrors({});
 
@@ -825,7 +832,17 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
         show={alert.show}
         type={alert.type}
         message={alert.message}
-        onConfirm={() => setAlert({ ...alert, show: false })}
+        onConfirm={() => {
+          setAlert({ ...alert, show: false });
+          if (alert.type === 'confirm' && pendingSubmit) {
+            // Actually submit the form now
+            setTimeout(() => handleSubmit({ preventDefault: () => {} }), 0);
+          }
+        }}
+        onCancel={() => {
+          setAlert({ ...alert, show: false });
+          setPendingSubmit(false);
+        }}
       />
     );
   };
@@ -1297,9 +1314,10 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
           
           <div className="flex-1 overflow-y-auto p-6">
             {renderStatus()}
-            <form onSubmit={handleSubmit} 
+            <form 
+              onSubmit={e => e.preventDefault()}
               onKeyDown={e => {
-                if (e.key === 'Enter' && activeTab !== 'media') {
+                if (e.key === 'Enter') {
                   e.preventDefault();
                 }
               }}
@@ -1322,7 +1340,7 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
                 />
                 {isLastTab ? (
                   <Button
-                    type="submit"
+                    type="button"
                     text={isSubmitting ? 'Processing...' : (initialData ? 'Update Package' : 'Create Tour Package')}
                     disabled={isSubmitting}
                     leftIcon={isSubmitting ? (
@@ -1332,6 +1350,7 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
                       </svg>
                     ) : undefined}
                     className="!py-3 !px-8 font-bold"
+                    onClick={handleSubmit}
                   />
                 ) : (
                   <Button
