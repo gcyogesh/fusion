@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import TextHeader from "@/components/atoms/headings";
 import Button from "@/components/atoms/button";
-import { FaMapMarkerAlt, FaCalendarAlt, FaTimes } from "react-icons/fa";
+import { FaMapMarkerAlt, FaCalendarAlt, FaTimes, FaSearch } from "react-icons/fa";
 import ArrowIcon from "@/components/atoms/arrowIcon";
 
 interface HeroData {
@@ -22,14 +22,12 @@ const HeroSection = ({ herodata }: { herodata: HeroData }) => {
   const isGif = bannerImage.toLowerCase().endsWith(".gif");
 
   const [location, setLocation] = useState("");
-  const [minDuration, setMinDuration] = useState("");
-  const [maxDuration, setMaxDuration] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [showResults, setShowResults] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleSearch = async () => {
-    if (!location.trim() && !minDuration && !maxDuration) {
+    if (!location.trim()) {
       setSearchResults([]);
       setShowResults(false);
       return;
@@ -37,16 +35,7 @@ const HeroSection = ({ herodata }: { herodata: HeroData }) => {
 
     setLoading(true);
     const params = new URLSearchParams();
-
-    if (location.trim()) {
-      params.append("location", location.trim());
-    }
-    if (minDuration) {
-      params.append("min", minDuration);
-    }
-    if (maxDuration) {
-      params.append("max", maxDuration);
-    }
+    params.append("location", location.trim());
 
     try {
       const res = await fetch(
@@ -70,16 +59,15 @@ const HeroSection = ({ herodata }: { herodata: HeroData }) => {
     }
   };
 
-  // 👇 Automatically trigger search after input changes (debounced)
   useEffect(() => {
     const delayDebounce = setTimeout(() => {
-      if (location.trim() || minDuration || maxDuration) {
+      if (location.trim()) {
         handleSearch();
       }
-    }, 700); // debounce delay
+    }, 700);
 
     return () => clearTimeout(delayDebounce);
-  }, [location, minDuration, maxDuration]);
+  }, [location]);
 
   const handleCloseResults = () => {
     setShowResults(false);
@@ -118,7 +106,6 @@ const HeroSection = ({ herodata }: { herodata: HeroData }) => {
           fill
           className="object-cover"
         />
-
         <TextHeader
           text={title}
           specialWordsIndices="2"
@@ -148,76 +135,34 @@ const HeroSection = ({ herodata }: { herodata: HeroData }) => {
         </div>
       </div>
 
-      {/* SEARCH BAR */}
-      <div className="absolute w-full max-w-[1100px] mx-auto left-0 right-0 top-[97%] md:top-[96%] lg:top-[95%] z-50 px-2">
-        <div className="relative flex items-center bg-white rounded-full px-2 py-2 sm:py-3 shadow-lg gap-0 md:gap-2">
-          <div className="flex items-center justify-between overflow-x-auto sm:overflow-visible pr-3 flex-grow">
-            {/* Location Input */}
-            <div className="flex items-center gap-2 flex-shrink-0 min-w-[100px] sm:min-w-[160px] md:min-w-[200px]">
-              <span className="bg-[#FEF2D6] p-1 md:p-4 rounded-full">
-                <Image src="/images/tdesign_location-filled.svg" alt="Location Icon" width={35} height={35} />
-              </span>
-              <div className="flex flex-col text-[10px] sm:text-sm md:text-base w-full truncate">
-                <label htmlFor="location" className="font-bold">Location</label>
-                <input
-                  id="location"
-                  type="text"
-                  placeholder="Enter your destination"
-                  value={location}
-                  onChange={(e) => setLocation(e.target.value)}
-                  className="text-gray-500 truncate bg-transparent border-none outline-none placeholder-gray-400"
-                />
-              </div>
-            </div>
-
-            {/* Min Duration Input */}
-            <div className="flex items-center gap-2 flex-shrink-0 min-w-[100px] sm:min-w-[160px] md:min-w-[200px]">
-              <span className="bg-[#FEF2D6] p-1 md:p-4 rounded-full">
-                <Image src="/images/uis_calender.svg" alt="Calendar Icon" width={35} height={35} />
-              </span>
-              <div className="flex flex-col text-[10px] sm:text-sm md:text-base w-full truncate">
-                <label htmlFor="minDuration" className="font-bold">Min Days</label>
-                <input
-                  id="minDuration"
-                  type="number"
-                  placeholder="Minimum days"
-                  value={minDuration}
-                  onChange={(e) => setMinDuration(e.target.value)}
-                  className="text-gray-500 truncate bg-transparent border-none outline-none placeholder-gray-400 appearance-none"
-                  min="1"
-                />
-              </div>
-            </div>
-
-            {/* Max Duration Input */}
-            <div className="flex items-center gap-2 flex-shrink-0 min-w-[110px] sm:min-w-[160px] md:min-w-[200px]">
-              <span className="bg-[#FEF2D6] p-1 md:p-4 rounded-full">
-                <Image src="/images/uis_calender.svg" alt="Calendar Icon" width={35} height={35} />
-              </span>
-              <div className="flex flex-col text-[10px] sm:text-sm md:text-base w-full truncate">
-                <label htmlFor="maxDuration" className="font-bold">Max Days</label>
-                <input
-                  id="maxDuration"
-                  type="number"
-                  placeholder="Maximum days"
-                  value={maxDuration}
-                  onChange={(e) => setMaxDuration(e.target.value)}
-                  className="text-gray-500 truncate bg-transparent border-none outline-none placeholder-gray-400 appearance-none"
-                  min="1"
-                />
-              </div>
+      {/* SEARCH BAR (Only Location) */}
+      <div className="absolute w-full max-w-[780px] mx-auto left-0 right-0 top-[97%] md:top-[96%] lg:top-[95%] z-50 px-2">
+        <div className="relative flex items-center bg-white rounded-full px-2 py-2 sm:py-3 shadow-lg gap-2">
+          {/* Location Input Only */}
+          <div className="flex items-center gap-2 w-full">
+            <span className="bg-[#FEF2D6] p-1 md:p-4 rounded-full">
+              <Image src="/images/tdesign_location-filled.svg" alt="Location Icon" width={35} height={35} />
+            </span>
+            <div className="flex flex-col w-full">
+              <input
+                id="location"
+                type="text"
+                placeholder="Where's your next adventure?"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                className="text-gray-500 truncate bg-transparent border-none outline-none placeholder-gray-400 w-full"
+              />
             </div>
           </div>
 
-          {/* Search Button (manual trigger retained) */}
-          <div className="absolute right-0 md:right-2 top-1/2 -translate-y-1/2 sm:relative sm:top-0 sm:translate-y-0 bg-orange-400 md:bg-white rounded-r-3xl rounded-bl-xs flex-shrink-0 z-10">
+          <div className="bg-white rounded-r-3xl flex-shrink-0 z-10">
             <button
               onClick={handleSearch}
               disabled={loading}
-              className="flex items-center md:bg-[#0E334F] px-3 py-3 md:py-2 text-white rounded-full font-medium hover:bg-blue-800 transition whitespace-nowrap text-xs sm:text-sm md:text-base disabled:opacity-50"
+              className="flex items-center bg-[#0E334F] px-3 py-3 md:py-2 text-white rounded-full font-medium hover:bg-blue-800 transition whitespace-nowrap text-xs sm:text-sm md:text-base disabled:opacity-50"
             >
               <span className="block sm:hidden">
-                <Image src="/images/mynaui_search.svg" alt="Search Icon" width={26} height={25} />
+                <FaSearch className="text-white w-[20px] h-[20px]" />
               </span>
               <span className="hidden sm:flex items-center gap-3.5">
                 {loading ? "Searching..." : "Find My Adventure"}
@@ -242,10 +187,7 @@ const HeroSection = ({ herodata }: { herodata: HeroData }) => {
                   ? `Found ${searchResults.length} tour packages`
                   : "No tour packages found"}
               </h3>
-              <button
-                onClick={handleCloseResults}
-                className="text-gray-400 hover:text-gray-600 transition"
-              >
+              <button onClick={handleCloseResults} className="text-gray-400 hover:text-gray-600 transition">
                 <FaTimes className="w-5 h-5" />
               </button>
             </div>
@@ -260,11 +202,7 @@ const HeroSection = ({ herodata }: { herodata: HeroData }) => {
                   >
                     <div className="w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden bg-gray-200">
                       {tour.gallery?.[0] ? (
-                        <img
-                          src={tour.gallery[0]}
-                          alt={tour.title}
-                          className="w-full h-full object-cover"
-                        />
+                        <img src={tour.gallery[0]} alt={tour.title} className="w-full h-full object-cover" />
                       ) : (
                         <div className="w-full h-full bg-gradient-to-r from-blue-400 to-purple-500 flex items-center justify-center">
                           <FaMapMarkerAlt className="text-white text-xl" />
@@ -294,16 +232,10 @@ const HeroSection = ({ herodata }: { herodata: HeroData }) => {
                       {tour.discount ? (
                         <div className="flex flex-col items-end">
                           <span className="text-sm font-bold text-green-600">
-                            {formatPrice(
-                              tour.basePrice * (1 - tour.discount.percentage / 100),
-                              tour.currency === "334" ? "NPR" : tour.currency
-                            )}
+                            {formatPrice(tour.basePrice * (1 - tour.discount.percentage / 100), tour.currency === "334" ? "NPR" : tour.currency)}
                           </span>
                           <span className="text-xs text-gray-500 line-through">
-                            {formatPrice(
-                              tour.basePrice,
-                              tour.currency === "334" ? "NPR" : tour.currency
-                            )}
+                            {formatPrice(tour.basePrice, tour.currency === "334" ? "NPR" : tour.currency)}
                           </span>
                           <span className="text-xs bg-red-100 text-red-600 px-2 py-0.5 rounded-full">
                             {tour.discount.percentage}% OFF
@@ -311,10 +243,7 @@ const HeroSection = ({ herodata }: { herodata: HeroData }) => {
                         </div>
                       ) : (
                         <span className="text-sm font-bold text-gray-800">
-                          {formatPrice(
-                            tour.basePrice,
-                            tour.currency === "334" ? "NPR" : tour.currency
-                          )}
+                          {formatPrice(tour.basePrice, tour.currency === "334" ? "NPR" : tour.currency)}
                         </span>
                       )}
                     </div>

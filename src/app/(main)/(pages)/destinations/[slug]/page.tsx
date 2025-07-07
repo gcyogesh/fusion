@@ -78,7 +78,8 @@ export default async function Page({ params }: Params) {
 
   return (
     <>
-      <Breadcrumb currentnavlink={destination?.title || "Destination"} />
+    <Breadcrumb currentnavlink={`destinations/${destination?.title || 'destination'}`} />
+      
       <HeroBanner herodata={herodata?.data || []} />
 
       <section className="max-w-7xl mx-auto px-4">
