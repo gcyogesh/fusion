@@ -183,26 +183,14 @@ export default function SettingsPage() {
   };
 
   const handleSaveLogos = async () => {
-    // Both logos are required for upload
-    if (!logoFiles[0] && !logoUrls[0]) {
-      setAlert({ show: true, type: 'warning', message: 'Primary logo is required.' });
-      return;
-    }
-    if (!logoFiles[1] && !logoUrls[1]) {
-      setAlert({ show: true, type: 'warning', message: 'Secondary logo is required.' });
+    if (!logoFiles[0] && !logoFiles[1]) {
+      setAlert({ show: true, type: 'warning', message: 'Please select at least one logo to upload.' });
       return;
     }
     try {
       const formData = new FormData();
-      for (let i = 0; i < 2; i++) {
-        if (logoFiles[i]) {
-          formData.append('logo', logoFiles[i]);
-        } else if (logoUrls[i]) {
-          const response = await fetch(logoUrls[i]);
-          const blob = await response.blob();
-          formData.append('logo', blob, `existing-logo-${i}.png`);
-        }
-      }
+      if (logoFiles[0]) formData.append('logo', logoFiles[0]);
+      if (logoFiles[1]) formData.append('logo', logoFiles[1]);
       const res: any = await fetchAPI({
         endpoint: 'logo',
         method: 'POST',

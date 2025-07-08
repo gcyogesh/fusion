@@ -87,6 +87,12 @@ const InputField = ({
         readOnly={readOnly}
       />
     </div>
+    {errors[name] && (
+      <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
+        <FiAlertCircle className="flex-shrink-0" /> 
+        {errors[name]}
+      </p>
+    )}
   </div>
 );
 
@@ -123,6 +129,12 @@ const TextareaField = ({
         }`}
       />
     </div>
+    {errors[name] && (
+      <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
+        <FiAlertCircle className="flex-shrink-0" /> 
+        {errors[name]}
+      </p>
+    )}
   </div>
 );
 
@@ -174,6 +186,12 @@ const SingleImageUploadField = ({ label, name, onChange, file, errors = {} }) =>
           </label>
         )}
       </div>
+      {errors[name] && (
+        <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
+          <FiAlertCircle className="flex-shrink-0" /> 
+          {errors[name]}
+        </p>
+      )}
     </div>
   );
 };
@@ -241,86 +259,65 @@ const MultiImageUploadField = ({ label, name, onChange, files, max = 10, errors 
           );
         })}
       </div>
+      {errors[name] && (
+        <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
+          <FiAlertCircle className="flex-shrink-0" /> 
+          {errors[name]}
+        </p>
+      )}
     </div>
   );
 };
 
 // Move ArrayField component outside
-const ArrayField = ({ label, name, value, onChange, placeholder, required = false, errors = {} }) => {
-  // Track which input is focused for new item
-  const [newItem, setNewItem] = React.useState('');
-
-  // Handle adding new item(s)
-  const handleAddItem = () => {
-    if (!newItem.trim()) return;
-    // Split by newlines, trim, and filter out empty lines
-    const items = newItem.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
-    onChange([...value, ...items]);
-    setNewItem('');
-  };
-
-  // Handle Enter key for single-line add
-  const handleKeyDown = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleAddItem();
-    }
-  };
-
-  return (
-    <div className="mb-4">
-      <label className="block text-sm font-medium text-gray-700 mb-1">
-        {label} {required && <span className="text-red-500">*</span>}
-      </label>
-      <div className="space-y-2">
-        {value.map((item, idx) => (
-          <div key={idx} className="flex items-center gap-2">
-            <input
-              type="text"
-              value={item}
-              onChange={(e) => {
-                const updated = [...value];
-                updated[idx] = e.target.value;
-                onChange(updated);
-              }}
-              placeholder={placeholder}
-              className="flex-1 px-4 py-2.5 bg-white border border-gray-300 rounded-lg outline-none transition-all"
-            />
-            <button
-              type="button"
-              onClick={() => {
-                const updated = [...value];
-                updated.splice(idx, 1);
-                onChange(updated);
-              }}
-              className="p-2 text-red-500 hover:text-red-700 bg-red-50 rounded-lg"
-            >
-              <FiX />
-            </button>
-          </div>
-        ))}
-        <div className="flex items-center gap-2">
-          <textarea
-            value={newItem}
-            onChange={e => setNewItem(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder={placeholder + ' (Paste multiple lines to add several items)'}
-            className="flex-1 px-4 py-2.5 bg-white border border-gray-300 rounded-lg outline-none transition-all min-h-[40px]"
-            rows={1}
+const ArrayField = ({ label, name, value, onChange, placeholder, required = false, errors = {} }) => (
+  <div className="mb-4">
+    <label className="block text-sm font-medium text-gray-700 mb-1">
+      {label} {required && <span className="text-red-500">*</span>}
+    </label>
+    <div className="space-y-2">
+      {value.map((item, idx) => (
+        <div key={idx} className="flex items-center gap-2">
+          <input
+            type="text"
+            value={item}
+            onChange={(e) => {
+              const updated = [...value];
+              updated[idx] = e.target.value;
+              onChange(updated);
+            }}
+            placeholder={placeholder}
+            className="flex-1 px-4 py-2.5 bg-white border border-gray-300 rounded-lg outline-none transition-all"
           />
           <button
             type="button"
-            onClick={handleAddItem}
-            className="flex items-center gap-1 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90"
+            onClick={() => {
+              const updated = [...value];
+              updated.splice(idx, 1);
+              onChange(updated);
+            }}
+            className="p-2 text-red-500 hover:text-red-700 bg-red-50 rounded-lg"
           >
-            <FiPlus className="text-lg" /> Add Item
+            <FiX />
           </button>
         </div>
-        <div className="text-xs text-gray-500 mt-1">Tip: Paste multiple lines to add several items at once.</div>
-      </div>
+      ))}
+      <button
+        type="button"
+        onClick={() => onChange([...value, ''])}
+        className="flex items-center gap-1 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90"
+      >
+        <FiPlus className="text-lg" /> Add Item
+      </button>
     </div>
-  );
-};
+    {errors[name] && (
+      <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
+        <FiAlertCircle className="flex-shrink-0" /> 
+        {errors[name]}
+      </p>
+    )}
+  </div>
+);
 
 // StarRating component
 const StarRating = ({ value, onChange, max = 5 }) => (
@@ -383,6 +380,7 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
   const [itineraryImages, setItineraryImages] = useState([]); // NEW: Store itinerary images separately
   const [alert, setAlert] = useState<{ show: boolean; type: 'success' | 'error' | 'confirm' | 'warning'; message: string }>({ show: false, type: 'success', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitStatus, setSubmitStatus] = useState(null);
   const [activeTab, setActiveTab] = useState('basic');
   const [pendingSubmit, setPendingSubmit] = useState(false);
@@ -470,13 +468,116 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
     }
   }, [submitStatus]);
 
+  // Validation function
+  const validateForm = (tab = activeTab) => {
+    const newErrors: Record<string, string> = {};
+    // Basic tab validation
+    if (tab === 'basic' || tab === undefined) {
+      if (!formData.title.trim()) newErrors.title = 'Title is required';
+      if (!formData.description.trim()) newErrors.description = 'Description is required';
+      if (!formData.overview.trim()) newErrors.overview = 'Overview is required';
+      if (!formData.destination.trim()) newErrors.destination = 'Destination is required';
+    }
+    // Location tab validation
+    if (tab === 'location') {
+      if (!formData.location.city.trim()) newErrors.city = 'City is required';
+      if (!formData.location.country.trim()) newErrors.country = 'Country is required';
+      const lat = parseFloat(formData.location.coordinates.lat);
+      const lng = parseFloat(formData.location.coordinates.lng);
+      if (!formData.location.coordinates.lat) newErrors.lat = 'Latitude is required';
+      else if (isNaN(lat)) newErrors.lat = 'Latitude must be a number';
+      else if (lat < -90 || lat > 90) newErrors.lat = 'Latitude must be between -90 and 90';
+      if (!formData.location.coordinates.lng) newErrors.lng = 'Longitude is required';
+      else if (isNaN(lng)) newErrors.lng = 'Longitude must be a number';
+      else if (lng < -180 || lng > 180) newErrors.lng = 'Longitude must be between -180 and 180';
+      if (!googleMapImage) newErrors.googleMapUrl = 'Google Map image is required';
+    }
+    // Pricing tab validation
+    if (tab === 'pricing') {
+      if (!formData.duration.days) newErrors.days = 'Duration days is required';
+      if (!formData.duration.nights) newErrors.nights = 'Duration nights is required';
+      if (!formData.basePrice) newErrors.basePrice = 'Base price is required';
+      if (formData.basePrice && isNaN(parseFloat(formData.basePrice))) {
+        newErrors.basePrice = 'Base price must be a number';
+      }
+      if (formData.duration.days && isNaN(parseInt(formData.duration.days))) {
+        newErrors.days = 'Days must be a number';
+      }
+      if (formData.duration.nights && isNaN(parseInt(formData.duration.nights))) {
+        newErrors.nights = 'Nights must be a number';
+      }
+    }
+    // Details tab validation
+    if (tab === 'details') {
+      if (!formData.inclusions.length) newErrors.inclusions = 'At least one inclusion is required';
+      if (!formData.exclusions.length) newErrors.exclusions = 'At least one exclusion is required';
+      if (!formData.highlights.length) newErrors.highlights = 'At least one highlight is required';
+      if (!formData.quickfacts.length) newErrors.quickfacts = 'At least one quick fact is required';
+      if (!formData.tags.length) newErrors.tags = 'At least one tag is required';
+    }
+    // Features tab validation
+    if (tab === 'features') {
+      if (!formData.feature.groupSize.min) newErrors.min = 'Min group size is required';
+      if (!formData.feature.tripDuration) newErrors.tripDuration = 'Trip duration is required';
+      if (!formData.feature.tripDifficulty) newErrors.tripDifficulty = 'Trip difficulty is required';
+      if (!formData.feature.maxAltitude) newErrors.maxAltitude = 'Max altitude is required';
+      if (!formData.feature.startEndPoint) newErrors.startEndPoint = 'Start/End point is required';
+      if (!formData.feature.meals.length) newErrors.meals = 'At least one meal is required';
+      if (!formData.feature.activities.length) newErrors.activities = 'At least one activity is required';
+      if (!formData.feature.accommodation.length) newErrors.accommodation = 'At least one accommodation is required';
+      if (!formData.feature.bestSeason.length) newErrors.bestSeason = 'At least one best season is required';
+    }
+    // Itinerary tab validation
+    if (tab === 'itinerary') {
+      if (!formData.itinerary.length) newErrors.itinerary = 'At least one itinerary day is required';
+      formData.itinerary.forEach((day, idx) => {
+        if (!day.day) newErrors[`itinerary-day-${idx}`] = 'Day number is required';
+        if (!day.title) newErrors[`itinerary-title-${idx}`] = 'Title is required';
+        if (!day.description) newErrors[`itinerary-description-${idx}`] = 'Description is required';
+        if (!day.activities || !day.activities.length) newErrors[`itinerary-activities-${idx}`] = 'At least one activity is required';
+        // Check if corresponding itinerary image exists
+        if (!itineraryImages[idx] || (typeof itineraryImages[idx] !== 'string' && !(itineraryImages[idx] instanceof File))) {
+          newErrors[`itinerary-image-${idx}`] = 'Image is required';
+        }
+      });
+    }
+    // Media tab validation
+    if (tab === 'media') {
+      // Gallery validation removed as per user request
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  // Focus/scroll to first error input
+  const focusFirstError = () => {
+    const firstErrorKey = Object.keys(errors)[0];
+    if (firstErrorKey) {
+      const el = document.querySelector(`[name="${firstErrorKey}"]`);
+      if (el && typeof (el as HTMLElement).focus === 'function') {
+        (el as HTMLElement).focus();
+        (el as HTMLElement).scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+  };
+
+  // Helper to get all error messages as a string
+  const getAllErrorMessages = () => {
+    return Object.values(errors).filter(Boolean).join('\n');
+  };
+
   // Next/Back navigation
   const tabOrder = ['basic', 'location', 'pricing', 'details', 'features', 'itinerary', 'media'];
   const isLastTab = activeTab === tabOrder[tabOrder.length - 1];
   const isFirstTab = activeTab === tabOrder[0];
   const goToNextTab = () => {
-    const idx = tabOrder.indexOf(activeTab);
-    if (idx < tabOrder.length - 1) setActiveTab(tabOrder[idx + 1]);
+    if (validateForm(activeTab)) {
+      const idx = tabOrder.indexOf(activeTab);
+      if (idx < tabOrder.length - 1) setActiveTab(tabOrder[idx + 1]);
+    } else {
+      focusFirstError();
+      setAlert({ show: true, type: 'error', message: getAllErrorMessages() || 'Please fix the errors above before continuing.' });
+    }
   };
   const goToPrevTab = () => {
     const idx = tabOrder.indexOf(activeTab);
@@ -486,6 +587,9 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: '' }));
+    }
   };
 
   const handleNestedChange = (field, key, value) => {
@@ -496,16 +600,25 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
         [key]: value,
       },
     }));
+    if (errors[key]) {
+      setErrors(prev => ({ ...prev, [key]: '' }));
+    }
   };
 
   const handleGalleryChange = (e) => {
     const files = Array.from(e.target.files);
     setGalleryFiles(files);
+    if (errors.gallery) {
+      setErrors(prev => ({ ...prev, gallery: '' }));
+    }
   };
 
   const handleMapImageChange = (e) => {
     const file = e.target.files[0];
     setGoogleMapImage(file);
+    if (errors.googleMapUrl) {
+      setErrors(prev => ({ ...prev, googleMapUrl: '' }));
+    }
   };
 
   // NEW: Handle itinerary image changes
@@ -516,6 +629,10 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
       updated[idx] = file;
       return updated;
     });
+    // Clear error for this specific itinerary image
+    if (errors[`itinerary-image-${idx}`]) {
+      setErrors(prev => ({ ...prev, [`itinerary-image-${idx}`]: '' }));
+    }
   };
 
   const handleItineraryChange = (idx, field, value) => {
@@ -524,6 +641,10 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
       updated[idx] = { ...updated[idx], [field]: value };
       return { ...prev, itinerary: updated };
     });
+    // Clear related errors
+    if (errors[`itinerary-${field}-${idx}`]) {
+      setErrors(prev => ({ ...prev, [`itinerary-${field}-${idx}`]: '' }));
+    }
   };
 
   const handleItineraryActivitiesChange = (idx, activities) => {
@@ -532,6 +653,10 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
       updated[idx] = { ...updated[idx], activities };
       return { ...prev, itinerary: updated };
     });
+    // Clear related errors
+    if (errors[`itinerary-activities-${idx}`]) {
+      setErrors(prev => ({ ...prev, [`itinerary-activities-${idx}`]: '' }));
+    }
   };
 
   const handleAddItineraryDay = () => {
@@ -573,6 +698,22 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
     }
     setPendingSubmit(false);
     setSubmitStatus(null);
+    setErrors({});
+
+    // Validate all tabs before submission
+    let hasErrors = false;
+    for (const tab of tabOrder) {
+      if (!validateForm(tab)) {
+        hasErrors = true;
+        break;
+      }
+    }
+
+    if (hasErrors) {
+      focusFirstError();
+      setAlert({ show: true, type: 'error', message: getAllErrorMessages() || 'Please fix the errors above before submitting.' });
+      return;
+    }
 
     setIsSubmitting(true);
 
@@ -716,8 +857,7 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
         placeholder="Enter tour title"
         required
         icon={<FiInfo />}
-        min={undefined}
-        max={undefined}      />
+        errors={errors} min={undefined} max={undefined}      />
       
       <TextareaField 
         label="Description" 
@@ -728,6 +868,7 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
         required 
         icon={<FiList />}
         rows={4}
+        errors={errors}
       />
       
       <TextareaField 
@@ -738,6 +879,7 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
         placeholder="Enter brief overview" 
         required 
         icon={<FiInfo />}
+        errors={errors}
       />
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -760,6 +902,12 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
             value={formData.rating}
             onChange={val => setFormData(f => ({ ...f, rating: val }))}
           />
+          {errors.rating && (
+            <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
+              <FiAlertCircle className="flex-shrink-0" />
+              {errors.rating}
+            </p>
+          )}
         </div>
       </div>
     </div>
@@ -776,8 +924,7 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
           placeholder="Enter city"
           required
           icon={<FiMapPin />}
-          min={undefined}
-          max={undefined}        />
+          errors={errors} min={undefined} max={undefined}        />
         <InputField 
           label="Country"
           name="country"
@@ -786,8 +933,7 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
           placeholder="Enter country"
           required
           icon={<FiMapPin />}
-          min={undefined}
-          max={undefined}        />
+          errors={errors} min={undefined} max={undefined}        />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <InputField 
@@ -806,8 +952,7 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
           })}
           placeholder="Enter latitude"
           icon={<FiNavigation />}
-          min={undefined}
-          max={undefined}        />
+          errors={errors} min={undefined} max={undefined}        />
         <InputField 
           label="Longitude"
           name="lng"
@@ -824,8 +969,7 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
           })}
           placeholder="Enter longitude"
           icon={<FiNavigation />}
-          min={undefined}
-          max={undefined}        />
+          errors={errors} min={undefined} max={undefined}        />
       </div>
       <SingleImageUploadField
         label="Google Map Image"
@@ -848,8 +992,7 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
           required
           type="number"
           icon={<FiDollarSign />}
-          min={undefined}
-          max={undefined}        />
+          errors={errors} min={undefined} max={undefined}        />
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Currency</label>
           <div className="relative">
@@ -881,8 +1024,7 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
           required
           type="number"
           icon={<FiCalendar />}
-          min={undefined}
-          max={undefined}        />
+          errors={errors} min={undefined} max={undefined}        />
         <InputField 
           label="Duration (Nights)"
           name="nights"
@@ -892,8 +1034,7 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
           required
           type="number"
           icon={<FiCalendar />}
-          min={undefined}
-          max={undefined}        />
+          errors={errors} min={undefined} max={undefined}        />
       </div>
     </div>
   );
@@ -906,6 +1047,7 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
         value={formData.inclusions} 
         onChange={(val) => setFormData({...formData, inclusions: val})} 
         placeholder="Add inclusion" 
+        errors={errors}
       />
       
       <ArrayField 
@@ -914,6 +1056,7 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
         value={formData.exclusions} 
         onChange={(val) => setFormData({...formData, exclusions: val})} 
         placeholder="Add exclusion" 
+        errors={errors}
       />
       
       <ArrayField 
@@ -922,6 +1065,7 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
         value={formData.highlights} 
         onChange={(val) => setFormData({...formData, highlights: val})} 
         placeholder="Add highlight" 
+        errors={errors}
       />
       
       <ArrayField 
@@ -930,6 +1074,7 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
         value={formData.quickfacts} 
         onChange={(val) => setFormData({...formData, quickfacts: val})} 
         placeholder="Add quick fact" 
+        errors={errors}
       />
       
       <ArrayField 
@@ -938,6 +1083,7 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
         value={formData.tags} 
         onChange={(val) => setFormData({...formData, tags: val})} 
         placeholder="Add tag" 
+        errors={errors}
       />
     </div>
   );
@@ -959,8 +1105,7 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
           placeholder="Enter minimum group size"
           type="number"
           icon={<FiUsers />}
-          min={undefined}
-          max={undefined}        />
+          errors={errors} min={undefined} max={undefined}        />
         
         <InputField 
           label="Trip Duration"
@@ -969,8 +1114,7 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
           onChange={(e) => handleNestedChange('feature', 'tripDuration', e.target.value)}
           placeholder="Enter trip duration"
           icon={<FiCalendar />}
-          min={undefined}
-          max={undefined}        />
+          errors={errors} min={undefined} max={undefined}        />
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1113,6 +1257,15 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
           files={gallerySlots}
           max={10}
         />
+        {(errors.fileSize || errors.fileType) && (
+          <div className="p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2">
+            <FiAlertCircle className="text-red-500 flex-shrink-0" />
+            <div>
+              {errors.fileSize && <p className="text-red-600">{errors.fileSize}</p>}
+              {errors.fileType && <p className="text-red-600">{errors.fileType}</p>}
+            </div>
+          </div>
+        )}
       </div>
     );
   };

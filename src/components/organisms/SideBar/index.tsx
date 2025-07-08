@@ -52,9 +52,9 @@ const Sidebar = ({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen: (open: boo
           {[
             { icon: FaTachometerAlt, text: "Dashboard", link: "/dashboard" },
             { icon: FaInbox, text: "Bookings", link: "/dashboard/bookings" },
-            { icon: FaUsers, text: "Destinations", link: "/dashboard/customise-destinations" },
+            { icon: FaUsers, text: "Destiantions", link: "/dashboard/customise-destinations" },
             { icon: FaWallet, text: "Blog Collection", link: "/dashboard/customise-blogs" },
-            { icon: FaChartLine, text: "Enquiry Form", link: "/dashboard/contact" },
+            { icon: FaChartLine, text: "Contact Form", link: "/dashboard/contact" },
             { icon: FaBox, text: "Activities", link: "/dashboard/customise-activities" },
             { icon: FaStar, text: "Testimonials", link: "/dashboard/customise-testimonials" },
             { icon: FaUserFriends, text: " Team", link: "/dashboard/customise-team" },
