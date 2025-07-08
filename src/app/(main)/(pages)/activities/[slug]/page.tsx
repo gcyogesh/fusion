@@ -35,7 +35,7 @@ export default async function Page({ params }: Params) {
 
   return (
     <>
-      <Breadcrumb currentnavlink={activity?.title || "Activity"} />
+    <Breadcrumb currentnavlink={`Activities/${activity?.title || "Activity"}`} />
       <HeroBanner herodata={herosectiondata?.data || []} />
 
       <section className="max-w-7xl mx-auto px-4">

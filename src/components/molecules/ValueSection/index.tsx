@@ -1,5 +1,4 @@
 'use client';
-import { Star, Leaf, User } from 'lucide-react';
 import TextHeader from "@/components/atoms/headings";
 import TextDescription from "@/components/atoms/description";
 import Image from "next/image";
@@ -12,7 +11,7 @@ const values = [
         alt="Customer-Centeric"
         width={32}
         height={32}
-        className="w-21 h-8.5"
+        className="w-8 h-8 md:w-22 md:h-10"
       />
     ),
     title: "Customer-Centric",
@@ -26,7 +25,7 @@ const values = [
         alt="Sustainable Travel Icon"
         width={32}
         height={32}
-        className="w-23 h-8.5"
+        className="w-8 h-8 md:w-22 md:h-10"
       />
     ),
     title: "Sustainable Travel",
@@ -40,7 +39,7 @@ const values = [
         alt="Authentic Experiences Icon"
         width={32}
         height={32}
-        className="w-23 h-8.5"
+        className="w-8 h-8 md:w-22 md:h-10"
       />
     ),
     title: "Authentic Experiences",
@@ -54,7 +53,7 @@ const values = [
         alt="Expert Local Guides Icon"
         width={32}
         height={32}
-        className="w-21 h-8.5"
+        className="w-8 h-8 md:w-22 md:h-10"
       />
     ),
     title: "Expert Local Guides",
@@ -94,7 +93,7 @@ const ValuesSection = () => {
               key={index}
               className="flex flex-col sm:flex-row sm:items-center bg-[#FEF2D6] shadow-sm rounded-xl p-4 border border-black"
             >
-              <div className="mb-3 sm:mb-0 sm:mr-4 border border-black rounded-full p-3 self-start sm:self-auto">
+              <div className="mb-3 sm:mb-0 sm:mr-4 border border-black rounded-full px-4 py-3 self-start sm:self-auto">
                 {value.icon}
               </div>
               <div>

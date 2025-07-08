@@ -59,7 +59,7 @@ export default async function DurationPage({ params }: { params: { slug: string 
 
     return (
       <>
-        <Breadcrumb currentnavlink="duration" />
+          <Breadcrumb currentnavlink={`Duration/${slugLabelMap[slug] || "Duration"}`} />
         <section className="max-w-7xl mx-auto px-6 py-12">
           <TextHeader
             text={`${slugLabelMap[slug] || ""} Packages`}

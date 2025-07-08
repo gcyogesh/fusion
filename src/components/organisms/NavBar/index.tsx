@@ -89,9 +89,29 @@ export default function Navbar({ destinations = [], activities = [] }: NavbarPro
         hasDropdown: true,
         subLinks: formattedActivities,
       },
-      { name: "About", href: "/about", hasDropdown: false },
+      { name: "About", 
+        href: "/about",
+        hasDropdown: true ,
+        subLinks: [
+  {
+    name: "Our Teams",
+    href:"/about/ourteams",
+    subtitle: "Meet the passionate people behind our mission",
+    title: "Ourteams",
+  },
+  {
+    name: "Fusion",
+    href: "/about",
+    subtitle: "Explore our story, values, and what drives us forward",
+    title: "Fusion",
+  },
+],
+      },
+          
+
       { name: "Blogs", href: "/blogs", hasDropdown: false },
       { name: "Duration", href: "/duration", hasDropdown: false },
+       { name: "Deals", href: "/deals", hasDropdown: false },
     ];
 
     setNavLinks(links);
@@ -176,21 +196,29 @@ export default function Navbar({ destinations = [], activities = [] }: NavbarPro
             {/* Left column - Sublinks list */}
             <div className="w-[300px] px-4 py-6">
               <ul className="divide-y divide-gray-200">
-                {activeDropdown.subLinks?.map((sub) => (
-                  <li key={sub.name} onMouseEnter={() => setHoveredSub(sub)}>
-                    <Link
-                      href={sub.href}
-                      className={`flex justify-between items-center px-5 py-3 hover:bg-primary hover:text-white transition-colors ${
-                        hoveredSub?.name === sub.name ? "bg-primary text-white" : ""
-                      }`}
-                    >
-                      <span>{sub.name}</span>
-                      <ChevronRight size={16} className="text-gray-400" />
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+  {activeDropdown.subLinks?.map((sub) => (
+    <li key={sub.name} onMouseEnter={() => setHoveredSub(sub)}>
+      <Link
+        href={sub.href}
+        className={`flex justify-between items-center px-5 py-3 hover:bg-primary hover:text-white transition-colors ${
+          hoveredSub?.name === sub.name ? "bg-primary text-white" : ""
+        }`}
+      >
+        <span>{sub.name}</span>
+        <ChevronRight
+          size={16}
+          className={`transition-colors ${
+            hoveredSub?.name === sub.name ? "text-white" : "text-gray-400"
+          }`}
+        />
+      </Link>
+    </li>
+  ))}
+</ul>
             </div>
+
+            <div className="w-[1px] h-auto my-6 bg-gray-300 m-8" />
+
 
             {/* Right column - Preview content */}
             <div className="flex-1 px-4 py-6 flex gap-6 items-start">
