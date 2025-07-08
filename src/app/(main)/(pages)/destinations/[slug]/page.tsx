@@ -189,7 +189,7 @@ export default async function Page({ params }: Params) {
             <div className="w-full h-[1.5px] bg-[#C2C2C2]" />
 
              <div className="flex flex-row  text-lg font-medium text-[#7E7E7E] text-[20px] mt-1">
-        Starting Price: <span className="text-primary font-semibold ml-5">$120 - ${card.basePrice}</span>
+        Starting Price: <span className="text-primary font-semibold ml-5">${card.basePrice}</span>
             </div>
           </div>
         </Link>

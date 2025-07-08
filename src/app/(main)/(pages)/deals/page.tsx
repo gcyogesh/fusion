@@ -1,5 +1,5 @@
 import ImageDisplay from "@/components/atoms/ImageCard";
-import { fetchAPI } from "@/utils/apiService"; // adjust path as needed
+import { fetchAPI } from "@/utils/apiService"; 
 
 type Tour = {
   _id: string;
@@ -35,7 +35,8 @@ export default async function Deals() {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-4 md:p-8">
+    <section className="max-w-7xl mx-auto px-4">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-4 md:p-8">
       {deals.map((item) => (
         <ImageDisplay
           key={item._id}
@@ -43,12 +44,12 @@ export default async function Deals() {
           alt={item.title}
           title={item.title}
           description={item.description}
-          createdAt={item.createdAt}
           totalTrips={item.totalTrips}
           variant="rectangle"
           showOverlayContent={true}
         />
       ))}
     </div>
+    </section>
   );
 }
