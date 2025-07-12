@@ -1,96 +1,128 @@
 import { fetchAPI } from "@/utils/apiService";
-import HeroBanner from "@/components/organisms/Banner/HeroBanner";
-import ImageDisplay from "@/components/atoms/ImageCard";
+import Breadcrumb from "@/components/atoms/breadcrumb";
 import TextHeader from "@/components/atoms/headings";
 import TextDescription from "@/components/atoms/description";
-import Breadcrumb from "@/components/atoms/breadcrumb";
+import ImageDisplay from "@/components/atoms/ImageCard";
+import Image from "next/image";
 import Link from "next/link";
-interface Activity {
-  _id: string;
-  title: string;
-  subtitle: string;
-  description: string;
-  image: string;
+
+interface Params {
   slug: string;
 }
 
-interface Params {
-  params: { slug: string };
-}
+type Tour = {
+  _id: string;
+  title: string;
+  description: string;
+  overview: string;
+  gallery?: string[];
+  image: string;
+  basePrice?: number;
+  location?: {
+    city: string;
+    country: string;
+  };
+  duration?: {
+    days: number;
+    nights: number;
+  };
+};
 
-export default async function Page({ params }: Params) {
-  const { slug } = params;
+export default async function ActivityCategoryPage({ params }: { params: Params }) {
+  let tours: Tour[] = [];
 
-  const herosectiondata = await fetchAPI({ endpoint: "herobanner/activities" });
-  const activitiesdata = await fetchAPI({ endpoint: "activities" });
+  try {
+    const response = await fetchAPI<{ data: Tour[] }>({
+      endpoint: `tour/tour-packages/category/slug/${params.slug}`,
+      method: "GET",
+      revalidateSeconds: 60,
+    });
 
-  const activities: Activity[] = activitiesdata?.data || [];
+    if (response?.data && Array.isArray(response.data)) {
+      tours = response.data;
+    }
+  } catch (error) {
+    console.error("Failed to fetch category by slug:", error);
+  }
 
-  const activity: Activity | undefined = activities.find((item) => item.slug === slug);
-  
-
-  // Debug logs
-  console.log("Slug param:", slug);
-  console.log("Activity found:", activity);
+  if (!tours.length) {
+    return (
+      <p className="text-center py-10 text-gray-500">
+        No tour packages found for <strong>{params.slug}</strong>.
+      </p>
+    );
+  }
 
   return (
     <>
-    <Breadcrumb currentnavlink={`Activities/${activity?.title || "Activity"}`} />
-      <HeroBanner herodata={herosectiondata?.data || []} />
+      <Breadcrumb currentnavlink={`Activities / ${params.slug.replace(/-/g, " ")}`} />
+      <section className="max-w-7xl mx-auto px-4 py-10">
+        <TextHeader
+          text={`${params.slug.replace(/-/g, " ")} Packages`}
+          specialWordsIndices="2"
+          size="medium"
+          width={622}
+          align="left"
+          className="mb-4"
+        />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+          {tours.map((card) => (
+            <Link
+              href={`/itinerary/${card._id}`}
+              key={card._id}
+              className="flex flex-col gap-4"
+            >
+              <div className="aspect-video">
+                <ImageDisplay
+                  src={card.gallery?.[0]}
+                  variant="square"
+                  snippetPosition="start"
+                  title={card.title}
+                  description={card.description || ""}
+                />
+              </div>
 
-      <section className="max-w-7xl mx-auto px-4">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left Column */}
-          <div className="lg:col-span-2 space-y-4">
-            {activity ? (
-              <div className="flex flex-col">
-                <ImageDisplay src={activity.image} variant="smallrectangle" />
-                <div className="mt-4">
-                  <TextHeader text={activity.title} size="small" align="left" />
-                  <h3 className="text-lg font-medium text-gray-600">{activity.subtitle}</h3>
-                  <TextDescription text={activity.description} />
+              <div className="flex flex-col gap-3">
+                <div className="flex justify-between text-sm">
+                  <span className="flex items-center gap-1 font-medium text-[20px] text-[#7E7E7E]">
+                    <Image
+                      src={"/images/Location.svg"}
+                      alt="Location"
+                      width={20}
+                      height={20}
+                    />
+                    {card.location?.city}, {card.location?.country}
+                  </span>
+                  <span className="flex items-center gap-2 font-medium text-[20px] text-[#7E7E7E]">
+                    <Image
+                      src={"/images/clock.svg"}
+                      alt="Clock"
+                      width={20}
+                      height={20}
+                    />
+                    {card.duration?.days} Days
+                  </span>
+                </div>
+
+                <TextHeader
+                  text={card.overview}
+                  size="small"
+                  align="left"
+                  width={410}
+                  className="line-clamp-2"
+                />
+                <TextDescription text={card.description} className="line-clamp-3" />
+                <div className="w-full h-[1.5px] bg-[#C2C2C2]" />
+                <div className="flex flex-row text-lg font-medium text-[#7E7E7E] text-[20px] mt-1">
+                  Starting Price:
+                  <span className="text-primary font-semibold ml-5">
+                    ${card.basePrice || 0}
+                  </span>
                 </div>
               </div>
-            ) : (
-              <div className="text-red-600 text-lg">No activity found for slug: {slug}</div>
-            )}
-          </div>
-
-          {/* Right Column */}
-          <div className="lg:col-span-1">
-            <div className="sticky top-24">
-              <TextHeader text="Other Tour Categories" size="small" align="left" />
-              <div className="space-y-4 mt-4">
-  {activities
-    .filter((item) => item.slug !== slug)
-    .slice(0, 3)
-    .map((item) => (
-      <Link
-        key={item._id}
-        href={`/activities/${item.slug}`}
-        className="block"
-      >
-        <div className="cursor-pointer">
-          <ImageDisplay src={item.image} variant="smallrectangle" />
-          <TextHeader text={item.title} size="small" align="left" className="mt-2" />
-          <h3 className="text-lg font-medium text-gray-600">{item.subtitle}</h3>
-          <TextDescription text={item.description} className="mt-1 line-clamp-3" />
+            </Link>
+          ))}
         </div>
-      </Link>
-    ))}
-</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-
-
-      <section>
-        <div className="max-w-7xl mx-auto   ">
-            <TextHeader text="Related Packages" align="left" />
-        </div>
-
       </section>
     </>
   );

@@ -13,18 +13,30 @@ type Props = {
   name: string
   href: string
   subLinks?: SubLink[]
+  isMobile?: boolean
   onClickLink?: () => void
 }
 
-export default function MobileDropdownMenu({ name, href, subLinks = [], onClickLink }: Props) {
+export default function DropdownMenu({ name, href, subLinks = [], isMobile = false, onClickLink }: Props) {
   const [open, setOpen] = useState(false)
 
-  const toggleDropdown = () => setOpen((prev) => !prev)
+  const toggleDropdown = () => {
+    setOpen((prev) => !prev)
+  }
+
+  const handleLinkClick = () => {
+    if (onClickLink) onClickLink()
+    setOpen(false)
+  }
 
   return (
-    <div className="w-full">
-      <div className="flex items-center justify-between py-2 cursor-pointer" onClick={toggleDropdown}>
-        <Link href={href} onClick={onClickLink}>
+    <div className={isMobile ? 'w-full' : 'relative group'} onMouseLeave={() => !isMobile && setOpen(false)}>
+      <div
+        className={`flex items-center justify-between cursor-pointer ${isMobile ? 'py-2' : 'gap-1'}`}
+        onClick={isMobile ? toggleDropdown : undefined}
+        onMouseEnter={() => !isMobile && setOpen(true)}
+      >
+        <Link href={href} onClick={isMobile ? handleLinkClick : undefined} className="cursor-pointer">
           {name}
         </Link>
         {subLinks.length > 0 &&
@@ -32,13 +44,21 @@ export default function MobileDropdownMenu({ name, href, subLinks = [], onClickL
       </div>
 
       {subLinks.length > 0 && open && (
-        <ul className="pl-4 space-y-2">
+        <ul
+          className={`${
+            isMobile
+              ? 'pl-4 space-y-2'
+              : 'absolute top-8 left-0 w-40 backdrop-blur-xl bg-white/20 rounded-md text-white shadow-lg py-2 z-50'
+          }`}
+        >
           {subLinks.map((sub) => (
             <li key={sub.name}>
               <Link
                 href={sub.href}
-                className="block py-1 text-sm"
-                onClick={onClickLink}
+                className={`block ${
+                  isMobile ? 'py-1 text-sm' : 'px-4 py-2 hover:bg-[#E47312]'
+                } cursor-pointer`}
+                onClick={isMobile ? handleLinkClick : () => setOpen(false)}
               >
                 {sub.name}
               </Link>

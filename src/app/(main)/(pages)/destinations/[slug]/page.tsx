@@ -74,12 +74,12 @@ export default async function Page({ params }: Params) {
    const destinationData = await fetchAPI({ endpoint: "destinations" });
   const destinations: Destination[] = destinationData?.data || [];
 
-
+console.log("hello1", destination);
+console.log("hello2", relatedPackages);
 
   return (
     <>
-    <Breadcrumb currentnavlink={`destinations/${destination?.title || 'destination'}`} />
-      
+      <Breadcrumb currentnavlink={destination?.title || "Destination"} />
       <HeroBanner herodata={herodata?.data || []} />
 
       <section className="max-w-7xl mx-auto px-4">

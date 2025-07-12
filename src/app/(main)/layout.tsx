@@ -29,10 +29,43 @@ export default async function RootLayout({
   const destinations = destinationsRes?.data || [];
   const activities = activitiesRes?.data || [];
 
+  // Fetch related packages per destination
+  // Create a map: { [slug]: TourPackage[] }
+  const relatedPackagesMap: { [slug: string]: any[] } = {};
+
+  await Promise.all(
+    destinations.map(async (dest: any) => {
+      const res = await fetchAPI({
+        endpoint: `destinations/${dest.slug}`,
+      }) as {
+        data: {
+          destination: any;
+          relatedPackages: { _id: string }[];
+        };
+      };
+
+      const relatedPackages = await Promise.all(
+        (res?.data?.relatedPackages || []).map(async (pkg) => {
+          const pkgRes = await fetchAPI({
+            endpoint: `tour/tour-packages/${pkg._id}`,
+          }) as { data: any };
+
+          return pkgRes.data;
+        })
+      );
+
+      relatedPackagesMap[dest.slug] = relatedPackages;
+    })
+  );
+
   return (
     <html lang="en" className={dmSans.variable}>
       <body className="antialiased bg-[#fef9ee]">
-        <Navbar destinations={destinations} activities={activities} />
+        <Navbar
+          destinations={destinations}
+          activities={activities}
+          relatedPackagesMap={relatedPackagesMap} // pass here
+        />
         {children}
         <Footer destinations={destinations.slice(0, 5)} />
       </body>

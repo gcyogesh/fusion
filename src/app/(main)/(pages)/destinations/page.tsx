@@ -5,9 +5,11 @@ import ImageDisplay from "@/components/atoms/ImageCard";
 import Link from "next/link";
 
 export default async function DestinationPage() {
+  // Fetch all destinations
   const destination = await fetchAPI({ endpoint: "destinations" });
   const destinationdata = destination?.data || [];
 
+  // Fetch hero banner
   const herodata = await fetchAPI({ endpoint: "herobanner/destinations" });
 
   return (

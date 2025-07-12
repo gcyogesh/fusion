@@ -7,6 +7,7 @@ import { IoMdClose } from "react-icons/io";
 import { FiMenu } from "react-icons/fi";
 import { FaWhatsapp } from "react-icons/fa";
 import { ChevronDown, ChevronUp, ChevronRight } from "lucide-react";
+
 import Image from "next/image";
 
 import Logo from "@/components/atoms/Logo";
@@ -24,8 +25,15 @@ type NavLink = {
     subtitle?: string;
     image?: string;
     title?: string;
+    relatedPackages?: {
+      name: string;
+      href: string;
+      duration?: string;
+      title?: string;
+    }[];
   }[];
 };
+
 
 type Destination = {
   title: string;
@@ -43,39 +51,74 @@ type Activity = {
   image?: string;
 };
 
+interface TourPackage {
+  _id: string;
+  title: string;
+  description: string;
+  overview: string;
+  location: {
+    city: string;
+    country: string;
+  };
+  basePrice: number;
+  currency: string;
+  gallery: string;
+  duration: {
+    days: number;
+    nights: number;
+  };
+  imageUrls?: string[];
+}
+
 interface NavbarProps {
   destinations: Destination[];
   activities: Activity[];
+  relatedPackagesMap: { [slug: string]: TourPackage[] };
 }
 
-export default function Navbar({ destinations = [], activities = [] }: NavbarProps) {
+export default function Navbar({
+  destinations = [],
+  activities = [],
+  relatedPackagesMap = {},
+}: NavbarProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [showNavbar, setShowNavbar] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
-  const [scrollY, setScrollY] = useState(0);
   const [navLinks, setNavLinks] = useState<NavLink[]>([]);
   const [activeDropdown, setActiveDropdown] = useState<NavLink | null>(null);
   const [hoveredSub, setHoveredSub] = useState<NavLink["subLinks"][0] | null>(null);
 
+  // Added missing scroll states
+  const [scrollY, setScrollY] = useState(0);
+  const [showNavbar, setShowNavbar] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+
   const pathname = usePathname();
 
   useEffect(() => {
+    // Format activities
     const formattedActivities = activities.map((item) => ({
       name: item.title,
       href: `/activities/${item.slug}`,
-      subtitle: item.subtitle || '',
-      image: item.imageUrls?.[0] || item.image || '',
+      subtitle: item.subtitle || "",
+      image: item.imageUrls?.[0] || item.image || "",
       title: item.title,
     }));
 
-    const formattedDestinations = destinations.map((item) => ({
-      name: item.title,
-      href: `/destinations/${item.slug}`,
-      subtitle: item.subtitle || '',
-      image: item.imageUrls?.[0] || item.image || '',
-      title: item.title,
-    }));
+    // Format destinations, inject relatedPackages from relatedPackagesMap
+    const formattedDestinations = destinations.map((item) => {
+      const relatedPkgs = relatedPackagesMap[item.slug] || [];
+      return {
+        name: item.title,
+        href: `/destinations/${item.slug}`,
+        image: item.imageUrls?.[0] || item.image || "",
+        relatedPackages: relatedPkgs.map((pkg) => ({
+          name: pkg.title,
+          href: `/itinerary/${pkg._id}`,
+          duration: pkg.duration ? `${pkg.duration.days} Days` : undefined,
+        })),
+      };
+    });
 
+    // Build nav links
     const links: NavLink[] = [
       {
         name: "Destinations",
@@ -89,41 +132,42 @@ export default function Navbar({ destinations = [], activities = [] }: NavbarPro
         hasDropdown: true,
         subLinks: formattedActivities,
       },
-      { name: "About", 
+      {
+        name: "About",
         href: "/about",
-        hasDropdown: true ,
+        hasDropdown: true,
         subLinks: [
-  {
-    name: "Our Teams",
-    href:"/about/ourteams",
-    subtitle: "Meet the passionate people behind our mission",
-    title: "Ourteams",
-  },
-  {
-    name: "Fusion",
-    href: "/about",
-    subtitle: "Explore our story, values, and what drives us forward",
-    title: "Fusion",
-  },
-],
+          {
+            name: "Our Teams",
+            href: "/about/ourteams",
+            subtitle: "Meet the passionate people behind our mission",
+            title: "Ourteams",
+          },
+          {
+            name: "Fusion",
+            href: "/about",
+            subtitle: "Explore our story, values, and what drives us forward",
+            title: "Fusion",
+          },
+        ],
       },
-          
-
       { name: "Blogs", href: "/blogs", hasDropdown: false },
       { name: "Duration", href: "/duration", hasDropdown: false },
-       { name: "Deals", href: "/deals", hasDropdown: false },
+      { name: "Deals", href: "/deals", hasDropdown: false },
     ];
 
     setNavLinks(links);
-  }, [destinations, activities]);
+  }, [destinations, activities, relatedPackagesMap]);
 
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
       setScrollY(currentScrollY);
+
       if (currentScrollY === 0) setShowNavbar(true);
       else if (currentScrollY > lastScrollY && currentScrollY > 100) setShowNavbar(false);
       else setShowNavbar(true);
+
       setLastScrollY(currentScrollY);
     };
 
@@ -142,9 +186,15 @@ export default function Navbar({ destinations = [], activities = [] }: NavbarPro
   };
 
   return (
-    <nav className={`fixed top-0 left-0 w-full z-60 px-2 transition-all duration-300 ease-linear ${showNavbar ? "translate-y-0" : "-translate-y-full"} ${getNavbarClasses()}`}>
+    <nav
+      className={`fixed top-0 left-0 w-full z-60 px-2 transition-all duration-300 ease-linear ${
+        showNavbar ? "translate-y-0" : "-translate-y-full"
+      } ${getNavbarClasses()}`}
+    >
       <div className="max-w-7xl mx-auto flex justify-between items-center px-4 py-4 h-20">
-        <Link href="/" className="cursor-pointer"><Logo /></Link>
+        <Link href="/" className="cursor-pointer">
+          <Logo />
+        </Link>
 
         {/* Desktop Nav */}
         <ul className="relative hidden md:flex gap-8 font-medium text-base">
@@ -196,41 +246,34 @@ export default function Navbar({ destinations = [], activities = [] }: NavbarPro
             {/* Left column - Sublinks list */}
             <div className="w-[300px] px-4 py-6">
               <ul className="divide-y divide-gray-200">
-  {activeDropdown.subLinks?.map((sub) => (
-    <li key={sub.name} onMouseEnter={() => setHoveredSub(sub)}>
-      <Link
-        href={sub.href}
-        className={`flex justify-between items-center px-5 py-3 hover:bg-primary hover:text-white transition-colors ${
-          hoveredSub?.name === sub.name ? "bg-primary text-white" : ""
-        }`}
-      >
-        <span>{sub.name}</span>
-        <ChevronRight
-          size={16}
-          className={`transition-colors ${
-            hoveredSub?.name === sub.name ? "text-white" : "text-gray-400"
-          }`}
-        />
-      </Link>
-    </li>
-  ))}
-</ul>
+                {activeDropdown.subLinks?.map((sub) => (
+                  <li key={sub.name} onMouseEnter={() => setHoveredSub(sub)}>
+                    <Link
+                      href={sub.href}
+                      className={`flex justify-between items-center px-5 py-3 hover:bg-primary hover:text-white transition-colors ${
+                        hoveredSub?.name === sub.name ? "bg-primary text-white" : ""
+                      }`}
+                    >
+                      <span>{sub.name}</span>
+                      <ChevronRight
+                        size={16}
+                        className={`transition-colors ${
+                          hoveredSub?.name === sub.name ? "text-white" : "text-gray-400"
+                        }`}
+                      />
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             </div>
 
             <div className="w-[1px] h-auto my-6 bg-gray-300 m-8" />
 
-
             {/* Right column - Preview content */}
             <div className="flex-1 px-4 py-6 flex gap-6 items-start">
               <div className="flex-1">
-                <TextHeader
-                  text={hoveredSub?.title || "Explore"}
-                  align="left"
-                  size="small"
-                />
-                <p className="text-sm text-gray-600 mt-2">
-                  {hoveredSub?.subtitle || "Hover over a destination to see more info."}
-                </p>
+                <TextHeader text={hoveredSub?.title || "Explore"} align="left" size="small" />
+                
                 <Link
                   href={hoveredSub?.href || "#"}
                   className="inline-block mt-4 text-sm font-medium text-primary hover:underline"
@@ -239,12 +282,24 @@ export default function Navbar({ destinations = [], activities = [] }: NavbarPro
                 </Link>
               </div>
 
+              {hoveredSub?.relatedPackages?.length > 0 && (
+                <div className="ml-4 mt-2">
+                  <p className="text-sm font-semibold">Related Packages:</p>
+                  <ul className="pl-3 text-sm text-gray-700 list-disc">
+                    {hoveredSub.relatedPackages.map((pkg, idx) => (
+                      <li key={idx}>
+                        <Link href={pkg.href}>
+                          {pkg.name}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
               {hoveredSub?.image && (
                 <div className="w-[280px] h-[220px] rounded overflow-hidden border border-gray-200">
-                  <ImageDisplay
-                    src={hoveredSub.image}
-                    variant="smallsquare"
-                  />
+                  <ImageDisplay src={hoveredSub.image} variant="smallsquare" />
                 </div>
               )}
             </div>
@@ -274,7 +329,11 @@ export default function Navbar({ destinations = [], activities = [] }: NavbarPro
               )
             )}
             <li>
-              <Link href="/contact" onClick={() => setIsMenuOpen(false)} className="block bg-primary text-white text-center py-2 rounded-full">
+              <Link
+                href="/contact"
+                onClick={() => setIsMenuOpen(false)}
+                className="block bg-primary text-white text-center py-2 rounded-full"
+              >
                 Contact
               </Link>
             </li>
