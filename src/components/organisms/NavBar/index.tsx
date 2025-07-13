@@ -76,6 +76,11 @@ interface NavbarProps {
   relatedPackagesMap: { [slug: string]: TourPackage[] };
 }
 
+interface ContactInfo {
+  whatsappNumber: string;
+  phones: string[];
+}
+
 export default function Navbar({
   destinations = [],
   activities = [],
@@ -90,6 +95,7 @@ export default function Navbar({
   const [scrollY, setScrollY] = useState(0);
   const [showNavbar, setShowNavbar] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const [contactInfo, setContactInfo] = useState<ContactInfo | null>(null);
 
   const pathname = usePathname();
 
@@ -98,18 +104,18 @@ export default function Navbar({
     const formattedActivities = activities.map((item) => {
       const relatedPkgs = relatedPackagesMap[item.slug] || [];
       return {
-      name: item.title,
-      href: `/activities/${item.slug}`,
-      
-      image: item.imageUrls?.[0] || item.image || "",
-      relatedPackages: relatedPkgs.map((pkg) => ({
+        name: item.title,
+        href: `/activities/${item.slug}`,
+
+        image: item.imageUrls?.[0] || item.image || "",
+        relatedPackages: relatedPkgs.map((pkg) => ({
           name: pkg.title,
           href: `/itinerary/${pkg._id}`,
           duration: `${pkg.duration?.days} Days`,
         })),
-      
-    };
-  });
+
+      };
+    });
 
     // Format destinations, inject relatedPackages from relatedPackagesMap
     const formattedDestinations = destinations.map((item) => {
@@ -167,6 +173,25 @@ export default function Navbar({
     setNavLinks(links);
   }, [destinations, activities, relatedPackagesMap]);
 
+
+  useEffect(() => {
+    async function fetchContactInfo() {
+      try {
+        const res = await fetch("https://yogeshbhai.ddns.net/api/info");
+        const json = await res.json();
+        if (json.success) {
+          setContactInfo({
+            whatsappNumber: json.data.whatsappNumber,
+            phones: json.data.phones,
+          });
+        }
+      } catch (error) {
+        console.error("Failed to fetch contact info:", error);
+      }
+    }
+    fetchContactInfo();
+  }, []);
+
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
@@ -195,9 +220,8 @@ export default function Navbar({
 
   return (
     <nav
-      className={`fixed top-0 left-0 w-full z-60 px-2 transition-all duration-300 ease-linear ${
-        showNavbar ? "translate-y-0" : "-translate-y-full"
-      } ${getNavbarClasses()}`}
+      className={`fixed top-0 left-0 w-full z-60 px-2 transition-all duration-300 ease-linear ${showNavbar ? "translate-y-0" : "-translate-y-full"
+        } ${getNavbarClasses()}`}
     >
       <div className="max-w-7xl mx-auto flex justify-between items-center px-4 py-4 h-20">
         <Link href="/" className="cursor-pointer">
@@ -230,9 +254,16 @@ export default function Navbar({
 
         {/* Buttons */}
         <div className="flex items-center gap-4">
-          <Link href="https://wa.me/977985-1167629" target="_blank" className="cursor-pointer">
-            <FaWhatsapp className="text-white text-3xl hover:text-green-400 transition-colors" />
-          </Link>
+          {contactInfo?.whatsappNumber && (
+            <Link
+              href={`https://wa.me/${contactInfo.whatsappNumber.replace(/\D/g, "")}`}
+              target="_blank"
+              className="cursor-pointer"
+              aria-label="WhatsApp"
+            >
+              <FaWhatsapp className="text-white text-3xl hover:text-green-400 transition-colors" />
+            </Link>
+          )}
           <Link href="/contact" className="hidden lg:block">
             <button className="bg-primary hover:bg-gradient-to-r from-[#D35400] to-[#A84300] text-white text-base font-medium h-[46px] w-[160px] rounded-full">
               Contact
@@ -258,16 +289,14 @@ export default function Navbar({
                   <li key={sub.name} onMouseEnter={() => setHoveredSub(sub)}>
                     <Link
                       href={sub.href}
-                      className={`flex justify-between items-center px-5 py-3 hover:bg-primary hover:text-white transition-colors ${
-                        hoveredSub?.name === sub.name ? "bg-primary text-white" : ""
-                      }`}
+                      className={`flex justify-between items-center px-5 py-3 hover:bg-primary hover:text-white transition-colors ${hoveredSub?.name === sub.name ? "bg-primary text-white" : ""
+                        }`}
                     >
                       <span>{sub.name}</span>
                       <ChevronRight
                         size={16}
-                        className={`transition-colors ${
-                          hoveredSub?.name === sub.name ? "text-white" : "text-gray-400"
-                        }`}
+                        className={`transition-colors ${hoveredSub?.name === sub.name ? "text-white" : "text-gray-400"
+                          }`}
                       />
                     </Link>
                   </li>
@@ -282,34 +311,34 @@ export default function Navbar({
               <div className="flex-1">
                 <TextHeader text={hoveredSub?.name} align="left" size="small" />
                 {hoveredSub?.relatedPackages?.length > 0 && (
-                <div className="mt-2">
-                  <ul className="pl-3  text-gray-700 font-medium text-base">
-                    {hoveredSub.relatedPackages.map((pkg, idx) => (
-                      <li key={idx}>
-                        <Link href={pkg.href}>
-                          {pkg.name} - {pkg.duration}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
+                  <div className="mt-2">
+                    <ul className="pl-3  text-gray-700 font-medium text-base">
+                      {hoveredSub.relatedPackages.map((pkg, idx) => (
+                        <li key={idx}>
+                          <Link href={pkg.href}>
+                            {pkg.name} - {pkg.duration}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </div>
 
-              
+
               <div className="flex flex-col">
-              {hoveredSub?.image && (
-                <div className="w-[280px] h-[220px] rounded overflow-hidden border border-gray-200">
-                  <ImageDisplay src={hoveredSub.image} variant="smallsquare" />
-                </div>
-              )}
-              <Link
+                {hoveredSub?.image && (
+                  <div className="w-[280px] h-[220px] rounded overflow-hidden border border-gray-200">
+                    <ImageDisplay src={hoveredSub.image} variant="smallsquare" />
+                  </div>
+                )}
+                <Link
                   href={hoveredSub?.href || "#"}
                   className="inline-block mt-4 text-sm font-medium text-primary hover:underline"
                 >
                   Explore {hoveredSub?.name}
                 </Link>
-                </div>
+              </div>
             </div>
           </div>
         </div>
