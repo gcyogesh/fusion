@@ -79,7 +79,8 @@ console.log("hello2", relatedPackages);
 
   return (
     <>
-      <Breadcrumb currentnavlink={destination?.title || "Destination"} />
+    <Breadcrumb currentnavlink={`Destination / ${destination?.title  || "Destination"}`} />
+      
       <HeroBanner herodata={herodata?.data || []} />
 
       <section className="max-w-7xl mx-auto px-4">
