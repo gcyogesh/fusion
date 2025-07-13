@@ -2,7 +2,7 @@
 import { AdminTable } from "@/components/organisms/ListingCard" //Changes
 import { fetchAPI } from "@/utils/apiService"
 export default async function dashboard() {
-  const blogsdata = await fetchAPI({ endpoint: "activities" });
+  const blogsdata = await fetchAPI({ endpoint: "category/activities" });
  
 
     return (
@@ -14,7 +14,7 @@ export default async function dashboard() {
           data={blogsdata.data}
           columns={[
             { label: "Activities Title", accessor: "title" },
-          ]} endpoint={"activities"}
+          ]} endpoint={"category/activities"}
     />
         </>
     )

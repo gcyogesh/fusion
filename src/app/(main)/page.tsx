@@ -130,19 +130,16 @@ export default async function Home() {
   const blogsdata: any = await fetchAPI({ endpoint: "blogs" });
   const destinationdata: any = await fetchAPI({ endpoint: "destinations" });
   const packagesdata: DestinationData = await fetchAPI({ endpoint: "tour/tour-packages" });
-  const acctivitiesdata: any = await fetchAPI({ endpoint: "activities" });
+  const acctivitiesdata: any = await fetchAPI({ endpoint: "category/activities" });
   const activities: Activity[] = acctivitiesdata?.data || [];
 const testimonialData = (await fetchAPI({ endpoint: "testimonials" })) || [];
 
   // Filter packages to exclude activities and destinations
- const filteredPackages = Array.isArray(packagesdata?.data)
-  ? packagesdata.data.filter((card) => {
-      // Exclude if it's an activity or destination
-      const isActivity = card.type === 'activity' || card.category === 'activity';
-      const isDestination = card.type === 'destination' || card.category === 'destination';
-      return !isActivity && !isDestination;
-    })
-  : [];
+ const filteredPackages = packagesdata?.data?.tours?.filter((card) => {
+  const isActivity = card.type === 'activity' || card.category === 'activity';
+  const isDestination = card.type === 'destination' || card.category === 'destination';
+  return !isActivity && !isDestination;
+}) || [];
 
   const herosectiondata: any = await fetchAPI({ endpoint: "herobanner/home" });
     

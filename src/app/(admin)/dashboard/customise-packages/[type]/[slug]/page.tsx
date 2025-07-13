@@ -246,8 +246,8 @@ function PackageDetailsModal({ pkg, onClose }) {
   );
 }
 
-export default function Page({ params }: { params: { type: string; slug: string } }) {
-  const { type, slug } = params;
+export default function Page({ params }: { params: Promise<{ type: string; slug: string }> }) {
+  const { type, slug } = use(params); // ✅ correct way
 
   const [entity, setEntity] = useState<DestinationOrActivity | null>(null);
   const [relatedPackages, setRelatedPackages] = useState<Package[]>([]);

@@ -9,6 +9,7 @@ import {
   FiUploadCloud,
   FiRefreshCw,
   FiHelpCircle,
+  FiMessageCircle,
 } from "react-icons/fi";
 import { MdEdit } from "react-icons/md";
 import Button from "@/components/atoms/button";
@@ -49,6 +50,24 @@ export default function SettingsPage() {
 
   const [logoUrls, setLogoUrls] = useState<string[]>(["", ""]);
   const [logoFiles, setLogoFiles] = useState<(File | null)[]>([null, null]);
+
+  // Contact details state
+  const [contactData, setContactData] = useState({
+    _id: "",
+    address: "",
+    phone: "",
+    email: "",
+    phones: [] as string[],
+    whatsappNumber: "",
+    socialLinks: {
+      facebook: "",
+      linkedin: "",
+      twitter: "",
+      instagram: "",
+    }
+  });
+  const [contactLoading, setContactLoading] = useState(false);
+  const [contactSaving, setContactSaving] = useState(false);
 
   // FAQ tab state
   const [faqData, setFaqData] = useState<any[]>([]);
@@ -97,6 +116,35 @@ export default function SettingsPage() {
     }
   }, [activeTab]);
 
+  // Fetch contact details
+  useEffect(() => {
+    if (activeTab === "general") {
+      setContactLoading(true);
+      fetchAPI({ endpoint: "info" })
+        .then((res: any) => {
+          if (res?.data) {
+            const data = res.data;
+            setContactData({
+              _id: data._id || "",
+              address: data.address || "",
+              phone: data.phone || "",
+              email: data.email || "",
+              phones: data.phones || [],
+              whatsappNumber: data.whatsappNumber || "",
+              socialLinks: {
+                facebook: data.socialLinks?.facebook || "",
+                linkedin: data.socialLinks?.linkedin || "",
+                twitter: data.socialLinks?.twitter || "",
+                instagram: data.socialLinks?.instagram || "",
+              }
+            });
+          }
+        })
+        .catch(() => console.error("Failed to fetch contact info"))
+        .finally(() => setContactLoading(false));
+    }
+  }, [activeTab]);
+
   useEffect(() => {
     if (activeTab === "faq") {
       setFaqLoading(true);
@@ -138,64 +186,116 @@ export default function SettingsPage() {
     }
   };
 
-  const handleSaveHero = async () => {
-    // Validation
-    if (!heroData.title || !heroData.subTitle || !heroData.buttonText || !heroData.buttonLink || !heroData.description) {
-      setAlert({ show: true, type: 'warning', message: 'All fields are required for the hero section.' });
-      return;
-    }
-    setHeroSaving(true);
-    setHeroError("");
-    setHeroSuccess("");
-    try {
-      let bannerImageUrl = heroData.bannerImage;
-      if (heroImageFile) {
-        const formData = new FormData();
-        formData.append("file", heroImageFile);
-        const uploadRes: any = await fetchAPI({
-          endpoint: "herobanner",
-          method: "POST",
-          data: formData,
-        });
-        bannerImageUrl = uploadRes?.url || bannerImageUrl;
-      }
-      await fetchAPI({
-        endpoint: `herobanner/${selectedHeroPage}`,
-        method: "PUT",
-        data: {
-          _id: heroData._id,
-          page: selectedHeroPage,
-          title: heroData.title,
-          subTitle: heroData.subTitle,
-          description: heroData.description,
-          buttonText: heroData.buttonText,
-          buttonLink: heroData.buttonLink,
-          bannerImage: bannerImageUrl,
-        },
+  const handleContactChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    
+    if (name.startsWith('socialLinks.')) {
+      const socialField = name.split('.')[1];
+      setContactData({
+        ...contactData,
+        socialLinks: {
+          ...contactData.socialLinks,
+          [socialField]: value
+        }
       });
-      setAlert({ show: true, type: 'success', message: 'Hero banner updated!' });
-      setHeroImageFile(null);
-    } catch (e: any) {
-      setAlert({ show: true, type: 'error', message: e.message || 'Failed to update hero banner.' });
-    } finally {
-      setHeroSaving(false);
+    } else if (name === 'phones') {
+      // Handle phones as comma-separated values
+      const phoneArray = value.split(',').map(phone => phone.trim());
+      setContactData({
+        ...contactData,
+        phones: phoneArray
+      });
+    } else {
+      setContactData({ ...contactData, [name]: value });
     }
   };
 
+ const handleSaveHero = async () => {
+  // Basic validation
+  if (
+    !heroData.title.trim() ||
+    !heroData.subTitle.trim() ||
+    !heroData.description.trim() ||
+    !heroData.buttonText.trim() ||
+    !heroData.buttonLink.trim()
+  ) {
+    setAlert({
+      show: true,
+      type: 'warning',
+      message: 'Please fill in all required hero section fields.',
+    });
+    return;
+  }
+
+  setHeroSaving(true);
+  try {
+    let bannerImageUrl = heroData.bannerImage;
+
+    if (heroImageFile) {
+      const formData = new FormData();
+      formData.append('file', heroImageFile);
+
+      const uploadRes: any = await fetchAPI({
+        endpoint: 'herobanner',
+        method: 'POST',
+        data: formData,
+      });
+
+      bannerImageUrl = uploadRes?.url || bannerImageUrl;
+    }
+
+    const res = await fetchAPI({
+      endpoint: `herobanner/${selectedHeroPage}`,
+      method: 'POST',
+      data: {
+        _id: heroData._id,
+        page: selectedHeroPage,
+        title: heroData.title,
+        subTitle: heroData.subTitle,
+        description: heroData.description,
+        buttonText: heroData.buttonText,
+        buttonLink: heroData.buttonLink,
+        bannerImage: bannerImageUrl,
+      },
+    });
+
+    setAlert({
+      show: true,
+      type: 'success',
+      message: 'Hero banner updated successfully!',
+    });
+    setHeroImageFile(null);
+  } catch (e: any) {
+    setAlert({
+      show: true,
+      type: 'error',
+      message: e.message || 'Failed to update hero banner.',
+    });
+  } finally {
+    setHeroSaving(false);
+  }
+};
+
+
   const handleSaveLogos = async () => {
-    if (!logoFiles[0] && !logoFiles[1]) {
-      setAlert({ show: true, type: 'warning', message: 'Please select at least one logo to upload.' });
+    if (!logoFiles[0] || !logoFiles[1]) {
+      setAlert({ show: true, type: 'warning', message: 'Please select both primary and secondary logos to upload.' });
       return;
     }
     try {
       const formData = new FormData();
-      if (logoFiles[0]) formData.append('logo', logoFiles[0]);
-      if (logoFiles[1]) formData.append('logo', logoFiles[1]);
+      // Based on your backend, it expects files with field name 'urls'
+      formData.append('urls', logoFiles[0]);
+      formData.append('urls', logoFiles[1]);
+      
       const res: any = await fetchAPI({
         endpoint: 'logo',
         method: 'POST',
         data: formData,
       });
+      
       if (res?.data?.image?.urls) {
         setLogoUrls([
           res.data.image.urls[0] || '',
@@ -210,6 +310,53 @@ export default function SettingsPage() {
       setAlert({ show: true, type: 'error', message: e.message || 'Failed to upload logos.' });
     }
   };
+
+ const handleSaveContact = async () => {
+  // Basic validation
+  if (
+    !contactData.address.trim() ||
+    !contactData.phone.trim() ||
+    !contactData.email.trim()
+  ) {
+    setAlert({
+      show: true,
+      type: 'warning',
+      message: 'Address, primary phone, and email are required.',
+    });
+    return;
+  }
+
+  setContactSaving(true);
+  try {
+    const res = await fetchAPI({
+      endpoint: 'info',
+      method: 'POST',
+      data: {
+        _id: contactData._id,
+        address: contactData.address,
+        phone: contactData.phone,
+        email: contactData.email,
+        phones: contactData.phones,
+        whatsappNumber: contactData.whatsappNumber,
+        socialLinks: contactData.socialLinks,
+      },
+    });
+
+    setAlert({
+      show: true,
+      type: 'success',
+      message: 'Contact details updated successfully!',
+    });
+  } catch (e: any) {
+    setAlert({
+      show: true,
+      type: 'error',
+      message: e.message || 'Failed to update contact details.',
+    });
+  } finally {
+    setContactSaving(false);
+  }
+};
 
   const faqColumns = [
     { key: "question", label: "Question", type: "text", accessor: "question" as keyof any },
@@ -276,6 +423,7 @@ export default function SettingsPage() {
             <Button text="Save Logos" onClick={handleSaveLogos} className="px-8 py-2 rounded-lg shadow-sm text-base font-semibold bg-primary text-white transition hover:bg-primary/90" />
           </div>
         </div>
+        
         {/* Hero Section */}
         <div className="flex flex-col gap-4 border-l border-gray-200 pl-6">
           <div className="flex items-center gap-2 mb-1">
@@ -367,6 +515,7 @@ export default function SettingsPage() {
             </div>
           </div>
         </div>
+        
         {/* Contact Details */}
         <div className="flex flex-col gap-4 border-l border-gray-200 pl-6">
           <div className="flex items-center gap-2 mb-1">
@@ -374,19 +523,131 @@ export default function SettingsPage() {
             <h2 className="text-lg font-bold text-gray-900">Contact Details</h2>
           </div>
           <p className="text-gray-500 text-sm mb-2">Update your business contact information and social links.</p>
-          <div className="flex flex-col gap-3">
-            <label className="text-sm font-semibold text-gray-700">Address</label>
-            <input type="text" className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-primary outline-none text-base bg-white transition hover:bg-gray-50" placeholder="Address" />
-            <label className="text-sm font-semibold text-gray-700">Phone</label>
-            <input type="text" className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-primary outline-none text-base bg-white transition hover:bg-gray-50" placeholder="Phone" />
-            <label className="text-sm font-semibold text-gray-700">Email</label>
-            <input type="email" className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-primary outline-none text-base bg-white transition hover:bg-gray-50" placeholder="Email" />
-            <label className="text-sm font-semibold text-gray-700">Social Links</label>
-            <input type="text" className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-primary outline-none text-base bg-white transition hover:bg-gray-50" placeholder="Social Links" />
-            <div className="flex justify-start mt-3">
-              <Button text="Save Contact Details" className="px-8 py-2 rounded-lg shadow-sm text-base font-semibold bg-primary text-white transition hover:bg-primary/90" />
+          
+          {contactLoading ? (
+            <div className="flex items-center justify-center py-8">
+              <div className="flex items-center gap-2">
+                <Loader />
+                <span className="text-gray-600 text-sm">Loading contact details...</span>
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className="flex flex-col gap-3">
+              <label className="text-sm font-semibold text-gray-700 flex items-center gap-1">
+                <FiMapPin className="w-4 h-4" />
+                Address
+              </label>
+              <input 
+                type="text" 
+                name="address"
+                className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-primary outline-none text-base bg-white transition hover:bg-gray-50" 
+                placeholder="Business Address" 
+                value={contactData.address}
+                onChange={handleContactChange}
+              />
+              
+              <label className="text-sm font-semibold text-gray-700 flex items-center gap-1">
+                <FiPhone className="w-4 h-4" />
+                Primary Phone
+              </label>
+              <input 
+                type="text" 
+                name="phone"
+                className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-primary outline-none text-base bg-white transition hover:bg-gray-50" 
+                placeholder="Primary Phone Number" 
+                value={contactData.phone}
+                onChange={handleContactChange}
+              />
+              
+              <label className="text-sm font-semibold text-gray-700 flex items-center gap-1">
+                <FiPhone className="w-4 h-4" />
+                Additional Phones <span className="text-xs text-gray-400">(comma-separated)</span>
+              </label>
+              <input 
+                type="text" 
+                name="phones"
+                className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-primary outline-none text-base bg-white transition hover:bg-gray-50" 
+                placeholder="Additional phone numbers" 
+                value={contactData.phones.join(', ')}
+                onChange={handleContactChange}
+              />
+              
+              <label className="text-sm font-semibold text-gray-700 flex items-center gap-1">
+                <FiMessageCircle className="w-4 h-4" />
+                WhatsApp Number
+              </label>
+              <input 
+                type="text" 
+                name="whatsappNumber"
+                className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-primary outline-none text-base bg-white transition hover:bg-gray-50" 
+                placeholder="WhatsApp Number" 
+                value={contactData.whatsappNumber}
+                onChange={handleContactChange}
+              />
+              
+              <label className="text-sm font-semibold text-gray-700 flex items-center gap-1">
+                <FiMail className="w-4 h-4" />
+                Email
+              </label>
+              <input 
+                type="email" 
+                name="email"
+                className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-primary outline-none text-base bg-white transition hover:bg-gray-50" 
+                placeholder="Business Email" 
+                value={contactData.email}
+                onChange={handleContactChange}
+              />
+              
+              <label className="text-sm font-semibold text-gray-700 flex items-center gap-1">
+                <FiGlobe className="w-4 h-4" />
+                Social Links
+              </label>
+              
+              <div className="space-y-2">
+                <input 
+                  type="url" 
+                  name="socialLinks.facebook"
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-primary outline-none text-base bg-white transition hover:bg-gray-50" 
+                  placeholder="Facebook URL" 
+                  value={contactData.socialLinks.facebook}
+                  onChange={handleContactChange}
+                />
+                <input 
+                  type="url" 
+                  name="socialLinks.instagram"
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-primary outline-none text-base bg-white transition hover:bg-gray-50" 
+                  placeholder="Instagram URL" 
+                  value={contactData.socialLinks.instagram}
+                  onChange={handleContactChange}
+                />
+                <input 
+                  type="url" 
+                  name="socialLinks.linkedin"
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-primary outline-none text-base bg-white transition hover:bg-gray-50" 
+                  placeholder="LinkedIn URL" 
+                  value={contactData.socialLinks.linkedin}
+                  onChange={handleContactChange}
+                />
+                <input 
+                  type="url" 
+                  name="socialLinks.twitter"
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-primary outline-none text-base bg-white transition hover:bg-gray-50" 
+                  placeholder="Twitter URL" 
+                  value={contactData.socialLinks.twitter}
+                  onChange={handleContactChange}
+                />
+              </div>
+              
+              <div className="flex justify-start mt-3">
+                <Button 
+                  text={contactSaving ? "Saving..." : "Save Contact Details"} 
+                  onClick={handleSaveContact}
+                  disabled={contactSaving || contactLoading}
+                  className="px-8 py-2 rounded-lg shadow-sm text-base font-semibold bg-primary text-white transition hover:bg-primary/90" 
+                />
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </section>

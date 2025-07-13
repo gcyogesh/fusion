@@ -64,7 +64,7 @@ export default async function RootLayout({
         <Navbar
           destinations={destinations}
           activities={activities}
-          relatedPackagesMap={relatedPackagesMap} // pass here
+          relatedPackagesMap={relatedPackagesMap} 
         />
         {children}
         <Footer destinations={destinations.slice(0, 5)} />

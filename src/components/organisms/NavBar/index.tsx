@@ -95,13 +95,21 @@ export default function Navbar({
 
   useEffect(() => {
     // Format activities
-    const formattedActivities = activities.map((item) => ({
+    const formattedActivities = activities.map((item) => {
+      const relatedPkgs = relatedPackagesMap[item.slug] || [];
+      return {
       name: item.title,
       href: `/activities/${item.slug}`,
-      subtitle: item.subtitle || "",
+      
       image: item.imageUrls?.[0] || item.image || "",
-      title: item.title,
-    }));
+      relatedPackages: relatedPkgs.map((pkg) => ({
+          name: pkg.title,
+          href: `/itinerary/${pkg._id}`,
+          duration: `${pkg.duration?.days} Days`,
+        })),
+      
+    };
+  });
 
     // Format destinations, inject relatedPackages from relatedPackagesMap
     const formattedDestinations = destinations.map((item) => {
@@ -113,7 +121,7 @@ export default function Navbar({
         relatedPackages: relatedPkgs.map((pkg) => ({
           name: pkg.title,
           href: `/itinerary/${pkg._id}`,
-          duration: pkg.duration ? `${pkg.duration.days} Days` : undefined,
+          duration: `${pkg.duration?.days} Days`,
         })),
       };
     });
@@ -272,36 +280,36 @@ export default function Navbar({
             {/* Right column - Preview content */}
             <div className="flex-1 px-4 py-6 flex gap-6 items-start">
               <div className="flex-1">
-                <TextHeader text={hoveredSub?.title || "Explore"} align="left" size="small" />
-                
-                <Link
-                  href={hoveredSub?.href || "#"}
-                  className="inline-block mt-4 text-sm font-medium text-primary hover:underline"
-                >
-                  Explore {hoveredSub?.name}
-                </Link>
-              </div>
-
-              {hoveredSub?.relatedPackages?.length > 0 && (
-                <div className="ml-4 mt-2">
-                  <p className="text-sm font-semibold">Related Packages:</p>
-                  <ul className="pl-3 text-sm text-gray-700 list-disc">
+                <TextHeader text={hoveredSub?.name} align="left" size="small" />
+                {hoveredSub?.relatedPackages?.length > 0 && (
+                <div className="mt-2">
+                  <ul className="pl-3  text-gray-700 font-medium text-base">
                     {hoveredSub.relatedPackages.map((pkg, idx) => (
                       <li key={idx}>
                         <Link href={pkg.href}>
-                          {pkg.name}
+                          {pkg.name} - {pkg.duration}
                         </Link>
                       </li>
                     ))}
                   </ul>
                 </div>
               )}
+              </div>
 
+              
+              <div className="flex flex-col">
               {hoveredSub?.image && (
                 <div className="w-[280px] h-[220px] rounded overflow-hidden border border-gray-200">
                   <ImageDisplay src={hoveredSub.image} variant="smallsquare" />
                 </div>
               )}
+              <Link
+                  href={hoveredSub?.href || "#"}
+                  className="inline-block mt-4 text-sm font-medium text-primary hover:underline"
+                >
+                  Explore {hoveredSub?.name}
+                </Link>
+                </div>
             </div>
           </div>
         </div>
