@@ -7,9 +7,6 @@ import { IoMdClose } from "react-icons/io";
 import { FiMenu } from "react-icons/fi";
 import { FaWhatsapp } from "react-icons/fa";
 import { ChevronDown, ChevronUp, ChevronRight } from "lucide-react";
-
-import Image from "next/image";
-
 import Logo from "@/components/atoms/Logo";
 import MobileDropdownMenu from "./dropdowns/mobiledropdown";
 import ImageDisplay from "@/components/atoms/ImageCard";

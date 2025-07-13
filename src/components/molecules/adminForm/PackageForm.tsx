@@ -1,6 +1,7 @@
+'use client'
 import React, { useState, useEffect } from 'react';
 import { fetchAPI } from '@/utils/apiService';
-import { FiX, FiCamera, FiPlus, FiMapPin, FiDollarSign, FiInfo, FiList, FiFlag, FiImage, FiCalendar, FiUsers, FiActivity, FiHome, FiSun, FiNavigation, FiAlertCircle } from 'react-icons/fi';
+import { FiX, FiCamera, FiPlus, FiMapPin, FiDollarSign, FiInfo, FiList, FiFlag, FiImage, FiCalendar, FiUsers, FiActivity, FiHome, FiSun, FiNavigation, FiAlertCircle, FiTag } from 'react-icons/fi';
 import { FaStar } from 'react-icons/fa';
 import Button from '@/components/atoms/button';
 import Alert from '@/components/atoms/alert';
@@ -34,9 +35,10 @@ export interface TourPackageFormData {
   quickfacts: string[];
   feature: Feature;
   type: string;
-  tags: string[];
+  tag: string;
   rating: string;
   destination: string;
+  activitiescategory: string; // NEW: Added for backend requirement
 }
 
 interface TourPackageFormProps {
@@ -270,54 +272,58 @@ const MultiImageUploadField = ({ label, name, onChange, files, max = 10, errors 
 };
 
 // Move ArrayField component outside
-const ArrayField = ({ label, name, value, onChange, placeholder, required = false, errors = {} }) => (
-  <div className="mb-4">
-    <label className="block text-sm font-medium text-gray-700 mb-1">
-      {label} {required && <span className="text-red-500">*</span>}
-    </label>
-    <div className="space-y-2">
-      {value.map((item, idx) => (
-        <div key={idx} className="flex items-center gap-2">
-          <input
-            type="text"
-            value={item}
-            onChange={(e) => {
-              const updated = [...value];
-              updated[idx] = e.target.value;
-              onChange(updated);
-            }}
-            placeholder={placeholder}
-            className="flex-1 px-4 py-2.5 bg-white border border-gray-300 rounded-lg outline-none transition-all"
-          />
-          <button
-            type="button"
-            onClick={() => {
-              const updated = [...value];
-              updated.splice(idx, 1);
-              onChange(updated);
-            }}
-            className="p-2 text-red-500 hover:text-red-700 bg-red-50 rounded-lg"
-          >
-            <FiX />
-          </button>
-        </div>
-      ))}
-      <button
-        type="button"
-        onClick={() => onChange([...value, ''])}
-        className="flex items-center gap-1 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90"
-      >
-        <FiPlus className="text-lg" /> Add Item
-      </button>
+const ArrayField = ({ label, name, value = [], onChange, placeholder, required = false, errors = {} }) => {
+  const safeValue = Array.isArray(value) ? value : [];
+
+  return (
+    <div className="mb-4">
+      <label className="block text-sm font-medium text-gray-700 mb-1">
+        {label} {required && <span className="text-red-500">*</span>}
+      </label>
+      <div className="space-y-2">
+        {safeValue.map((item, idx) => (
+          <div key={idx} className="flex items-center gap-2">
+            <input
+              type="text"
+              value={item}
+              onChange={(e) => {
+                const updated = [...safeValue];
+                updated[idx] = e.target.value;
+                onChange(updated);
+              }}
+              placeholder={placeholder}
+              className="flex-1 px-4 py-2.5 bg-white border border-gray-300 rounded-lg outline-none transition-all"
+            />
+            <button
+              type="button"
+              onClick={() => {
+                const updated = [...safeValue];
+                updated.splice(idx, 1);
+                onChange(updated);
+              }}
+              className="p-2 text-red-500 hover:text-red-700 bg-red-50 rounded-lg"
+            >
+              <FiX />
+            </button>
+          </div>
+        ))}
+        <button
+          type="button"
+          onClick={() => onChange([...safeValue, ''])}
+          className="flex items-center gap-1 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90"
+        >
+          <FiPlus className="text-lg" /> Add Item
+        </button>
+      </div>
+      {errors[name] && (
+        <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
+          <FiAlertCircle className="flex-shrink-0" />
+          {errors[name]}
+        </p>
+      )}
     </div>
-    {errors[name] && (
-      <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
-        <FiAlertCircle className="flex-shrink-0" /> 
-        {errors[name]}
-      </p>
-    )}
-  </div>
-);
+  );
+};
 
 // StarRating component
 const StarRating = ({ value, onChange, max = 5 }) => (
@@ -343,6 +349,67 @@ const StarRating = ({ value, onChange, max = 5 }) => (
     <span className="ml-2 text-sm text-gray-600">{value || 0}/5</span>
   </div>
 );
+
+
+
+
+
+const CategorySelectField = ({ 
+  label, 
+  name, 
+  value, 
+  onChange, 
+  options = [], 
+  placeholder = "Select category", 
+  required = false, 
+  loading = false,
+  errors = {},
+  icon = null 
+}) => (
+  <div className="mb-4">
+    <label className="block text-sm font-medium text-gray-700 mb-1">
+      {label} {required && <span className="text-red-500">*</span>}
+    </label>
+    <div className="relative">
+      {icon && (
+        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-primary">
+          {icon}
+        </div>
+      )}
+      <select
+        name={name}
+        value={value}
+        onChange={onChange}
+        className={`w-full pl-10 pr-3 py-3 border rounded-lg shadow-sm ${
+          errors[name] ? 'border-red-500' : 'border-gray-300'
+        } ${loading ? 'cursor-wait' : 'cursor-pointer'}`}
+        disabled={loading}
+      >
+        <option value="">{loading ? 'Loading categories...' : placeholder}</option>
+     {Array.isArray(options) && options.map((option) => (
+  <option key={option._id} value={option._id}>
+    {option.name}
+  </option>
+))}
+
+
+      </select>
+    </div>
+    {errors[name] && (
+      <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
+        <FiAlertCircle className="flex-shrink-0" /> 
+        {errors[name]}
+      </p>
+    )}
+  </div>
+
+
+
+
+  )
+
+
+
 
 const TourPackageForm = ({ initialData = undefined, onClose, destinationId, destinationTitle, type }: TourPackageFormProps) => {
   const [formData, setFormData] = useState<TourPackageFormData>({
@@ -370,20 +437,43 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
       startEndPoint: '',
     },
     type: 'tour',
-    tags: [],
+    tag: '',
     rating: '',
     destination: initialData?.destination || destinationId || "",
+    activitiescategory: '', // NEW: Added for backend requirement
   });
 
   const [galleryFiles, setGalleryFiles] = useState([]);
   const [googleMapImage, setGoogleMapImage] = useState(null);
   const [itineraryImages, setItineraryImages] = useState([]); // NEW: Store itinerary images separately
+  const [categories, setCategories] = useState([]); // NEW: Store categories
+  const [loadingCategories, setLoadingCategories] = useState(false); // NEW: Loading state for categories
   const [alert, setAlert] = useState<{ show: boolean; type: 'success' | 'error' | 'confirm' | 'warning'; message: string }>({ show: false, type: 'success', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitStatus, setSubmitStatus] = useState(null);
   const [activeTab, setActiveTab] = useState('basic');
   const [pendingSubmit, setPendingSubmit] = useState(false);
+
+  // NEW: Fetch categories on component mount
+useEffect(() => {
+  const fetchCategories = async () => {
+    try {
+      setLoadingCategories(true);
+      const response = await fetch('https://yogeshbhai.ddns.net/api/category/activities');
+      const json = await response.json();
+      
+      // ✅ Fix: Set only the array of categories, not the whole response
+      setCategories(json.data || []);
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+      setAlert({ show: true, type: 'error', message: 'Failed to load categories' });
+    } finally {
+      setLoadingCategories(false);
+    }
+  };
+  fetchCategories();
+}, []);
 
   useEffect(() => {
     if (initialData) {
@@ -410,9 +500,13 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
         quickfacts: Array.isArray(initialData.quickfacts)
           ? initialData.quickfacts
           : (typeof initialData.quickfacts === 'string' && !!initialData.quickfacts ? (initialData.quickfacts as string).split(',').map(s => s.trim()).filter(Boolean) : []),
-        tags: Array.isArray(initialData.tags)
-          ? initialData.tags
-          : (typeof initialData.tags === 'string' && !!initialData.tags ? (initialData.tags as string).split(',').map(s => s.trim()).filter(Boolean) : []),
+       tag: Array.isArray(initialData.tag)
+  ? initialData.tag[0] || ''
+  : (typeof initialData.tag === 'string' && initialData.tag.startsWith('[')
+      ? JSON.parse(initialData.tag)[0] || ''
+      : initialData.tag ?? ''),
+
+
         feature: {
           ...prev.feature,
           ...initialData.feature,
@@ -428,7 +522,8 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
           bestSeason: Array.isArray(initialData.feature?.bestSeason)
             ? initialData.feature.bestSeason
             : (typeof initialData.feature?.bestSeason === 'string' && !!initialData.feature.bestSeason ? (initialData.feature.bestSeason as string).split(',').map(s => s.trim()).filter(Boolean) : []),
-        }
+        },
+        activitiescategory: initialData.activitiescategory ?? '', // NEW: Handle category from initial data
       }));
       // Gallery and map image: check property existence and type
       const gallery = 'gallery' in initialData ? initialData.gallery : undefined;
@@ -477,6 +572,7 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
       if (!formData.description.trim()) newErrors.description = 'Description is required';
       if (!formData.overview.trim()) newErrors.overview = 'Overview is required';
       if (!formData.destination.trim()) newErrors.destination = 'Destination is required';
+      if (!formData.activitiescategory.trim()) newErrors.activitiescategory = 'Activity category is required'; // NEW: Validate category
     }
     // Location tab validation
     if (tab === 'location') {
@@ -513,7 +609,9 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
       if (!formData.exclusions.length) newErrors.exclusions = 'At least one exclusion is required';
       if (!formData.highlights.length) newErrors.highlights = 'At least one highlight is required';
       if (!formData.quickfacts.length) newErrors.quickfacts = 'At least one quick fact is required';
-      if (!formData.tags.length) newErrors.tags = 'At least one tag is required';
+   
+      // NEW: Ensure tag are not empty strings
+    
     }
     // Features tab validation
     if (tab === 'features') {
@@ -634,7 +732,6 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
       setErrors(prev => ({ ...prev, [`itinerary-image-${idx}`]: '' }));
     }
   };
-
   const handleItineraryChange = (idx, field, value) => {
     setFormData((prev) => {
       const updated = [...prev.itinerary];
@@ -727,6 +824,8 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
     form.append('type', formData.type);
     form.append('rating', formData.rating);
     form.append('destination', formData.destination);
+    form.append('activitiescategory', formData.activitiescategory);
+      form.append('tag', formData.tag);
 
     // JSON fields
     const jsonFields = {
@@ -744,7 +843,6 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
       exclusions: formData.exclusions,
       highlights: formData.highlights,
       quickfacts: formData.quickfacts,
-      tags: formData.tags
     };
     Object.entries(jsonFields).forEach(([key, value]) => {
       form.append(key, JSON.stringify(value));
@@ -817,9 +915,10 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
         startEndPoint: '',
       },
       type: 'tour',
-      tags: [],
+      tag: '',
       rating: '',
       destination: '',
+      activitiescategory: '', // <-- Add this line to fix the error
     });
     setGalleryFiles([]);
     setGoogleMapImage(null);
@@ -848,71 +947,87 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
   };
 
   const renderBasicInfoTab = () => (
-    <div className="space-y-4">
+  <div className="space-y-4">
+    <InputField 
+      label="Title"
+      name="title"
+      value={formData.title}
+      onChange={handleChange}
+      placeholder="Enter tour title"
+      required
+      icon={<FiInfo />}
+      errors={errors} 
+      min={undefined} 
+      max={undefined}
+    />
+    
+    <TextareaField 
+      label="Description" 
+      name="description" 
+      value={formData.description} 
+      onChange={handleChange} 
+      placeholder="Enter detailed description" 
+      required 
+      icon={<FiList />}
+      rows={4}
+      errors={errors}
+    />
+    
+    <TextareaField 
+      label="Overview" 
+      name="overview" 
+      value={formData.overview} 
+      onChange={handleChange} 
+      placeholder="Enter brief overview" 
+      required 
+      icon={<FiInfo />}
+      errors={errors}
+    />
+    
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
       <InputField 
-        label="Title"
-        name="title"
-        value={formData.title}
-        onChange={handleChange}
-        placeholder="Enter tour title"
+        label={type === 'activities' ? 'Activity' : 'Destination'}
+        name="destinationTitle"
+        value={destinationTitle || ''}
+        onChange={() => {}}
+        readOnly
         required
-        icon={<FiInfo />}
-        errors={errors} min={undefined} max={undefined}      />
+        icon={<FiFlag />}
+        placeholder={type === 'activities' ? 'Activity' : 'Destination'}
+        min={undefined}
+        max={undefined}
+      />
+      <input type="hidden" name="destination" value={destinationId} />
       
-      <TextareaField 
-        label="Description" 
-        name="description" 
-        value={formData.description} 
-        onChange={handleChange} 
-        placeholder="Enter detailed description" 
-        required 
-        icon={<FiList />}
-        rows={4}
+      {/* NEW: Activities Category Selection */}
+      <CategorySelectField
+        label="Activities Category"
+        name="activitiescategory"
+        value={formData.activitiescategory}
+        onChange={handleChange}
+        options={categories}
+        placeholder="Select category"
+        loading={loadingCategories}
         errors={errors}
+        icon={<FiTag />}
       />
       
-      <TextareaField 
-        label="Overview" 
-        name="overview" 
-        value={formData.overview} 
-        onChange={handleChange} 
-        placeholder="Enter brief overview" 
-        required 
-        icon={<FiInfo />}
-        errors={errors}
-      />
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <InputField 
-          label={type === 'activities' ? 'Activity' : 'Destination'}
-          name="destinationTitle"
-          value={destinationTitle || ''}
-          onChange={() => {}}
-          readOnly
-          required
-          icon={<FiFlag />}
-          placeholder={type === 'activities' ? 'Activity' : 'Destination'}
-          min={undefined}
-          max={undefined}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Rating</label>
+        <StarRating
+          value={formData.rating}
+          onChange={val => setFormData(f => ({ ...f, rating: val }))}
         />
-        <input type="hidden" name="destination" value={destinationId} />
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Rating</label>
-          <StarRating
-            value={formData.rating}
-            onChange={val => setFormData(f => ({ ...f, rating: val }))}
-          />
-          {errors.rating && (
-            <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
-              <FiAlertCircle className="flex-shrink-0" />
-              {errors.rating}
-            </p>
-          )}
-        </div>
+        {errors.rating && (
+          <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
+            <FiAlertCircle className="flex-shrink-0" />
+            {errors.rating}
+          </p>
+        )}
       </div>
     </div>
-  );
-
+  </div>
+);
   const renderLocationTab = () => (
     <div className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1077,14 +1192,17 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
         errors={errors}
       />
       
-      <ArrayField 
-        label="Tags" 
-        name="tags" 
-        value={formData.tags} 
-        onChange={(val) => setFormData({...formData, tags: val})} 
-        placeholder="Add tag" 
-        errors={errors}
-      />
+        <InputField 
+      label="Tag" 
+      name="tag" 
+      value={formData.tag} 
+      onChange={handleChange} 
+      placeholder="Enter tag" 
+      errors={errors}
+      icon={<FiTag />}
+      min={undefined} 
+      max={undefined}
+    />
     </div>
   );
 

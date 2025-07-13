@@ -53,7 +53,7 @@ export default async function Deals() {
 
   return (
     <>
-    <Breadcrumb currentnavlink={"destinations"} />
+    <Breadcrumb currentnavlink={"Deals"} />
     <section className="max-w-7xl mx-auto px-4 py-10">
        <TextHeader
           text="Best Deals"

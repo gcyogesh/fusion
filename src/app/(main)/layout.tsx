@@ -24,7 +24,7 @@ export default async function RootLayout({
 }) {
   // Fetch destinations and activities
   const destinationsRes: any = await fetchAPI({ endpoint: "destinations" });
-  const activitiesRes: any = await fetchAPI({ endpoint: "activities" });
+  const activitiesRes: any = await fetchAPI({ endpoint: "category/activities" });
 
   const destinations = destinationsRes?.data || [];
   const activities = activitiesRes?.data || [];
