@@ -36,7 +36,6 @@ interface TourPackage {
   imageUrls?: string[];
 }
 
-
 interface Params {
   params: { slug: string };
 }
@@ -44,7 +43,6 @@ interface Params {
 export default async function Page({ params }: Params) {
   const { slug } = params;
 
-  // Step 1: Fetch destination by slug with related packages
   const destinationResponse = await fetchAPI({
     endpoint: `destinations/${slug}`,
   }) as {
@@ -57,7 +55,6 @@ export default async function Page({ params }: Params) {
   const destination = destinationResponse?.data?.destination;
   const relatedPackageIds = destinationResponse?.data?.relatedPackages || [];
 
-  // Step 2: Fetch related packages using their IDs
   const relatedPackages: TourPackage[] = await Promise.all(
     relatedPackageIds.map(async (pkg) => {
       const res = await fetchAPI({
@@ -68,33 +65,28 @@ export default async function Page({ params }: Params) {
     })
   );
 
-  // Step 3: Fetch hero banner
   const herodata = await fetchAPI({ endpoint: "herobanner/destinations" });
 
-   const destinationData = await fetchAPI({ endpoint: "destinations" });
+  const destinationData = await fetchAPI({ endpoint: "destinations" });
   const destinations: Destination[] = destinationData?.data || [];
-
-console.log("hello1", destination);
-console.log("hello2", relatedPackages);
 
   return (
     <>
-    <Breadcrumb currentnavlink={`Destination / ${destination?.title  || "Destination"}`} />
-      
+      <Breadcrumb currentnavlink={`Destination / ${destination?.title || "Destination"}`} />
+
       <HeroBanner herodata={herodata?.data || []} />
 
-      <section className="max-w-7xl mx-auto px-4">
-        <section>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 py-10">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
           {/* Left Column */}
-          <div className="lg:col-span-2 space-y-8">
+          <div className="lg:col-span-2 space-y-6">
             {destination ? (
-              <div className="flex flex-col">
+              <div>
                 <ImageDisplay
                   src={destination.imageUrls?.[0] || destination.image}
                   variant="smallrectangle"
                 />
-                <div className="mt-4">
+                <div className="mt-4 space-y-2">
                   <TextHeader text={destination.title} size="small" align="left" />
                   <h3 className="text-lg font-medium text-gray-600">
                     {destination.subtitle}
@@ -103,9 +95,6 @@ console.log("hello2", relatedPackages);
                     <TextDescription text={destination.description} className="line-clamp-3" />
                   )}
                 </div>
-
-                {/* Related Packages */}
-   
               </div>
             ) : (
               <div className="text-red-600 text-lg">
@@ -114,90 +103,86 @@ console.log("hello2", relatedPackages);
             )}
           </div>
 
-          {/* Right Column: Other Destinations */}
-            <div className="lg:col-span-1">
-            <div className="sticky top-24">
-              <TextHeader text="Other Destinations" size="small" align="left" />
-              <div className="space-y-4 mt-4">
-                {destinations
-                  .filter((item) => item.slug !== slug)
-                  .slice(0, 3)
-                  .map((item) => (
-                    <Link key={item._id} href={`/destinations/${item.slug}`}>
-                      <div className="cursor-pointer">
-                        <ImageDisplay
-                          src={item.imageUrls?.[0]}
-                          variant="smallrectangle"
-                        />
-                        <TextHeader
-                          text={item.title}
-                          size="small"
-                          align="left"
-                          className="mt-2"
-                        />
-                        <h3 className="text-lg font-medium text-gray-600">
-                          {item.subtitle}
-                        </h3>
-                        
-                      </div>
-                    </Link>
-                  ))}
+         
+        </div>
+
+        {/* Divider */}
+        <div className="w-full h-[1.5px] bg-[#C2C2C2] mt-10" />
+
+        {/* Related Packages */}
+       
+          <TextHeader text="Related Packages" size="large" align="left" className="py-4" />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {relatedPackages.map((card) => (
+            <Link href={`/itinerary/${card._id}`} key={card._id} className="flex flex-col gap-4">
+              <div className="aspect-video">
+                <ImageDisplay
+                  src={card.gallery?.[0]}
+                  variant="square"
+                  snippet="popular"
+                  snippetPosition="start"
+                  title={card.title}
+                  description={card.description}
+                />
               </div>
-            </div>
+              <div className="flex flex-col gap-4">
+                <div className="flex justify-between text-sm text-[#7E7E7E] text-[20px] font-medium">
+                  <span className="flex items-center gap-1">
+                    <Image src={"/images/Location.svg"} alt="Location" width={20} height={20} />
+                    {card.location?.city}, {card.location?.country}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <Image src={"/images/clock.svg"} alt="Clock" width={20} height={20} />
+                    {card.duration?.days} Days
+                  </span>
+                </div>
+                <TextHeader
+                  text={card.overview}
+                  size="small"
+                  align="left"
+                  width={410}
+                  className="line-clamp-2"
+                />
+                <div className="w-full h-[1.5px] bg-[#C2C2C2]" />
+                <div className="text-[#7E7E7E] text-[20px] font-medium">
+                  Starting Price: <span className="text-primary font-semibold ml-2">${card.basePrice}</span>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+       
         
 
-        </div>
-        </div>
+        {/* Other Destinations */}
+        <section className="space-y-6 ">
+          <TextHeader text="Other Destinations" size="large" align="left" />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {destinations
+              .filter((item) => item.slug !== slug)
+              .slice(0, 3)
+              .map((item) => (
+                <Link key={item._id} href={`/destinations/${item.slug}`}>
+                  <div className="cursor-pointer">
+                    <ImageDisplay
+                      src={item.imageUrls?.[0] || item.image}
+                      variant="smallrectangle"
+                    />
+                    <TextHeader
+                      text={item.title}
+                      size="small"
+                      align="left"
+                      className="mt-2"
+                    />
+                    <h3 className="text-lg font-medium text-gray-600">
+                      {item.subtitle}
+                    </h3>
+                  </div>
+                </Link>
+              ))}
+          </div>
         </section>
-
-<div className="w-full h-[1.5px] bg-[#C2C2C2]" />
-      
-     
-       <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mt-4 md:mt-6 ">
-      {relatedPackages.map((card, index) => (
-        <Link href={`/itinerary/${card._id}`} key={index} className="flex flex-col gap-4">
-          <div className="aspect-video">
-            <ImageDisplay
-              src={card.gallery?.[0]}
-              variant="square"
-              snippet="popular"
-              snippetPosition="start"
-              title={card.title}
-              description={card.description}
-            />
-          </div>
-
-          <div className="flex flex-col gap-3">
-            <div className="flex justify-between text-sm">
-              <span className="flex items-center gap-1 font-medium text-[20px] text-[#7E7E7E]">
-                <Image src={"/images/Location.svg"} alt="Location" width={20} height={20} />
-                {card.location?.city }, {card.location?.country}
-              </span>
-              <span className="flex items-center gap-2 font-medium text-[20px] text-[#7E7E7E]">
-                <Image src={"/images/clock.svg"} alt="Clock" width={20} height={20} />
-                {card.duration?.days} Days
-              </span>
-            </div>
-
-            <TextHeader
-              text={card.overview}
-              size="small"
-              align="left"
-              width={410}
-              className="line-clamp-2"
-            />
-
-            <div className="w-full h-[1.5px] bg-[#C2C2C2]" />
-
-             <div className="flex flex-row  text-lg font-medium text-[#7E7E7E] text-[20px] mt-1">
-        Starting Price: <span className="text-primary font-semibold ml-5">${card.basePrice}</span>
-            </div>
-          </div>
-        </Link>
-      ))}
-    </div>
-    </section>
-      
+      </section>
     </>
   );
 }

@@ -15,8 +15,8 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({ currentnavlink }) => {
   });
 
   return (
-    <section className=" bg-[#FEF9EE] w-full h-[38px]  relative z-40 top-6 shadow-sm ">
-    <div className="max-w-7xl mx-auto text-[18px] font-semibold flex gap-1 my-[-2]">
+    <section className=" bg-[#FEF9EE] w-full h-[28px]  relative z-40 top-6 shadow-sm ">
+    <div className="max-w-7xl mx-auto text-[18px] font-semibold flex gap-1 ">
      
         <Link href="/" className="text-gray-400 hover:text-gray-600">Home</Link>
         {paths.map((segment, i) => (
