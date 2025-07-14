@@ -15,6 +15,7 @@ import {
   FaUserFriends,
   FaStar,
   FaInbox,
+  FaUser
 } from "react-icons/fa";
 import Logo from "@/components/atoms/Logo";
 
@@ -55,10 +56,12 @@ const Sidebar = ({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen: (open: boo
             { icon: FaUsers, text: "Destiantions", link: "/dashboard/customise-destinations" },
             { icon: FaWallet, text: "Blog Collection", link: "/dashboard/customise-blogs" },
             { icon: FaChartLine, text: "Contact Form", link: "/dashboard/contact" },
+            { icon: FaUser, text: "Private Trip", link: "/dashboard/private-trips" },
             { icon: FaBox, text: "Activities", link: "/dashboard/customise-activities" },
             { icon: FaStar, text: "Testimonials", link: "/dashboard/customise-testimonials" },
             { icon: FaUserFriends, text: " Team", link: "/dashboard/customise-team" },
             { icon: FaCog, text: "Settings", link: "/dashboard/settings" },
+
           ].map(({ icon: Icon, text, link }, index) => (
             <Link
               key={index}
