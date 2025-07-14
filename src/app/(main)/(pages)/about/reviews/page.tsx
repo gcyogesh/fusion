@@ -12,7 +12,7 @@ export default async function Reviews() {
 
   return (
     <>
-      <Breadcrumb currentnavlink="reviews" />
+      <Breadcrumb currentnavlink="About/Reviews" />
       <main className="mx-auto max-w-7xl px-6 sm:px-8 py-12 sm:py-20">
         <TextHeader
             text="Memorable Journeys, Happy Clients"

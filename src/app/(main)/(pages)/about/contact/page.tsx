@@ -22,7 +22,7 @@ export default async function Contact() {
 
   return (
     <>
-      <Breadcrumb currentnavlink="Contact" />
+      <Breadcrumb currentnavlink="About/Contact" />
       <HeroBanner herodata={herosectiondata.data} />
 
 

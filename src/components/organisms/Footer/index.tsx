@@ -12,9 +12,22 @@ const socialLinks = [
 const companyLinks = [
   { label: "About Us", href: "/about" },
   { label: "Contact Us", href: "/contact" },
-  { label: "Blog", href: "/blogs" },
-  { label: "Terms and Conditions", href: "/terms-and-conditions" },
+  { label: "Destinations", href: "/destinations" },
+  { label: "Activities", href: "/activities" },
+  { label: "Terms and Conditions", href: "/about/terms" },
 ];
+
+
+
+const overviewLinks = [
+  { label: "Deals", href: "/deals" },
+  { label: "Duration", href: "/duration" },
+  { label: "Blog", href: "/blogs" },
+  { label: "Reviews", href: "/about/reviews" },
+ 
+];
+
+
 
 interface FooterProps {
   destinations?: any[];
@@ -23,7 +36,7 @@ interface FooterProps {
 
 export default function Footer({ destinations = [], activities = [] }: FooterProps) {
   return (
-    <footer className="bg-gradient-to-t from-[#bee3f9] to-[#F5F5F5]]">
+    <footer className="bg-gradient-to-t from-[#85cdf4] to-[#fef9ee]">
       <Image
         src="/images/footerTopImage.png"
         width={1200}
@@ -99,11 +112,13 @@ export default function Footer({ destinations = [], activities = [] }: FooterPro
 
             {/* Destinations */}
             <div className="flex flex-col space-y-4">
-              <h1 className="text-2xl font-semibold">Destinations</h1>
+              <h1 className="text-2xl font-semibold">Overview</h1>
               <ul className="space-y-3">
-                {destinations.map((place: any) => (
-                  <li key={place._id || place.slug || place.title}>
-                    <a href={place.slug ? `/destinations/${place.slug}` : '#'} className="hover:text-[#06ab86] transition-colors">{place.title || place.name || 'Untitled'}</a>
+               {overviewLinks.map((item) => (
+                  <li key={item.href}>
+                    <a href={item.href} className="hover:text-[#06ab86] transition-colors">
+                      {item.label}
+                    </a>
                   </li>
                 ))}
               </ul>
@@ -131,7 +146,7 @@ export default function Footer({ destinations = [], activities = [] }: FooterPro
         <div className="max-w-7xl mx-auto border-t border-gray-300">
           <div className="flex flex-col md:flex-row justify-between items-center px-6 py-6">
             <div className="flex gap-6 text-sm">
-              <p>© 2025 Fusion Expeditions</p>
+              <p>Â© 2025 Fusion Expeditions</p>
               <a href="/privacy-policy" className="hover:text-[#06ab86]">Privacy Policy</a>
               <a href="/site-map" className="hover:text-[#06ab86]">Site Map</a>
             </div>

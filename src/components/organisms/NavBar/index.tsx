@@ -5,7 +5,7 @@ import { useEffect, useState, useCallback, useMemo } from "react";
 import { usePathname } from "next/navigation";
 import { IoMdClose } from "react-icons/io";
 import { FiMenu } from "react-icons/fi";
-import { FaWhatsapp } from "react-icons/fa";
+import { FaWhatsapp, FaFacebook, FaInstagram } from "react-icons/fa";
 import { ChevronDown, ChevronUp, ChevronRight } from "lucide-react";
 import Logo from "@/components/atoms/Logo";
 import MobileDropdownMenu from "./dropdowns/mobiledropdown";
@@ -77,6 +77,12 @@ interface NavbarProps {
 interface ContactInfo {
   whatsappNumber: string;
   phones: string[];
+  socialLinks?: {
+    facebook?: string;
+    instagram?: string;
+    linkedin?: string;
+    twitter?: string;
+  };
 }
 
 // Throttle function for scroll optimization
@@ -194,6 +200,12 @@ export default function Navbar({
             subtitle: "We’d love to hear from you! Whether you have a question, feedback, or a project in mind — feel free to reach out.",
             title: "Contact",
           },
+          {
+            name: "Terms and Conditions",
+            href: "/about/terms",
+            subtitle: "We’d love to hear from you! Whether you have a question, feedback, or a project in mind — feel free to reach out.",
+            title: "Terms and Conditions",
+          },
         ],
       },
       { name: "Blogs", href: "/blogs", hasDropdown: false },
@@ -205,10 +217,8 @@ export default function Navbar({
   }, [destinations, activities, relatedPackagesMap, relatedActivityPackagesMap]);
 
   // Fetch contact info with caching
-  const fetchContactInfo = useCallback(async () => {
-    if (contactInfo) return; // Don't fetch if already have data
-    
-    setIsLoading(true);
+  useEffect(() => {
+  async function fetchContactInfo() {
     try {
       const res = await fetch("https://yogeshbhai.ddns.net/api/info");
       const json = await res.json();
@@ -216,18 +226,15 @@ export default function Navbar({
         setContactInfo({
           whatsappNumber: json.data.whatsappNumber,
           phones: json.data.phones,
+          socialLinks: json.data.socialLinks, 
         });
       }
     } catch (error) {
       console.error("Failed to fetch contact info:", error);
-    } finally {
-      setIsLoading(false);
     }
-  }, [contactInfo]);
-
-  useEffect(() => {
-    fetchContactInfo();
-  }, [fetchContactInfo]);
+  }
+  fetchContactInfo();
+}, []);
 
   // Throttled scroll handler for performance
   useEffect(() => {
@@ -321,22 +328,39 @@ export default function Navbar({
 
         {/* Buttons */}
         <div className="flex items-center gap-4">
-          {contactInfo?.whatsappNumber && (
+        {contactInfo?.whatsappNumber && (
             <Link
               href={`https://wa.me/${contactInfo.whatsappNumber.replace(/\D/g, "")}`}
               target="_blank"
-              rel="noopener noreferrer"
               className="cursor-pointer"
-              aria-label="Contact us on WhatsApp"
+              aria-label="WhatsApp"
             >
               <FaWhatsapp className="text-white text-3xl hover:text-green-400 transition-colors" />
             </Link>
           )}
-          <Link href="/contact" className="hidden lg:block">
-            <button className="bg-primary hover:bg-gradient-to-r from-[#D35400] to-[#A84300] text-white text-base font-medium h-[46px] w-[160px] rounded-full transition-all duration-300">
-              Contact
-            </button>
-          </Link>
+
+          {contactInfo?.socialLinks?.instagram && (
+            <Link
+              href={contactInfo.socialLinks.instagram}
+              target="_blank"
+              className="cursor-pointer"
+              aria-label="Instagram"
+            >
+              <FaInstagram className="text-white text-3xl hover:text-pink-500 transition-colors" />
+            </Link>
+          )}
+
+          {contactInfo?.socialLinks?.facebook && (
+            <Link
+              href={contactInfo.socialLinks.facebook}
+              target="_blank"
+              className="cursor-pointer"
+              aria-label="Facebook"
+            >
+              <FaFacebook className="text-white text-3xl hover:text-blue-500 transition-colors" />
+            </Link>
+          )}
+         
           <button 
             className="text-3xl md:hidden" 
             onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -355,7 +379,7 @@ export default function Navbar({
         >
           <div className="max-w-6xl mx-auto flex bg-white shadow-lg rounded-md overflow-hidden border border-gray-200 px-8">
             {/* Left column */}
-            <div className="w-[300px] px-4 py-6">
+            <div className="w-[300px] text-base px-4 py-6">
               <ul className="divide-y divide-gray-200">
                 {activeDropdown.subLinks?.map((sub, index) => (
                   <li key={`${sub.name}-${index}`} onMouseEnter={() => setHoveredSub(sub)}>
@@ -390,10 +414,10 @@ export default function Navbar({
                 {hoveredSub?.relatedPackages && hoveredSub.relatedPackages.length > 0 ? (
                   <div className="mt-4">
                     
-                    <ul className="space-y-1 text-gray-700 font-medium text-base">
+                    <ul className="space-y-1 text-gray-700 font-medium text-base divide-y divide-gray-200 ">
                       {hoveredSub.relatedPackages.map((pkg, idx) => (
-                        <li key={idx} className="border border-b-gray-700">
-                          <Link href={pkg.href} className="hover:text-primary">
+                        <li key={idx} className="py-1">
+                          <Link href={pkg.href} className="hover:text-[#f28a15]">
                             {pkg.name} - {pkg.duration}
                           </Link>
                         </li>
