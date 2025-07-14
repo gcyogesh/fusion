@@ -53,6 +53,7 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({
 
 interface TestimonialCarouselProps {
   testimonialData: TestimonialCardProps[];
+  isReviewPage?: boolean;
 }
 
 export interface TestimonialCarouselHandle {
@@ -61,7 +62,7 @@ export interface TestimonialCarouselHandle {
 }
 
 const TestimonialCarousel = forwardRef<TestimonialCarouselHandle, TestimonialCarouselProps>(
-  ({ testimonialData }, ref) => {
+  ({ testimonialData, isReviewPage = false }, ref) => {
     const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false, align: 'start' });
     const [selectedIndex, setSelectedIndex] = useState(0);
 
@@ -83,23 +84,24 @@ const TestimonialCarousel = forwardRef<TestimonialCarouselHandle, TestimonialCar
 
     return (
       <div className="relative w-full max-w-6xl mx-auto px-4 py-10 overflow-hidden z-0">
-        <TextHeader
-          text="Memorable Journeys, Happy Clients"
-          specialWordsIndices="1"
-          align="center"
-          width="500px"
-          buttonText="Testimonials"
-          className="mb-8"
-        />
+        {!isReviewPage && (
+          <TextHeader
+            text="Memorable Journeys, Happy Clients"
+            specialWordsIndices="1"
+            align="center"
+            width="500px"
+            buttonText="Testimonials"
+            className="mb-8"
+          />
+        )}
 
         <div
-          className="relative w-full py-4 bg-[linear-gradient(90deg,_#FEF9EE_0.88%,_#1C9ADB_32.63%,_#0F7BBA_70.26%,_#FEF9EE_100%)] sm:bg-[linear-gradient(90deg,_#FEF9EE_0.88%,_#0F7BBA_50%,_#FEF9EE_100%)] md:bg-[linear-gradient(90deg,_#FEF9EE,_#1C9ADB,_#FEF9EE)]"
+          className={`relative w-full py-4 ${
+            isReviewPage
+              ? ''
+              : 'bg-[linear-gradient(90deg,_#FEF9EE_0.88%,_#1C9ADB_32.63%,_#0F7BBA_70.26%,_#FEF9EE_100%)] sm:bg-[linear-gradient(90deg,_#FEF9EE_0.88%,_#0F7BBA_50%,_#FEF9EE_100%)] md:bg-[linear-gradient(90deg,_#FEF9EE,_#1C9ADB,_#FEF9EE)]'
+          }`}
           ref={emblaRef}
-          style={{
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-            backgroundSize: '60% 100%',
-          }}
         >
           <div className="flex gap-5 px-3 py-2">
             {testimonialData.map((item, index) => (
@@ -108,16 +110,18 @@ const TestimonialCarousel = forwardRef<TestimonialCarouselHandle, TestimonialCar
           </div>
         </div>
 
-        <div className="flex justify-center mt-8 space-x-2">
-          {testimonialData.map((_, i) => (
-            <span
-              key={i}
-              className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
-                i === selectedIndex ? 'bg-orange-400' : 'bg-gray-300'
-              }`}
-            />
-          ))}
-        </div>
+        {!isReviewPage && (
+          <div className="flex justify-center mt-8 space-x-2">
+            {testimonialData.map((_, i) => (
+              <span
+                key={i}
+                className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+                  i === selectedIndex ? 'bg-orange-400' : 'bg-gray-300'
+                }`}
+              />
+            ))}
+          </div>
+        )}
       </div>
     );
   }

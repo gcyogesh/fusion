@@ -1,7 +1,7 @@
 'use client'
 import React, { useState, useEffect } from 'react';
 import { fetchAPI } from '@/utils/apiService';
-import { FiX, FiCamera, FiPlus, FiMapPin, FiDollarSign, FiInfo, FiList, FiFlag, FiImage, FiCalendar, FiUsers, FiActivity, FiHome, FiSun, FiNavigation, FiAlertCircle, FiTag } from 'react-icons/fi';
+import { FiX, FiCamera, FiPlus, FiMapPin, FiDollarSign, FiInfo, FiList, FiFlag, FiImage, FiCalendar, FiUsers, FiActivity, FiHome, FiSun, FiNavigation, FiTag } from 'react-icons/fi';
 import { FaStar } from 'react-icons/fa';
 import Button from '@/components/atoms/button';
 import Alert from '@/components/atoms/alert';
@@ -24,7 +24,7 @@ export interface TourPackageFormData {
   title: string;
   description: string;
   overview: string;
-  location: { city: string; country: string; coordinates: { lat: string; lng: string } };
+  location: { city: string; country: string;  };
   duration: { days: string; nights: string };
   basePrice: string;
   currency: string;
@@ -38,7 +38,7 @@ export interface TourPackageFormData {
   tag: string;
   rating: string;
   destination: string;
-  activitiescategory: string; // NEW: Added for backend requirement
+  activitiescategory: string;
 }
 
 interface TourPackageFormProps {
@@ -49,25 +49,23 @@ interface TourPackageFormProps {
   type?: string;
 }
 
-// Move InputField component outside
-const InputField = ({ 
-  label, 
-  name, 
-  value, 
-  onChange, 
-  placeholder, 
-  required = false, 
-  type = 'text', 
+// InputField component without validation
+const InputField = ({
+  label,
+  name,
+  value,
+  onChange,
+  placeholder,
+  type = 'text',
   className = '',
   icon = null,
-  errors = {},
   min,
   max,
   readOnly = false
 }) => (
   <div className={`mb-4 ${className}`}>
     <label className="block text-sm font-medium text-gray-700 mb-1">
-      {label} {required && <span className="text-red-500">*</span>}
+      {label}
     </label>
     <div className="relative">
       {icon && (
@@ -83,36 +81,26 @@ const InputField = ({
         placeholder={placeholder}
         min={min}
         max={max}
-        className={`w-full pl-10 pr-3 py-3 border rounded-lg shadow-sm ${
-          errors[name] ? 'border-red-500' : 'border-gray-300'
-        }`}
+        className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg shadow-sm"
         readOnly={readOnly}
       />
     </div>
-    {errors[name] && (
-      <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
-        <FiAlertCircle className="flex-shrink-0" /> 
-        {errors[name]}
-      </p>
-    )}
   </div>
 );
 
-// Move TextareaField component outside
-const TextareaField = ({ 
-  label, 
-  name, 
-  value, 
-  onChange, 
-  placeholder, 
-  required = false, 
+// TextareaField component without validation
+const TextareaField = ({
+  label,
+  name,
+  value,
+  onChange,
+  placeholder,
   rows = 3,
-  icon = null,
-  errors = {}
+  icon = null
 }) => (
   <div className="mb-4">
     <label className="block text-sm font-medium text-gray-700 mb-1">
-      {label} {required && <span className="text-red-500">*</span>}
+      {label}
     </label>
     <div className="relative">
       {icon && (
@@ -126,22 +114,14 @@ const TextareaField = ({
         onChange={onChange}
         placeholder={placeholder}
         rows={rows}
-        className={`w-full pl-10 pr-3 py-2 border rounded-lg shadow-sm ${
-          errors[name] ? 'border-red-500' : 'border-gray-300'
-        }`}
+        className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg shadow-sm"
       />
     </div>
-    {errors[name] && (
-      <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
-        <FiAlertCircle className="flex-shrink-0" /> 
-        {errors[name]}
-      </p>
-    )}
   </div>
 );
 
-// Enhanced FileUploadField for single image (Google Map Image)
-const SingleImageUploadField = ({ label, name, onChange, file, errors = {} }) => {
+// Enhanced FileUploadField for single image (Google Map Image) without validation
+const SingleImageUploadField = ({ label, name, onChange, file }) => {
   let previewUrl = '';
   if (file) {
     if (typeof file === 'string') {
@@ -153,11 +133,9 @@ const SingleImageUploadField = ({ label, name, onChange, file, errors = {} }) =>
   return (
     <div className="mb-4">
       <label className="block text-sm font-medium text-gray-700 mb-1">
-        {label} <span className="text-red-500">*</span>
+        {label}
       </label>
-      <div className={`mt-1 flex flex-col items-center justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-lg ${
-        errors[name] ? 'border-red-500 bg-red-50' : 'border-gray-300'
-      }`}>
+      <div className="mt-1 flex flex-col items-center justify-center px-6 pt-5 pb-6 border-2 border-dashed border-gray-300 rounded-lg">
         {file ? (
           <div className="flex flex-col items-center gap-2">
             <img
@@ -188,28 +166,19 @@ const SingleImageUploadField = ({ label, name, onChange, file, errors = {} }) =>
           </label>
         )}
       </div>
-      {errors[name] && (
-        <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
-          <FiAlertCircle className="flex-shrink-0" /> 
-          {errors[name]}
-        </p>
-      )}
     </div>
   );
 };
 
-// Enhanced MultiImageUploadField for dynamic slots (show only current images + 1 add slot if under max)
-const MultiImageUploadField = ({ label, name, onChange, files, max = 10, errors = {} }) => {
-  // Show slots for current images + 1 add slot if under max
+// Enhanced MultiImageUploadField for dynamic slots without validation
+const MultiImageUploadField = ({ label, name, onChange, files, max = 10 }) => {
   const slots = files.length < max ? [...files, null] : files;
   return (
     <div className="mb-4">
       <label className="block text-sm font-medium text-gray-700 mb-1">
-        {label} <span className="text-red-500">*</span>
+        {label}
       </label>
-      <div className={`mt-1 flex flex-wrap gap-4 justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-lg ${
-        errors[name] ? 'border-red-500 bg-red-50' : 'border-gray-300'
-      }`}>
+      <div className="mt-1 flex flex-wrap gap-4 justify-center px-6 pt-5 pb-6 border-2 border-dashed border-gray-300 rounded-lg">
         {slots.map((file, index) => {
           let previewUrl = '';
           if (file) {
@@ -261,24 +230,18 @@ const MultiImageUploadField = ({ label, name, onChange, files, max = 10, errors 
           );
         })}
       </div>
-      {errors[name] && (
-        <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
-          <FiAlertCircle className="flex-shrink-0" /> 
-          {errors[name]}
-        </p>
-      )}
     </div>
   );
 };
 
-// Move ArrayField component outside
-const ArrayField = ({ label, name, value = [], onChange, placeholder, required = false, errors = {} }) => {
+// ArrayField component without validation
+const ArrayField = ({ label, name, value = [], onChange, placeholder }) => {
   const safeValue = Array.isArray(value) ? value : [];
 
   return (
     <div className="mb-4">
       <label className="block text-sm font-medium text-gray-700 mb-1">
-        {label} {required && <span className="text-red-500">*</span>}
+        {label}
       </label>
       <div className="space-y-2">
         {safeValue.map((item, idx) => (
@@ -315,12 +278,6 @@ const ArrayField = ({ label, name, value = [], onChange, placeholder, required =
           <FiPlus className="text-lg" /> Add Item
         </button>
       </div>
-      {errors[name] && (
-        <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
-          <FiAlertCircle className="flex-shrink-0" />
-          {errors[name]}
-        </p>
-      )}
     </div>
   );
 };
@@ -350,25 +307,19 @@ const StarRating = ({ value, onChange, max = 5 }) => (
   </div>
 );
 
-
-
-
-
-const CategorySelectField = ({ 
-  label, 
-  name, 
-  value, 
-  onChange, 
-  options = [], 
-  placeholder = "Select category", 
-  required = false, 
+const CategorySelectField = ({
+  label,
+  name,
+  value,
+  onChange,
+  options = [],
+  placeholder = "Select category",
   loading = false,
-  errors = {},
-  icon = null 
+  icon = null
 }) => (
   <div className="mb-4">
     <label className="block text-sm font-medium text-gray-700 mb-1">
-      {label} {required && <span className="text-red-500">*</span>}
+      {label}
     </label>
     <div className="relative">
       {icon && (
@@ -380,43 +331,26 @@ const CategorySelectField = ({
         name={name}
         value={value}
         onChange={onChange}
-        className={`w-full pl-10 pr-3 py-3 border rounded-lg shadow-sm ${
-          errors[name] ? 'border-red-500' : 'border-gray-300'
-        } ${loading ? 'cursor-wait' : 'cursor-pointer'}`}
+        className={`w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg shadow-sm ${loading ? 'cursor-wait' : 'cursor-pointer'}`}
         disabled={loading}
       >
         <option value="">{loading ? 'Loading categories...' : placeholder}</option>
-     {Array.isArray(options) && options.map((option) => (
-  <option key={option._id} value={option._id}>
-    {option.name}
-  </option>
-))}
-
-
+        {Array.isArray(options) && options.map((option) => (
+          <option key={option._id} value={option._id}>
+            {option.name}
+          </option>
+        ))}
       </select>
     </div>
-    {errors[name] && (
-      <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
-        <FiAlertCircle className="flex-shrink-0" /> 
-        {errors[name]}
-      </p>
-    )}
   </div>
-
-
-
-
-  )
-
-
-
+);
 
 const TourPackageForm = ({ initialData = undefined, onClose, destinationId, destinationTitle, type }: TourPackageFormProps) => {
   const [formData, setFormData] = useState<TourPackageFormData>({
     title: '',
     description: '',
     overview: '',
-    location: { city: '', country: '', coordinates: { lat: '', lng: '' } },
+    location: { city: '', country: '' },
     duration: { days: '', nights: '' },
     basePrice: '',
     currency: 'npr',
@@ -440,40 +374,36 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
     tag: '',
     rating: '',
     destination: initialData?.destination || destinationId || "",
-    activitiescategory: '', // NEW: Added for backend requirement
+    activitiescategory: '',
   });
 
   const [galleryFiles, setGalleryFiles] = useState([]);
   const [googleMapImage, setGoogleMapImage] = useState(null);
-  const [itineraryImages, setItineraryImages] = useState([]); // NEW: Store itinerary images separately
-  const [categories, setCategories] = useState([]); // NEW: Store categories
-  const [loadingCategories, setLoadingCategories] = useState(false); // NEW: Loading state for categories
+  const [itineraryImages, setItineraryImages] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [loadingCategories, setLoadingCategories] = useState(false);
   const [alert, setAlert] = useState<{ show: boolean; type: 'success' | 'error' | 'confirm' | 'warning'; message: string }>({ show: false, type: 'success', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitStatus, setSubmitStatus] = useState(null);
   const [activeTab, setActiveTab] = useState('basic');
-  const [pendingSubmit, setPendingSubmit] = useState(false);
 
-  // NEW: Fetch categories on component mount
-useEffect(() => {
-  const fetchCategories = async () => {
-    try {
-      setLoadingCategories(true);
-      const response = await fetch('https://yogeshbhai.ddns.net/api/category/activities');
-      const json = await response.json();
-      
-      // ✅ Fix: Set only the array of categories, not the whole response
-      setCategories(json.data || []);
-    } catch (error) {
-      console.error('Error fetching categories:', error);
-      setAlert({ show: true, type: 'error', message: 'Failed to load categories' });
-    } finally {
-      setLoadingCategories(false);
-    }
-  };
-  fetchCategories();
-}, []);
+  // Fetch categories on component mount
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        setLoadingCategories(true);
+        const response = await fetch('https://yogeshbhai.ddns.net/api/category/activities');
+        const json = await response.json();
+        setCategories(json.data || []);
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+        setAlert({ show: true, type: 'error', message: 'Failed to load categories' });
+      } finally {
+        setLoadingCategories(false);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   useEffect(() => {
     if (initialData) {
@@ -483,7 +413,7 @@ useEffect(() => {
         title: initialData.title ?? '',
         description: initialData.description ?? '',
         overview: initialData.overview ?? '',
-        location: initialData.location ?? { city: '', country: '', coordinates: { lat: '', lng: '' } },
+        location: initialData.location ?? { city: '', country: '',  },
         duration: initialData.duration ?? { days: '', nights: '' },
         basePrice: initialData.basePrice ?? '',
         currency: initialData.currency ?? 'npr',
@@ -500,13 +430,11 @@ useEffect(() => {
         quickfacts: Array.isArray(initialData.quickfacts)
           ? initialData.quickfacts
           : (typeof initialData.quickfacts === 'string' && !!initialData.quickfacts ? (initialData.quickfacts as string).split(',').map(s => s.trim()).filter(Boolean) : []),
-       tag: Array.isArray(initialData.tag)
-  ? initialData.tag[0] || ''
-  : (typeof initialData.tag === 'string' && initialData.tag.startsWith('[')
-      ? JSON.parse(initialData.tag)[0] || ''
-      : initialData.tag ?? ''),
-
-
+        tag: Array.isArray(initialData.tag)
+          ? initialData.tag[0] || ''
+          : (typeof initialData.tag === 'string' && initialData.tag.startsWith('[')
+            ? JSON.parse(initialData.tag)[0] || ''
+            : initialData.tag ?? ''),
         feature: {
           ...prev.feature,
           ...initialData.feature,
@@ -523,9 +451,10 @@ useEffect(() => {
             ? initialData.feature.bestSeason
             : (typeof initialData.feature?.bestSeason === 'string' && !!initialData.feature.bestSeason ? (initialData.feature.bestSeason as string).split(',').map(s => s.trim()).filter(Boolean) : []),
         },
-        activitiescategory: initialData.activitiescategory ?? '', // NEW: Handle category from initial data
+        activitiescategory: initialData.activitiescategory ?? '',
       }));
-      // Gallery and map image: check property existence and type
+
+      // Gallery and map image handling
       const gallery = 'gallery' in initialData ? initialData.gallery : undefined;
       const baseUrl = process.env.NEXT_PUBLIC_IMAGE_BASE_URL || '';
       let galleryArr = Array.isArray(gallery) ? gallery : (typeof gallery === 'string' ? [gallery] : []);
@@ -536,14 +465,15 @@ useEffect(() => {
         return img;
       });
       setGalleryFiles(galleryArr);
+
       const mapImg = 'googleMapUrl' in initialData ? initialData.googleMapUrl : undefined;
       let mapImgUrl = null;
       if (typeof mapImg === 'string' && mapImg) {
         mapImgUrl = mapImg.startsWith('http') ? mapImg : `${process.env.NEXT_PUBLIC_IMAGE_BASE_URL || ''}${mapImg}`;
       }
       setGoogleMapImage(mapImgUrl);
-      
-      // NEW: Initialize itinerary images
+
+      // Initialize itinerary images
       if (initialData.itinerary && Array.isArray(initialData.itinerary)) {
         const images = initialData.itinerary.map(item => item.image || null);
         setItineraryImages(images);
@@ -563,120 +493,16 @@ useEffect(() => {
     }
   }, [submitStatus]);
 
-  // Validation function
-  const validateForm = (tab = activeTab) => {
-    const newErrors: Record<string, string> = {};
-    // Basic tab validation
-    if (tab === 'basic' || tab === undefined) {
-      if (!formData.title.trim()) newErrors.title = 'Title is required';
-      if (!formData.description.trim()) newErrors.description = 'Description is required';
-      if (!formData.overview.trim()) newErrors.overview = 'Overview is required';
-      if (!formData.destination.trim()) newErrors.destination = 'Destination is required';
-      if (!formData.activitiescategory.trim()) newErrors.activitiescategory = 'Activity category is required'; // NEW: Validate category
-    }
-    // Location tab validation
-    if (tab === 'location') {
-      if (!formData.location.city.trim()) newErrors.city = 'City is required';
-      if (!formData.location.country.trim()) newErrors.country = 'Country is required';
-      const lat = parseFloat(formData.location.coordinates.lat);
-      const lng = parseFloat(formData.location.coordinates.lng);
-      if (!formData.location.coordinates.lat) newErrors.lat = 'Latitude is required';
-      else if (isNaN(lat)) newErrors.lat = 'Latitude must be a number';
-      else if (lat < -90 || lat > 90) newErrors.lat = 'Latitude must be between -90 and 90';
-      if (!formData.location.coordinates.lng) newErrors.lng = 'Longitude is required';
-      else if (isNaN(lng)) newErrors.lng = 'Longitude must be a number';
-      else if (lng < -180 || lng > 180) newErrors.lng = 'Longitude must be between -180 and 180';
-      if (!googleMapImage) newErrors.googleMapUrl = 'Google Map image is required';
-    }
-    // Pricing tab validation
-    if (tab === 'pricing') {
-      if (!formData.duration.days) newErrors.days = 'Duration days is required';
-      if (!formData.duration.nights) newErrors.nights = 'Duration nights is required';
-      if (!formData.basePrice) newErrors.basePrice = 'Base price is required';
-      if (formData.basePrice && isNaN(parseFloat(formData.basePrice))) {
-        newErrors.basePrice = 'Base price must be a number';
-      }
-      if (formData.duration.days && isNaN(parseInt(formData.duration.days))) {
-        newErrors.days = 'Days must be a number';
-      }
-      if (formData.duration.nights && isNaN(parseInt(formData.duration.nights))) {
-        newErrors.nights = 'Nights must be a number';
-      }
-    }
-    // Details tab validation
-    if (tab === 'details') {
-      if (!formData.inclusions.length) newErrors.inclusions = 'At least one inclusion is required';
-      if (!formData.exclusions.length) newErrors.exclusions = 'At least one exclusion is required';
-      if (!formData.highlights.length) newErrors.highlights = 'At least one highlight is required';
-      if (!formData.quickfacts.length) newErrors.quickfacts = 'At least one quick fact is required';
-   
-      // NEW: Ensure tag are not empty strings
-    
-    }
-    // Features tab validation
-    if (tab === 'features') {
-      if (!formData.feature.groupSize.min) newErrors.min = 'Min group size is required';
-      if (!formData.feature.tripDuration) newErrors.tripDuration = 'Trip duration is required';
-      if (!formData.feature.tripDifficulty) newErrors.tripDifficulty = 'Trip difficulty is required';
-      if (!formData.feature.maxAltitude) newErrors.maxAltitude = 'Max altitude is required';
-      if (!formData.feature.startEndPoint) newErrors.startEndPoint = 'Start/End point is required';
-      if (!formData.feature.meals.length) newErrors.meals = 'At least one meal is required';
-      if (!formData.feature.activities.length) newErrors.activities = 'At least one activity is required';
-      if (!formData.feature.accommodation.length) newErrors.accommodation = 'At least one accommodation is required';
-      if (!formData.feature.bestSeason.length) newErrors.bestSeason = 'At least one best season is required';
-    }
-    // Itinerary tab validation
-    if (tab === 'itinerary') {
-      if (!formData.itinerary.length) newErrors.itinerary = 'At least one itinerary day is required';
-      formData.itinerary.forEach((day, idx) => {
-        if (!day.day) newErrors[`itinerary-day-${idx}`] = 'Day number is required';
-        if (!day.title) newErrors[`itinerary-title-${idx}`] = 'Title is required';
-        if (!day.description) newErrors[`itinerary-description-${idx}`] = 'Description is required';
-        if (!day.activities || !day.activities.length) newErrors[`itinerary-activities-${idx}`] = 'At least one activity is required';
-        // Check if corresponding itinerary image exists
-        if (!itineraryImages[idx] || (typeof itineraryImages[idx] !== 'string' && !(itineraryImages[idx] instanceof File))) {
-          newErrors[`itinerary-image-${idx}`] = 'Image is required';
-        }
-      });
-    }
-    // Media tab validation
-    if (tab === 'media') {
-      // Gallery validation removed as per user request
-    }
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  // Focus/scroll to first error input
-  const focusFirstError = () => {
-    const firstErrorKey = Object.keys(errors)[0];
-    if (firstErrorKey) {
-      const el = document.querySelector(`[name="${firstErrorKey}"]`);
-      if (el && typeof (el as HTMLElement).focus === 'function') {
-        (el as HTMLElement).focus();
-        (el as HTMLElement).scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-    }
-  };
-
-  // Helper to get all error messages as a string
-  const getAllErrorMessages = () => {
-    return Object.values(errors).filter(Boolean).join('\n');
-  };
-
-  // Next/Back navigation
+  // Next/Back navigation without validation
   const tabOrder = ['basic', 'location', 'pricing', 'details', 'features', 'itinerary', 'media'];
   const isLastTab = activeTab === tabOrder[tabOrder.length - 1];
   const isFirstTab = activeTab === tabOrder[0];
+
   const goToNextTab = () => {
-    if (validateForm(activeTab)) {
-      const idx = tabOrder.indexOf(activeTab);
-      if (idx < tabOrder.length - 1) setActiveTab(tabOrder[idx + 1]);
-    } else {
-      focusFirstError();
-      setAlert({ show: true, type: 'error', message: getAllErrorMessages() || 'Please fix the errors above before continuing.' });
-    }
+    const idx = tabOrder.indexOf(activeTab);
+    if (idx < tabOrder.length - 1) setActiveTab(tabOrder[idx + 1]);
   };
+
   const goToPrevTab = () => {
     const idx = tabOrder.indexOf(activeTab);
     if (idx > 0) setActiveTab(tabOrder[idx - 1]);
@@ -685,9 +511,6 @@ useEffect(() => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
-    }
   };
 
   const handleNestedChange = (field, key, value) => {
@@ -698,25 +521,20 @@ useEffect(() => {
         [key]: value,
       },
     }));
-    if (errors[key]) {
-      setErrors(prev => ({ ...prev, [key]: '' }));
-    }
   };
+
+
 
   const handleGalleryChange = (e) => {
     const files = Array.from(e.target.files);
     setGalleryFiles(files);
-    if (errors.gallery) {
-      setErrors(prev => ({ ...prev, gallery: '' }));
-    }
+
   };
 
   const handleMapImageChange = (e) => {
     const file = e.target.files[0];
     setGoogleMapImage(file);
-    if (errors.googleMapUrl) {
-      setErrors(prev => ({ ...prev, googleMapUrl: '' }));
-    }
+
   };
 
   // NEW: Handle itinerary image changes
@@ -728,9 +546,7 @@ useEffect(() => {
       return updated;
     });
     // Clear error for this specific itinerary image
-    if (errors[`itinerary-image-${idx}`]) {
-      setErrors(prev => ({ ...prev, [`itinerary-image-${idx}`]: '' }));
-    }
+
   };
   const handleItineraryChange = (idx, field, value) => {
     setFormData((prev) => {
@@ -739,9 +555,7 @@ useEffect(() => {
       return { ...prev, itinerary: updated };
     });
     // Clear related errors
-    if (errors[`itinerary-${field}-${idx}`]) {
-      setErrors(prev => ({ ...prev, [`itinerary-${field}-${idx}`]: '' }));
-    }
+
   };
 
   const handleItineraryActivitiesChange = (idx, activities) => {
@@ -751,9 +565,7 @@ useEffect(() => {
       return { ...prev, itinerary: updated };
     });
     // Clear related errors
-    if (errors[`itinerary-activities-${idx}`]) {
-      setErrors(prev => ({ ...prev, [`itinerary-activities-${idx}`]: '' }));
-    }
+
   };
 
   const handleAddItineraryDay = () => {
@@ -788,83 +600,67 @@ useEffect(() => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!pendingSubmit) {
-      setAlert({ show: true, type: 'confirm', message: 'Are you sure you want to submit this tour package?' });
-      setPendingSubmit(true);
-      return;
-    }
-    setPendingSubmit(false);
-    setSubmitStatus(null);
-    setErrors({});
+
+
 
     // Validate all tabs before submission
-    let hasErrors = false;
-    for (const tab of tabOrder) {
-      if (!validateForm(tab)) {
-        hasErrors = true;
-        break;
-      }
-    }
 
-    if (hasErrors) {
-      focusFirstError();
-      setAlert({ show: true, type: 'error', message: getAllErrorMessages() || 'Please fix the errors above before submitting.' });
-      return;
-    }
+
+
 
     setIsSubmitting(true);
 
     try {
-    const form = new FormData();
-    form.append('title', formData.title);
-    form.append('description', formData.description);
-    form.append('overview', formData.overview);
-    form.append('basePrice', formData.basePrice);
-    form.append('currency', formData.currency);
-    form.append('type', formData.type);
-    form.append('rating', formData.rating);
-    form.append('destination', formData.destination);
-    form.append('activitiescategory', formData.activitiescategory);
+      const form = new FormData();
+      form.append('title', formData.title);
+      form.append('description', formData.description);
+      form.append('overview', formData.overview);
+      form.append('basePrice', formData.basePrice);
+      form.append('currency', formData.currency);
+      form.append('type', formData.type);
+      form.append('rating', formData.rating);
+      form.append('destination', formData.destination);
+      form.append('activitiescategory', formData.activitiescategory);
       form.append('tag', formData.tag);
 
-    // JSON fields
-    const jsonFields = {
-      location: formData.location,
-      duration: formData.duration,
-      feature: formData.feature,
-      itinerary: formData.itinerary.map(day => ({
-        day: day.day,
-        title: day.title,
-        description: day.description,
-        activities: day.activities
-        // DO NOT include image here!
-      })),
-      inclusions: formData.inclusions,
-      exclusions: formData.exclusions,
-      highlights: formData.highlights,
-      quickfacts: formData.quickfacts,
-    };
-    Object.entries(jsonFields).forEach(([key, value]) => {
-      form.append(key, JSON.stringify(value));
-    });
+      // JSON fields
+      const jsonFields = {
+        location: formData.location,
+        duration: formData.duration,
+        feature: formData.feature,
+        itinerary: formData.itinerary.map(day => ({
+          day: day.day,
+          title: day.title,
+          description: day.description,
+          activities: day.activities
+          // DO NOT include image here!
+        })),
+        inclusions: formData.inclusions,
+        exclusions: formData.exclusions,
+        highlights: formData.highlights,
+        quickfacts: formData.quickfacts,
+      };
+      Object.entries(jsonFields).forEach(([key, value]) => {
+        form.append(key, JSON.stringify(value));
+      });
 
       // Gallery images
-       galleryFiles.forEach(file => form.append('gallery', file));
+      galleryFiles.forEach(file => form.append('gallery', file));
 
       // Google Map image
-     if (googleMapImage) form.append('googleMapImage', googleMapImage);
+      if (googleMapImage) form.append('googleMapImage', googleMapImage);
 
 
-     
-        itineraryImages.forEach((file, index) => {
-      if (file) {
-        form.append('itineraryImages', file);
-      }
-    });
+
+      itineraryImages.forEach((file, index) => {
+        if (file) {
+          form.append('itineraryImages', file);
+        }
+      });
 
       // Console log all FormData
       for (let pair of form.entries()) {
-        console.log(pair[0]+ ':', pair[1]);
+        console.log(pair[0] + ':', pair[1]);
       }
 
       await fetchAPI({
@@ -894,7 +690,7 @@ useEffect(() => {
       title: '',
       description: '',
       overview: '',
-      location: { city: '', country: '', coordinates: { lat: '', lng: '' } },
+      location: { city: '', country: '', },
       duration: { days: '', nights: '' },
       basePrice: '',
       currency: 'npr',
@@ -933,159 +729,112 @@ useEffect(() => {
         message={alert.message}
         onConfirm={() => {
           setAlert({ ...alert, show: false });
-          if (alert.type === 'confirm' && pendingSubmit) {
-            // Actually submit the form now
-            setTimeout(() => handleSubmit({ preventDefault: () => {} }), 0);
-          }
+
         }}
         onCancel={() => {
           setAlert({ ...alert, show: false });
-          setPendingSubmit(false);
+
         }}
       />
     );
   };
 
   const renderBasicInfoTab = () => (
-  <div className="space-y-4">
-    <InputField 
-      label="Title"
-      name="title"
-      value={formData.title}
-      onChange={handleChange}
-      placeholder="Enter tour title"
-      required
-      icon={<FiInfo />}
-      errors={errors} 
-      min={undefined} 
-      max={undefined}
-    />
-    
-    <TextareaField 
-      label="Description" 
-      name="description" 
-      value={formData.description} 
-      onChange={handleChange} 
-      placeholder="Enter detailed description" 
-      required 
-      icon={<FiList />}
-      rows={4}
-      errors={errors}
-    />
-    
-    <TextareaField 
-      label="Overview" 
-      name="overview" 
-      value={formData.overview} 
-      onChange={handleChange} 
-      placeholder="Enter brief overview" 
-      required 
-      icon={<FiInfo />}
-      errors={errors}
-    />
-    
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <InputField 
-        label={type === 'activities' ? 'Activity' : 'Destination'}
-        name="destinationTitle"
-        value={destinationTitle || ''}
-        onChange={() => {}}
-        readOnly
-        required
-        icon={<FiFlag />}
-        placeholder={type === 'activities' ? 'Activity' : 'Destination'}
+    <div className="space-y-4">
+      <InputField
+        label="Title"
+        name="title"
+        value={formData.title}
+        onChange={handleChange}
+        placeholder="Enter tour title"
+
+        icon={<FiInfo />}
+
         min={undefined}
         max={undefined}
       />
-      <input type="hidden" name="destination" value={destinationId} />
-      
-      {/* NEW: Activities Category Selection */}
-      <CategorySelectField
-        label="Activities Category"
-        name="activitiescategory"
-        value={formData.activitiescategory}
+
+      <TextareaField
+        label="Description"
+        name="description"
+        value={formData.description}
         onChange={handleChange}
-        options={categories}
-        placeholder="Select category"
-        loading={loadingCategories}
-        errors={errors}
-        icon={<FiTag />}
+        placeholder="Enter detailed description"
+        icon={<FiList />}
+        rows={4}
       />
-      
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Rating</label>
-        <StarRating
-          value={formData.rating}
-          onChange={val => setFormData(f => ({ ...f, rating: val }))}
+
+      <TextareaField
+        label="Overview"
+        name="overview"
+        value={formData.overview}
+        onChange={handleChange}
+        placeholder="Enter brief overview"
+        icon={<FiInfo />}
+      />
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <InputField
+          label={type === 'activities' ? 'Activity' : 'Destination'}
+          name="destinationTitle"
+          value={destinationTitle || ''}
+          onChange={() => { }}
+          readOnly
+
+          icon={<FiFlag />}
+          placeholder={type === 'activities' ? 'Activity' : 'Destination'}
+          min={undefined}
+          max={undefined}
         />
-        {errors.rating && (
-          <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
-            <FiAlertCircle className="flex-shrink-0" />
-            {errors.rating}
-          </p>
-        )}
+        <input type="hidden" name="destination" value={destinationId} />
+
+        {/* NEW: Activities Category Selection */}
+        <CategorySelectField
+          label="Activities Category"
+          name="activitiescategory"
+          value={formData.activitiescategory}
+          onChange={handleChange}
+          options={categories}
+          placeholder="Select category"
+          loading={loadingCategories}
+
+          icon={<FiTag />}
+        />
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Rating</label>
+          <StarRating
+            value={formData.rating}
+            onChange={val => setFormData(f => ({ ...f, rating: val }))}
+          />
+
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
   const renderLocationTab = () => (
     <div className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <InputField 
+        <InputField
           label="City"
           name="city"
           value={formData.location.city}
           onChange={(e) => handleNestedChange('location', 'city', e.target.value)}
           placeholder="Enter city"
-          required
+
           icon={<FiMapPin />}
-          errors={errors} min={undefined} max={undefined}        />
-        <InputField 
+          min={undefined} max={undefined} />
+        <InputField
           label="Country"
           name="country"
           value={formData.location.country}
           onChange={(e) => handleNestedChange('location', 'country', e.target.value)}
           placeholder="Enter country"
-          required
+
           icon={<FiMapPin />}
-          errors={errors} min={undefined} max={undefined}        />
+          min={undefined} max={undefined} />
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <InputField 
-          label="Latitude"
-          name="lat"
-          value={formData.location.coordinates.lat}
-          onChange={(e) => setFormData({
-            ...formData,
-            location: {
-              ...formData.location,
-              coordinates: {
-                ...formData.location.coordinates,
-                lat: e.target.value
-              }
-            }
-          })}
-          placeholder="Enter latitude"
-          icon={<FiNavigation />}
-          errors={errors} min={undefined} max={undefined}        />
-        <InputField 
-          label="Longitude"
-          name="lng"
-          value={formData.location.coordinates.lng}
-          onChange={(e) => setFormData({
-            ...formData,
-            location: {
-              ...formData.location,
-              coordinates: {
-                ...formData.location.coordinates,
-                lng: e.target.value
-              }
-            }
-          })}
-          placeholder="Enter longitude"
-          icon={<FiNavigation />}
-          errors={errors} min={undefined} max={undefined}        />
-      </div>
+    
       <SingleImageUploadField
         label="Google Map Image"
         name="googleMapUrl"
@@ -1098,16 +847,16 @@ useEffect(() => {
   const renderPricingTab = () => (
     <div className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <InputField 
+        <InputField
           label="Base Price"
           name="basePrice"
           value={formData.basePrice}
           onChange={handleChange}
           placeholder="Enter base price"
-          required
+
           type="number"
           icon={<FiDollarSign />}
-          errors={errors} min={undefined} max={undefined}        />
+          min={undefined} max={undefined} />
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Currency</label>
           <div className="relative">
@@ -1128,88 +877,88 @@ useEffect(() => {
           </div>
         </div>
       </div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <InputField 
+        <InputField
           label="Duration (Days)"
           name="days"
           value={formData.duration.days}
           onChange={(e) => handleNestedChange('duration', 'days', e.target.value)}
           placeholder="Enter days"
-          required
+
           type="number"
           icon={<FiCalendar />}
-          errors={errors} min={undefined} max={undefined}        />
-        <InputField 
+          min={undefined} max={undefined} />
+        <InputField
           label="Duration (Nights)"
           name="nights"
           value={formData.duration.nights}
           onChange={(e) => handleNestedChange('duration', 'nights', e.target.value)}
           placeholder="Enter nights"
-          required
+
           type="number"
           icon={<FiCalendar />}
-          errors={errors} min={undefined} max={undefined}        />
+          min={undefined} max={undefined} />
       </div>
     </div>
   );
 
   const renderDetailsTab = () => (
     <div className="space-y-4">
-      <ArrayField 
-        label="Inclusions" 
-        name="inclusions" 
-        value={formData.inclusions} 
-        onChange={(val) => setFormData({...formData, inclusions: val})} 
-        placeholder="Add inclusion" 
-        errors={errors}
+      <ArrayField
+        label="Inclusions"
+        name="inclusions"
+        value={formData.inclusions}
+        onChange={(val) => setFormData({ ...formData, inclusions: val })}
+        placeholder="Add inclusion"
+
       />
-      
-      <ArrayField 
-        label="Exclusions" 
-        name="exclusions" 
-        value={formData.exclusions} 
-        onChange={(val) => setFormData({...formData, exclusions: val})} 
-        placeholder="Add exclusion" 
-        errors={errors}
+
+      <ArrayField
+        label="Exclusions"
+        name="exclusions"
+        value={formData.exclusions}
+        onChange={(val) => setFormData({ ...formData, exclusions: val })}
+        placeholder="Add exclusion"
+
       />
-      
-      <ArrayField 
-        label="Highlights" 
-        name="highlights" 
-        value={formData.highlights} 
-        onChange={(val) => setFormData({...formData, highlights: val})} 
-        placeholder="Add highlight" 
-        errors={errors}
+
+      <ArrayField
+        label="Highlights"
+        name="highlights"
+        value={formData.highlights}
+        onChange={(val) => setFormData({ ...formData, highlights: val })}
+        placeholder="Add highlight"
+
       />
-      
-      <ArrayField 
-        label="Quick Facts" 
-        name="quickfacts" 
-        value={formData.quickfacts} 
-        onChange={(val) => setFormData({...formData, quickfacts: val})} 
-        placeholder="Add quick fact" 
-        errors={errors}
+
+      <ArrayField
+        label="Quick Facts"
+        name="quickfacts"
+        value={formData.quickfacts}
+        onChange={(val) => setFormData({ ...formData, quickfacts: val })}
+        placeholder="Add quick fact"
+
       />
-      
-        <InputField 
-      label="Tag" 
-      name="tag" 
-      value={formData.tag} 
-      onChange={handleChange} 
-      placeholder="Enter tag" 
-      errors={errors}
-      icon={<FiTag />}
-      min={undefined} 
-      max={undefined}
-    />
+
+      <InputField
+        label="Tag  (If it is Special tour then write 'special')"
+        name="tag"
+        value={formData.tag}
+        onChange={handleChange}
+        placeholder="Enter tag"
+
+        icon={<FiTag />}
+        min={undefined}
+        max={undefined}
+      />
     </div>
   );
 
   const renderFeaturesTab = () => (
     <div className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <InputField 
+        <InputField
           label="Min Group Size"
           name="min"
           value={formData.feature.groupSize.min}
@@ -1223,18 +972,18 @@ useEffect(() => {
           placeholder="Enter minimum group size"
           type="number"
           icon={<FiUsers />}
-          errors={errors} min={undefined} max={undefined}        />
-        
-        <InputField 
+          min={undefined} max={undefined} />
+
+        <InputField
           label="Trip Duration"
           name="tripDuration"
           value={formData.feature.tripDuration}
           onChange={(e) => handleNestedChange('feature', 'tripDuration', e.target.value)}
           placeholder="Enter trip duration"
           icon={<FiCalendar />}
-          errors={errors} min={undefined} max={undefined}        />
+          min={undefined} max={undefined} />
       </div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Trip Difficulty</label>
@@ -1255,8 +1004,8 @@ useEffect(() => {
             </select>
           </div>
         </div>
-        
-        <InputField 
+
+        <InputField
           label="Max Altitude"
           name="maxAltitude"
           value={formData.feature.maxAltitude}
@@ -1264,47 +1013,47 @@ useEffect(() => {
           placeholder="Enter max altitude"
           icon={<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"></path>
-          </svg>} min={undefined} max={undefined}        />
+          </svg>} min={undefined} max={undefined} />
       </div>
-      
-      <InputField 
+
+      <InputField
         label="Start/End Point"
         name="startEndPoint"
         value={formData.feature.startEndPoint}
         onChange={(e) => handleNestedChange('feature', 'startEndPoint', e.target.value)}
         placeholder="Enter start and end point"
-        icon={<FiNavigation />} min={undefined} max={undefined}      />
-      
-      <ArrayField 
-        label="Meals" 
+        icon={<FiNavigation />} min={undefined} max={undefined} />
+
+      <ArrayField
+        label="Meals"
         name="meals"
-        value={formData.feature.meals} 
-        onChange={(val) => handleNestedChange('feature', 'meals', val)} 
-        placeholder="Add meal" 
+        value={formData.feature.meals}
+        onChange={(val) => handleNestedChange('feature', 'meals', val)}
+        placeholder="Add meal"
       />
-      
-      <ArrayField 
-        label="Activities" 
+
+      <ArrayField
+        label="Activities"
         name="activities"
-        value={formData.feature.activities} 
-        onChange={(val) => handleNestedChange('feature', 'activities', val)} 
-        placeholder="Add activity" 
+        value={formData.feature.activities}
+        onChange={(val) => handleNestedChange('feature', 'activities', val)}
+        placeholder="Add activity"
       />
-      
-      <ArrayField 
-        label="Accommodation" 
+
+      <ArrayField
+        label="Accommodation"
         name="accommodation"
-        value={formData.feature.accommodation} 
-        onChange={(val) => handleNestedChange('feature', 'accommodation', val)} 
-        placeholder="Add accommodation" 
+        value={formData.feature.accommodation}
+        onChange={(val) => handleNestedChange('feature', 'accommodation', val)}
+        placeholder="Add accommodation"
       />
-      
-      <ArrayField 
-        label="Best Season" 
+
+      <ArrayField
+        label="Best Season"
         name="bestSeason"
-        value={formData.feature.bestSeason} 
-        onChange={(val) => handleNestedChange('feature', 'bestSeason', val)} 
-        placeholder="Add season" 
+        value={formData.feature.bestSeason}
+        onChange={(val) => handleNestedChange('feature', 'bestSeason', val)}
+        placeholder="Add season"
       />
     </div>
   );
@@ -1375,15 +1124,7 @@ useEffect(() => {
           files={gallerySlots}
           max={10}
         />
-        {(errors.fileSize || errors.fileType) && (
-          <div className="p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2">
-            <FiAlertCircle className="text-red-500 flex-shrink-0" />
-            <div>
-              {errors.fileSize && <p className="text-red-600">{errors.fileSize}</p>}
-              {errors.fileType && <p className="text-red-600">{errors.fileType}</p>}
-            </div>
-          </div>
-        )}
+
       </div>
     );
   };
@@ -1417,11 +1158,10 @@ useEffect(() => {
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  className={`flex items-center gap-2 whitespace-nowrap py-4 px-6 font-medium text-base transition-all duration-200 ${
-                    activeTab === tab
+                  className={`flex items-center gap-2 whitespace-nowrap py-4 px-6 font-medium text-base transition-all duration-200 ${activeTab === tab
                       ? 'text-primary border-b-2 border-primary bg-primary/10'
                       : 'text-gray-500 hover:text-primary hover:bg-primary/10'
-                  }`}
+                    }`}
                 >
                   {tabIcons[tab]}
                   {tab.charAt(0).toUpperCase() + tab.slice(1)}
@@ -1429,10 +1169,10 @@ useEffect(() => {
               ))}
             </nav>
           </div>
-          
+
           <div className="flex-1 overflow-y-auto p-6">
             {renderStatus()}
-            <form 
+            <form
               onSubmit={e => e.preventDefault()}
               onKeyDown={e => {
                 if (e.key === 'Enter') {

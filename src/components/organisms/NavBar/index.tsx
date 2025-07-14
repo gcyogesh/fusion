@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { usePathname } from "next/navigation";
 import { IoMdClose } from "react-icons/io";
 import { FiMenu } from "react-icons/fi";
@@ -31,7 +31,6 @@ type NavLink = {
   }[];
 };
 
-
 type Destination = {
   title: string;
   slug: string;
@@ -46,6 +45,7 @@ type Activity = {
   subtitle?: string;
   imageUrls?: string[];
   image?: string;
+  name?: string;
 };
 
 interface TourPackage {
@@ -70,7 +70,8 @@ interface TourPackage {
 interface NavbarProps {
   destinations: Destination[];
   activities: Activity[];
-  relatedPackagesMap: { [slug: string]: TourPackage[] };
+  relatedPackagesMap: { [slug: string]: TourPackage[] }; // Destinations
+  relatedActivityPackagesMap: { [slug: string]: TourPackage[] }; // Activities
 }
 
 interface ContactInfo {
@@ -78,58 +79,79 @@ interface ContactInfo {
   phones: string[];
 }
 
+// Throttle function for scroll optimization
+const throttle = (func: Function, limit: number) => {
+  let inThrottle: boolean;
+  return function (this: any, ...args: any[]) {
+    if (!inThrottle) {
+      func.apply(this, args);
+      inThrottle = true;
+      setTimeout(() => (inThrottle = false), limit);
+    }
+  };
+};
+
 export default function Navbar({
   destinations = [],
   activities = [],
   relatedPackagesMap = {},
+  relatedActivityPackagesMap = {},
 }: NavbarProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [navLinks, setNavLinks] = useState<NavLink[]>([]);
   const [activeDropdown, setActiveDropdown] = useState<NavLink | null>(null);
   const [hoveredSub, setHoveredSub] = useState<NavLink["subLinks"][0] | null>(null);
-
-  // Added missing scroll states
   const [scrollY, setScrollY] = useState(0);
   const [showNavbar, setShowNavbar] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [contactInfo, setContactInfo] = useState<ContactInfo | null>(null);
+  const [hoverTimeout, setHoverTimeout] = useState<NodeJS.Timeout | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const pathname = usePathname();
 
+  // Close mobile menu when route changes
   useEffect(() => {
-    // Format activities
-    const formattedActivities = activities.map((item) => {
-      const relatedPkgs = relatedPackagesMap[item.slug] || [];
-      return {
-        name: item.title,
-        href: `/activities/${item.slug}`,
+    setIsMenuOpen(false);
+    closeDropdown();
+  }, [pathname]);
 
-        image: item.imageUrls?.[0] || item.image || "",
+  // Format navigation links
+  useEffect(() => {
+    const formattedActivities = activities.map((item) => {
+      const relatedPkgs = relatedActivityPackagesMap[item.slug] || [];
+      return {
+        name: item.name || item.title || "Unknown Activity",
+        href: `/category/activities/${item.slug}`,
+        subtitle: item.subtitle || `Explore ${item.title} activities`,
+        title: item.title,
+        image: item.image || item.imageUrls?.[0] || "",
         relatedPackages: relatedPkgs.map((pkg) => ({
           name: pkg.title,
           href: `/itinerary/${pkg._id}`,
-          duration: `${pkg.duration?.days} Days`,
+          duration: `${pkg.duration?.days || 0} Days`,
+          title: pkg.title,
         })),
-
       };
     });
 
-    // Format destinations, inject relatedPackages from relatedPackagesMap
     const formattedDestinations = destinations.map((item) => {
       const relatedPkgs = relatedPackagesMap[item.slug] || [];
       return {
         name: item.title,
         href: `/destinations/${item.slug}`,
+        subtitle: item.subtitle || `Explore ${item.title} destinations`,
+        title: item.title,
         image: item.imageUrls?.[0] || item.image || "",
         relatedPackages: relatedPkgs.map((pkg) => ({
           name: pkg.title,
           href: `/itinerary/${pkg._id}`,
-          duration: `${pkg.duration?.days} Days`,
+          duration: `${pkg.duration?.days || 0} Days`,
+          title: pkg.title,
         })),
       };
     });
 
-    // Build nav links
     const links: NavLink[] = [
       {
         name: "Destinations",
@@ -152,13 +174,25 @@ export default function Navbar({
             name: "Our Teams",
             href: "/about/ourteams",
             subtitle: "Meet the passionate people behind our mission",
-            title: "Ourteams",
+            title: "Our Teams",
           },
           {
             name: "Fusion",
             href: "/about",
             subtitle: "Explore our story, values, and what drives us forward",
             title: "Fusion",
+          },
+          {
+            name: "Contact",
+            href: "/about/contact",
+            subtitle: "We’d love to hear from you! Whether you have a question, feedback, or a project in mind — feel free to reach out.",
+            title: "Contact",
+          },
+          {
+            name: "Reviews",
+            href: "/about/reviews",
+            subtitle: "We’d love to hear from you! Whether you have a question, feedback, or a project in mind — feel free to reach out.",
+            title: "Contact",
           },
         ],
       },
@@ -168,58 +202,94 @@ export default function Navbar({
     ];
 
     setNavLinks(links);
-  }, [destinations, activities, relatedPackagesMap]);
+  }, [destinations, activities, relatedPackagesMap, relatedActivityPackagesMap]);
 
-
-  useEffect(() => {
-    async function fetchContactInfo() {
-      try {
-        const res = await fetch("https://yogeshbhai.ddns.net/api/info");
-        const json = await res.json();
-        if (json.success) {
-          setContactInfo({
-            whatsappNumber: json.data.whatsappNumber,
-            phones: json.data.phones,
-          });
-        }
-      } catch (error) {
-        console.error("Failed to fetch contact info:", error);
+  // Fetch contact info with caching
+  const fetchContactInfo = useCallback(async () => {
+    if (contactInfo) return; // Don't fetch if already have data
+    
+    setIsLoading(true);
+    try {
+      const res = await fetch("https://yogeshbhai.ddns.net/api/info");
+      const json = await res.json();
+      if (json.success) {
+        setContactInfo({
+          whatsappNumber: json.data.whatsappNumber,
+          phones: json.data.phones,
+        });
       }
+    } catch (error) {
+      console.error("Failed to fetch contact info:", error);
+    } finally {
+      setIsLoading(false);
     }
-    fetchContactInfo();
-  }, []);
+  }, [contactInfo]);
 
   useEffect(() => {
-    const handleScroll = () => {
+    fetchContactInfo();
+  }, [fetchContactInfo]);
+
+  // Throttled scroll handler for performance
+  useEffect(() => {
+    const handleScroll = throttle(() => {
       const currentScrollY = window.scrollY;
       setScrollY(currentScrollY);
 
-      if (currentScrollY === 0) setShowNavbar(true);
-      else if (currentScrollY > lastScrollY && currentScrollY > 100) setShowNavbar(false);
-      else setShowNavbar(true);
+      if (currentScrollY === 0) {
+        setShowNavbar(true);
+      } else if (currentScrollY > lastScrollY && currentScrollY > 100) {
+        setShowNavbar(false);
+      } else {
+        setShowNavbar(true);
+      }
 
       setLastScrollY(currentScrollY);
-    };
+    }, 100);
 
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [lastScrollY]);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (hoverTimeout) clearTimeout(hoverTimeout);
+    };
+  }, [lastScrollY, hoverTimeout]);
 
-  const getNavbarClasses = () => {
-    if (pathname === "/" && scrollY === 0) return "blur-base bg-white/20 text-white shadow-lg";
-    return "bg-[#0e334f] text-white";
+  // Memoized navbar classes for performance
+  const navbarClasses = useMemo(() => {
+    const baseClasses = "fixed top-0 left-0 w-full z-60 px-2 transition-all duration-300 ease-linear";
+    const visibilityClasses = showNavbar ? "translate-y-0" : "-translate-y-full";
+    const themeClasses = pathname === "/" && scrollY === 0 
+      ? "blur-base bg-white/20 text-white shadow-lg"
+      : "bg-[#0e334f] text-white";
+    
+    return `${baseClasses} ${visibilityClasses} ${themeClasses}`;
+  }, [showNavbar, pathname, scrollY]);
+
+  const handleMouseEnter = (link: NavLink) => {
+    if (hoverTimeout) clearTimeout(hoverTimeout);
+    if (link.hasDropdown) {
+      setActiveDropdown(link);
+      setHoveredSub(link.subLinks?.[0] || null);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    const timeout = setTimeout(() => {
+      closeDropdown();
+    }, 150);
+    setHoverTimeout(timeout);
   };
 
   const closeDropdown = () => {
     setActiveDropdown(null);
     setHoveredSub(null);
+    if (hoverTimeout) {
+      clearTimeout(hoverTimeout);
+      setHoverTimeout(null);
+    }
   };
 
   return (
-    <nav
-      className={`fixed top-0 left-0 w-full z-60 px-2 transition-all duration-300 ease-linear ${showNavbar ? "translate-y-0" : "-translate-y-full"
-        } ${getNavbarClasses()}`}
-    >
+    <nav className={navbarClasses}>
       <div className="max-w-7xl mx-auto flex justify-between items-center px-4 py-4 h-20">
         <Link href="/" className="cursor-pointer">
           <Logo />
@@ -230,15 +300,15 @@ export default function Navbar({
           {navLinks.map((link) => (
             <li
               key={link.name}
-              onMouseEnter={() => {
-                if (link.hasDropdown) {
-                  setActiveDropdown(link);
-                  setHoveredSub(link.subLinks?.[0] || null);
-                }
-              }}
+              onMouseEnter={() => handleMouseEnter(link)}
               className="relative group flex items-center gap-1"
             >
-              <Link href={link.href}>{link.name}</Link>
+              <Link 
+                href={link.href}
+                className="hover:text-primary transition-colors"
+              >
+                {link.name}
+              </Link>
               {link.hasDropdown &&
                 (activeDropdown?.name === link.name ? (
                   <ChevronUp size={16} />
@@ -255,18 +325,23 @@ export default function Navbar({
             <Link
               href={`https://wa.me/${contactInfo.whatsappNumber.replace(/\D/g, "")}`}
               target="_blank"
+              rel="noopener noreferrer"
               className="cursor-pointer"
-              aria-label="WhatsApp"
+              aria-label="Contact us on WhatsApp"
             >
               <FaWhatsapp className="text-white text-3xl hover:text-green-400 transition-colors" />
             </Link>
           )}
           <Link href="/contact" className="hidden lg:block">
-            <button className="bg-primary hover:bg-gradient-to-r from-[#D35400] to-[#A84300] text-white text-base font-medium h-[46px] w-[160px] rounded-full">
+            <button className="bg-primary hover:bg-gradient-to-r from-[#D35400] to-[#A84300] text-white text-base font-medium h-[46px] w-[160px] rounded-full transition-all duration-300">
               Contact
             </button>
           </Link>
-          <button className="text-3xl md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+          <button 
+            className="text-3xl md:hidden" 
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            aria-label="Toggle menu"
+          >
             {isMenuOpen ? <IoMdClose /> : <FiMenu />}
           </button>
         </div>
@@ -276,24 +351,28 @@ export default function Navbar({
       {activeDropdown && (
         <div
           className="absolute top-[80px] left-0 w-full text-black z-50 hidden md:block"
-          onMouseLeave={closeDropdown}
+          onMouseLeave={handleMouseLeave}
         >
           <div className="max-w-6xl mx-auto flex bg-white shadow-lg rounded-md overflow-hidden border border-gray-200 px-8">
-            {/* Left column - Sublinks list */}
+            {/* Left column */}
             <div className="w-[300px] px-4 py-6">
               <ul className="divide-y divide-gray-200">
-                {activeDropdown.subLinks?.map((sub) => (
-                  <li key={sub.name} onMouseEnter={() => setHoveredSub(sub)}>
+                {activeDropdown.subLinks?.map((sub, index) => (
+                  <li key={`${sub.name}-${index}`} onMouseEnter={() => setHoveredSub(sub)}>
                     <Link
                       href={sub.href}
-                      className={`flex justify-between items-center px-5 py-3 hover:bg-primary hover:text-white transition-colors ${hoveredSub?.name === sub.name ? "bg-primary text-white" : ""
-                        }`}
+                      className={`flex justify-between items-center px-5 py-3 hover:bg-primary hover:text-white transition-colors ${
+                        hoveredSub?.name === sub.name ? "bg-primary text-white" : "text-gray-400"
+                      }`}
                     >
-                      <span>{sub.name}</span>
+                      <span className="text-sm font-medium text-gray-800 hover:text-white">
+                        {sub.name || sub.title || "Unknown"}
+                      </span>
                       <ChevronRight
                         size={16}
-                        className={`transition-colors ${hoveredSub?.name === sub.name ? "text-white" : "text-gray-400"
-                          }`}
+                        className={`transition-colors ${
+                          hoveredSub?.name === sub.name ? "text-white" : "text-gray-400"
+                        }`}
                       />
                     </Link>
                   </li>
@@ -306,23 +385,25 @@ export default function Navbar({
             {/* Right column - Preview content */}
             <div className="flex-1 px-4 py-6 flex gap-6 items-start">
               <div className="flex-1">
-                <TextHeader text={hoveredSub?.name} align="left" size="small" />
-                {hoveredSub?.relatedPackages?.length > 0 && (
-                  <div className="mt-2">
-                    <ul className="pl-3  text-gray-700 font-medium text-base">
+                <TextHeader text={hoveredSub?.name || hoveredSub?.title} align="left" size="small" />
+                
+                {hoveredSub?.relatedPackages && hoveredSub.relatedPackages.length > 0 ? (
+                  <div className="mt-4">
+                    
+                    <ul className="space-y-1 text-gray-700 font-medium text-sm">
                       {hoveredSub.relatedPackages.map((pkg, idx) => (
-                        <li key={idx}>
-                          <Link href={pkg.href}>
+                        <li key={idx} className="hover:text-primary transition-colors">
+                          <Link href={pkg.href} className="hover:underline">
                             {pkg.name} - {pkg.duration}
                           </Link>
                         </li>
                       ))}
                     </ul>
                   </div>
+                ) : (
+                  <p className="text-sm text-gray-500 italic mt-4">No related packages available</p>
                 )}
               </div>
-
-
               <div className="flex flex-col">
                 {hoveredSub?.image && (
                   <div className="w-[280px] h-[220px] rounded overflow-hidden border border-gray-200">
@@ -331,9 +412,9 @@ export default function Navbar({
                 )}
                 <Link
                   href={hoveredSub?.href || "#"}
-                  className="inline-block mt-4 text-sm font-medium text-primary hover:underline"
+                  className="inline-block mt-4 text-sm font-medium text-primary hover:underline transition-colors"
                 >
-                  Explore {hoveredSub?.name}
+                  Explore {hoveredSub?.name || hoveredSub?.title}
                 </Link>
               </div>
             </div>
@@ -341,7 +422,7 @@ export default function Navbar({
         </div>
       )}
 
-      {/* Mobile Menu */}
+      {/* Mobile Dropdown */}
       {isMenuOpen && (
         <div className="md:hidden bg-white text-black px-4 py-6 absolute top-20 left-0 w-full z-50 shadow-lg">
           <ul className="space-y-4">
@@ -356,7 +437,11 @@ export default function Navbar({
                 />
               ) : (
                 <li key={link.name}>
-                  <Link href={link.href} onClick={() => setIsMenuOpen(false)} className="block py-2">
+                  <Link 
+                    href={link.href} 
+                    onClick={() => setIsMenuOpen(false)} 
+                    className="block py-2 hover:text-primary transition-colors"
+                  >
                     {link.name}
                   </Link>
                 </li>
@@ -366,7 +451,7 @@ export default function Navbar({
               <Link
                 href="/contact"
                 onClick={() => setIsMenuOpen(false)}
-                className="block bg-primary text-white text-center py-2 rounded-full"
+                className="block bg-primary text-white text-center py-2 rounded-full hover:bg-gradient-to-r from-[#D35400] to-[#A84300] transition-all duration-300"
               >
                 Contact
               </Link>

@@ -110,18 +110,12 @@ export default async function Page({ params }: { params: { id: string } }) {
     <>
       <Breadcrumb currentnavlink="Destinations" />
       <section className="mx-auto max-w-7xl mt-5 px-4 md:px-6">
-        <span className="flex items-center gap-2 text-[#7e7e7e] text-xl font-medium mb-2">
+        <span className="flex items-center gap-2 text-[#7e7e7e] text-xl font-medium mb-4">
           <MapPin className="w-6 h-6" />
           {destination.location.city}
         </span>
 
-        <TextHeader
-          text={destination.description}
-          align="start"
-          size="large"
-          width={2000}
-          className="mb-4"
-        />
+       
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           <div className="lg:col-span-2">
