@@ -390,10 +390,10 @@ export default function Navbar({
                 {hoveredSub?.relatedPackages && hoveredSub.relatedPackages.length > 0 ? (
                   <div className="mt-4">
                     
-                    <ul className="space-y-1 text-gray-700 font-medium text-sm">
+                    <ul className="space-y-1 text-gray-700 font-medium text-base">
                       {hoveredSub.relatedPackages.map((pkg, idx) => (
-                        <li key={idx} className="hover:text-primary transition-colors">
-                          <Link href={pkg.href} className="hover:underline">
+                        <li key={idx} className="border border-b-gray-700">
+                          <Link href={pkg.href} className="hover:text-primary">
                             {pkg.name} - {pkg.duration}
                           </Link>
                         </li>
