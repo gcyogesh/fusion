@@ -17,6 +17,7 @@ import { fetchAPI } from "@/utils/apiService";
 import { AdminTable } from "@/components/organisms/ListingCard";
 import Loader from "@/components/atoms/Loader";
 import Alert from "@/components/atoms/alert";
+import PasswordChangeComponent from "@/components/molecules/adminForm/PasswordChangeComponent";
 
 const HERO_PAGES = [
   { label: "Home", value: "home" },
@@ -26,7 +27,7 @@ const HERO_PAGES = [
   { label: "Destination", value: "destinations" },
 ];
 
-type TabType = "general" | "faq";
+type TabType = "general" | "faq" | "password";
 
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState<TabType>("general");
@@ -680,6 +681,12 @@ export default function SettingsPage() {
     </section>
   );
 
+  const renderPasswordTab = () => (
+  <section className="w-full flex justify-center">
+    <PasswordChangeComponent />
+  </section>
+);
+
   return (
     <div className="min-h-screen bg-neutral-100 flex flex-col">
       {/* Page Title and Tabs */}
@@ -707,11 +714,23 @@ export default function SettingsPage() {
           >
             FAQ
           </button>
+          <button 
+    className={`pb-3 font-semibold text-base focus:outline-none transition-colors ${
+      activeTab === "password" 
+        ? "text-primary border-b-2 border-primary" 
+        : "text-gray-500 hover:text-gray-700"
+    }`}
+    onClick={() => setActiveTab("password")}
+  >
+    Password
+  </button>
         </nav>
       </header>
-      <main className="flex-1 w-full flex flex-col items-center justify-start py-10 px-0">
-        {activeTab === "general" ? renderGeneralTab() : renderFaqTab()}
-      </main>
+     <main className="flex-1 w-full flex flex-col items-center justify-start py-10 px-0">
+  {activeTab === "general" && renderGeneralTab()}
+  {activeTab === "faq" && renderFaqTab()}
+  {activeTab === "password" && renderPasswordTab()}
+</main>
     </div>
   );
 }

@@ -26,7 +26,7 @@ export default function AdminLoginPage() {
   try {
  
 
-    const response = await fetch(`https://yogeshbhai.ddns.net/admin/login`, {
+    const response = await fetch(`https://yogeshbhai.ddns.net/api/admin/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
