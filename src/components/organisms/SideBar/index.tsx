@@ -60,7 +60,9 @@ const Sidebar = ({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen: (open: boo
             { icon: FaBox, text: "Activities", link: "/dashboard/customise-activities" },
             { icon: FaStar, text: "Testimonials", link: "/dashboard/customise-testimonials" },
             { icon: FaUserFriends, text: " Team", link: "/dashboard/customise-team" },
+            { icon: FaCog, text: "Reviews", link: "/dashboard/reviews" },
             { icon: FaCog, text: "Settings", link: "/dashboard/settings" },
+           
 
           ].map(({ icon: Icon, text, link }, index) => (
             <Link

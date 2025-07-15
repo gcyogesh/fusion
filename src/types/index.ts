@@ -8,27 +8,44 @@ export interface Destination {
 }
 
 export interface TourPackage {
+  duration: any;
   _id: string;
   title: string;
   description: string;
-  overview: string;
+  overview?: string;
+  highlights?: string[];
+  quickfacts?: string[];
+  inclusions: string[];
+  exclusions: string[];
+  gallery: string[]; // image URLs
+
   location: {
     city: string;
-    country: string;
+    country?: string;
   };
+
   basePrice: number;
-  currency: string;
-  gallery: string;
-  duration: {
-    days: number;
-    nights: number;
+  currency?: string;
+  googleMapUrl?: string;
+
+  feature?: {
+    groupSize?: { min: number; max?: number };
+    tripDuration?: string;
+    tripDifficulty?: string;
+    meals?: string[];
+    activities?: string[];
+    accommodation?: string[];
+    maxAltitude?: string | number;
+    bestSeason?: string[];
+    startEndPoint?: string;
   };
-  imageUrls?: string[];
-  category?: {
-    _id: string;
+
+  itinerary: {
+    day: number;
     title: string;
-    slug: string;
-  };
+    description: string;
+    image?: string;
+  }[];
 }
 
 export interface Activity {

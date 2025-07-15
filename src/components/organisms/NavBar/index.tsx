@@ -1,17 +1,19 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState, useCallback, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { usePathname } from "next/navigation";
 import { IoMdClose } from "react-icons/io";
 import { FiMenu } from "react-icons/fi";
 import { FaWhatsapp, FaFacebook, FaInstagram } from "react-icons/fa";
 import { ChevronDown, ChevronUp, ChevronRight } from "lucide-react";
+
 import Logo from "@/components/atoms/Logo";
 import MobileDropdownMenu from "./dropdowns/mobiledropdown";
 import ImageDisplay from "@/components/atoms/ImageCard";
 import TextHeader from "@/components/atoms/headings";
-import { Destination , TourPackage , Activity, ContactInfo } from "@/types";
+import { Destination, TourPackage, Activity, ContactInfo } from "@/types";
+
 type NavLink = {
   name: string;
   href: string;
@@ -23,29 +25,22 @@ type NavLink = {
     image?: string;
     title?: string;
     relatedPackages?: {
+      duration: any;
       name: string;
       href: string;
-      duration?: string;
       title?: string;
     }[];
   }[];
 };
 
-
-
-
 interface NavbarProps {
   destinations: Destination[];
   activities: Activity[];
-  relatedPackagesMap: { [slug: string]: TourPackage[] }; // Destinations
-  relatedActivityPackagesMap: { [slug: string]: TourPackage[] }; // Activities
-  contactInfo:ContactInfo,
+  relatedPackagesMap: { [slug: string]: TourPackage[] };
+  relatedActivityPackagesMap: { [slug: string]: TourPackage[] };
+  contactInfo: ContactInfo;
 }
 
-
-
-
-// Throttle function for scroll optimization
 const throttle = (func: Function, limit: number) => {
   let inThrottle: boolean;
   return function (this: any, ...args: any[]) {
@@ -61,8 +56,8 @@ export default function Navbar({
   destinations = [],
   activities = [],
   relatedPackagesMap = {},
-  contactInfo,
   relatedActivityPackagesMap = {},
+  contactInfo,
 }: NavbarProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [navLinks, setNavLinks] = useState<NavLink[]>([]);
@@ -75,49 +70,41 @@ export default function Navbar({
 
   const pathname = usePathname();
 
-  // Close mobile menu when route changes
   useEffect(() => {
     setIsMenuOpen(false);
     closeDropdown();
   }, [pathname]);
 
-  // Format navigation links
   useEffect(() => {
-    const formattedActivities = activities.map((item) => {
-      const relatedPkgs = relatedActivityPackagesMap[item.slug] || [];
-      return {
-        name: item.name || item.title || "Unknown Activity",
-        href: `/category/activities/${item.slug}`,
-        subtitle: item.subtitle || `Explore ${item.title} activities`,
-        title: item.title,
-        image: item.image || item.imageUrls?.[0] || "",
-        relatedPackages: relatedPkgs.map((pkg) => ({
-          name: pkg.title,
-          href: `/itinerary/${pkg._id}`,
-          duration: `${pkg.duration?.days || 0} Days`,
-          title: pkg.title,
-        })),
-      };
-    });
+    const formattedActivities = activities.map((item) => ({
+      name: item.name || item.title || "Unknown Activity",
+      href: `/category/activities/${item.slug}`,
+      subtitle: item.subtitle || `Explore ${item.title} activities`,
+      title: item.title,
+      image: item.image || item.imageUrls?.[0] || "",
+      relatedPackages: (relatedActivityPackagesMap[item.slug] || []).map((pkg) => ({
+        name: pkg.title,
+        href: `/itinerary/${pkg._id}`,
+        duration: `${pkg.duration?.days || 0} Days`,
+        title: pkg.title,
+      })),
+    }));
 
-    const formattedDestinations = destinations.map((item) => {
-      const relatedPkgs = relatedPackagesMap[item.slug] || [];
-      return {
-        name: item.title,
-        href: `/destinations/${item.slug}`,
-        subtitle: item.subtitle || `Explore ${item.title} destinations`,
-        title: item.title,
-        image: item.imageUrls?.[0] || item.image || "",
-        relatedPackages: relatedPkgs.map((pkg) => ({
-          name: pkg.title,
-          href: `/itinerary/${pkg._id}`,
-          duration: `${pkg.duration?.days || 0} Days`,
-          title: pkg.title,
-        })),
-      };
-    });
+    const formattedDestinations = destinations.map((item) => ({
+      name: item.title,
+      href: `/destinations/${item.slug}`,
+      subtitle: item.subtitle || `Explore ${item.title} destinations`,
+      title: item.title,
+      image: item.imageUrls?.[0] || item.image || "",
+      relatedPackages: (relatedPackagesMap[item.slug] || []).map((pkg) => ({
+        name: pkg.title,
+        href: `/itinerary/${pkg._id}`,
+        duration: `${pkg.duration?.days || 0} Days`,
+        title: pkg.title,
+      })),
+    }));
 
-    const links: NavLink[] = [
+    setNavLinks([
       {
         name: "Destinations",
         href: "/destinations",
@@ -150,19 +137,19 @@ export default function Navbar({
           {
             name: "Contact",
             href: "/about/contact",
-            subtitle: "We’d love to hear from you! Whether you have a question, feedback, or a project in mind — feel free to reach out.",
+            subtitle: "We’d love to hear from you!",
             title: "Contact",
           },
           {
             name: "Reviews",
             href: "/about/reviews",
-            subtitle: "We’d love to hear from you! Whether you have a question, feedback, or a project in mind — feel free to reach out.",
-            title: "Contact",
+            subtitle: "Feedback from our clients",
+            title: "Reviews",
           },
           {
             name: "Terms and Conditions",
             href: "/about/terms",
-            subtitle: "We’d love to hear from you! Whether you have a question, feedback, or a project in mind — feel free to reach out.",
+            subtitle: "Read our policies",
             title: "Terms and Conditions",
           },
         ],
@@ -170,15 +157,9 @@ export default function Navbar({
       { name: "Blogs", href: "/blogs", hasDropdown: false },
       { name: "Duration", href: "/duration", hasDropdown: false },
       { name: "Deals", href: "/deals", hasDropdown: false },
-    ];
+    ]);
+  }, [activities, destinations, relatedActivityPackagesMap, relatedPackagesMap]);
 
-    setNavLinks(links);
-  }, [destinations, activities, relatedPackagesMap, relatedActivityPackagesMap]);
-
-  // Fetch contact info with caching
-  
-
-  // Throttled scroll handler for performance
   useEffect(() => {
     const handleScroll = throttle(() => {
       const currentScrollY = window.scrollY;
@@ -202,15 +183,15 @@ export default function Navbar({
     };
   }, [lastScrollY, hoverTimeout]);
 
-  // Memoized navbar classes for performance
   const navbarClasses = useMemo(() => {
-    const baseClasses = "fixed top-0 left-0 w-full z-60 px-2 transition-all duration-300 ease-linear";
-    const visibilityClasses = showNavbar ? "translate-y-0" : "-translate-y-full";
-    const themeClasses = pathname === "/" && scrollY === 0 
-      ? "blur-base bg-white/20 text-white shadow-lg"
-      : "bg-[#0e334f] text-white";
-    
-    return `${baseClasses} ${visibilityClasses} ${themeClasses}`;
+    const base = "fixed top-0 left-0 w-full z-60 px-2 transition-all duration-300 ease-linear";
+    const visibility = showNavbar ? "translate-y-0" : "-translate-y-full";
+    const theme =
+      pathname === "/" && scrollY === 0
+        ? "blur-base bg-white/20 text-white shadow-lg"
+        : "bg-[#0e334f] text-white";
+
+    return `${base} ${visibility} ${theme}`;
   }, [showNavbar, pathname, scrollY]);
 
   const handleMouseEnter = (link: NavLink) => {
@@ -222,9 +203,7 @@ export default function Navbar({
   };
 
   const handleMouseLeave = () => {
-    const timeout = setTimeout(() => {
-      closeDropdown();
-    }, 150);
+    const timeout = setTimeout(() => closeDropdown(), 150);
     setHoverTimeout(timeout);
   };
 
@@ -252,10 +231,7 @@ export default function Navbar({
               onMouseEnter={() => handleMouseEnter(link)}
               className="relative group flex items-center gap-1"
             >
-              <Link 
-                href={link.href}
-                className="hover:text-primary transition-colors"
-              >
+              <Link href={link.href} className="hover:text-primary transition-colors">
                 {link.name}
               </Link>
               {link.hasDropdown &&
@@ -268,46 +244,28 @@ export default function Navbar({
           ))}
         </ul>
 
-        {/* Buttons */}
+        {/* Contact Icons + Mobile Button */}
         <div className="flex items-center gap-4">
-        {contactInfo?.whatsappNumber && (
+          {contactInfo?.whatsappNumber && (
             <Link
               href={`https://wa.me/${contactInfo.whatsappNumber.replace(/\D/g, "")}`}
               target="_blank"
-              className="cursor-pointer"
               aria-label="WhatsApp"
             >
-              <FaWhatsapp className="text-white text-3xl hover:text-green-400 transition-colors" />
+              <FaWhatsapp className="text-white text-3xl hover:text-green-400" />
             </Link>
           )}
-
           {contactInfo?.socialLinks?.instagram && (
-            <Link
-              href={contactInfo.socialLinks.instagram}
-              target="_blank"
-              className="cursor-pointer"
-              aria-label="Instagram"
-            >
-              <FaInstagram className="text-white text-3xl hover:text-pink-500 transition-colors" />
+            <Link href={contactInfo.socialLinks.instagram} target="_blank" aria-label="Instagram">
+              <FaInstagram className="text-white text-3xl hover:text-pink-500" />
             </Link>
           )}
-
           {contactInfo?.socialLinks?.facebook && (
-            <Link
-              href={contactInfo.socialLinks.facebook}
-              target="_blank"
-              className="cursor-pointer"
-              aria-label="Facebook"
-            >
-              <FaFacebook className="text-white text-3xl hover:text-blue-500 transition-colors" />
+            <Link href={contactInfo.socialLinks.facebook} target="_blank" aria-label="Facebook">
+              <FaFacebook className="text-white text-3xl hover:text-blue-500" />
             </Link>
           )}
-         
-          <button 
-            className="text-3xl md:hidden" 
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            aria-label="Toggle menu"
-          >
+          <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="text-3xl md:hidden" aria-label="Toggle menu">
             {isMenuOpen ? <IoMdClose /> : <FiMenu />}
           </button>
         </div>
@@ -320,14 +278,13 @@ export default function Navbar({
           onMouseLeave={handleMouseLeave}
         >
           <div className="max-w-6xl mx-auto flex bg-white shadow-lg rounded-md overflow-hidden border border-gray-200 px-8">
-            {/* Left column */}
             <div className="w-[300px] text-base px-4 py-6">
               <ul className="divide-y divide-gray-200">
                 {activeDropdown.subLinks?.map((sub, index) => (
                   <li key={`${sub.name}-${index}`} onMouseEnter={() => setHoveredSub(sub)}>
                     <Link
                       href={sub.href}
-                      className={`flex justify-between items-center px-5 py-3 hover:bg-primary hover:text-white transition-colors ${
+                      className={`flex justify-between items-center px-5 py-3 hover:bg-primary hover:text-white ${
                         hoveredSub?.name === sub.name ? "bg-primary text-white" : "text-gray-400"
                       }`}
                     >
@@ -336,9 +293,7 @@ export default function Navbar({
                       </span>
                       <ChevronRight
                         size={16}
-                        className={`transition-colors ${
-                          hoveredSub?.name === sub.name ? "text-white" : "text-gray-400"
-                        }`}
+                        className={`${hoveredSub?.name === sub.name ? "text-white" : "text-gray-400"}`}
                       />
                     </Link>
                   </li>
@@ -348,41 +303,38 @@ export default function Navbar({
 
             <div className="w-[1px] h-auto my-6 bg-gray-300 m-8" />
 
-            {/* Right column - Preview content */}
             <div className="flex-1 px-4 py-6 flex gap-6 items-start">
               <div className="flex-1">
                 <TextHeader text={hoveredSub?.name || hoveredSub?.title} align="left" size="small" />
-                
-                {hoveredSub?.relatedPackages && hoveredSub.relatedPackages.length > 0 ? (
-                  <div className="mt-4">
-                    
-                    <ul className="space-y-1 text-gray-700 font-medium text-base divide-y divide-gray-200 ">
-                      {hoveredSub.relatedPackages.map((pkg, idx) => (
-                        <li key={idx} className="py-1">
-                          <Link href={pkg.href} className="hover:text-[#f28a15]">
-                            {pkg.name} - {pkg.duration}
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ) : (activeDropdown?.name === "Destinations" || activeDropdown?.name === "Activities") && (
-                  <p className="text-sm text-gray-500 italic mt-4">No related packages available</p>
+                {hoveredSub?.relatedPackages?.length ? (
+                  <ul className="mt-4 space-y-1 text-gray-700 font-medium text-base divide-y divide-gray-200">
+                    {hoveredSub.relatedPackages.map((pkg, idx) => (
+                      <li key={idx} className="py-1">
+                        <Link href={pkg.href} className="hover:text-[#f28a15]">
+                          {pkg.name} - {pkg.duration}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  (activeDropdown.name === "Destinations" || activeDropdown.name === "Activities") && (
+                    <p className="text-sm text-gray-500 italic mt-4">No related packages available</p>
+                  )
                 )}
               </div>
-              <div className="flex flex-col">
-                {hoveredSub?.image && (
+              {hoveredSub?.image && (
+                <div className="flex flex-col">
                   <div className="w-[280px] h-[220px] rounded overflow-hidden border border-gray-200">
                     <ImageDisplay src={hoveredSub.image} variant="smallsquare" />
                   </div>
-                )}
-                <Link
-                  href={hoveredSub?.href || "#"}
-                  className="inline-block mt-4 text-sm font-medium text-primary hover:underline transition-colors"
-                >
-                  Explore {hoveredSub?.name || hoveredSub?.title}
-                </Link>
-              </div>
+                  <Link
+                    href={hoveredSub.href || "#"}
+                    className="mt-4 text-sm font-medium text-primary hover:underline"
+                  >
+                    Explore {hoveredSub.name || hoveredSub.title}
+                  </Link>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -403,10 +355,10 @@ export default function Navbar({
                 />
               ) : (
                 <li key={link.name}>
-                  <Link 
-                    href={link.href} 
-                    onClick={() => setIsMenuOpen(false)} 
-                    className="block py-2 hover:text-primary transition-colors"
+                  <Link
+                    href={link.href}
+                    onClick={() => setIsMenuOpen(false)}
+                    className="block py-2 hover:text-primary"
                   >
                     {link.name}
                   </Link>

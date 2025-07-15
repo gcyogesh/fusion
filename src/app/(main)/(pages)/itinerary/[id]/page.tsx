@@ -1,7 +1,7 @@
-import { fetchAPI, APIResponse } from '@/utils/apiService';
+import { fetchAPI } from '@/utils/apiService';
 import Breadcrumb from '@/components/atoms/breadcrumb';
 import { MapPin} from 'lucide-react';
-
+import { APIResponse, TourPackage } from '@/types';
 import TextHeader from '@/components/atoms/headings';
 import ImageDisplay from '@/components/atoms/ImageCard';
 import MidNavbar from '@/components/organisms/MidNavBar';
@@ -29,93 +29,91 @@ const trekTabs = [
 
 export async function generateMetadata({ params }: { params: { id: string } }) {
   const endpoint = `tour/tour-packages/${params.id}`;
-  const data = await fetchAPI({ endpoint });
-  const destination = data?.data;
+  const data = await fetchAPI<TourPackage>({ endpoint });
+  const packages = data?.data;
 
-  if (!destination) {
+  if (!packages) {
     return {
       title: "Not Found",
-      description: "Destination page not found.",
+      description: "packages page not found.",
     };
   }
 
   return {
-    title: destination.title,
-    description: destination.description,
+    title: packages.title,
+    description: packages.description,
     openGraph: {
-      title: destination.title,
-      description: destination.description,
-      images: [destination.gallery?.[0] || ""],
+      title: packages.title,
+      description: packages.description,
+      images: [packages.gallery?.[0] || ""],
     },
   };
 }
 
 export default async function Page({ params }: { params: { id: string } }) {
   const endpoint = `tour/tour-packages/${params.id}`;
-  const response = await fetchAPI<APIResponse<any>>({ endpoint });
-  const destination = response?.data;
+  const response = await fetchAPI<TourPackage>({ endpoint });
+  const packages = response?.data;
 
-  if (!destination) notFound();
+  if (!packages) notFound();
 
-  const itinerary = destination.itinerary || [];
-  const gallery = destination.gallery || [];
-  const feature = destination.feature || {};
+ 
 
   const featureData = [
     {
       label: "Group Size",
-      value: feature?.groupSize?.min,
+      value: packages.feature?.groupSize?.min,
       icon: "/images/iterate/min.png",
     },
     {
       label: "Trip Duration",
-      value: feature?.tripDuration,
+      value: packages.feature?.tripDuration,
       icon: "/images/iterate/Days.png",
     },
     {
       label: "Trip Difficulty",
-      value: feature?.tripDifficulty,
+      value: packages.feature?.tripDifficulty,
       icon: "/images/iterate/Moderate.png",
     },
     {
       label: "Meals",
-      value: feature?.meals?.join(", "),
+      value: packages.feature?.meals?.join(", "),
       icon: "/images/iterate/BreakFast.png",
     },
     {
       label: "Activities",
-      value: feature?.activities?.join(", "),
+      value: packages.feature?.activities?.join(", "),
       icon: "/images/iterate/Trekking.png",
     },
     {
       label: "Accommodation",
-      value: feature?.accommodation?.join(" / "),
+      value: packages.feature?.accommodation?.join(" / "),
       icon: "/images/iterate/Bed.png",
     },
     {
       label: "Max Altitude",
-      value: feature?.maxAltitude,
+      value: packages.feature?.maxAltitude,
       icon: "/images/iterate/meters.png",
     },
     {
       label: "Best Season",
-      value: feature?.bestSeason?.join(", "),
+      value: packages.feature?.bestSeason?.join(", "),
       icon: "/images/iterate/Seasons.png",
     },
     {
       label: "Start/End Point",
-      value: feature?.startEndPoint,
+      value: packages.feature?.startEndPoint,
       icon: "/images/iterate/kathmandu.png",
     },
   ];
 
   return (
     <>
-      <Breadcrumb currentnavlink="Destinations" />
+      <Breadcrumb currentnavlink="packagess" />
       <section className="mx-auto max-w-7xl mt-5 px-4 md:px-6">
         <span className="flex items-center gap-2 text-[#7e7e7e] text-xl font-medium mb-4">
           <MapPin className="w-6 h-6" />
-          {destination.location.city}
+          {packages.location.city}
         </span>
 
        
@@ -124,33 +122,33 @@ export default async function Page({ params }: { params: { id: string } }) {
           <div className="lg:col-span-2">
             <div className="aspect-video w-full">
               <ImageDisplay
-                src={destination.gallery?.[0] || "/fallback.jpg"}
+                src={packages.gallery?.[0] || "/fallback.jpg"}
                 variant="rectangle"
-                title={destination.title}
-                description={destination.description}
+                title={packages.title}
+                description={packages.description}
                 className="h-[550px] w-full"
               />
             </div>
           </div>
           <div className="flex flex-col gap-4">
-            {destination.gallery?.[1] && (
+            {packages.gallery?.[1] && (
               <div className="aspect-[16/9] w-full relative">
               <ImageDisplay
-                src={destination.gallery[1]}
+                src={packages.gallery[1]}
                 variant="rectangle"
-                title={destination.title}
-                description={destination.description}
+                title={packages.title}
+                description={packages.description}
                 className="h-[265px]"
               />
             </div>
             )}
-            {destination.gallery?.[2] && (
+            {packages.gallery?.[2] && (
               <div className="aspect-[16/9] w-full ">
               <ImageDisplay
-                src={destination.gallery[2]}
+                src={packages.gallery[2]}
                 variant="rectangle"
-                title={destination.title}
-                description={destination.description}
+                title={packages.title}
+                description={packages.description}
                 className="h-[265px]"
               />
               </div>
@@ -164,7 +162,7 @@ export default async function Page({ params }: { params: { id: string } }) {
       <section id="Overview" className="mx-auto max-w-7xl px-4 md:px-6">
         <div className="flex flex-col md:flex-row justify-between gap-6">
           <div className="flex-1 max-w-4xl pr-2">
-            <TextDescription text={destination.description} />
+            <TextDescription text={packages.description} />
             <div className="py-2">
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 text-gray-500 gap-10 p-6 border rounded-xl bg-white shadow-md max-w-4xl mx-auto mt-2 ">
                  
@@ -182,34 +180,34 @@ export default async function Page({ params }: { params: { id: string } }) {
             </div>
 
             <div className="max-w-5xl mx-auto py-4">
-              <TextHeader text={destination.title} align="left" size="large" width={855} className="mb-1" />
-              <TextDescription className="mb-4" text={destination.overview} />
+              <TextHeader text={packages.title} align="left" size="large" width={855} className="mb-1" />
+              <TextDescription className="mb-4" text={packages.overview} />
             </div>
 
             <div className="rounded-2xl p-6 bg-white shadow-sm mb-4 py-2">
               <TextHeader text="Trip Highlights" align="left" size="large" width={855} className="py-2" />
               <ul className="list-disc pl-6 space-y-2 text-base text-[#535556] ">
-                {destination.highlights?.map((item, i) => <li key={i}>{item}</li>)}
+                {packages.highlights?.map((item, i) => <li key={i}>{item}</li>)}
               </ul>
 
               <TextHeader text="Quick Facts" align="left" size="large" width={855} className="py-2" />
               <ul className="list-disc pl-6 space-y-2 text-base text-[#535556] ">
-               {destination.quickfacts?.map((item, i) => <li key={i}>{item}</li>)}
+               {packages.quickfacts?.map((item, i) => <li key={i}>{item}</li>)}
                </ul>
             </div>
              {/* Itinerary */}
             <div id="Itinerary" className="space-y-6 py-10">
               <div className="flex flex-row gap-2">
                 <Image src="/images/iterate/itenerylogo.svg" alt="Itinerary" width={40} height={2} />
-                <TextHeader text={`${destination.title} Itinerary`} align="start" size="large" width={855}  />
+                <TextHeader text={`${packages.title} Itinerary`} align="start" size="large" width={855}  />
               </div>
-              <ItinerarySection itinerary={itinerary} />
+              <ItinerarySection itinerary={packages.itinerary} />
 
               <div id="Includes-Excludes" className="w-auto md:w-[875px] h-[1px] bg-black opacity-20 mt-2 mb-6" />
             {/* iclusion& exclusions */}
               <div className="max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-8">
-                <InclusionExclusion title="Cost Includes" items={destination.inclusions} icon="/images/right.png" />
-                <InclusionExclusion title="Cost Excludes" items={destination.exclusions} icon="/images/cross.png" />
+                <InclusionExclusion title="Cost Includes" items={packages.inclusions} icon="/images/right.png" />
+                <InclusionExclusion title="Cost Excludes" items={packages.exclusions} icon="/images/cross.png" />
               </div>
             </div>
 
@@ -227,9 +225,9 @@ export default async function Page({ params }: { params: { id: string } }) {
           {/*trips maps */}
             <div id="Trip-Map" className="py-6">
               <TextHeader text="Trek Map" align="left" size="large" width={855} className=" mb-2" />
-              {destination.googleMapUrl && (
+              {packages.googleMapUrl && (
                 <Image
-                  src={destination.googleMapUrl}
+                  src={packages.googleMapUrl}
                   alt="Google Map"
                   width={800}
                   height={600}
@@ -242,14 +240,14 @@ export default async function Page({ params }: { params: { id: string } }) {
               <TextHeader text="Trek Gallery" align="left" size="large" width={855} className="mb-2" />
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
                 <div className="lg:col-span-2">
-                  {gallery[0] && <ImageDisplay src={gallery[0]} variant="rectangle" width={840} height={290} />}
+                  {packages.gallery[0] && <ImageDisplay src={packages.gallery[0]} variant="rectangle" width={840} height={290} />}
                 </div>
                 <div>
-                  {gallery[1] && <ImageDisplay src={gallery[1]} variant="square" width={400} height={400} />}
+                  {packages.gallery[1] && <ImageDisplay src={packages.gallery[1]} variant="square" width={400} height={400} />}
                 </div>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {gallery.slice(2, 5).map((img, i) => (
+                {packages.gallery.slice(2, 5).map((img, i) => (
                   <ImageDisplay key={i} src={img} variant="square" width={400} height={400} />
                 ))}
               </div>
@@ -276,10 +274,10 @@ export default async function Page({ params }: { params: { id: string } }) {
 
           <aside className="w-auto px-6 mb-6 md:mb-0 lg:mb-0 md:px-0 lg:px-0 ">
             <div className="sticky top-24 w-full">
-              <PricingCard basePrice={destination.basePrice} />
+              <PricingCard basePrice={packages.basePrice} />
                   <div className=' mt-5  '>
 
-        <Link href={`https://yogeshbhai.ddns.net/api/tour/tour-packages/${destination._id}/download-pdf`} target="_blank" rel="noopener noreferrer">
+        <Link href={`tour/tour-packages/${packages._id}/download-pdf`} target="_blank" rel="noopener noreferrer">
          <div className="px-15">
           <Button 
             text='Download PDF'

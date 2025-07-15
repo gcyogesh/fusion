@@ -5,17 +5,6 @@ import { FC, useState, JSX } from "react";
 import { FaHiking, FaHotel, FaUtensils } from "react-icons/fa";
 import { Minus, Plus } from "lucide-react";
 
-type ItineraryItem = {
-  day: number;
-  title: string;
-  description: string;
-  activities: string[];
-  image?: string;
-};
-
-type Props = {
-  itinerary: ItineraryItem[];
-};
 
 const activityMap: { keyword: string; icon: JSX.Element; label: string }[] = [
   {
@@ -66,7 +55,7 @@ const activityMap: { keyword: string; icon: JSX.Element; label: string }[] = [
 
 ];
 
-const ItinerarySection: FC<Props> = ({ itinerary }) => {
+const ItinerarySection = ({ itinerary }) => {
   const [openDay, setOpenDay] = useState<number | null>(1); // open Day 1 by default
 
   const toggleDay = (day: number) => {

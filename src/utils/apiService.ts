@@ -76,3 +76,5 @@ export const fetchAPI = async <T>({
     throw new Error(String(error));
   }
 };
+
+export { APIResponse };
