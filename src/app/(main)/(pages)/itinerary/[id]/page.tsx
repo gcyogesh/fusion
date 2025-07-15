@@ -1,6 +1,7 @@
 import { fetchAPI, APIResponse } from '@/utils/apiService';
 import Breadcrumb from '@/components/atoms/breadcrumb';
-import { MapPin } from 'lucide-react';
+import { MapPin} from 'lucide-react';
+
 import TextHeader from '@/components/atoms/headings';
 import ImageDisplay from '@/components/atoms/ImageCard';
 import MidNavbar from '@/components/organisms/MidNavBar';
@@ -15,12 +16,13 @@ import Link from 'next/link';
 import Image from 'next/image';
 import React from 'react';
 import PricingCard from '@/components/atoms/pricingcard';
+import ReviewSection from '@/components/organisms/testimonial/review';
 const trekTabs = [
   "Overview",
   "Itinerary",
   "Includes/Excludes",
-  "Trip Map",
   "Book Now",
+  "Trip Map",
   "FAQs",
 ];
 
@@ -183,11 +185,16 @@ export default async function Page({ params }: { params: { id: string } }) {
               <TextDescription className="mb-4" text={destination.overview} />
             </div>
 
-            <div className="border border-[#0E334F] rounded-2xl p-6 bg-white shadow-sm mb-4">
-              <TextHeader text="Trip Highlights" align="left" size="large" width={855} className="mb-2" />
+            <div className="rounded-2xl p-6 bg-white shadow-sm mb-4 py-2">
+              <TextHeader text="Trip Highlights" align="left" size="large" width={855} className="py-2" />
               <ul className="list-disc pl-6 space-y-2 text-base text-[#535556] ">
                 {destination.highlights?.map((item, i) => <li key={i}>{item}</li>)}
               </ul>
+
+              <TextHeader text="Quick Facts" align="left" size="large" width={855} className="py-2" />
+              <ul className="list-disc pl-6 space-y-2 text-base text-[#535556] ">
+               {destination.quickfacts?.map((item, i) => <li key={i}>{item}</li>)}
+               </ul>
             </div>
              {/* Itinerary */}
             <div id="Itinerary" className="space-y-6 py-10">
@@ -259,7 +266,9 @@ export default async function Page({ params }: { params: { id: string } }) {
       />
         <FAQAccordion />
         </div>
-      
+      <section id="Reviews" className="mx-auto max-w-7xl px-4">
+        <ReviewSection tourId={params.id} />
+      </section>
           </div>
 
           
@@ -267,6 +276,18 @@ export default async function Page({ params }: { params: { id: string } }) {
           <aside className="w-auto px-6 mb-6 md:mb-0 lg:mb-0 md:px-0 lg:px-0 ">
             <div className="sticky top-24 w-full">
               <PricingCard basePrice={destination.basePrice} />
+                  <div className=' mt-5  '>
+
+        <Link href={`https://yogeshbhai.ddns.net/api/tour/tour-packages/${destination._id}/download-pdf`} target="_blank" rel="noopener noreferrer">
+         <div className="px-15">
+          <Button 
+            text='Download PDF'
+            variant='secondary'
+            className="bg-white hover:text-white"
+          />
+          </div>
+        </Link>
+              </div>
             </div>
           </aside>
         </div>

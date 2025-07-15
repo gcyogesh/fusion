@@ -836,7 +836,7 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
       </div>
     
       <SingleImageUploadField
-        label="Google Map Image"
+        label="Tour Route"
         name="googleMapUrl"
         onChange={handleMapImageChange}
         file={googleMapImage}

@@ -34,7 +34,7 @@ interface FooterProps {
   activities?: any[];
 }
 
-export default function Footer({ destinations = [], activities = [] }: FooterProps) {
+export default function Footer({ destinations = [], activities = [] , ContactInfo =[]}: FooterProps) {
   return (
     <footer className="bg-gradient-to-t from-[#85cdf4] to-[#fef9ee]">
       <Image

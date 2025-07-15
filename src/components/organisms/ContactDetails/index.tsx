@@ -16,12 +16,10 @@ const ContactDetails = ({ showDivider = true }) => {
     },
     {
       icon: <MdEmail className="text-white bg-[#F28A15] rounded-full text-xl p-2 w-[34px] h-[34px]" />,
-      title: "Email",
       text: "fusionexpeditions@gmail.com",
     },
     {
       icon: <MdLocationOn className="text-white bg-[#F28A15] rounded-full text-xl p-2 w-[34px] h-[34px]" />,
-      title: "Address",
       text: "Saatghumti, Thamel, Kathmandu, Nepal",
     },
   ];

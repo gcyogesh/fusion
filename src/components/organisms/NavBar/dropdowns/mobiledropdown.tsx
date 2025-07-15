@@ -1,70 +1,194 @@
 'use client'
 
 import Link from 'next/link'
-import { ChevronDown, ChevronUp } from 'lucide-react'
+import { ChevronDown, ChevronUp, ChevronRight, ArrowLeft, X } from 'lucide-react'
 import { useState } from 'react'
+
+type RelatedPackage = {
+  name: string
+  href: string
+  duration?: string
+  title?: string
+}
 
 type SubLink = {
   name: string
   href: string
+  subtitle?: string
+  title?: string
+  relatedPackages?: RelatedPackage[]
 }
 
 type Props = {
   name: string
   href: string
   subLinks?: SubLink[]
-  isMobile?: boolean
   onClickLink?: () => void
 }
 
-export default function DropdownMenu({ name, href, subLinks = [], isMobile = false, onClickLink }: Props) {
+export default function MobileDropdownMenu({ name, href, subLinks = [], onClickLink }: Props) {
   const [open, setOpen] = useState(false)
+  const [activeSubLink, setActiveSubLink] = useState<SubLink | null>(null)
+
+  const isWithRelatedPackages = ['activities', 'destinations'].includes(name.toLowerCase())
 
   const toggleDropdown = () => {
     setOpen((prev) => !prev)
+    if (open) setActiveSubLink(null)
   }
 
-  const handleLinkClick = () => {
+  const handleMainLinkClick = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
     if (onClickLink) onClickLink()
     setOpen(false)
+    setActiveSubLink(null)
+  }
+
+  const handleSubLinkClick = (subLink: SubLink) => {
+    if (isWithRelatedPackages) {
+      setActiveSubLink(subLink)
+    } else {
+      // Directly navigate for other sections (e.g. About)
+      if (onClickLink) onClickLink()
+      setOpen(false)
+      setActiveSubLink(null)
+      window.location.href = subLink.href
+    }
+  }
+
+  const handleDirectSubLinkClick = () => {
+    if (onClickLink) onClickLink()
+    setOpen(false)
+    setActiveSubLink(null)
+  }
+
+  const handlePackageLinkClick = () => {
+    if (onClickLink) onClickLink()
+    setOpen(false)
+    setActiveSubLink(null)
+  }
+
+  const handleBackToSubLinks = () => {
+    setActiveSubLink(null)
+  }
+
+  const handleCloseDropdown = () => {
+    setOpen(false)
+    setActiveSubLink(null)
   }
 
   return (
-    <div className={isMobile ? 'w-full' : 'relative group'} onMouseLeave={() => !isMobile && setOpen(false)}>
-      <div
-        className={`flex items-center justify-between cursor-pointer ${isMobile ? 'py-2' : 'gap-1'}`}
-        onClick={isMobile ? toggleDropdown : undefined}
-        onMouseEnter={() => !isMobile && setOpen(true)}
-      >
-        <Link href={href} onClick={isMobile ? handleLinkClick : undefined} className="cursor-pointer">
+    <div className="w-full">
+      {/* Main Dropdown Toggle */}
+      <div className="flex items-center justify-between cursor-pointer py-3 px-4 hover:bg-gray-50 rounded-lg transition-colors">
+        <div 
+          onClick={handleMainLinkClick}
+          className="cursor-pointer font-medium text-gray-900 flex-1"
+        >
           {name}
-        </Link>
-        {subLinks.length > 0 &&
-          (open ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />)}
+        </div>
+        {subLinks.length > 0 && (
+          <div onClick={toggleDropdown} className="ml-2">
+            {open ? <ChevronUp className="w-5 h-5 text-gray-500" /> : <ChevronDown className="w-5 h-5 text-gray-500" />}
+          </div>
+        )}
       </div>
 
-      {subLinks.length > 0 && open && (
-        <ul
-          className={`${
-            isMobile
-              ? 'pl-4 space-y-2'
-              : 'absolute top-8 left-0 w-40 backdrop-blur-xl bg-white/20 rounded-md text-white shadow-lg py-2 z-50'
-          }`}
-        >
-          {subLinks.map((sub) => (
-            <li key={sub.name}>
-              <Link
-                href={sub.href}
-                className={`block ${
-                  isMobile ? 'py-1 text-sm' : 'px-4 py-2 hover:bg-[#E47312]'
-                } cursor-pointer`}
-                onClick={isMobile ? handleLinkClick : () => setOpen(false)}
+      {/* Dropdown Menu */}
+      {subLinks.length > 0 && open && !activeSubLink && (
+        <div className="bg-gray-50 rounded-lg mt-2 overflow-hidden">
+          {subLinks.map((sub, index) => (
+            <div key={`${sub.name}-${index}`} className="border-b border-gray-200 last:border-b-0">
+              <div 
+                className="flex items-center justify-between cursor-pointer py-3 px-4 hover:bg-white transition-colors"
+                onClick={() => handleSubLinkClick(sub)}
               >
-                {sub.name}
-              </Link>
-            </li>
+                <span className="text-sm font-medium text-gray-700">
+                  {sub.name || sub.title}
+                </span>
+                <ChevronRight className="w-4 h-4 text-gray-400" />
+              </div>
+            </div>
           ))}
-        </ul>
+        </div>
+      )}
+
+      {/* Related Packages View */}
+      {isWithRelatedPackages && activeSubLink && (
+        <div className="bg-white border border-gray-200 rounded-lg mt-2 overflow-hidden shadow-sm">
+          {/* Header */}
+          <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gray-50">
+            <div className="flex items-center gap-3">
+              <button
+                onClick={handleBackToSubLinks}
+                className="p-1 hover:bg-gray-200 rounded-full transition-colors"
+              >
+                <ArrowLeft className="w-4 h-4 text-gray-600" />
+              </button>
+              <span className="text-sm font-medium text-gray-900">
+                {activeSubLink.name || activeSubLink.title}
+              </span>
+            </div>
+            <button
+              onClick={handleCloseDropdown}
+              className="p-1 hover:bg-gray-200 rounded-full transition-colors"
+            >
+              <X className="w-4 h-4 text-gray-600" />
+            </button>
+          </div>
+
+          {/* Content */}
+          <div className="p-4">
+            {/* View All Link */}
+            <Link
+              href={activeSubLink.href}
+              onClick={handleDirectSubLinkClick}
+              className="flex items-center justify-between py-3 px-4 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors mb-4"
+            >
+              <span className="text-sm font-medium text-blue-700">
+                View all {activeSubLink.name || activeSubLink.title}
+              </span>
+              <ChevronRight className="w-4 h-4 text-blue-500" />
+            </Link>
+
+            {/* Related Packages Section */}
+            {activeSubLink.relatedPackages && activeSubLink.relatedPackages.length > 0 ? (
+              <div className="space-y-1">
+                {activeSubLink.relatedPackages.map((pkg, idx) => (
+                  <div key={idx} className="border-b border-gray-100 last:border-b-0">
+                    <Link
+                      href={pkg.href}
+                      onClick={handlePackageLinkClick}
+                      className="flex items-center justify-between py-3 px-4 hover:bg-gray-50 rounded-lg transition-colors group"
+                    >
+                      <div className="flex-1 min-w-0">
+                        <h4 className="text-sm font-medium text-gray-900 truncate group-hover:text-blue-600">
+                          {pkg.name}
+                        </h4>
+                        {pkg.duration && (
+                          <p className="text-xs text-gray-500 mt-1">
+                            {pkg.duration}
+                          </p>
+                        )}
+                      </div>
+                      <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-blue-500 flex-shrink-0 ml-2" />
+                    </Link>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8">
+                <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <ChevronRight className="w-6 h-6 text-gray-400" />
+                </div>
+                <p className="text-sm text-gray-500">
+                  No related packages available
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
       )}
     </div>
   )

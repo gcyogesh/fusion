@@ -11,7 +11,7 @@ import Logo from "@/components/atoms/Logo";
 import MobileDropdownMenu from "./dropdowns/mobiledropdown";
 import ImageDisplay from "@/components/atoms/ImageCard";
 import TextHeader from "@/components/atoms/headings";
-
+import { Destination , TourPackage , Activity  } from "@/types";
 type NavLink = {
   name: string;
   href: string;
@@ -31,59 +31,19 @@ type NavLink = {
   }[];
 };
 
-type Destination = {
-  title: string;
-  slug: string;
-  subtitle?: string;
-  imageUrls?: string[];
-  image?: string;
-};
 
-type Activity = {
-  title: string;
-  slug: string;
-  subtitle?: string;
-  imageUrls?: string[];
-  image?: string;
-  name?: string;
-};
 
-interface TourPackage {
-  _id: string;
-  title: string;
-  description: string;
-  overview: string;
-  location: {
-    city: string;
-    country: string;
-  };
-  basePrice: number;
-  currency: string;
-  gallery: string;
-  duration: {
-    days: number;
-    nights: number;
-  };
-  imageUrls?: string[];
-}
 
 interface NavbarProps {
   destinations: Destination[];
   activities: Activity[];
   relatedPackagesMap: { [slug: string]: TourPackage[] }; // Destinations
   relatedActivityPackagesMap: { [slug: string]: TourPackage[] }; // Activities
+  contactInfo:contactInfo,
 }
 
-interface ContactInfo {
-  whatsappNumber: string;
-  phones: string[];
-  socialLinks?: {
-    facebook?: string;
-    instagram?: string;
-    linkedin?: string;
-    twitter?: string;
-  };
-}
+
+
 
 // Throttle function for scroll optimization
 const throttle = (func: Function, limit: number) => {
@@ -101,6 +61,7 @@ export default function Navbar({
   destinations = [],
   activities = [],
   relatedPackagesMap = {},
+  contactInfo,
   relatedActivityPackagesMap = {},
 }: NavbarProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -110,9 +71,7 @@ export default function Navbar({
   const [scrollY, setScrollY] = useState(0);
   const [showNavbar, setShowNavbar] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
-  const [contactInfo, setContactInfo] = useState<ContactInfo | null>(null);
   const [hoverTimeout, setHoverTimeout] = useState<NodeJS.Timeout | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
 
   const pathname = usePathname();
 
@@ -217,24 +176,7 @@ export default function Navbar({
   }, [destinations, activities, relatedPackagesMap, relatedActivityPackagesMap]);
 
   // Fetch contact info with caching
-  useEffect(() => {
-  async function fetchContactInfo() {
-    try {
-      const res = await fetch("https://yogeshbhai.ddns.net/api/info");
-      const json = await res.json();
-      if (json.success) {
-        setContactInfo({
-          whatsappNumber: json.data.whatsappNumber,
-          phones: json.data.phones,
-          socialLinks: json.data.socialLinks, 
-        });
-      }
-    } catch (error) {
-      console.error("Failed to fetch contact info:", error);
-    }
-  }
-  fetchContactInfo();
-}, []);
+  
 
   // Throttled scroll handler for performance
   useEffect(() => {
@@ -424,7 +366,7 @@ export default function Navbar({
                       ))}
                     </ul>
                   </div>
-                ) : (
+                ) : (activeDropdown?.name === "Destinations" || activeDropdown?.name === "Activities") && (
                   <p className="text-sm text-gray-500 italic mt-4">No related packages available</p>
                 )}
               </div>

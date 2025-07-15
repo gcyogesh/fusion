@@ -65,8 +65,6 @@ export default async function Page({ params }: Params) {
     })
   );
 
-  const herodata = await fetchAPI({ endpoint: "herobanner/destinations" });
-
   const destinationData = await fetchAPI({ endpoint: "destinations" });
   const destinations: Destination[] = destinationData?.data || [];
 
@@ -74,18 +72,15 @@ export default async function Page({ params }: Params) {
     <>
       <Breadcrumb currentnavlink={`Destination / ${destination?.title || "Destination"}`} />
 
-      <HeroBanner herodata={herodata?.data || []} />
+
 
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 py-10">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
           {/* Left Column */}
+          
           <div className="lg:col-span-2 space-y-6">
             {destination ? (
-              <div>
-                <ImageDisplay
-                  src={destination.imageUrls?.[0] || destination.image}
-                  variant="smallrectangle"
-                />
+              
                 <div className="mt-4 space-y-2">
                   <TextHeader text={destination.title} size="small" align="left" />
                   <h3 className="text-lg font-medium text-gray-600">
@@ -95,12 +90,15 @@ export default async function Page({ params }: Params) {
                     <TextDescription text={destination.description} className="line-clamp-3" />
                   )}
                 </div>
-              </div>
+              
             ) : (
               <div className="text-red-600 text-lg">
                 No destination found for slug: {slug}
               </div>
             )}
+            
+               <ImageDisplay src={destination.imageUrls[0]} variant="smallrectangle" snippet=""/>
+
           </div>
 
          
@@ -111,7 +109,7 @@ export default async function Page({ params }: Params) {
 
         {/* Related Packages */}
        
-          <TextHeader text="Related Packages" size="large" align="left" className="py-4" />
+          <TextHeader text={`Packages of ${destination.title}`} size="large" align="left"  />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {relatedPackages.map((card) => (
             <Link href={`/itinerary/${card._id}`} key={card._id} className="flex flex-col gap-4">

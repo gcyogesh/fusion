@@ -53,7 +53,7 @@ const Sidebar = ({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen: (open: boo
           {[
             { icon: FaTachometerAlt, text: "Dashboard", link: "/dashboard" },
             { icon: FaInbox, text: "Bookings", link: "/dashboard/bookings" },
-            { icon: FaUsers, text: "Destiantions", link: "/dashboard/customise-destinations" },
+            { icon: FaUsers, text: "Destinations", link: "/dashboard/customise-destinations" },
             { icon: FaWallet, text: "Blog Collection", link: "/dashboard/customise-blogs" },
             { icon: FaChartLine, text: "Contact Form", link: "/dashboard/contact" },
             { icon: FaUser, text: "Private Trip", link: "/dashboard/private-trips" },

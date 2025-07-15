@@ -1,12 +1,8 @@
 import Cookies from "js-cookie";
-
+import { APIResponse } from "@/types";
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "https://yogeshbhai.ddns.net/api";
 
-// Generic API response type
-export interface APIResponse<T> {
-  data: T;
-  [key: string]: unknown;
-}
+
 
 interface FetchAPIOptions<T = unknown> {
   endpoint: string;
@@ -14,17 +10,18 @@ interface FetchAPIOptions<T = unknown> {
   data?: T | FormData;
   id?: string | number;
   slug?: string;
-  revalidateSeconds?: number; // For ISR support
+  revalidateSeconds?: number;
 }
 
-export const fetchAPI = async <T = unknown>({
+// ✅ Strongly typed fetchAPI with generic return
+export const fetchAPI = async <T>({
   endpoint = "",
   method = "GET",
   data,
   id,
   slug,
-  revalidateSeconds = 10, // ISR: revalidate after 60 seconds
-}: FetchAPIOptions): Promise<T> => {
+  revalidateSeconds = 10,
+}: FetchAPIOptions): Promise<APIResponse<T>> => {
   const token = Cookies.get("token");
 
   const urlParts = [API_BASE, endpoint];
@@ -34,7 +31,6 @@ export const fetchAPI = async <T = unknown>({
 
   const headers: Record<string, string> = {};
 
-  // Only set JSON content type if not sending FormData
   if (data && !(data instanceof FormData)) {
     headers["Content-Type"] = "application/json";
   }
@@ -47,45 +43,35 @@ export const fetchAPI = async <T = unknown>({
     const response = await fetch(url, {
       method,
       headers,
-      body: method !== "GET" && data ? (data instanceof FormData ? data : JSON.stringify(data)) : undefined,
-      next: {
-        revalidate: revalidateSeconds, // ✅ Enable ISR
-      },
+      body: method !== "GET" && data
+        ? (data instanceof FormData ? data : JSON.stringify(data))
+        : undefined,
+      next: { revalidate: revalidateSeconds },
     });
-
-    console.log('Response status:', response.status);
-    console.log('Response ok:', response.ok);
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('Response error text:', errorText);
-      let userMessage = "Something went wrong while communicating with the server.";
+      let userMessage = "Something went wrong.";
       try {
         const json = JSON.parse(errorText);
-        if (json?.message) userMessage = json.message;
-        else if (json?.error) userMessage = json.error;
-        else if (typeof json === 'string') userMessage = json;
+        userMessage = json?.message || json?.error || errorText;
       } catch {
-        const preMatch = errorText.match(/<pre>([\s\S]*?)<\/pre>/i);
-        if (preMatch?.[1]) userMessage = preMatch[1].trim();
-        else if (errorText.length < 200) userMessage = errorText.trim();
-        else userMessage = errorText;
+        const pre = errorText.match(/<pre>([\s\S]*?)<\/pre>/i);
+        userMessage = pre?.[1]?.trim() || errorText.slice(0, 200).trim();
       }
-      // Extract user-friendly validation error if present
-      const validationMatch = userMessage.match(/Validation failed: ([^:]+: Path `[^`]+` is required\.)/i);
-      if (validationMatch) {
-        // e.g., 'tag: Path `tag` is required.' => 'tag is required.'
-        const fieldMsg = validationMatch[1].replace(/: Path `([^`]+)` is required\./, ' is required.');
-        userMessage = fieldMsg.charAt(0).toUpperCase() + fieldMsg.slice(1);
+
+      const validation = userMessage.match(/Validation failed: ([^:]+: Path `[^`]+` is required\.)/i);
+      if (validation) {
+        const cleanMsg = validation[1].replace(/: Path `([^`]+)` is required\./, ' is required.');
+        userMessage = cleanMsg.charAt(0).toUpperCase() + cleanMsg.slice(1);
       }
-      // Remove stack traces and technical details
+
       userMessage = userMessage.split('<br>')[0].trim();
       throw new Error(userMessage);
     }
 
     return response.json();
   } catch (error) {
-    // Only throw the original error message, don't override with a generic one
     if (error instanceof Error) throw error;
     throw new Error(String(error));
   }
