@@ -4,6 +4,8 @@ import Logo from "@/components/atoms/Logo";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 
+
+
 export default function AdminLoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -13,25 +15,59 @@ export default function AdminLoginPage() {
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email || !password) {
-      setError("Please enter both email and password.");
-      return;
+  e.preventDefault();
+  if (!email || !password) {  
+    setError("Please enter both email and password.");
+    return;
+  }
+  setError("");
+  setLoading(true);
+
+  try {
+ 
+
+    const response = await fetch(`https://yogeshbhai.ddns.net/admin/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+      credentials: "include"
+    });
+
+    // First check if the response is JSON
+    const contentType = response.headers.get("content-type");
+    if (!contentType || !contentType.includes("application/json")) {
+      const text = await response.text();
+      throw new Error(`Expected JSON response, got: ${text.substring(0, 100)}`);
     }
-    setError("");
-    setLoading(true);
-    // Static credential check
-    setTimeout(() => {
-      if (email === 'admin@fusion.com' && password === 'fusion123') {
-        Cookies.set("token", "dummy-token", { path: "/" });
-        setLoading(false);
-        router.push("/dashboard");
-      } else {
-        setLoading(false);
-        setError("Invalid email or password.");
-      }
-    }, 800);
-  };
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Login failed");
+    }
+
+   if (data.data?.accessToken) {
+  Cookies.set("token", data.data.accessToken);
+}
+if (data.data?.refreshToken) {
+  Cookies.set("refreshToken", data.data.refreshToken);
+}
+   
+
+   
+
+    router.push("/dashboard");
+    console.log("Logged in successfully:", data);
+    
+  } catch (err) {
+    console.error("Login error:", err);
+    setError(err instanceof Error ? err.message : "Login failed. Please try again.");
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-gradient-to-br from-primary/10 via-white to-primary/5">

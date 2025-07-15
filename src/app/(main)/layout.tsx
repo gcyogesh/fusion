@@ -3,6 +3,7 @@ import { DM_Sans } from "next/font/google";
 import { fetchAPI } from "@/utils/apiService";
 import '../../app/globals.css';
 
+
 import Footer from "@/components/organisms/Footer";
 import Navbar from "@/components/organisms/NavBar";
 
@@ -25,9 +26,11 @@ export default async function RootLayout({
   // Fetch destinations and activities
   const destinationsRes: any = await fetchAPI({ endpoint: "destinations" });
   const activitiesRes: any = await fetchAPI({ endpoint: "category/activities" });
+  const contactInfoRes:any = await fetchAPI({ endpoint: "info" });
 
   const destinations = destinationsRes?.data || [];
   const activities = activitiesRes?.data || [];
+  const ContactInfo = contactInfoRes.data || null;
 
   // Fetch related packages per destination
   // Create a map: { [slug]: TourPackage[] }
@@ -65,6 +68,7 @@ export default async function RootLayout({
           destinations={destinations}
           activities={activities}
           relatedPackagesMap={relatedPackagesMap} 
+          contactInfo={ContactInfo}
         />
         {children}
         <Footer destinations={destinations.slice(0, 5)} />

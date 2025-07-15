@@ -11,7 +11,7 @@ import Logo from "@/components/atoms/Logo";
 import MobileDropdownMenu from "./dropdowns/mobiledropdown";
 import ImageDisplay from "@/components/atoms/ImageCard";
 import TextHeader from "@/components/atoms/headings";
-import { Destination , TourPackage , Activity  } from "@/types";
+import { Destination , TourPackage , Activity, ContactInfo } from "@/types";
 type NavLink = {
   name: string;
   href: string;
@@ -39,7 +39,7 @@ interface NavbarProps {
   activities: Activity[];
   relatedPackagesMap: { [slug: string]: TourPackage[] }; // Destinations
   relatedActivityPackagesMap: { [slug: string]: TourPackage[] }; // Activities
-  contactInfo:contactInfo,
+  contactInfo:ContactInfo,
 }
 
 

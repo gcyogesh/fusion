@@ -24,6 +24,7 @@ const trekTabs = [
   "Book Now",
   "Trip Map",
   "FAQs",
+  "Reviews"
 ];
 
 export async function generateMetadata({ params }: { params: { id: string } }) {
