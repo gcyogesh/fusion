@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import { usePathname } from "next/navigation";
 import { IoMdClose } from "react-icons/io";
 import { FiMenu } from "react-icons/fi";
@@ -41,6 +41,7 @@ interface NavbarProps {
   contactInfo: ContactInfo;
 }
 
+// Move throttle outside component to prevent recreation
 const throttle = (func: Function, limit: number) => {
   let inThrottle: boolean;
   return function (this: any, ...args: any[]) {
@@ -60,7 +61,6 @@ export default function Navbar({
   contactInfo,
 }: NavbarProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [navLinks, setNavLinks] = useState<NavLink[]>([]);
   const [activeDropdown, setActiveDropdown] = useState<NavLink | null>(null);
   const [hoveredSub, setHoveredSub] = useState<NavLink["subLinks"][0] | null>(null);
   const [scrollY, setScrollY] = useState(0);
@@ -70,12 +70,8 @@ export default function Navbar({
 
   const pathname = usePathname();
 
-  useEffect(() => {
-    setIsMenuOpen(false);
-    closeDropdown();
-  }, [pathname]);
-
-  useEffect(() => {
+  // Memoize formatted data to prevent unnecessary recalculations
+  const navLinks = useMemo(() => {
     const formattedActivities = activities.map((item) => ({
       name: item.name || item.title || "Unknown Activity",
       href: `/category/activities/${item.slug}`,
@@ -104,7 +100,7 @@ export default function Navbar({
       })),
     }));
 
-    setNavLinks([
+    return [
       {
         name: "Destinations",
         href: "/destinations",
@@ -137,7 +133,7 @@ export default function Navbar({
           {
             name: "Contact",
             href: "/about/contact",
-            subtitle: "We’d love to hear from you!",
+            subtitle: "We'd love to hear from you!",
             title: "Contact",
           },
           {
@@ -157,11 +153,24 @@ export default function Navbar({
       { name: "Blogs", href: "/blogs", hasDropdown: false },
       { name: "Duration", href: "/duration", hasDropdown: false },
       { name: "Deals", href: "/deals", hasDropdown: false },
-    ]);
+    ];
   }, [activities, destinations, relatedActivityPackagesMap, relatedPackagesMap]);
 
-  useEffect(() => {
-    const handleScroll = throttle(() => {
+  // Memoize navbar classes
+  const navbarClasses = useMemo(() => {
+    const base = "fixed top-0 left-0 w-full z-60 px-2 transition-all duration-300 ease-linear";
+    const visibility = showNavbar ? "translate-y-0" : "-translate-y-full";
+    const theme =
+      pathname === "/" && scrollY === 0
+        ? "blur-base bg-white/20 text-white shadow-lg"
+        : "bg-[#0e334f] text-white";
+
+    return `${base} ${visibility} ${theme}`;
+  }, [showNavbar, pathname, scrollY]);
+
+  // Memoize throttled scroll handler
+  const handleScroll = useMemo(
+    () => throttle(() => {
       const currentScrollY = window.scrollY;
       setScrollY(currentScrollY);
 
@@ -174,47 +183,55 @@ export default function Navbar({
       }
 
       setLastScrollY(currentScrollY);
-    }, 100);
+    }, 100),
+    [lastScrollY]
+  );
 
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      if (hoverTimeout) clearTimeout(hoverTimeout);
-    };
-  }, [lastScrollY, hoverTimeout]);
-
-  const navbarClasses = useMemo(() => {
-    const base = "fixed top-0 left-0 w-full z-60 px-2 transition-all duration-300 ease-linear";
-    const visibility = showNavbar ? "translate-y-0" : "-translate-y-full";
-    const theme =
-      pathname === "/" && scrollY === 0
-        ? "blur-base bg-white/20 text-white shadow-lg"
-        : "bg-[#0e334f] text-white";
-
-    return `${base} ${visibility} ${theme}`;
-  }, [showNavbar, pathname, scrollY]);
-
-  const handleMouseEnter = (link: NavLink) => {
+  // Memoize event handlers
+  const handleMouseEnter = useCallback((link: NavLink) => {
     if (hoverTimeout) clearTimeout(hoverTimeout);
     if (link.hasDropdown) {
       setActiveDropdown(link);
       setHoveredSub(link.subLinks?.[0] || null);
     }
-  };
+  }, [hoverTimeout]);
 
-  const handleMouseLeave = () => {
+  const handleMouseLeave = useCallback(() => {
     const timeout = setTimeout(() => closeDropdown(), 150);
     setHoverTimeout(timeout);
-  };
+  }, []);
 
-  const closeDropdown = () => {
+  const closeDropdown = useCallback(() => {
     setActiveDropdown(null);
     setHoveredSub(null);
     if (hoverTimeout) {
       clearTimeout(hoverTimeout);
       setHoverTimeout(null);
     }
-  };
+  }, [hoverTimeout]);
+
+  const toggleMenu = useCallback(() => {
+    setIsMenuOpen(prev => !prev);
+  }, []);
+
+  const handleMenuItemClick = useCallback(() => {
+    setIsMenuOpen(false);
+  }, []);
+
+  // Effect for pathname changes
+  useEffect(() => {
+    setIsMenuOpen(false);
+    closeDropdown();
+  }, [pathname, closeDropdown]);
+
+  // Effect for scroll handling
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (hoverTimeout) clearTimeout(hoverTimeout);
+    };
+  }, [handleScroll, hoverTimeout]);
 
   return (
     <nav className={navbarClasses}>
@@ -250,22 +267,37 @@ export default function Navbar({
             <Link
               href={`https://wa.me/${contactInfo.whatsappNumber.replace(/\D/g, "")}`}
               target="_blank"
+              rel="noopener noreferrer"
               aria-label="WhatsApp"
             >
               <FaWhatsapp className="text-white text-3xl hover:text-green-400" />
             </Link>
           )}
           {contactInfo?.socialLinks?.instagram && (
-            <Link href={contactInfo.socialLinks.instagram} target="_blank" aria-label="Instagram">
+            <Link 
+              href={contactInfo.socialLinks.instagram} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              aria-label="Instagram"
+            >
               <FaInstagram className="text-white text-3xl hover:text-pink-500" />
             </Link>
           )}
           {contactInfo?.socialLinks?.facebook && (
-            <Link href={contactInfo.socialLinks.facebook} target="_blank" aria-label="Facebook">
+            <Link 
+              href={contactInfo.socialLinks.facebook} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              aria-label="Facebook"
+            >
               <FaFacebook className="text-white text-3xl hover:text-blue-500" />
             </Link>
           )}
-          <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="text-3xl md:hidden" aria-label="Toggle menu">
+          <button 
+            onClick={toggleMenu} 
+            className="text-3xl md:hidden" 
+            aria-label="Toggle menu"
+          >
             {isMenuOpen ? <IoMdClose /> : <FiMenu />}
           </button>
         </div>
@@ -351,13 +383,13 @@ export default function Navbar({
                   name={link.name}
                   href={link.href}
                   subLinks={link.subLinks}
-                  onClickLink={() => setIsMenuOpen(false)}
+                  onClickLink={handleMenuItemClick}
                 />
               ) : (
                 <li key={link.name}>
                   <Link
                     href={link.href}
-                    onClick={() => setIsMenuOpen(false)}
+                    onClick={handleMenuItemClick}
                     className="block py-2 hover:text-primary"
                   >
                     {link.name}
@@ -368,7 +400,7 @@ export default function Navbar({
             <li>
               <Link
                 href="/contact"
-                onClick={() => setIsMenuOpen(false)}
+                onClick={handleMenuItemClick}
                 className="block bg-primary text-white text-center py-2 rounded-full hover:bg-gradient-to-r from-[#D35400] to-[#A84300] transition-all duration-300"
               >
                 Contact
