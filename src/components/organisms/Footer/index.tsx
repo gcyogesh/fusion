@@ -147,7 +147,7 @@ export default function Footer({ destinations = [], activities = [] , ContactInf
           <div className="flex flex-col md:flex-row justify-between items-center px-6 py-6">
             <div className="flex gap-6 text-sm">
               <p>Â© 2025 Fusion Expeditions</p>
-              <a href="/privacy-policy" className="hover:text-[#06ab86]">Privacy Policy</a>
+              <a href="/about/terms" className="hover:text-[#06ab86]">Terms and Conditions</a>
               <a href="/site-map" className="hover:text-[#06ab86]">Site Map</a>
             </div>
             <a href="https://lishnutech.com/" target="blank" className="text-sm mt-4 md:mt-0">
