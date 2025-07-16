@@ -165,8 +165,8 @@ const HeroSection = ({ herodata }: { herodata: HeroData }) => {
                 <FaSearch className="text-white w-[20px] h-[20px]" />
               </span>
               <span className="hidden sm:flex items-center gap-3.5">
-                {loading ? "Searching..." : "Find My Adventure"}
-                <span className="bg-white p-2.5 rounded-full">
+                {loading ? "Searching..." : ""}
+                <span className="bg-white p-3 rounded-full">
                   {loading ? (
                     <div className="w-7 h-7 border-2 border-[#0E334F] border-t-transparent rounded-full animate-spin"></div>
                   ) : (
