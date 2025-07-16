@@ -31,6 +31,7 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
   const endpoint = `tour/tour-packages/${params.id}`;
   const data = await fetchAPI<TourPackage>({ endpoint });
   const packages = data?.data;
+  
 
   if (!packages) {
     return {
@@ -56,6 +57,7 @@ export default async function Page({ params }: { params: { id: string } }) {
   const packages = response?.data;
 
   if (!packages) notFound();
+  
 
  
 
@@ -189,12 +191,14 @@ export default async function Page({ params }: { params: { id: string } }) {
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 text-gray-500 gap-10 p-6 border rounded-xl bg-white shadow-md max-w-4xl mx-auto mt-2 ">
                  
   {featureData.map((item, index) => (
-    <div key={index} className="flex items-center gap-4">
+    <div key={index} className="flex items-left gap-4">
+      <div className="w-18 h-18">
       <Image src={item.icon} alt={item.label} width={40} height={40} className="mt-1" />
-      <div>
-        <p className="text-2xl font-semibold text-gray-800">{item.value || "—"}</p>
-        <p className="text-xl text-gray-500">{item.label}</p>
       </div>
+    <div className="flex flex-col items-left">
+  <p className="text-2xl font-semibold text-gray-800">{item.value || "—"}</p>
+  <p className="text-xl text-gray-500">{item.label}</p>
+</div>
     </div>
   ))}
 
