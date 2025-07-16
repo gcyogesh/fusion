@@ -118,45 +118,67 @@ export default async function Page({ params }: { params: { id: string } }) {
 
        
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <div className="lg:col-span-2">
-            <div className="aspect-video w-full">
-              <ImageDisplay
-                src={packages.gallery?.[0] || "/fallback.jpg"}
-                variant="rectangle"
-                title={packages.title}
-                description={packages.description}
-                className="h-[550px] w-full"
-              />
-            </div>
+      
+  {/* Mobile View - Single image with horizontal scroll */}
+  <div className="block lg:hidden mb-4">
+    <div className="overflow-x-auto">
+      <div className="flex gap-4 pb-4" style={{ width: 'max-content' }}>
+        {packages.gallery?.map((img, i) => (
+          <div key={i} className="flex-shrink-0">
+            <ImageDisplay 
+              src={img} 
+              variant="rectangle"
+              title={packages.title}
+              description={packages.description}
+              className="h-[300px] w-[400px]"
+            />
           </div>
-          <div className="flex flex-col gap-4">
-            {packages.gallery?.[1] && (
-              <div className="aspect-[16/9] w-full relative">
-              <ImageDisplay
-                src={packages.gallery[1]}
-                variant="rectangle"
-                title={packages.title}
-                description={packages.description}
-                className="h-[265px]"
-              />
-            </div>
-            )}
-            {packages.gallery?.[2] && (
-              <div className="aspect-[16/9] w-full ">
-              <ImageDisplay
-                src={packages.gallery[2]}
-                variant="rectangle"
-                title={packages.title}
-                description={packages.description}
-                className="h-[265px]"
-              />
-              </div>
-            )}
-          </div>
-        </div>
-      </section>
+        ))}
+      </div>
+    </div>
+  </div>
 
+  {/* Desktop View - Original grid layout */}
+  <div className="hidden lg:block">
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <div className="lg:col-span-2">
+        <div className="aspect-video w-full">
+          <ImageDisplay
+            src={packages.gallery?.[0] || "/fallback.jpg"}
+            variant="rectangle"
+            title={packages.title}
+            description={packages.description}
+            className="h-[550px] w-full"
+          />
+        </div>
+      </div>
+      <div className="flex flex-col gap-4">
+        {packages.gallery?.[1] && (
+          <div className="aspect-[16/9] w-full relative">
+            <ImageDisplay
+              src={packages.gallery[1]}
+              variant="rectangle"
+              title={packages.title}
+              description={packages.description}
+              className="h-[265px]"
+            />
+          </div>
+        )}
+        {packages.gallery?.[2] && (
+          <div className="aspect-[16/9] w-full">
+            <ImageDisplay
+              src={packages.gallery[2]}
+              variant="rectangle"
+              title={packages.title}
+              description={packages.description}
+              className="h-[265px]"
+            />
+          </div>
+        )}
+      </div>
+    </div>
+  </div>
+</section>
       <MidNavbar tabs={trekTabs}  />
 
       <section id="Overview" className="mx-auto max-w-7xl px-4 md:px-6">
@@ -215,8 +237,8 @@ export default async function Page({ params }: { params: { id: string } }) {
               <DepartureCalendar />
             </div>
 
-            <div id="Book-Now"></div>
-            <div className="py-6" id="user-form-section">
+            
+            <div className="py-6" id="Book-Now">
               <UserForm 
                 availableBookingDates={["2024-07-01", "2024-07-10", "2024-07-15"]}
                 availableTravelDates={["2024-07-05", "2024-07-12", "2024-07-20"]}
@@ -237,21 +259,63 @@ export default async function Page({ params }: { params: { id: string } }) {
             </div>
 {/*equipments */}
             <div className="max-w-4xl py-6">
-              <TextHeader text="Trek Gallery" align="left" size="large" width={855} className="mb-2" />
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
-                <div className="lg:col-span-2">
-                  {packages.gallery[0] && <ImageDisplay src={packages.gallery[0]} variant="rectangle" width={840} height={290} />}
-                </div>
-                <div>
-                  {packages.gallery[1] && <ImageDisplay src={packages.gallery[1]} variant="square" width={400} height={400} />}
-                </div>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {packages.gallery.slice(2, 5).map((img, i) => (
-                  <ImageDisplay key={i} src={img} variant="square" width={400} height={400} />
-                ))}
-              </div>
-            </div>
+  <TextHeader text="Trek Gallery" align="left" size="large" width={855} className="mb-2" />
+  
+  {/* Mobile View - Single image with horizontal scroll */}
+  <div className="block lg:hidden mb-4">
+    <div className="overflow-x-auto">
+      <div className="flex gap-4 pb-4" style={{ width: 'max-content' }}>
+        {packages.gallery.map((img, i) => (
+          <div key={i} className="flex-shrink-0">
+            <ImageDisplay 
+              src={img} 
+              variant="rectangle" 
+              width={300} 
+              height={200} 
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  {/* Desktop View - Original grid layout */}
+  <div className="hidden lg:block">
+    <div className="grid grid-cols-3 gap-4 mb-4">
+      <div className="col-span-2">
+        {packages.gallery[0] && (
+          <ImageDisplay 
+            src={packages.gallery[0]} 
+            variant="rectangle" 
+            width={840} 
+            height={290} 
+          />
+        )}
+      </div>
+      <div>
+        {packages.gallery[1] && (
+          <ImageDisplay 
+            src={packages.gallery[1]} 
+            variant="square" 
+            width={400} 
+            height={400} 
+          />
+        )}
+      </div>
+    </div>
+    <div className="grid grid-cols-3 gap-4">
+      {packages.gallery.slice(2, 5).map((img, i) => (
+        <ImageDisplay 
+          key={i} 
+          src={img} 
+          variant="square" 
+          width={400} 
+          height={400} 
+        />
+      ))}
+    </div>
+  </div>
+</div>
             
       <div className="w-full max-w-4xl  py-6 mx-auto " id="FAQs">
         <TextHeader

@@ -63,7 +63,7 @@ export default async function RootLayout({
 
   return (
     <html lang="en" className={dmSans.variable}>
-      <body className="antialiased bg-[#fef9ee]">
+      <body className="antialiased bg-[#F5F5F5]">
         <Navbar
           destinations={destinations}
           activities={activities}

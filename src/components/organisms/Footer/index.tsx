@@ -36,7 +36,7 @@ interface FooterProps {
 
 export default function Footer({ destinations = [], activities = [] , ContactInfo =[]}: FooterProps) {
   return (
-    <footer className="bg-gradient-to-t from-[#85cdf4] to-[#fef9ee]">
+    <footer className="bg-gradient-to-t from-[#85cdf4] to-[#F5F5F5]">
       <Image
         src="/images/footerTopImage.png"
         width={1200}
