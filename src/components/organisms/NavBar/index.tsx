@@ -74,7 +74,7 @@ export default function Navbar({
   const navLinks = useMemo(() => {
     const formattedActivities = activities.map((item) => ({
       name: item.name || item.title || "Unknown Activity",
-      href: `/category/activities/${item.slug}`,
+      href: `/activities/${item.slug}`,
       subtitle: item.subtitle || `Explore ${item.title} activities`,
       title: item.title,
       image: item.image || item.imageUrls?.[0] || "",
@@ -340,10 +340,10 @@ export default function Navbar({
                 <TextHeader text={hoveredSub?.name || hoveredSub?.title} align="left" size="small" />
                 {hoveredSub?.relatedPackages?.length ? (
                   <ul className="mt-4 space-y-1 text-gray-700 font-medium text-base divide-y divide-gray-200">
-                    {hoveredSub.relatedPackages.map((pkg, idx) => (
+                    {hoveredSub?.relatedPackages.map((pkg, idx) => (
                       <li key={idx} className="py-1">
                         <Link href={pkg.href} className="hover:text-[#f28a15]">
-                          {pkg.name} - {pkg.duration}
+                          {pkg?.name} - {pkg?.duration}
                         </Link>
                       </li>
                     ))}

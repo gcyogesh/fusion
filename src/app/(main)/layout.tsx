@@ -6,6 +6,7 @@ import '../../app/globals.css';
 
 import Footer from "@/components/organisms/Footer";
 import Navbar from "@/components/organisms/NavBar";
+import { TourPackage } from "@/types";
 
 const dmSans = DM_Sans({
   variable: "--font-dm-sans", // This links to your CSS variable
@@ -35,6 +36,7 @@ export default async function RootLayout({
   // Fetch related packages per destination
   // Create a map: { [slug]: TourPackage[] }
   const relatedPackagesMap: { [slug: string]: any[] } = {};
+  const relatedActivityPackagesMap: { [slug: string]: any[] } = {};
 
   await Promise.all(
     destinations.map(async (dest: any) => {
@@ -61,6 +63,22 @@ export default async function RootLayout({
     })
   );
 
+  await Promise.allSettled(
+      activities.map(async (activity) => {
+        try {
+          const res = await fetchAPI({endpoint: `tour/tour-packages/category/slug/${activity.slug}`}) as { data: TourPackage[] | TourPackage };
+
+          let packages: TourPackage[] = [];
+          if (res?.data) {
+            packages = Array.isArray(res.data) ? res.data : [res.data];
+          }
+          relatedActivityPackagesMap[activity.slug] = packages;
+        } catch {
+          relatedActivityPackagesMap[activity.slug] = [];
+        }
+      })
+    );
+
   return (
     <html lang="en" className={dmSans.variable}>
       <body className="antialiased bg-[#F5F5F5]">
@@ -69,6 +87,7 @@ export default async function RootLayout({
           activities={activities}
           relatedPackagesMap={relatedPackagesMap} 
           contactInfo={ContactInfo}
+         relatedActivityPackagesMap={relatedActivityPackagesMap}
         />
         {children}
         <Footer destinations={destinations.slice(0, 5)} />

@@ -52,7 +52,7 @@ const TestimonialList: React.FC<TestimonialListProps> = ({
   testimonialData,
   className,
 }) => (
-  <div className={`flex gap-5 flex-wrap justify-center ${className ?? ""}`}>
+  <div className={`flex gap-5 flex-wrap justify-start ${className ?? ""}`}>
     {testimonialData.map((item, idx) => (
       <TestimonialCard key={idx} {...item} />
     ))}

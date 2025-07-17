@@ -4,6 +4,7 @@ import React from "react";
 
 export default async function ReviewsPage() {
   const reviewsData: APIResponse<any[]> = await fetchAPI({ endpoint: "reviews" });
+  
 
   const transformedData = Array.isArray(reviewsData.data)
     ? reviewsData.data.map((review) => ({

@@ -9,23 +9,69 @@ import {
   FaCog,
   FaSignOutAlt,
   FaChevronRight,
+  FaChevronDown,
   FaChartLine,
   FaBox,
   FaWallet,
   FaUserFriends,
   FaStar,
   FaInbox,
-  FaUser
+  FaUser,
 } from "react-icons/fa";
 import Logo from "@/components/atoms/Logo";
 
-const Sidebar = ({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen: (open: boolean) => void }) => {
+const Sidebar = ({
+  isOpen,
+  setIsOpen,
+}: {
+  isOpen: boolean;
+  setIsOpen: (open: boolean) => void;
+}) => {
   const router = useRouter();
+  const [openMenu, setOpenMenu] = useState<string | null>(null);
 
   const handleLogout = () => {
-    Cookies.remove("token"); // Remove correct token from cookies
-    router.push("/login"); // Redirect to login page
+    Cookies.remove("token");
+    router.push("/login");
   };
+
+  const menuItems = [
+    { icon: FaTachometerAlt, text: "Dashboard", link: "/dashboard" },
+    { icon: FaInbox, text: "Bookings", link: "/dashboard/bookings" },
+    { icon: FaUsers, text: "Destinations", link: "/dashboard/customise-destinations" },
+    { icon: FaWallet, text: "Blog Collection", link: "/dashboard/customise-blogs" },
+    {
+      icon: FaChartLine,
+      text: "Contact Form",
+      link: "/dashboard/contact-form",
+      submenu: [
+        {
+          icon: FaChartLine,
+          text: "Contact Messages",
+          link: "/dashboard/contact-form/contact",
+        },
+        {
+          icon: FaUser,
+          text: "Private Trip",
+          link: "/dashboard/contact-form/private-trips",
+        },
+      ],
+    },
+    { icon: FaBox, text: "Activities", link: "/dashboard/customise-activities" },
+    {
+      icon: FaChartLine,
+      text: "Testimonaials & Reviews",
+      link: "/dashboard/testimonial-reviews",
+      submenu: [
+        { icon: FaStar, text: "Testimonials", link: "/dashboard/testimonial-reviews/customise-testimonials" },
+        { icon: FaCog, text: "Reviews", link: "/dashboard/testimonial-reviews/reviews" },
+      ],
+    },
+   
+    { icon: FaUserFriends, text: "Team", link: "/dashboard/customise-team" },
+    
+    { icon: FaCog, text: "Settings", link: "/dashboard/settings" },
+  ];
 
   return (
     <aside
@@ -34,12 +80,9 @@ const Sidebar = ({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen: (open: boo
       } md:translate-x-0 z-50 shadow-xl`}
     >
       <div className="flex flex-col h-full">
-        {/* Logo and Close Button for mobile */}
+        {/* Logo and Close */}
         <div className="mb-10 px-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Logo/>
-          </div>
-          {/* Close button only on mobile */}
+          <Logo />
           <button
             className="md:hidden text-white text-2xl ml-4"
             onClick={() => setIsOpen(false)}
@@ -50,32 +93,54 @@ const Sidebar = ({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen: (open: boo
 
         {/* Navigation */}
         <nav className="space-y-1 flex-1">
-          {[
-            { icon: FaTachometerAlt, text: "Dashboard", link: "/dashboard" },
-            { icon: FaInbox, text: "Bookings", link: "/dashboard/bookings" },
-            { icon: FaUsers, text: "Destinations", link: "/dashboard/customise-destinations" },
-            { icon: FaWallet, text: "Blog Collection", link: "/dashboard/customise-blogs" },
-            { icon: FaChartLine, text: "Contact Form", link: "/dashboard/contact" },
-            { icon: FaUser, text: "Private Trip", link: "/dashboard/private-trips" },
-            { icon: FaBox, text: "Activities", link: "/dashboard/customise-activities" },
-            { icon: FaStar, text: "Testimonials", link: "/dashboard/customise-testimonials" },
-            { icon: FaUserFriends, text: " Team", link: "/dashboard/customise-team" },
-            { icon: FaCog, text: "Reviews", link: "/dashboard/reviews" },
-            { icon: FaCog, text: "Settings", link: "/dashboard/settings" },
-           
+          {menuItems.map(({ icon: Icon, text, link, submenu }, index) => (
+            <div key={index}>
+              <button
+                onClick={() => {
+                  if (submenu) {
+                    setOpenMenu(openMenu === text ? null : text);
+                  } else {
+                    router.push(link);
+                  }
+                }}
+                className="w-full flex items-center justify-between px-4 py-3 rounded-lg hover:bg-slate-800/50 transition-all duration-200 group border-l-4 border-transparent hover:border-blue-400 text-left"
+              >
+                <div className="flex items-center space-x-3">
+                  <Icon className="text-lg text-slate-300 group-hover:text-blue-400 transition-colors" />
+                  <span className="text-slate-300 group-hover:text-white font-medium">
+                    {text}
+                  </span>
+                </div>
+                {submenu ? (
+                  openMenu === text ? (
+                    <FaChevronDown className="text-xs text-slate-500 group-hover:text-blue-400 transition-colors" />
+                  ) : (
+                    <FaChevronRight className="text-xs text-slate-500 group-hover:text-blue-400 transition-colors" />
+                  )
+                ) : (
+                  <FaChevronRight className="invisible" />
+                )}
+              </button>
 
-          ].map(({ icon: Icon, text, link }, index) => (
-            <Link
-              key={index}
-              href={link}
-              className="flex items-center justify-between px-4 py-3 rounded-lg hover:bg-slate-800/50 transition-all duration-200 group border-l-4 border-transparent hover:border-blue-400"
-            >
-              <div className="flex items-center space-x-3">
-                <Icon className="text-lg text-slate-300 group-hover:text-blue-400 transition-colors" />
-                <span className="text-slate-300 group-hover:text-white font-medium">{text}</span>
-              </div>
-              <FaChevronRight className="text-xs text-slate-500 group-hover:text-blue-400 transition-colors" />
-            </Link>
+              {/* Submenu Items */}
+             {submenu && openMenu === text && (
+  <div className="mt-1 space-y-1">
+    {submenu.map(({ icon: SubIcon, text: subText, link: subLink }, subIdx) => (
+      <Link
+        key={subIdx}
+        href={subLink}
+        className="flex items-center justify-between px-4 py-3 rounded-lg hover:bg-slate-800/50 transition-all duration-200 group border-l-4 border-transparent hover:border-blue-400 ml-4"
+      >
+        <div className="flex items-center space-x-3">
+          <SubIcon className="text-lg text-slate-300 group-hover:text-blue-400 transition-colors" />
+          <span className="text-slate-300 group-hover:text-white font-base text-sm">{subText}</span>
+        </div>
+        
+      </Link>
+    ))}
+  </div>
+)}
+            </div>
           ))}
         </nav>
 
@@ -84,13 +149,11 @@ const Sidebar = ({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen: (open: boo
           <button
             onClick={handleLogout}
             className="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-slate-800/50 transition-colors duration-200 w-full text-left cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-400"
-            tabIndex={0}
           >
             <FaSignOutAlt className="text-slate-400" />
             <span className="text-slate-300 font-medium">Logout</span>
           </button>
         </div>
-
       </div>
     </aside>
   );
