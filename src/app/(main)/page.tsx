@@ -90,7 +90,7 @@ export default async function Home() {
   const packagesdata = await fetchAPI<TourPackages>({ endpoint: "tour/tour-packages" });
   const activitiesdata = await fetchAPI<Activities>({ endpoint: "category/activities" });
   const activities: Activities = activitiesdata?.data || [];
-const testimonialData = await fetchAPI({ endpoint: "testimonials" })) || [];
+const testimonialData = await fetchAPI({ endpoint: "testimonials" }) || [];
 
   // Filter packages to exclude activities and destinations
  const filteredPackages = packagesdata?.data?.tours?.filter((card) => {

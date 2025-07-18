@@ -27,18 +27,18 @@ const MidNavbar = ({ tabs, isBlogPage = false, blogCategories = [] }: MidNavbarP
   const navListRef = useRef<HTMLDivElement | null>(null);
   const [search, setSearch] = useState('');
 
-  // Convert all tabs to { label, value } format
+  // Normalize tabs
   const normalizedTabs: BlogTab[] = tabs.map(tab =>
     typeof tab === 'string'
       ? { label: tab.replace('-', ' '), value: tab.replace(/\s+/g, '-').replace('/', '-') }
       : tab
   );
 
-  // ScrollSpy hook only for itinerary pages
+  // ScrollSpy for non-blog pages
   const scrollIds = normalizedTabs.map(t => ({ id: t.value }));
   const { activeSection: activeTab, scrollToSection: setActiveTab } = useScrollSpy(scrollIds);
 
-  // Scroll into view on load (mobile)
+  // Scroll nav bar into view on mobile load
   useEffect(() => {
     if (navRef.current) {
       setTimeout(() => {
@@ -47,8 +47,12 @@ const MidNavbar = ({ tabs, isBlogPage = false, blogCategories = [] }: MidNavbarP
     }
   }, []);
 
+  // Determine active tab
+  const activeKey = isBlogPage
+    ? activeCategory
+    : activeTab || normalizedTabs[0]?.value;
+
   // Scroll active tab into center
-  const activeKey = isBlogPage ? activeCategory : activeTab;
   useEffect(() => {
     if (navListRef.current && activeKey) {
       const activeElement = document.getElementById(`nav-${activeKey}`);
@@ -64,7 +68,18 @@ const MidNavbar = ({ tabs, isBlogPage = false, blogCategories = [] }: MidNavbarP
     }
   }, [activeKey]);
 
-  // Click handler
+  // Auto scroll to first tab section on load (non-blog pages)
+  useEffect(() => {
+    if (!isBlogPage && !activeTab && normalizedTabs[0]?.value) {
+      const el = document.getElementById(normalizedTabs[0].value);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        setActiveTab(normalizedTabs[0].value);
+      }
+    }
+  }, [activeTab, isBlogPage, normalizedTabs, setActiveTab]);
+
+  // Tab click handler
   const handleTabClick = (value: string) => {
     if (isBlogPage) {
       const current = new URLSearchParams(searchParams?.toString());

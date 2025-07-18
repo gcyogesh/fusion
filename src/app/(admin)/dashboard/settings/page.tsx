@@ -96,7 +96,7 @@ export default function SettingsPage() {
           const data = res?.data;
           if (data) {
             setTermsContent(data || "");
-            setTermsId(data._id || "");
+            setTermsId(data?._id || "");
           }
         })
         .catch(() => {

@@ -223,12 +223,13 @@ export default async function Page({ params }: { params: { id: string } }) {
                </ul>
             </div>
              {/* Itinerary */}
-            <div id="Itinerary" className="space-y-6 py-10">
+            <div className="space-y-6 py-10">
+              
               <div className="flex flex-row gap-2">
                 <Image src="/images/iterate/itenerylogo.svg" alt="Itinerary" width={40} height={2} />
                 <TextHeader text={`${packages.title} Itinerary`} align="start" size="large" width={855}  />
               </div>
-              <ItinerarySection itinerary={packages.itinerary} />
+             <div  id="Itinerary"><ItinerarySection itinerary={packages.itinerary} /></div> 
 
               <div id="Includes-Excludes" className="w-auto md:w-[875px] h-[1px] bg-black opacity-20 mt-2 mb-6" />
             {/* iclusion& exclusions */}

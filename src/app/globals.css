@@ -2,7 +2,7 @@
 
 @layer base {
   :root {
-    --color-primary: #F28A15;
+    --color-primary: rgb(242, 138, 21);
     --font-dm-sans: 'DM Sans', sans-serif;
 
     /* Global Spacing System */

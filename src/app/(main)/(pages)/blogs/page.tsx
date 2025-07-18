@@ -1,19 +1,16 @@
-import React from 'react';
+'use client';
+
+import React, { useEffect, useState, Suspense } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import HeroBanner, { HeroBannerData } from '@/components/organisms/Banner/HeroBanner';
+import HeroBanner from '@/components/organisms/Banner/HeroBanner';
 import { fetchAPI } from '@/utils/apiService';
 import TextDescription from '@/components/atoms/description';
 import ImageDisplay from '@/components/atoms/ImageCard';
-import Breadcrumb from "@/components/atoms/breadcrumb";
+import Breadcrumb from '@/components/atoms/breadcrumb';
 import Pagination from '@/components/atoms/pagination';
 import MidNavbar from '@/components/organisms/MidNavBar';
-
-type Props = {
-  searchParams?: {
-    page?: string;
-    category?: string;
-  };
-};
+import { HeroBannerData } from '@/components/organisms/Banner/HeroBanner';
 
 interface BlogCategory {
   _id: string;
@@ -31,62 +28,46 @@ interface Blog {
   isFeatured: boolean;
   slug: string;
   createdAt: string;
-  updatedAt: string;
-  __v: number;
 }
 
-interface BlogAPIResponse {
-  success: boolean;
-  message: string;
-  data: Blog[];
-}
+const BlogsContent = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const currentPage = parseInt(searchParams.get('page') || '1', 10);
+  const selectedCategoryId = searchParams.get('category') || 'all';
 
-interface Category {
-  _id: string;
-  name: string;
-  slug: string;
-  createdAt: string;
-  updatedAt: string;
-  __v: number;
-}
+  const [heroData, setHeroData] = useState<HeroBannerData | null>(null);
+  const [categories, setCategories] = useState<BlogCategory[]>([]);
+  const [blogs, setBlogs] = useState<Blog[]>([]);
 
-interface CategoryAPIResponse {
-  success: boolean;
-  message: string;
-  data: Category[];
-}
+  useEffect(() => {
+    const fetchInitial = async () => {
+      const [heroRes, catRes] = await Promise.all([
+        fetchAPI({ endpoint: 'herobanner/blog' }),
+        fetchAPI({ endpoint: 'category/blogs' }),
+      ]);
+      setHeroData(heroRes.data);
+      setCategories(catRes.data);
+    };
+    fetchInitial();
+  }, []);
 
-interface HeroBannerAPIResponse {
-  success: boolean;
-  message: string;
-  data: HeroBannerData;
-}
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      const res =
+        selectedCategoryId === 'all'
+          ? await fetchAPI({ endpoint: 'blogs' })
+          : await fetchAPI({ endpoint: `blogs/category/${selectedCategoryId}` });
+      setBlogs(res.data || []);
+    };
+    fetchBlogs();
+  }, [selectedCategoryId]);
 
-const Blogs = async ({ searchParams }: Props) => {
-  const currentPage = parseInt(searchParams?.page || '1', 10);
-  const selectedCategoryId = searchParams?.category || 'all';
-
-  const [heroData, categoriesData] = await Promise.all([
-    fetchAPI({ endpoint: "herobanner/blog" }) as Promise<HeroBannerAPIResponse>,
-    fetchAPI({ endpoint: "category/blogs" }) as Promise<CategoryAPIResponse>
-  ]);
-
-  const categories = categoriesData?.data || [];
-
-  // Prepare blogTabs with { label, value }
   const blogTabs = [
-    { label: "All Blogs", value: "all" },
-    ...categories.map((cat) => ({ label: cat.name, value: cat._id }))
+    { label: 'All Blogs', value: 'all' },
+    ...categories.map((cat) => ({ label: cat.name, value: cat._id })),
   ];
 
-  //  filtering fetch logic
-  const blogsData = selectedCategoryId === 'all'
-    ? await fetchAPI({ endpoint: "blogs" }) as BlogAPIResponse
-    : await fetchAPI({ endpoint: `blogs/category/${selectedCategoryId}` }) as BlogAPIResponse;
-
-  const blogs = blogsData?.data || [];
-
-  // Pagination
   const blogsPerPage = 3;
   const totalPages = Math.ceil(blogs.length / blogsPerPage);
   const startIndex = (currentPage - 1) * blogsPerPage;
@@ -94,8 +75,15 @@ const Blogs = async ({ searchParams }: Props) => {
 
   return (
     <>
-      <Breadcrumb currentnavlink="Blogs" />
-      <HeroBanner herodata={heroData?.data} />
+      <Breadcrumb
+        currentnavlink={`Blogs / ${
+          selectedCategoryId === 'all'
+            ? 'All'
+            : categories.find((cat) => cat._id === selectedCategoryId)?.name || 'Unknown'
+        }`}
+      />
+
+      {heroData && <HeroBanner herodata={heroData} />}
 
       <MidNavbar tabs={blogTabs} isBlogPage={true} />
 
@@ -104,7 +92,7 @@ const Blogs = async ({ searchParams }: Props) => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {currentBlogs[0] && (
               <div className="lg:col-span-2">
-              <Link scroll={false} href={`/blogs/${currentBlogs[0].slug}`}>
+                <Link scroll={false} href={`/blogs/${currentBlogs[0].slug}`}>
                   <div className="aspect-video w-full cursor-pointer">
                     <ImageDisplay
                       src={currentBlogs[0].imageUrl}
@@ -115,7 +103,10 @@ const Blogs = async ({ searchParams }: Props) => {
                     />
                     <div className="mt-3">
                       <h1 className="text-xl font-bold">{currentBlogs[0].subtitle}</h1>
-                      <TextDescription text={currentBlogs[0].description} className="mt-2 line-clamp-5" />
+                      <TextDescription
+                        text={currentBlogs[0].description}
+                        className="mt-2 line-clamp-5"
+                      />
                     </div>
                   </div>
                 </Link>
@@ -158,6 +149,14 @@ const Blogs = async ({ searchParams }: Props) => {
         />
       </section>
     </>
+  );
+};
+
+const Blogs = () => {
+  return (
+    <Suspense fallback={<div className="text-center py-20">Loading blogs...</div>}>
+      <BlogsContent />
+    </Suspense>
   );
 };
 
