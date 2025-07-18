@@ -17,6 +17,7 @@ import Image from 'next/image';
 import React from 'react';
 import PricingCard from '@/components/atoms/pricingcard';
 import ReviewSection from '@/components/organisms/testimonial/review';
+import DownloadPdfButton from '@/components/atoms/pdfbutton';
 const trekTabs = [
   "Overview",
   "Itinerary",
@@ -111,7 +112,7 @@ export default async function Page({ params }: { params: { id: string } }) {
 
   return (
     <>
-      <Breadcrumb currentnavlink="packagess" />
+      <Breadcrumb currentnavlink={`Activities / ${packages?.title || "Destination"}`} />
       <section className="mx-auto max-w-7xl mt-5 px-4 md:px-6">
         <span className="flex items-center gap-2 text-[#7e7e7e] text-xl font-medium mb-4">
           <MapPin className="w-6 h-6" />
@@ -343,18 +344,9 @@ export default async function Page({ params }: { params: { id: string } }) {
           <aside className="w-auto px-6 mb-6 md:mb-0 lg:mb-0 md:px-0 lg:px-0 ">
             <div className="sticky top-24 w-full">
               <PricingCard basePrice={packages.basePrice} />
-                  <div className=' mt-5  '>
-
-        <Link href={`tour/tour-packages/${packages._id}/download-pdf`} target="_blank" rel="noopener noreferrer">
-         <div className="px-15">
-          <Button 
-            text='Download PDF'
-            variant='secondary'
-            className="bg-white hover:text-white"
-          />
-          </div>
-        </Link>
-              </div>
+                  <div className="mt-5">
+      <DownloadPdfButton packageId={packages._id} />
+    </div>
             </div>
           </aside>
         </div>

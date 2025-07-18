@@ -10,6 +10,7 @@ import {
   FiRefreshCw,
   FiHelpCircle,
   FiMessageCircle,
+  FiFileText,
 } from "react-icons/fi";
 import { MdEdit } from "react-icons/md";
 import Button from "@/components/atoms/button";
@@ -27,7 +28,7 @@ const HERO_PAGES = [
   { label: "Destination", value: "destinations" },
 ];
 
-type TabType = "general" | "faq" | "password";
+type TabType = "general" | "faq" | "password" | "terms";
 
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState<TabType>("general");
@@ -48,9 +49,15 @@ export default function SettingsPage() {
   const [heroSaving, setHeroSaving] = useState(false);
   const [heroError, setHeroError] = useState("");
   const [heroSuccess, setHeroSuccess] = useState("");
+  
+  // Terms & Conditions state
+  const [termsContent, setTermsContent] = useState("");
+  const [termsId, setTermsId] = useState("");
+  const [termsLoading, setTermsLoading] = useState(false);
+  const [termsSaving, setTermsSaving] = useState(false);
 
   const [logoUrls, setLogoUrls] = useState<string[]>(["", ""]);
-  const [logoFiles, setLogoFiles] = useState<(File | null)[]>([null, null]);
+  const [logoFiles, setLogoFiles] = useState<(File | null)>([null, null]);
 
   // Contact details state
   const [contactData, setContactData] = useState({
@@ -80,6 +87,64 @@ export default function SettingsPage() {
     message: string;
   }>({ show: false, type: 'success', message: '' });
 
+  // Fetch terms data when tab is activated
+  useEffect(() => {
+    if (activeTab === "terms") {
+      setTermsLoading(true);
+      fetchAPI({ endpoint: "term" })
+        .then((res) => {
+          const data = res?.data;
+          if (data) {
+            setTermsContent(data || "");
+            setTermsId(data._id || "");
+          }
+        })
+        .catch(() => {
+          setAlert({
+            show: true,
+            type: "error",
+            message: "Failed to fetch Terms & Conditions.",
+          });
+        })
+        .finally(() => setTermsLoading(false));
+    }
+  }, [activeTab]);
+
+  // Save terms handler
+  const handleSaveTerms = async () => {
+    if (!termsContent.trim()) {
+      setAlert({
+        show: true,
+        type: "warning",
+        message: "Terms & Conditions content cannot be empty.",
+      });
+      return;
+    }
+
+    setTermsSaving(true);
+    try {
+      await fetchAPI({
+        endpoint: "term",
+        method: "POST",
+        data: { _id: termsId, content: termsContent },
+      });
+      setAlert({
+        show: true,
+        type: "success",
+        message: "Terms & Conditions saved successfully!",
+      });
+    } catch (e: any) {
+      setAlert({
+        show: true,
+        type: "error",
+        message: e.message || "Failed to save Terms & Conditions.",
+      });
+    } finally {
+      setTermsSaving(false);
+    }
+  };
+
+  // Fetch hero data
   useEffect(() => {
     if (activeTab === "general") {
       setHeroLoading(true);
@@ -104,6 +169,7 @@ export default function SettingsPage() {
     }
   }, [selectedHeroPage, activeTab]);
 
+  // Fetch logos
   useEffect(() => {
     if (activeTab === "general") {
       fetchAPI({ endpoint: "logo" }).then((res: any) => {
@@ -146,6 +212,7 @@ export default function SettingsPage() {
     }
   }, [activeTab]);
 
+  // Fetch FAQs
   useEffect(() => {
     if (activeTab === "faq") {
       setFaqLoading(true);
@@ -160,6 +227,7 @@ export default function SettingsPage() {
     }
   }, [activeTab]);
 
+  // General tab handlers
   const handleHeroChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -202,7 +270,6 @@ export default function SettingsPage() {
         }
       });
     } else if (name === 'phones') {
-      // Handle phones as comma-separated values
       const phoneArray = value.split(',').map(phone => phone.trim());
       setContactData({
         ...contactData,
@@ -213,72 +280,71 @@ export default function SettingsPage() {
     }
   };
 
- const handleSaveHero = async () => {
-  // Basic validation
-  if (
-    !heroData.title.trim() ||
-    !heroData.subTitle.trim() ||
-    !heroData.description.trim() ||
-    !heroData.buttonText.trim() ||
-    !heroData.buttonLink.trim()
-  ) {
-    setAlert({
-      show: true,
-      type: 'warning',
-      message: 'Please fill in all required hero section fields.',
-    });
-    return;
-  }
-
-  setHeroSaving(true);
-  try {
-    let bannerImageUrl = heroData.bannerImage;
-
-    if (heroImageFile) {
-      const formData = new FormData();
-      formData.append('file', heroImageFile);
-
-      const uploadRes: any = await fetchAPI({
-        endpoint: 'herobanner',
-        method: 'POST',
-        data: formData,
+  // Save handlers
+  const handleSaveHero = async () => {
+    if (
+      !heroData.title.trim() ||
+      !heroData.subTitle.trim() ||
+      !heroData.description.trim() ||
+      !heroData.buttonText.trim() ||
+      !heroData.buttonLink.trim()
+    ) {
+      setAlert({
+        show: true,
+        type: 'warning',
+        message: 'Please fill in all required hero section fields.',
       });
-
-      bannerImageUrl = uploadRes?.url || bannerImageUrl;
+      return;
     }
 
-    const res = await fetchAPI({
-      endpoint: `herobanner/${selectedHeroPage}`,
-      method: 'POST',
-      data: {
-        _id: heroData._id,
-        page: selectedHeroPage,
-        title: heroData.title,
-        subTitle: heroData.subTitle,
-        description: heroData.description,
-        buttonText: heroData.buttonText,
-        buttonLink: heroData.buttonLink,
-        bannerImage: bannerImageUrl,
-      },
-    });
+    setHeroSaving(true);
+    try {
+      let bannerImageUrl = heroData.bannerImage;
 
-    setAlert({
-      show: true,
-      type: 'success',
-      message: 'Hero banner updated successfully!',
-    });
-    setHeroImageFile(null);
-  } catch (e: any) {
-    setAlert({
-      show: true,
-      type: 'error',
-      message: e.message || 'Failed to update hero banner.',
-    });
-  } finally {
-    setHeroSaving(false);
-  }
-};
+      if (heroImageFile) {
+        const formData = new FormData();
+        formData.append('file', heroImageFile);
 
+        const uploadRes: any = await fetchAPI({
+          endpoint: 'herobanner',
+          method: 'POST',
+          data: formData,
+        });
+
+        bannerImageUrl = uploadRes?.url || bannerImageUrl;
+      }
+
+      await fetchAPI({
+        endpoint: `herobanner/${selectedHeroPage}`,
+        method: 'POST',
+        data: {
+          _id: heroData._id,
+          page: selectedHeroPage,
+          title: heroData.title,
+          subTitle: heroData.subTitle,
+          description: heroData.description,
+          buttonText: heroData.buttonText,
+          buttonLink: heroData.buttonLink,
+          bannerImage: bannerImageUrl,
+        },
+      });
+
+      setAlert({
+        show: true,
+        type: 'success',
+        message: 'Hero banner updated successfully!',
+      });
+      setHeroImageFile(null);
+    } catch (e: any) {
+      setAlert({
+        show: true,
+        type: 'error',
+        message: e.message || 'Failed to update hero banner.',
+      });
+    } finally {
+      setHeroSaving(false);
+    }
+  };
 
   const handleSaveLogos = async () => {
     if (!logoFiles[0] || !logoFiles[1]) {
@@ -287,7 +353,6 @@ export default function SettingsPage() {
     }
     try {
       const formData = new FormData();
-      // Based on your backend, it expects files with field name 'urls'
       formData.append('urls', logoFiles[0]);
       formData.append('urls', logoFiles[1]);
       
@@ -312,59 +377,58 @@ export default function SettingsPage() {
     }
   };
 
- const handleSaveContact = async () => {
-  // Basic validation
-  if (
-    !contactData.address.trim() ||
-    !contactData.phone.trim() ||
-    !contactData.email.trim()
-  ) {
-    setAlert({
-      show: true,
-      type: 'warning',
-      message: 'Address, primary phone, and email are required.',
-    });
-    return;
-  }
+  const handleSaveContact = async () => {
+    if (
+      !contactData.address.trim() ||
+      !contactData.phone.trim() ||
+      !contactData.email.trim()
+    ) {
+      setAlert({
+        show: true,
+        type: 'warning',
+        message: 'Address, primary phone, and email are required.',
+      });
+      return;
+    }
 
-  setContactSaving(true);
-  try {
-    const res = await fetchAPI({
-      endpoint: 'info',
-      method: 'POST',
-      data: {
-        _id: contactData._id,
-        address: contactData.address,
-        phone: contactData.phone,
-        email: contactData.email,
-        phones: contactData.phones,
-        whatsappNumber: contactData.whatsappNumber,
-        socialLinks: contactData.socialLinks,
-      },
-    });
+    setContactSaving(true);
+    try {
+      await fetchAPI({
+        endpoint: 'info',
+        method: 'POST',
+        data: {
+          _id: contactData._id,
+          address: contactData.address,
+          phone: contactData.phone,
+          email: contactData.email,
+          phones: contactData.phones,
+          whatsappNumber: contactData.whatsappNumber,
+          socialLinks: contactData.socialLinks,
+        },
+      });
 
-    setAlert({
-      show: true,
-      type: 'success',
-      message: 'Contact details updated successfully!',
-    });
-  } catch (e: any) {
-    setAlert({
-      show: true,
-      type: 'error',
-      message: e.message || 'Failed to update contact details.',
-    });
-  } finally {
-    setContactSaving(false);
-  }
-};
+      setAlert({
+        show: true,
+        type: 'success',
+        message: 'Contact details updated successfully!',
+      });
+    } catch (e: any) {
+      setAlert({
+        show: true,
+        type: 'error',
+        message: e.message || 'Failed to update contact details.',
+      });
+    } finally {
+      setContactSaving(false);
+    }
+  };
 
+  // Tab rendering functions
   const faqColumns = [
     { key: "question", label: "Question", type: "text", accessor: "question" as keyof any },
     { key: "answer", label: "Answer", type: "textarea", accessor: "answer" as keyof any },
   ];
 
-  // Map FAQ data to ensure 'question' field is present (fallback to 'title')
   const mappedFaqData = faqData.map(faq => ({
     ...faq,
     question: faq.question || faq.title || '',
@@ -682,10 +746,56 @@ export default function SettingsPage() {
   );
 
   const renderPasswordTab = () => (
-  <section className="w-full flex justify-center">
-    <PasswordChangeComponent />
-  </section>
-);
+    <section className="w-full flex justify-center">
+      <PasswordChangeComponent />
+    </section>
+  );
+
+  const renderTermsTab = () => (
+    <section className="bg-white rounded-xl shadow-md border border-gray-200 w-full px-8 md:px-16 py-12">
+      <div className="flex items-center gap-2 mb-6">
+        <FiFileText className="w-6 h-6 text-primary" />
+        <h2 className="text-2xl font-bold text-gray-900">Terms & Conditions</h2>
+      </div>
+      {alert.show && (
+        <Alert
+          show={alert.show}
+          type={alert.type}
+          message={alert.message}
+          onConfirm={() => setAlert({ ...alert, show: false })}
+        />
+      )}
+      {termsLoading ? (
+        <div className="flex items-center justify-center py-8">
+          <div className="flex items-center gap-2">
+            <Loader />
+            <span className="text-gray-600 text-sm">Loading Terms & Conditions...</span>
+          </div>
+        </div>
+      ) : (
+        <>
+          <p className="text-gray-500 text-base mb-4">
+            You can update your Terms & Conditions content here.
+          </p>
+          <textarea
+            rows={10}
+            value={termsContent}
+            onChange={(e) => setTermsContent(e.target.value)}
+            placeholder="Write or paste your Terms & Conditions..."
+            className="w-full mt-4 border border-gray-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-primary outline-none text-base bg-white transition hover:bg-gray-50"
+          />
+          <div className="flex justify-start mt-4">
+            <Button
+              text={termsSaving ? "Saving..." : "Save Terms & Conditions"}
+              onClick={handleSaveTerms}
+              disabled={termsSaving}
+              className="px-8 py-2 rounded-lg shadow-sm text-base font-semibold bg-primary text-white transition hover:bg-primary/90"
+            />
+          </div>
+        </>
+      )}
+    </section>
+  );
 
   return (
     <div className="min-h-screen bg-neutral-100 flex flex-col">
@@ -715,22 +825,33 @@ export default function SettingsPage() {
             FAQ
           </button>
           <button 
-    className={`pb-3 font-semibold text-base focus:outline-none transition-colors ${
-      activeTab === "password" 
-        ? "text-primary border-b-2 border-primary" 
-        : "text-gray-500 hover:text-gray-700"
-    }`}
-    onClick={() => setActiveTab("password")}
-  >
-    Password
-  </button>
+            className={`pb-3 font-semibold text-base focus:outline-none transition-colors ${
+              activeTab === "password" 
+                ? "text-primary border-b-2 border-primary" 
+                : "text-gray-500 hover:text-gray-700"
+            }`}
+            onClick={() => setActiveTab("password")}
+          >
+            Password
+          </button>
+          <button
+            className={`pb-3 font-semibold text-base focus:outline-none transition-colors ${
+              activeTab === "terms"
+                ? "text-primary border-b-2 border-primary"
+                : "text-gray-500 hover:text-gray-700"
+            }`}
+            onClick={() => setActiveTab("terms")}
+          >
+            Terms & Conditions
+          </button>
         </nav>
       </header>
-     <main className="flex-1 w-full flex flex-col items-center justify-start py-10 px-0">
-  {activeTab === "general" && renderGeneralTab()}
-  {activeTab === "faq" && renderFaqTab()}
-  {activeTab === "password" && renderPasswordTab()}
-</main>
+      <main className="flex-1 w-full flex flex-col items-center justify-start py-10 px-0">
+        {activeTab === "general" && renderGeneralTab()}
+        {activeTab === "faq" && renderFaqTab()}
+        {activeTab === "password" && renderPasswordTab()}
+        {activeTab === "terms" && renderTermsTab()}
+      </main>
     </div>
   );
 }

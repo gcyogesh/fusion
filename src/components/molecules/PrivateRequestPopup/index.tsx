@@ -156,7 +156,7 @@ const PrivateRequestPopup: React.FC<PrivateRequestPopupProps> = ({ isOpen, onClo
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0  bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-3xl shadow-2xl w-full max-w-4xl max-h-[100vh] overflow-y-auto">
         <div className="bg-[#0E334F] text-white p-6 rounded-t-3xl flex justify-between items-center">
           <h2 className="text-2xl font-semibold">Private Trip Request</h2>

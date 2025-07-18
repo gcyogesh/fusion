@@ -25,49 +25,7 @@ import { ReactNode} from "react";
 import StatCard from "@/components/molecules/StatCard";
 import FAQAccordion from "@/components/organisms/faq";
 import TestimonialsSection from "@/components/organisms/testimonial/arrowtestimonial"
-
-
-interface DestinationCard {
-  _id: string;
-  title: string;
-  description: string;
-  gallery: string[];
-  location: {
-    city: string;
-    country: string;
-  };
-  duration: {
-    days: number;
-  };
-  overview: string;
-  basePrice: number;
-  type?: string;
-  category?: string;
-}
-
-interface DestinationItem {
-  _id: string;
-  title: string;
-  subtitle: string;
-  slug: string;
-  imageUrls: string[];
-  totalTrips: number;
-}
-
-interface DestinationData {
-  data: DestinationCard[];
-}
-
-interface Activity {
-  _id: string;
-  title: string;
-  subtitle: string;
-  description: string;
-  image: string;
-  slug: string;
-  price?: number;
-}
-
+import { Destination , Activities  , TourPackages } from "@/types";
 const stats = [
   {
     iconSrc: "/images/stat1.png",
@@ -129,10 +87,10 @@ export default async function Home() {
   const partnersdata: any = await fetchAPI({ endpoint: "partners" });
   const blogsdata: any = await fetchAPI({ endpoint: "blogs" });
   const destinationdata: any = await fetchAPI({ endpoint: "destinations" });
-  const packagesdata: DestinationData = await fetchAPI({ endpoint: "tour/tour-packages" });
-  const acctivitiesdata: any = await fetchAPI({ endpoint: "category/activities" });
-  const activities: Activity[] = acctivitiesdata?.data || [];
-const testimonialData = (await fetchAPI({ endpoint: "testimonials" })) || [];
+  const packagesdata = await fetchAPI<TourPackages>({ endpoint: "tour/tour-packages" });
+  const activitiesdata = await fetchAPI<Activities>({ endpoint: "category/activities" });
+  const activities: Activities = activitiesdata?.data || [];
+const testimonialData = await fetchAPI({ endpoint: "testimonials" })) || [];
 
   // Filter packages to exclude activities and destinations
  const filteredPackages = packagesdata?.data?.tours?.filter((card) => {

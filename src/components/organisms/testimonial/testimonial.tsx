@@ -11,15 +11,7 @@ import useEmblaCarousel from 'embla-carousel-react';
 import { FaStar } from 'react-icons/fa';
 import TextHeader from '@/components/atoms/headings';
 import TextDescription from '@/components/atoms/description';
-
-export interface TestimonialCardProps {
-  message: string;
-  name: string;
-  position: string;
-  profileImage: string;
-  rating: number;
-}
-
+import { TestimonialCardProps } from './testimonialList';
 const TestimonialCard: React.FC<TestimonialCardProps> = ({
   message,
   name,

@@ -10,7 +10,7 @@ import TextHeader from '@/components/atoms/headings';
 
 
 function ReviewSection({ tourId }: { tourId: string }) {
-  const [reviews, setReviews] = useState([]);
+  const [reviews, setReviews] = useState<any>({});
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState({ name: '', email: '', rating: 5, comment: '' });
   const [submitting, setSubmitting] = useState(false);
@@ -21,7 +21,8 @@ function ReviewSection({ tourId }: { tourId: string }) {
     setLoading(true);
     try {
       const res = await fetchAPI({ endpoint: `reviews?tour=${tourId}` });
-      setReviews(res.data || []);
+
+    setReviews(res?.data)
     } catch (e) {
       setError('Failed to load reviews.');
     } finally {

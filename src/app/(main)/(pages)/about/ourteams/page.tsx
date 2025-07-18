@@ -4,7 +4,7 @@ import TeamList from "@/components/molecules/teamlist/page";
 
 export default async function TeamPage() {
   const teamsdata = await fetchAPI({ endpoint: "teams" });
-  const team = teamsdata.data || [];
+  const team = teamsdata?.data || [];
 
   return (
     <>

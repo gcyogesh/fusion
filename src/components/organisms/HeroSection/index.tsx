@@ -122,7 +122,7 @@ const HeroSection = ({ herodata }: { herodata: HeroData }) => {
             {description}
           </p>
 
-          <div className="flex justify-center md:justify-end gap-1">
+          {/* <div className="flex justify-center md:justify-end gap-1">
             <Button
               text={buttonText}
               onClick={() => (window.location.href = buttonLink)}
@@ -131,7 +131,7 @@ const HeroSection = ({ herodata }: { herodata: HeroData }) => {
               className="border border-white w-full h-[55px] mt-4 !px-[15px]"
               rightIcon={<ArrowIcon direction="up-right" variant="primary" size={14} />}
             />
-          </div>
+          </div> */}
         </div>
       </div>
 

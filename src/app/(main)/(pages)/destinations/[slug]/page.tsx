@@ -36,6 +36,7 @@ interface TourPackage {
   imageUrls?: string[];
 }
 
+
 interface Params {
   params: { slug: string };
 }
@@ -65,13 +66,22 @@ export default async function Page({ params }: Params) {
     })
   );
 
-  const destinationData = await fetchAPI({ endpoint: "destinations" });
-  const destinations: Destination[] = destinationData?.data || [];
+  const destinationData = await fetchAPI({ endpoint: "destinations" }) as { data: Destination[] };;
+  const destinations: Destination[] = destinationData?.data ?? [];
+
+  const herodata = {
+    _id: destination._id,
+    page: "Destination",
+    title: destination.title,
+    bannerImage: destination.imageUrls?.[0] || destination.image, // fallback to `image` if empty
+    image: "", // optional floating image, leave empty
+  };
+
 
   return (
     <>
       <Breadcrumb currentnavlink={`Destination / ${destination?.title || "Destination"}`} />
-
+      <HeroBanner herodata={herodata} />
 
 
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 py-10">
@@ -97,7 +107,7 @@ export default async function Page({ params }: Params) {
               </div>
             )}
             
-               <ImageDisplay src={destination.imageUrls[0]} variant="smallrectangle" snippet=""/>
+               {/* <ImageDisplay src={destination.imageUrls[0]} variant="smallrectangle" snippet=""/> */}
 
           </div>
 
