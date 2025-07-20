@@ -112,7 +112,7 @@ export default async function Page({ params }: { params: { id: string } }) {
 
   return (
     <>
-      <Breadcrumb currentnavlink={`Activities / ${packages?.title || "Destination"}`} />
+      <Breadcrumb currentnavlink={`Destination / ${packages?.title || "Destination"}`} />
       <section className="mx-auto max-w-7xl mt-5 px-4 md:px-6">
         <span className="flex items-center gap-2 text-[#7e7e7e] text-xl font-medium mb-4">
           <MapPin className="w-6 h-6" />

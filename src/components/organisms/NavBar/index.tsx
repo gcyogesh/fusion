@@ -41,7 +41,6 @@ interface NavbarProps {
   contactInfo: ContactInfo;
 }
 
-// Move throttle outside component to prevent recreation
 const throttle = (func: Function, limit: number) => {
   let inThrottle: boolean;
   return function (this: any, ...args: any[]) {
@@ -70,7 +69,6 @@ export default function Navbar({
 
   const pathname = usePathname();
 
-  // Memoize formatted data to prevent unnecessary recalculations
   const navLinks = useMemo(() => {
     const formattedActivities = activities.map((item) => ({
       name: item.name || item.title || "Unknown Activity",
@@ -156,7 +154,6 @@ export default function Navbar({
     ];
   }, [activities, destinations, relatedActivityPackagesMap, relatedPackagesMap]);
 
-  // Memoize navbar classes
   const navbarClasses = useMemo(() => {
     const base = "fixed top-0 left-0 w-full z-60 px-2 transition-all duration-300 ease-linear";
     const visibility = showNavbar ? "translate-y-0" : "-translate-y-full";
@@ -168,33 +165,35 @@ export default function Navbar({
     return `${base} ${visibility} ${theme}`;
   }, [showNavbar, pathname, scrollY]);
 
-  // Memoize throttled scroll handler
   const handleScroll = useMemo(
-    () => throttle(() => {
-      const currentScrollY = window.scrollY;
-      setScrollY(currentScrollY);
+    () =>
+      throttle(() => {
+        const currentScrollY = window.scrollY;
+        setScrollY(currentScrollY);
 
-      if (currentScrollY === 0) {
-        setShowNavbar(true);
-      } else if (currentScrollY > lastScrollY && currentScrollY > 100) {
-        setShowNavbar(false);
-      } else {
-        setShowNavbar(true);
-      }
+        if (currentScrollY === 0) {
+          setShowNavbar(true);
+        } else if (currentScrollY > lastScrollY && currentScrollY > 100) {
+          setShowNavbar(false);
+        } else {
+          setShowNavbar(true);
+        }
 
-      setLastScrollY(currentScrollY);
-    }, 100),
+        setLastScrollY(currentScrollY);
+      }, 100),
     [lastScrollY]
   );
 
-  // Memoize event handlers
-  const handleMouseEnter = useCallback((link: NavLink) => {
-    if (hoverTimeout) clearTimeout(hoverTimeout);
-    if (link.hasDropdown) {
-      setActiveDropdown(link);
-      setHoveredSub(link.subLinks?.[0] || null);
-    }
-  }, [hoverTimeout]);
+  const handleMouseEnter = useCallback(
+    (link: NavLink) => {
+      if (hoverTimeout) clearTimeout(hoverTimeout);
+      if (link.hasDropdown) {
+        setActiveDropdown(link);
+        setHoveredSub(link.subLinks?.[0] || null);
+      }
+    },
+    [hoverTimeout]
+  );
 
   const handleMouseLeave = useCallback(() => {
     const timeout = setTimeout(() => closeDropdown(), 150);
@@ -211,20 +210,18 @@ export default function Navbar({
   }, [hoverTimeout]);
 
   const toggleMenu = useCallback(() => {
-    setIsMenuOpen(prev => !prev);
+    setIsMenuOpen((prev) => !prev);
   }, []);
 
   const handleMenuItemClick = useCallback(() => {
     setIsMenuOpen(false);
   }, []);
 
-  // Effect for pathname changes
   useEffect(() => {
     setIsMenuOpen(false);
     closeDropdown();
   }, [pathname, closeDropdown]);
 
-  // Effect for scroll handling
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
     return () => {
@@ -240,7 +237,6 @@ export default function Navbar({
           <Logo />
         </Link>
 
-        {/* Desktop Nav */}
         <ul className="relative hidden md:flex gap-8 font-medium text-base">
           {navLinks.map((link) => (
             <li
@@ -261,7 +257,7 @@ export default function Navbar({
           ))}
         </ul>
 
-        {/* Contact Icons + Mobile Button */}
+        {/* Contact Icons */}
         <div className="flex items-center gap-4">
           {contactInfo?.whatsappNumber && (
             <Link
@@ -274,30 +270,28 @@ export default function Navbar({
             </Link>
           )}
           {contactInfo?.socialLinks?.instagram && (
-            <Link 
-              href={contactInfo.socialLinks.instagram} 
-              target="_blank" 
+            <Link
+              href={contactInfo.socialLinks.instagram}
+              target="_blank"
               rel="noopener noreferrer"
               aria-label="Instagram"
+              className="hidden md:block"
             >
               <FaInstagram className="text-white text-3xl hover:text-pink-500" />
             </Link>
           )}
           {contactInfo?.socialLinks?.facebook && (
-            <Link 
-              href={contactInfo.socialLinks.facebook} 
-              target="_blank" 
+            <Link
+              href={contactInfo.socialLinks.facebook}
+              target="_blank"
               rel="noopener noreferrer"
               aria-label="Facebook"
+              className="hidden md:block"
             >
               <FaFacebook className="text-white text-3xl hover:text-blue-500" />
             </Link>
           )}
-          <button 
-            onClick={toggleMenu} 
-            className="text-3xl md:hidden" 
-            aria-label="Toggle menu"
-          >
+          <button onClick={toggleMenu} className="text-3xl md:hidden" aria-label="Toggle menu">
             {isMenuOpen ? <IoMdClose /> : <FiMenu />}
           </button>
         </div>
@@ -305,10 +299,7 @@ export default function Navbar({
 
       {/* Desktop Dropdown */}
       {activeDropdown && (
-        <div
-          className="absolute top-[80px] left-0 w-full text-black z-50 hidden md:block"
-          onMouseLeave={handleMouseLeave}
-        >
+        <div className="absolute top-[80px] left-0 w-full text-black z-50 hidden md:block" onMouseLeave={handleMouseLeave}>
           <div className="max-w-6xl mx-auto flex bg-white shadow-lg rounded-md overflow-hidden border border-gray-200 px-8">
             <div className="w-[300px] text-base px-4 py-6">
               <ul className="divide-y divide-gray-200">
@@ -323,18 +314,13 @@ export default function Navbar({
                       <span className="text-sm font-medium text-gray-800 hover:text-white">
                         {sub.name || sub.title || "Unknown"}
                       </span>
-                      <ChevronRight
-                        size={16}
-                        className={`${hoveredSub?.name === sub.name ? "text-white" : "text-gray-400"}`}
-                      />
+                      <ChevronRight size={16} className={hoveredSub?.name === sub.name ? "text-white" : "text-gray-400"} />
                     </Link>
                   </li>
                 ))}
               </ul>
             </div>
-
             <div className="w-[1px] h-auto my-6 bg-gray-300 m-8" />
-
             <div className="flex-1 px-4 py-6 flex gap-6 items-start">
               <div className="flex-1">
                 <TextHeader text={hoveredSub?.name || hoveredSub?.title} align="left" size="small" />
@@ -373,42 +359,80 @@ export default function Navbar({
       )}
 
       {/* Mobile Dropdown */}
-      {isMenuOpen && (
-        <div className="md:hidden bg-white text-black px-4 py-6 absolute top-20 left-0 w-full z-50 shadow-lg">
-          <ul className="space-y-4">
-            {navLinks.map((link) =>
-              link.hasDropdown ? (
-                <MobileDropdownMenu
-                  key={link.name}
-                  name={link.name}
-                  href={link.href}
-                  subLinks={link.subLinks}
-                  onClickLink={handleMenuItemClick}
-                />
-              ) : (
-                <li key={link.name}>
-                  <Link
-                    href={link.href}
-                    onClick={handleMenuItemClick}
-                    className="block py-2 hover:text-primary"
-                  >
-                    {link.name}
-                  </Link>
-                </li>
-              )
-            )}
-            <li>
-              <Link
-                href="/contact"
-                onClick={handleMenuItemClick}
-                className="block bg-primary text-white text-center py-2 rounded-full hover:bg-gradient-to-r from-[#D35400] to-[#A84300] transition-all duration-300"
-              >
-                Contact
-              </Link>
-            </li>
-          </ul>
-        </div>
+     {isMenuOpen && (
+  <div className="md:hidden bg-white text-black px-4 py-6 absolute top-20 left-0 w-full z-50 shadow-lg">
+    <ul className="space-y-4">
+      {navLinks.map((link) =>
+        link.hasDropdown ? (
+          <MobileDropdownMenu
+            key={link.name}
+            name={link.name}
+            href={link.href}
+            subLinks={link.subLinks}
+            onClickLink={handleMenuItemClick}
+          />
+        ) : (
+          <li key={link.name}>
+            <Link
+              href={link.href}
+              onClick={handleMenuItemClick}
+              className="block py-2 hover:text-primary"
+            >
+              {link.name}
+            </Link>
+          </li>
+        )
       )}
+      <li>
+        <Link
+          href="/contact"
+          onClick={handleMenuItemClick}
+          className="block bg-primary text-white text-center py-2 rounded-full hover:bg-gradient-to-r from-[#D35400] to-[#A84300] transition-all duration-300"
+        >
+          Contact
+        </Link>
+      </li>
+
+      {/* Social icons inside mobile dropdown */}
+      <li className="flex justify-center gap-6 mt-6">
+        {contactInfo?.socialLinks?.instagram && (
+          <Link
+            href={contactInfo.socialLinks.instagram}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Instagram"
+            className="text-pink-500 hover:text-pink-700 text-3xl"
+          >
+            <FaInstagram />
+          </Link>
+        )}
+        {contactInfo?.socialLinks?.facebook && (
+          <Link
+            href={contactInfo.socialLinks.facebook}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Facebook"
+            className="text-blue-600 hover:text-blue-800 text-3xl"
+          >
+            <FaFacebook />
+          </Link>
+        )}
+        {contactInfo?.whatsappNumber && (
+          <Link
+            href={`https://wa.me/${contactInfo.whatsappNumber.replace(/\D/g, "")}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="WhatsApp"
+            className="text-green-500 hover:text-green-700 text-3xl"
+          >
+            <FaWhatsapp />
+          </Link>
+        )}
+      </li>
+    </ul>
+  </div>
+)}
+    
     </nav>
   );
 }

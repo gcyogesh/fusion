@@ -130,6 +130,7 @@ function CategorySelect({ value, onChange, endpoint, allowAdd = true, label = "C
     <Loader size="sm" color="gray" />
   );
 
+
   return (
     <div className="flex flex-col gap-2">
       <div className="relative">
@@ -212,8 +213,22 @@ function CategorySelect({ value, onChange, endpoint, allowAdd = true, label = "C
           </>
         )}
       </div>
+      <div className="mt-2 space-y-2">
+  {(FormData[0]?.length === 0 ? [''] : FormData[0]).map((item: string, idx: number) => (
+    <input
+      key={idx}
+      type="text"
+      value={item}
+      onChange={(e) => handleArrayChange(key, idx, e.target.value)}
+      placeholder={`${label} ${idx + 1}`}
+      className="w-full px-3 py-2 border border-gray-300 rounded-xl"
+    />
+  ))}
+</div>
+      
       {allowAdd && (
         <div className="flex gap-2 mt-1">
+          
           <input
             type="text"
             value={newCategory}
