@@ -159,7 +159,7 @@ const HeroSection = ({ herodata }: { herodata: HeroData }) => {
             <button
               onClick={handleSearch}
               disabled={loading}
-              className="flex items-center px-1  md:px-3 py-2 md:py-2 text-white rounded-full font-medium hover:bg-blue-800 transition whitespace-nowrap text-xs sm:text-sm md:text-base disabled:opacity-50"
+              className="flex items-center px-1  md:px-3 py-2 md:py-2 text-white rounded-full font-medium  transition whitespace-nowrap text-xs sm:text-sm md:text-base disabled:opacity-50"
             >
               <span >
                 <FaSearch className="text-white w-[10px] h-[10px] " />

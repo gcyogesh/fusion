@@ -70,28 +70,27 @@ const ItinerarySection = ({ itinerary }) => {
                     />
                   </div>
                 )}
-
-                <div className="mt-4 overflow-x-auto">
-                  <div className="inline-flex min-w-[600px] sm:min-w-full bg-white p-5 border border-black rounded-xl shadow-sm">
-                    <div className="flex flex-wrap sm:flex-nowrap items-center text-xl text-gray-600 gap-3">
-                      {item.activities.map((activityText, idx) => (
-                        <div
-                          key={idx}
-                          className="flex items-center gap-2 text-gray-700 text-base whitespace-nowrap mr-4 mb-2"
-                        >
-                          <Image
-                            src={icons[idx % icons.length]}
-                            alt="activity icon"
-                            width={30}
-                            height={30}
-                            className="object-contain"
-                          />
-                          <span>{activityText}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
+<div className="mt-4">
+  <div className="w-full bg-white p-4 sm:p-6 border border-black rounded-xl shadow-sm">
+    <div className="flex flex-wrap gap-3 sm:gap-4">
+      {item.activities.map((activityText, idx) => (
+        <div
+          key={idx}
+          className="flex items-center gap-2 text-gray-700 text-sm sm:text-base bg-gray-50 px-3 py-2 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors flex-shrink-0"
+        >
+          <Image
+            src={icons[idx % icons.length]}
+            alt="activity icon"
+            width={20}
+            height={20}
+            className="w-5 h-5 sm:w-6 sm:h-6 object-contain flex-shrink-0"
+          />
+          <span className="whitespace-nowrap">{activityText}</span>
+        </div>
+      ))}
+    </div>
+  </div>
+</div>
               </div>
             )}
           </div>

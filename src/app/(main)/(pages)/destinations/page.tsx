@@ -3,6 +3,7 @@ import ImageDisplay from "@/components/atoms/ImageCard";
 import Breadcrumb from "@/components/atoms/breadcrumb";
 import { fetchAPI } from "@/utils/apiService";
 import TextHeader from "@/components/atoms/headings";
+import HeroBanner from "@/components/organisms/Banner/HeroBanner";
 
 interface Destination {
   _id: string;
@@ -17,10 +18,13 @@ interface Destination {
 async function DestinationPage() {
   const response = await fetchAPI<{ data: Destination[] }>({ endpoint: "destinations" });
   const destinations = response?.data || [];
+  const herodata = await fetchAPI({ endpoint: "herobanner/destinations" });
+
 
   return (
     <>
       <Breadcrumb currentnavlink="Destinations" />
+      <HeroBanner herodata={herodata?.data || []} />
       <section className="max-w-7xl mx-auto px-6 py-12">
         <TextHeader
           text="Explore by Destinations"

@@ -60,7 +60,7 @@ export default function Navbar({
   durationGroups = [],
   relatedPackagesMap = {},
   relatedActivityPackagesMap = {},
-   relatedDurationPackagesMap={},
+  relatedDurationPackagesMap={},
   
   contactInfo,
   
@@ -164,7 +164,7 @@ export default function Navbar({
             title: "Contact",
           },
           {
-            name: "Reviews",
+            name: "Testimonials",
             href: "/about/reviews",
             subtitle: "Feedback from our clients",
             title: "Reviews",

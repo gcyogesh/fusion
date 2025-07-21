@@ -372,10 +372,9 @@ const testimonialData = await fetchAPI({ endpoint: "testimonials" }) || [];
             />
 
             {/* Description */}
-            <TextDescription
-              text="Everest Base Camp Trek is a world-renowned adventure that takes you deep into the heart of the Himalayas. Experience breathtaking views."
-              className="mt-4 text-base w-[300px] md:w-[450px]  mx-auto"
-            />
+            <p className="mt-4 text-base w-[300px] md:w-[450px] mx-auto">
+  Everest Base Camp Trek is a world-renowned adventure that takes you deep into the heart of the Himalayas. Experience breathtaking views.
+</p>
 
             {/* Info Row */}
             <div className="flex flex-col sm:flex-row justify-center  gap-4 sm:gap-6 mt-6 font-semibold">
