@@ -425,7 +425,9 @@ export default function DynamicForm<T extends { _id?: string }>({
       'totaltrips',
       'totalTrips',
       'isfeatured',
-      'isFeatured'
+      'isFeatured',
+      'isPublished' , 
+      
     ].includes(key);
   };
 

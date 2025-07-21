@@ -26,6 +26,7 @@ import StatCard from "@/components/molecules/StatCard";
 import FAQAccordion from "@/components/organisms/faq";
 import TestimonialsSection from "@/components/organisms/testimonial/arrowtestimonial"
 import { Destination , Activities  , TourPackages } from "@/types";
+import { FaQ } from "react-icons/fa6";
 const stats = [
   {
     iconSrc: "/images/stat1.png",
@@ -86,6 +87,8 @@ const socialLinks = [
 export default async function Home() {
   const partnersdata: any = await fetchAPI({ endpoint: "partners" });
   const blogsdata: any = await fetchAPI({ endpoint: "blogs" });
+    const Faqdata: any = await fetchAPI({ endpoint: "faqs" });
+
   const destinationdata: any = await fetchAPI({ endpoint: "destinations" });
   const packagesdata = await fetchAPI<TourPackages>({ endpoint: "tour/tour-packages" });
   const activitiesdata = await fetchAPI<Activities>({ endpoint: "category/activities" });
@@ -93,7 +96,7 @@ export default async function Home() {
 const testimonialData = await fetchAPI({ endpoint: "testimonials" }) || [];
 
   // Filter packages to exclude activities and destinations
- const filteredPackages = packagesdata?.data?.tours?.filter((card) => {
+ const filteredPackages = packagesdata?.data?.tours.filter((card) => {
   const isActivity = card.type === 'activity' || card.category === 'activity';
   const isDestination = card.type === 'destination' || card.category === 'destination';
   return !isActivity && !isDestination;
@@ -534,7 +537,7 @@ const testimonialData = await fetchAPI({ endpoint: "testimonials" }) || [];
         width="500px"
         buttonText="FAQ"
       />
-  <FAQAccordion />
+  <FAQAccordion faqdata={Faqdata}/>
   </section>
     
 
