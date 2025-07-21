@@ -58,7 +58,7 @@ const TextHeader = <TSpecialIndices extends string = string>({
     },
   };
 
-  const baseStyle: React.CSSProperties = {
+  const baseStyle = {
     textAlign: align,
     fontFamily: 'DM Sans, sans-serif',
     color: textcolor || '#2C2727',
@@ -67,7 +67,7 @@ const TextHeader = <TSpecialIndices extends string = string>({
     ...baseFontStyles[size],
   };
 
-  const specialStyle: React.CSSProperties = {
+  const specialStyle = {
     fontFamily: 'Playfair Display, serif',
     color: textcolor || '#2C2727',
     fontWeight: 500,
