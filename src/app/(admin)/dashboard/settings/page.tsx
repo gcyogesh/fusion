@@ -51,10 +51,13 @@ export default function SettingsPage() {
   const [heroSuccess, setHeroSuccess] = useState("");
   
   // Terms & Conditions state
-  const [termsContent, setTermsContent] = useState("");
-  const [termsId, setTermsId] = useState("");
-  const [termsLoading, setTermsLoading] = useState(false);
-  const [termsSaving, setTermsSaving] = useState(false);
+  const [termsData, setTermsData] = useState({
+  _id: "",
+  pageTitle: "Terms and Conditions",
+  sections: []
+});
+const [termsLoading, setTermsLoading] = useState(false);
+const [termsSaving, setTermsSaving] = useState(false);
 
   const [logoUrls, setLogoUrls] = useState<string[]>(["", ""]);
   const [logoFiles, setLogoFiles] = useState<(File | null)>([null, null]);
@@ -89,60 +92,141 @@ export default function SettingsPage() {
 
   // Fetch terms data when tab is activated
   useEffect(() => {
-    if (activeTab === "terms") {
-      setTermsLoading(true);
-      fetchAPI({ endpoint: "term" })
-        .then((res) => {
-          const data = res?.data;
-          if (data) {
-            setTermsContent(data || "");
-            setTermsId(data?._id || "");
-          }
-        })
-        .catch(() => {
-          setAlert({
-            show: true,
-            type: "error",
-            message: "Failed to fetch Terms & Conditions.",
+  if (activeTab === "terms") {
+    setTermsLoading(true);
+    fetchAPI({ endpoint: "terms" })
+      .then((res) => {
+        const data = res?.data;
+        if (data && data.length > 0) {
+          // Get the first (and only) terms document
+          const termsDoc = data[0];
+          setTermsData({
+            _id: termsDoc._id || "",
+            pageTitle: termsDoc.pageTitle || "Terms and Conditions",
+            sections: termsDoc.sections || []
           });
-        })
-        .finally(() => setTermsLoading(false));
-    }
-  }, [activeTab]);
+        } else {
+          // Initialize with empty structure if no terms exist
+          setTermsData({
+            _id: "",
+            pageTitle: "Terms and Conditions",
+            sections: []
+          });
+        }
+      })
+      .catch((error) => {
+        console.error("Failed to fetch terms:", error);
+        setAlert({
+          show: true,
+          type: "error",
+          message: "Failed to fetch Terms & Conditions.",
+        });
+      })
+      .finally(() => setTermsLoading(false));
+  }
+}, [activeTab]);
 
+
+const handleAddSection = () => {
+  setTermsData({
+    ...termsData,
+    sections: [
+      ...termsData.sections,
+      { title: "", content: "" }
+    ]
+  });
+};
+
+const handleRemoveSection = (index) => {
+  const newSections = termsData.sections.filter((_, i) => i !== index);
+  setTermsData({
+    ...termsData,
+    sections: newSections
+  });
+};
+
+const handleSectionChange = (index, field, value) => {
+  const newSections = [...termsData.sections];
+  newSections[index] = {
+    ...newSections[index],
+    [field]: value
+  };
+  setTermsData({
+    ...termsData,
+    sections: newSections
+  });
+};
+
+const handlePageTitleChange = (value) => {
+  setTermsData({
+    ...termsData,
+    pageTitle: value
+  });
+};
   // Save terms handler
   const handleSaveTerms = async () => {
-    if (!termsContent.trim()) {
-      setAlert({
-        show: true,
-        type: "warning",
-        message: "Terms & Conditions content cannot be empty.",
+  // Validate that we have at least one section with content
+  const validSections = termsData.sections.filter(
+    section => section.title.trim() && section.content.trim()
+  );
+
+  if (validSections.length === 0) {
+    setAlert({
+      show: true,
+      type: "warning",
+      message: "Please add at least one section with both title and content.",
+    });
+    return;
+  }
+
+  setTermsSaving(true);
+  try {
+    const payload = {
+      pageTitle: termsData.pageTitle,
+      sections: validSections
+    };
+
+    let response;
+    if (termsData._id) {
+      // Update existing terms
+      response = await fetchAPI({
+        endpoint: `terms/${termsData._id}`,
+        method: "PUT",
+        data: payload,
       });
-      return;
+    } else {
+      // Create new terms
+      response = await fetchAPI({
+        endpoint: "terms",
+        method: "POST",
+        data: payload,
+      });
     }
 
-    setTermsSaving(true);
-    try {
-      await fetchAPI({
-        endpoint: "term",
-        method: "POST",
-        data: { _id: termsId, content: termsContent },
+    // Update the local state with the response
+    if (response?.data) {
+      setTermsData({
+        _id: response.data._id,
+        pageTitle: response.data.pageTitle,
+        sections: response.data.sections
       });
-      setAlert({
-        show: true,
-        type: "success",
-        message: "Terms & Conditions saved successfully!",
-      });
-    } catch (e: any) {
-      setAlert({
-        show: true,
-        type: "error",
-        message: e.message || "Failed to save Terms & Conditions.",
-      });
-    } finally {
-      setTermsSaving(false);
     }
-  };
+
+    setAlert({
+      show: true,
+      type: "success",
+      message: "Terms & Conditions saved successfully!",
+    });
+  } catch (e) {
+    setAlert({
+      show: true,
+      type: "error",
+      message: e.message || "Failed to save Terms & Conditions.",
+    });
+  } finally {
+    setTermsSaving(false);
+  }
+};
 
   // Fetch hero data
   useEffect(() => {
@@ -751,51 +835,127 @@ export default function SettingsPage() {
     </section>
   );
 
-  const renderTermsTab = () => (
-    <section className="bg-white rounded-xl shadow-md border border-gray-200 w-full px-8 md:px-16 py-12">
-      <div className="flex items-center gap-2 mb-6">
-        <FiFileText className="w-6 h-6 text-primary" />
-        <h2 className="text-2xl font-bold text-gray-900">Terms & Conditions</h2>
-      </div>
-      {alert.show && (
-        <Alert
-          show={alert.show}
-          type={alert.type}
-          message={alert.message}
-          onConfirm={() => setAlert({ ...alert, show: false })}
-        />
-      )}
-      {termsLoading ? (
-        <div className="flex items-center justify-center py-8">
-          <div className="flex items-center gap-2">
-            <Loader />
-            <span className="text-gray-600 text-sm">Loading Terms & Conditions...</span>
-          </div>
+ const renderTermsTab = () => (
+  <section className="bg-white rounded-xl shadow-md border border-gray-200 w-full px-8 md:px-16 py-12">
+    <div className="flex items-center gap-2 mb-6">
+      <FiFileText className="w-6 h-6 text-primary" />
+      <h2 className="text-2xl font-bold text-gray-900">Terms & Conditions</h2>
+    </div>
+    
+    {alert.show && (
+      <Alert
+        show={alert.show}
+        type={alert.type}
+        message={alert.message}
+        onConfirm={() => setAlert({ ...alert, show: false })}
+      />
+    )}
+    
+    {termsLoading ? (
+      <div className="flex items-center justify-center py-8">
+        <div className="flex items-center gap-2">
+          <Loader />
+          <span className="text-gray-600 text-sm">Loading Terms & Conditions...</span>
         </div>
-      ) : (
-        <>
-          <p className="text-gray-500 text-base mb-4">
-            You can update your Terms & Conditions content here.
-          </p>
-          <textarea
-            rows={10}
-            value={termsContent}
-            onChange={(e) => setTermsContent(e.target.value)}
-            placeholder="Write or paste your Terms & Conditions..."
-            className="w-full mt-4 border border-gray-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-primary outline-none text-base bg-white transition hover:bg-gray-50"
+      </div>
+    ) : (
+      <div className="space-y-6">
+        <p className="text-gray-500 text-base">
+          Manage your website's Terms & Conditions. You can add multiple sections with titles and content.
+        </p>
+        
+        {/* Page Title */}
+        <div className="space-y-2">
+          <label className="text-sm font-semibold text-gray-700">Page Title</label>
+          <input
+            type="text"
+            value={termsData.pageTitle}
+            onChange={(e) => handlePageTitleChange(e.target.value)}
+            placeholder="Terms and Conditions"
+            className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-primary outline-none text-base bg-white transition hover:bg-gray-50"
           />
-          <div className="flex justify-start mt-4">
+        </div>
+
+        {/* Sections */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-semibold text-gray-900">Sections</h3>
             <Button
-              text={termsSaving ? "Saving..." : "Save Terms & Conditions"}
-              onClick={handleSaveTerms}
-              disabled={termsSaving}
-              className="px-8 py-2 rounded-lg shadow-sm text-base font-semibold bg-primary text-white transition hover:bg-primary/90"
+              text="Add Section"
+              onClick={handleAddSection}
+              className="px-4 py-2 rounded-lg shadow-sm text-sm font-semibold bg-green-600 text-white transition hover:bg-green-700"
             />
           </div>
-        </>
-      )}
-    </section>
-  );
+
+          {termsData.sections.length === 0 ? (
+            <div className="text-center py-8 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+              <FiFileText className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+              <p className="text-gray-500 mb-3">No sections added yet.</p>
+              <Button
+                text="Add First Section"
+                onClick={handleAddSection}
+                className="px-6 py-2 rounded-lg shadow-sm text-sm font-semibold bg-primary text-white transition hover:bg-primary/90"
+              />
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {termsData.sections.map((section, index) => (
+                <div key={index} className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="text-sm font-semibold text-gray-700">Section {index + 1}</h4>
+                    <button
+                      onClick={() => handleRemoveSection(index)}
+                      className="text-red-500 hover:text-red-700 transition-colors"
+                      title="Remove section"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                  
+                  <div className="space-y-3">
+                    <div>
+                      <label className="text-sm font-medium text-gray-600 mb-1 block">Section Title</label>
+                      <input
+                        type="text"
+                        value={section.title}
+                        onChange={(e) => handleSectionChange(index, 'title', e.target.value)}
+                        placeholder="e.g., Acceptance of Terms"
+                        className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-primary outline-none text-base bg-white transition hover:bg-gray-50"
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="text-sm font-medium text-gray-600 mb-1 block">Section Content</label>
+                      <textarea
+                        rows={4}
+                        value={section.content}
+                        onChange={(e) => handleSectionChange(index, 'content', e.target.value)}
+                        placeholder="Enter the content for this section..."
+                        className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-primary outline-none text-base bg-white transition hover:bg-gray-50 resize-vertical"
+                      />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Save Button */}
+        <div className="flex justify-start pt-4 border-t border-gray-200">
+          <Button
+            text={termsSaving ? "Saving..." : "Save Terms & Conditions"}
+            onClick={handleSaveTerms}
+            disabled={termsSaving}
+            className="px-8 py-3 rounded-lg shadow-sm text-base font-semibold bg-primary text-white transition hover:bg-primary/90 disabled:opacity-50"
+          />
+        </div>
+      </div>
+    )}
+  </section>
+);
 
   return (
     <div className="min-h-screen bg-neutral-100 flex flex-col">

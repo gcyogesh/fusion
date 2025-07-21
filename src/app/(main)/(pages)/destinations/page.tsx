@@ -1,72 +1,49 @@
-import HeroBanner from "@/components/organisms/Banner/HeroBanner";
-import { fetchAPI } from "@/utils/apiService";
-import Breadcrumb from "@/components/atoms/breadcrumb";
-import ImageDisplay from "@/components/atoms/ImageCard";
 import Link from "next/link";
+import ImageDisplay from "@/components/atoms/ImageCard";
+import Breadcrumb from "@/components/atoms/breadcrumb";
+import { fetchAPI } from "@/utils/apiService";
+import TextHeader from "@/components/atoms/headings";
 
-export default async function DestinationPage() {
-  // Fetch all destinations
-  const destination = await fetchAPI({ endpoint: "destinations" });
-  const destinationdata = destination?.data || [];
+interface Destination {
+  _id: string;
+  title: string;
+  subtitle: string;
+  imageUrls: string[];
+  slug: string;
+  totalTrips: number;
+  src?: string;
+}
 
-  // Fetch hero banner
-  const herodata = await fetchAPI({ endpoint: "herobanner/destinations" });
+async function DestinationPage() {
+  const response = await fetchAPI<{ data: Destination[] }>({ endpoint: "destinations" });
+  const destinations = response?.data || [];
 
   return (
     <>
-      <Breadcrumb currentnavlink={"destinations"} />
-      <HeroBanner herodata={herodata?.data || []} />
-
-      <section className="max-w-7xl mx-auto px-4">
-        {/* First Row: Rectangle + Square */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
-          {destinationdata[0] && (
+      <Breadcrumb currentnavlink="Destinations" />
+      <section className="max-w-7xl mx-auto px-6 py-12">
+        <TextHeader
+          text="Explore by Destinations"
+          buttonText="Destinations"
+          specialWordsIndices="2"
+          size="medium"
+          width={622}
+          align="left"
+          className="mb-4"
+        />
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          {destinations.map((destination) => (
             <Link
-              href={`/destinations/${destinationdata[0].slug}`}
-              className="lg:col-span-2 block"
+              href={`/destinations/${destination.slug}`}
+              key={destination.slug}
             >
               <ImageDisplay
-                src={destinationdata[0].imageUrls?.[0]}
-                variant="rectangle"
-                width={840}
-                height={430}
-                title={destinationdata[0].title}
-                description={destinationdata[0].subtitle}
-                totalTrips={destinationdata[0].totalTrips}
-              />
-            </Link>
-          )}
-
-          {destinationdata[1] && (
-            <Link
-              href={`/destinations/${destinationdata[1].slug}`}
-              className="block"
-            >
-              <ImageDisplay
-                src={destinationdata[1].imageUrls?.[0]}
+                src={destination.imageUrls?.[0] || destination.src}
                 variant="square"
-                title={destinationdata[1].title}
-                description={destinationdata[1].subtitle}
-                totalTrips={destinationdata[1].totalTrips}
-              />
-            </Link>
-          )}
-        </div>
-
-        {/* Second Row: 3 Square Images */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {destinationdata.slice(2, 5).map((card, index) => (
-            <Link
-              href={`/destinations/${card.slug}`}
-              key={card.slug}
-              className="block"
-            >
-              <ImageDisplay
-                src={card?.src || card?.imageUrls?.[0]}
-                variant="square"
-                alt="Popular destination"
-                title={card?.title || "Untitled"}
-                totalTrips={card?.totalTrips}
+                title={destination.title}
+                description={destination.subtitle}
+                totalTrips={destination.totalTrips}
+                showDefaultTitle={true}
               />
             </Link>
           ))}
@@ -75,3 +52,5 @@ export default async function DestinationPage() {
     </>
   );
 }
+
+export default DestinationPage;

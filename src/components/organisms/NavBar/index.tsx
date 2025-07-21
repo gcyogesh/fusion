@@ -12,7 +12,7 @@ import Logo from "@/components/atoms/Logo";
 import MobileDropdownMenu from "./dropdowns/mobiledropdown";
 import ImageDisplay from "@/components/atoms/ImageCard";
 import TextHeader from "@/components/atoms/headings";
-import { Destination, TourPackage, Activity, ContactInfo } from "@/types";
+import { Destination, TourPackage, Activity, ContactInfo ,Duration } from "@/types";
 
 type NavLink = {
   name: string;
@@ -38,7 +38,9 @@ interface NavbarProps {
   activities: Activity[];
   relatedPackagesMap: { [slug: string]: TourPackage[] };
   relatedActivityPackagesMap: { [slug: string]: TourPackage[] };
+   relatedDurationPackagesMap: { [slug: string]: TourPackage[] };
   contactInfo: ContactInfo;
+   durationGroups: Duration[];
 }
 
 const throttle = (func: Function, limit: number) => {
@@ -55,9 +57,13 @@ const throttle = (func: Function, limit: number) => {
 export default function Navbar({
   destinations = [],
   activities = [],
+  durationGroups = [],
   relatedPackagesMap = {},
   relatedActivityPackagesMap = {},
+   relatedDurationPackagesMap={},
+  
   contactInfo,
+  
 }: NavbarProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<NavLink | null>(null);
@@ -98,6 +104,21 @@ export default function Navbar({
       })),
     }));
 
+      const formattedDurations = durationGroups.map((item) => ({
+      name: item.label,
+      href: `/duration/${item.slug}`,
+      subtitle: item.description,
+      title: item.label,
+      image: item.image,
+      relatedPackages: ( relatedDurationPackagesMap[item.slug] || []).map((pkg) => ({
+        name: pkg.title,
+        href: `/itinerary/${pkg._id}`,
+        duration: `${pkg.duration?.days || 0} Days`,
+        title: pkg.title,
+      })),
+    }));
+
+
     return [
       {
         name: "Destinations",
@@ -111,6 +132,14 @@ export default function Navbar({
         hasDropdown: true,
         subLinks: formattedActivities,
       },
+     
+    {
+      name: "Duration",
+      href: "/duration",
+      hasDropdown: true,
+      subLinks: formattedDurations,
+    },
+       { name: "Blogs", href: "/blogs", hasDropdown: false },
       {
         name: "About",
         href: "/about",
@@ -148,11 +177,10 @@ export default function Navbar({
           },
         ],
       },
-      { name: "Blogs", href: "/blogs", hasDropdown: false },
-      { name: "Duration", href: "/duration", hasDropdown: false },
+      
       { name: "Deals", href: "/deals", hasDropdown: false },
     ];
-  }, [activities, destinations, relatedActivityPackagesMap, relatedPackagesMap]);
+  }, [activities, destinations, durationGroups, relatedActivityPackagesMap, relatedPackagesMap,  relatedDurationPackagesMap]);
 
   const navbarClasses = useMemo(() => {
     const base = "fixed top-0 left-0 w-full z-60 px-2 transition-all duration-300 ease-linear";
@@ -242,9 +270,9 @@ export default function Navbar({
             <li
               key={link.name}
               onMouseEnter={() => handleMouseEnter(link)}
-              className="relative group flex items-center gap-1"
+              className="relative group flex items-center gap-1 hover:text-[#F28A15] transition-colors"
             >
-              <Link href={link.href} className="hover:text-primary transition-colors">
+              <Link href={link.href} className="">
                 {link.name}
               </Link>
               {link.hasDropdown &&
@@ -301,19 +329,21 @@ export default function Navbar({
       {activeDropdown && (
         <div className="absolute top-[80px] left-0 w-full text-black z-50 hidden md:block" onMouseLeave={handleMouseLeave}>
           <div className="max-w-6xl mx-auto flex bg-white shadow-lg rounded-md overflow-hidden border border-gray-200 px-8">
-            <div className="w-[300px] text-base px-4 py-6">
-              <ul className="divide-y divide-gray-200">
+            <div className="w-[300px] text-base px-4 py-6 ">
+              <ul className="divide-y divide-gray-200 ">
                 {activeDropdown.subLinks?.map((sub, index) => (
-                  <li key={`${sub.name}-${index}`} onMouseEnter={() => setHoveredSub(sub)}>
+                  <li key={`${sub.name}-${index}`} onMouseEnter={() => setHoveredSub(sub)} >
                     <Link
                       href={sub.href}
-                      className={`flex justify-between items-center px-5 py-3 hover:bg-primary hover:text-white ${
-                        hoveredSub?.name === sub.name ? "bg-primary text-white" : "text-gray-400"
+                      className={`flex justify-between items-center px-5 py-3  ${
+                        hoveredSub?.name === sub.name ? "bg-primary  text-white" : "text-gray-400"
                       }`}
                     >
-                      <span className="text-sm font-medium text-gray-800 hover:text-white">
-                        {sub.name || sub.title || "Unknown"}
-                      </span>
+                       <span className={`text-sm font-medium ${
+      hoveredSub?.name === sub.name ? "text-white" : "text-gray-800 hover:text-white"
+    }`}>
+      {sub.name || sub.title || "Unknown"}
+    </span>
                       <ChevronRight size={16} className={hoveredSub?.name === sub.name ? "text-white" : "text-gray-400"} />
                     </Link>
                   </li>
@@ -328,7 +358,7 @@ export default function Navbar({
                   <ul className="mt-4 space-y-1 text-gray-700 font-medium text-base divide-y divide-gray-200">
                     {hoveredSub?.relatedPackages.map((pkg, idx) => (
                       <li key={idx} className="py-1">
-                        <Link href={pkg.href} className="hover:text-[#f28a15]">
+                        <Link href={pkg.href} className="hover:text-[#f28a15] ">
                           {pkg?.name} - {pkg?.duration}
                         </Link>
                       </li>
@@ -360,7 +390,7 @@ export default function Navbar({
 
       {/* Mobile Dropdown */}
      {isMenuOpen && (
-  <div className="md:hidden bg-white text-black px-4 py-6 absolute top-20 left-0 w-full z-50 shadow-lg">
+  <div className="md:hidden bg-white text-black px-2 py-4 absolute top-20 left-0 w-full z-50 shadow-lg">
     <ul className="space-y-4">
       {navLinks.map((link) =>
         link.hasDropdown ? (
@@ -370,28 +400,32 @@ export default function Navbar({
             href={link.href}
             subLinks={link.subLinks}
             onClickLink={handleMenuItemClick}
+            
+            
           />
         ) : (
           <li key={link.name}>
             <Link
               href={link.href}
               onClick={handleMenuItemClick}
-              className="block py-2 hover:text-primary"
+              className="block px-4 py-2 hover:bg-[#F28A15] hover:text-white"
             >
               {link.name}
             </Link>
           </li>
         )
       )}
+      <div className="px-4">
       <li>
         <Link
           href="/contact"
           onClick={handleMenuItemClick}
-          className="block bg-primary text-white text-center py-2 rounded-full hover:bg-gradient-to-r from-[#D35400] to-[#A84300] transition-all duration-300"
+          className="block bg-primary text-white text-lg text-center  px-4 py-3 rounded-full hover:bg-gradient-to-r from-[#D35400] to-[#A84300] transition-all duration-300"
         >
           Contact
         </Link>
       </li>
+      </div>
 
       {/* Social icons inside mobile dropdown */}
       <li className="flex justify-center gap-6 mt-6">

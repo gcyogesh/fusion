@@ -346,16 +346,16 @@ const testimonialData = await fetchAPI({ endpoint: "testimonials" }) || [];
 
 
       {/* Everest Section */}
-      <section className="relative z-0 max-w-7xl mx-auto mt-20 rounded-lg overflow-hidden px-6">
+      <section className="relative z-0 max-w-7xl mx-auto mt-20 rounded-lg overflow-hidden px-6 bg-light-beige">
         {/* Background Image */}
-        <div className="absolute inset-0 ">
+        {/* <div className="absolute inset-0 ">
           <Image
             src="/images/EverestBG.png"
             alt="Everest Background"
             fill
             className="object-cover"
           />
-        </div>
+        </div> */}
 
         {/* Foreground Content */}
         <div className="relative z-10 flex flex-col justify-center items-center text-center px-4 py-4 mb-8">

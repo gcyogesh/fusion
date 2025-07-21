@@ -72,7 +72,7 @@ if (data.data?.refreshToken) {
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-gradient-to-br from-primary/10 via-white to-primary/5">
       {/* Left: Branding/Welcome */}
-      <div className="md:w-1/2 flex flex-col justify-center items-center bg-primary text-white px-8 py-16 md:min-h-screen border-r-0 md:border-r md:border-white/20">
+      <div className="md:w-1/2 flex flex-col justify-center items-center bg-[#0e334f] text-white px-8 py-16 md:min-h-screen border-r-0 md:border-r md:border-white/20">
         <div className="max-w-xs w-full flex flex-col items-center gap-6">
           <div className="mb-4 w-32 h-32 md:w-40 md:h-40 mx-auto animate-fade-in">
             <Logo />

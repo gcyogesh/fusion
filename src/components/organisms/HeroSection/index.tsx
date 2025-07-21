@@ -118,7 +118,7 @@ const HeroSection = ({ herodata }: { herodata: HeroData }) => {
 
       <div className="absolute top-[72%] md:top-[73%] lg:top-[73%] left-1/2 transform -translate-x-1/2 w-full max-w-7xl mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-4 md:gap-10 text-center md:text-left mb-10">
-          <p className="text-white text-base md:text-lg max-w-[486px] mx-auto md:mx-0">
+          <p className="text-white text-base md:text-lg max-w-[500px] mx-auto md:mx-0 text-justify-balanced">
             {description}
           </p>
 
@@ -136,12 +136,12 @@ const HeroSection = ({ herodata }: { herodata: HeroData }) => {
       </div>
 
       {/* SEARCH BAR (Only Location) */}
-      <div className="absolute w-full max-w-[780px] mx-auto left-0 right-0 top-[97%] md:top-[96%] lg:top-[95%] z-50 px-2">
-        <div className="relative flex items-center bg-white rounded-full px-2 py-2 sm:py-3 shadow-lg gap-2">
+      <div className="absolute w-full  max-w-[340px] md:max-w-[780px] mx-auto left-0 right-0 top-[97%] md:top-[98%] lg:top-[96%] z-50 px-2">
+        <div className="relative flex items-center bg-white rounded-full px-3 shadow-lg gap-2">
           {/* Location Input Only */}
           <div className="flex items-center gap-2 w-full">
             <span className="bg-[#FEF2D6] p-1 md:p-4 rounded-full">
-              <Image src="/images/tdesign_location-filled.svg" alt="Location Icon" width={35} height={35} />
+              <Image src="/images/tdesign_location-filled.svg" alt="Location Icon" width={20} height={20} />
             </span>
             <div className="flex flex-col w-full">
               <input
@@ -159,14 +159,14 @@ const HeroSection = ({ herodata }: { herodata: HeroData }) => {
             <button
               onClick={handleSearch}
               disabled={loading}
-              className="flex items-center bg-[#0E334F] px-3 py-3 md:py-2 text-white rounded-full font-medium hover:bg-blue-800 transition whitespace-nowrap text-xs sm:text-sm md:text-base disabled:opacity-50"
+              className="flex items-center px-1  md:px-3 py-2 md:py-2 text-white rounded-full font-medium hover:bg-blue-800 transition whitespace-nowrap text-xs sm:text-sm md:text-base disabled:opacity-50"
             >
-              <span className="block sm:hidden">
-                <FaSearch className="text-white w-[20px] h-[20px]" />
+              <span >
+                <FaSearch className="text-white w-[10px] h-[10px] " />
               </span>
-              <span className="hidden sm:flex items-center gap-3.5">
+              <span className=" sm:flex items-center gap-3.5">
                 {loading ? "Searching..." : ""}
-                <span className="bg-white p-3 rounded-full">
+                <span className=" p-0 md:p-3 rounded-full">
                   {loading ? (
                     <div className="w-7 h-7 border-2 border-[#0E334F] border-t-transparent rounded-full animate-spin"></div>
                   ) : (

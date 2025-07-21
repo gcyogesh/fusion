@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+
+
 @layer base {
   :root {
     --color-primary: rgb(242, 138, 21);
@@ -9,11 +11,14 @@
     --global-spacer: 2rem;
     --spacer-y: var(--global-spacer);
     --section-spacer: calc(var(--global-spacer) * 2);
+
   }
 
   body {
     font-family: var(--font-dm-sans);
     @apply overflow-x-hidden;
+    
+    
   }
 }
 
@@ -21,6 +26,8 @@
   .text-primary { color: var(--color-primary); }
   .bg-primary { background-color: var(--color-primary); }
   .border-primary { border-color: var(--color-primary); }
+   .bg-light-beige { background-color: #EBE8E2; }
+   .bg-gray-warm { background-color: #F5F5F4; }
 }
 
 section {
@@ -66,4 +73,8 @@ body {
   pointer-events: none;
   background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, #fff 100%);
   border-radius: 0 0 0.75rem 0.75rem;
+}
+
+.text-justify {
+  text-align: justify;
 }

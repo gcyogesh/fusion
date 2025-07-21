@@ -9,9 +9,9 @@ const values = [
       <Image
         src="/images/bxs_user.png"
         alt="Customer-Centeric"
-        width={32}
-        height={32}
-        className="w-8 h-8 md:w-22 md:h-10"
+        width={40}
+        height={40}
+        className="w-10 h-10 md:w-12 md:h-12 object-contain"
       />
     ),
     title: "Customer-Centric",
@@ -23,9 +23,9 @@ const values = [
       <Image
         src="/images/mdi_leaf.png"
         alt="Sustainable Travel Icon"
-        width={32}
-        height={32}
-        className="w-8 h-8 md:w-22 md:h-10"
+        width={40}
+        height={40}
+        className="w-10 h-10 md:w-12 md:h-12 object-contain"
       />
     ),
     title: "Sustainable Travel",
@@ -37,23 +37,23 @@ const values = [
       <Image
         src="/images/mdi_flight.png"
         alt="Authentic Experiences Icon"
-        width={32}
-        height={32}
-        className="w-8 h-8 md:w-22 md:h-10"
+        width={20}
+        height={20}
+        className="w-10 h-10 md:w-12 md:h-12 object-contain"
       />
     ),
     title: "Authentic Experiences",
     description:
-      "Go beyond the ordinary. We craft journeys that connect you deeply with Nepal’s rich culture, warm people, and breathtaking landscapes — experiences that leave a lasting impact.",
+      "Go beyond the ordinary. We craft journeys that connect you deeply with Nepal's rich culture, warm people, and breathtaking landscapes — experiences that leave a lasting impact.",
   },
   {
     icon: (
       <Image
         src="/images/material-symbols_star-rounded.png"
         alt="Expert Local Guides Icon"
-        width={32}
-        height={32}
-        className="w-8 h-8 md:w-22 md:h-10"
+        width={40}
+        height={40}
+        className="w-10 h-10 md:w-12 md:h-12 object-contain"
       />
     ),
     title: "Expert Local Guides",
@@ -64,7 +64,7 @@ const values = [
 
 const ValuesSection = () => {
   return (
-    <div className="relative z-10 bg-[#FCE1AC] py-20 px-4 sm:px-6 lg:px-0">
+    <div className="relative z-10 bg-light-beige py-20 px-4 sm:px-6 lg:px-0">
       <div className="max-w-7xl mx-auto flex flex-col gap-10 md:flex-row justify-between items-start md:items-center">
         {/* Left Section */}
         <div className="w-full md:w-5/12">
@@ -78,7 +78,7 @@ const ValuesSection = () => {
 
           <div className="flex flex-col justify-end h-full mt-6 md:mt-80 lg:mt-80">
             <TextDescription
-              text="Our values are more than promises – they’re the soul of every adventure we offer.
+              text="Our values are more than promises – they're the soul of every adventure we offer.
           Rooted in sustainability, authenticity, and guest-first service, we ensure that your
           journey through Nepal is meaningful and truly one of a kind."
               className="text-left w-full max-w-[474px]"
@@ -91,16 +91,16 @@ const ValuesSection = () => {
           {values.map((value, index) => (
             <div
               key={index}
-              className="flex flex-col sm:flex-row sm:items-center bg-[#FEF2D6] shadow-sm rounded-xl p-4 border border-black"
+              className="flex flex-col sm:flex-row sm:items-center bg-gray-warm shadow-sm rounded-xl p-4 border border-black"
             >
-              <div className="mb-3 sm:mb-0 sm:mr-4 border border-black rounded-full px-4 py-3 self-start sm:self-auto">
+              <div className="mb-3 sm:mb-0 sm:mr-4 border border-black rounded-full p-3 sm:p-4 flex items-center justify-center self-start sm:self-auto min-w-fit">
                 {value.icon}
               </div>
-              <div>
+              <div className="flex-1">
                 <h1 className="text-lg sm:text-xl font-semibold mb-1">
                   {value.title}
                 </h1>
-                <p className="text-sm m-1">{value.description}</p>
+                <p className="text-sm m-1 hyphens-auto text-justify">{value.description}</p>
               </div>
             </div>
           ))}
