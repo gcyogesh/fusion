@@ -10,7 +10,7 @@ type Props = {
 const DownloadPdfButton = ({ packageId }: Props) => {
   return (
     <Link
-      href={`${process.env.NEXT_PUBLIC_API_URL}/tour/tour-packages/${packageId}/download-pdf`}
+      href={`http://yogeshbhai.ddns.net/api/tour/tour-packages/${packageId}/download-pdf`}
       target="_blank"
       rel="noopener noreferrer"
     >
