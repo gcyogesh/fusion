@@ -18,6 +18,8 @@ export default async function CategoriesPage() {
   
   const herodata = await fetchAPI({ endpoint: "herobanner/activities" });
 
+
+
   return (
     <>
       <Breadcrumb currentnavlink="Activities" />

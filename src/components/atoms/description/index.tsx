@@ -13,7 +13,7 @@ const TextDescription: React.FC<TextDescriptionProps> = ({ text, className = '' 
     >
       {text}
     </p>
-  );s
+  );
 };
 
 export default TextDescription;
