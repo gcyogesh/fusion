@@ -1,12 +1,14 @@
 import Image from "next/image";
-import { FaInstagram, FaFacebookF, FaYoutube, FaCcVisa, FaCcMastercard, FaCcAmex } from "react-icons/fa";
+import { FaInstagram, FaFacebookF, FaYoutube, FaCcVisa, FaCcMastercard, FaCcAmex, FaWhatsapp } from "react-icons/fa";
 import Logo from "@/components/atoms/Logo";
 import ContactDetails from "../ContactDetails";
+import { ContactInfo } from "@/types";
 
 const socialLinks = [
   { Icon: FaInstagram, link: "#", label: "Instagram" },
   { Icon: FaFacebookF, link: "#", label: "Facebook" },
   { Icon: FaYoutube, link: "#", label: "YouTube" },
+ 
 ];
 
 const companyLinks = [
@@ -32,6 +34,7 @@ const overviewLinks = [
 interface FooterProps {
   destinations?: any[];
   activities?: any[];
+  contactInfo: ContactInfo;
 }
 
 export default function Footer({ destinations = [], activities = [] , ContactInfo =[]}: FooterProps) {

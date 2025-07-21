@@ -1,18 +1,17 @@
 import { fetchAPI } from '@/utils/apiService';
 import Breadcrumb from '@/components/atoms/breadcrumb';
-import { MapPin} from 'lucide-react';
+
 import { APIResponse, TourPackage } from '@/types';
 import TextHeader from '@/components/atoms/headings';
 import ImageDisplay from '@/components/atoms/ImageCard';
 import MidNavbar from '@/components/organisms/MidNavBar';
 import { notFound } from 'next/navigation';
 import TextDescription from '@/components/atoms/description';
-import Button from '@/components/atoms/button';
 import UserForm from '@/components/organisms/Userform';
 import DepartureCalendar from '@/components/organisms/DepartureCalender';
 import ItinerarySection from '@/components/molecules/ItinerarySection';
 import FAQAccordion from '@/components/organisms/faq';
-import Link from 'next/link';
+
 import Image from 'next/image';
 import React from 'react';
 import PricingCard from '@/components/atoms/pricingcard';
@@ -114,10 +113,7 @@ export default async function Page({ params }: { params: { id: string } }) {
     <>
       <Breadcrumb currentnavlink={`Activities / ${packages?.title || "Destination"}`} />
       <section className="mx-auto max-w-7xl mt-5 px-4 md:px-6">
-        <span className="flex items-center gap-2 text-[#7e7e7e] text-xl font-medium mb-4">
-          <MapPin className="w-6 h-6" />
-          {packages.location.city}
-        </span>
+        
 
        
 
@@ -187,24 +183,10 @@ export default async function Page({ params }: { params: { id: string } }) {
       <section id="Overview" className="mx-auto max-w-7xl px-4 md:px-6">
         <div className="flex flex-col md:flex-row justify-between gap-6">
           <div className="flex-1 max-w-4xl pr-2">
+            
             <TextDescription text={packages.description} />
-            <div className="py-2">
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 text-gray-500 gap-10 p-6 border rounded-xl bg-white shadow-md max-w-4xl mx-auto mt-2 ">
-                 
-  {featureData.map((item, index) => (
-    <div key={index} className="flex items-left gap-4">
-      <div className="w-18 h-18">
-      <Image src={item.icon} alt={item.label} width={40} height={40} className="mt-1" />
-      </div>
-    <div className="flex flex-col items-left">
-  <p className="text-2xl font-semibold text-gray-800">{item.value || "—"}</p>
-  <p className="text-xl text-gray-500">{item.label}</p>
-</div>
-    </div>
-  ))}
-
-  </div>
-            </div>
+          
+             <FeatureGrid featureData={featureData} />
 
             <div className="max-w-5xl mx-auto py-4">
               <TextHeader text={packages.title} align="left" size="large" width={855} className="mb-1" />
@@ -324,16 +306,7 @@ export default async function Page({ params }: { params: { id: string } }) {
 </div>
             
       <div className="w-full max-w-4xl  py-6 mx-auto " id="FAQs">
-        <TextHeader
-        text="Need Help? We've Got Answers!"
-        specialWordsIndices="4"
-        align="left"
-        size="large"
-        width="500px"
-        buttonText="FAQ"
-        className="mb-2"
-      />
-        <FAQAccordion />
+
         </div>
       <section id="Reviews" className="mx-auto max-w-7xl px-4">
         <ReviewSection tourId={params.id} />
@@ -382,6 +355,26 @@ function InclusionExclusion({ title, items, icon }: { title: string; items: stri
           </li>
         ))}
       </ul>
+    </div>
+  );
+}
+
+
+function FeatureGrid({ featureData }: { featureData: any[] }) {
+  return (
+    <div className="py-6">
+      <div className="bg-white rounded-xl p-6 shadow-sm border">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {featureData.map((item, index) => (
+            <FeatureItem 
+              key={index}
+              icon={item.icon}
+              label={item.label}
+              value={item.value}
+            />
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

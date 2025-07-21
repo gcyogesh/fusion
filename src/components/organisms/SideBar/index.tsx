@@ -42,12 +42,12 @@ const Sidebar = ({
     { icon: FaWallet, text: "Blog Collection", link: "/dashboard/customise-blogs" },
     {
       icon: FaChartLine,
-      text: "Contact Form",
+      text: "Enquiry Form",
       link: "/dashboard/contact-form",
       submenu: [
         {
           icon: FaChartLine,
-          text: "Contact Messages",
+          text: "Enquiry  Messages",
           link: "/dashboard/contact-form/contact",
         },
         {
@@ -58,18 +58,15 @@ const Sidebar = ({
       ],
     },
     { icon: FaBox, text: "Activities", link: "/dashboard/customise-activities" },
+    // Add Review Customisation menu item
+    { icon: FaStar, text: "Review   ", link: "/dashboard/reviews" },
     {
       icon: FaChartLine,
-      text: "Testimonaials & Reviews",
-      link: "/dashboard/testimonial-reviews",
-      submenu: [
-        { icon: FaStar, text: "Testimonials", link: "/dashboard/testimonial-reviews/customise-testimonials" },
-        { icon: FaCog, text: "Reviews", link: "/dashboard/testimonial-reviews/reviews" },
-      ],
+      text: "Testimonaials",
+      link: "/dashboard/customise-testimonials",
+
     },
-   
     { icon: FaUserFriends, text: "Team", link: "/dashboard/customise-team" },
-    
     { icon: FaCog, text: "Settings", link: "/dashboard/settings" },
   ];
 

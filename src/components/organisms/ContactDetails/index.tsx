@@ -1,5 +1,5 @@
 import React from 'react';
-import { MdCall, MdEmail, MdLocationOn } from "react-icons/md";
+import { MdCall, MdEmail, MdLocationOn, MdWhatsapp } from "react-icons/md";
 
 const ContactDetails = ({ showDivider = true }) => {
   const contactDetails = [
@@ -8,12 +8,15 @@ const ContactDetails = ({ showDivider = true }) => {
       title: "",
       text: (
         <>
-          <span>+977 985167629</span>
-          <br />
-          <span>+977 9851342767</span>
+          <span>+977 985167629 ,+977 9851342767</span>
+          
         </>
       ),
     },
+     {
+  icon: <MdWhatsapp className="text-white bg-[#F28A15] rounded-full text-xl p-2 w-[34px] h-[34px]" />,
+  text: "+977 985167629",
+},
     {
       icon: <MdEmail className="text-white bg-[#F28A15] rounded-full text-xl p-2 w-[34px] h-[34px]" />,
       text: "fusionexpeditions@gmail.com",
@@ -22,6 +25,7 @@ const ContactDetails = ({ showDivider = true }) => {
       icon: <MdLocationOn className="text-white bg-[#F28A15] rounded-full text-xl p-2 w-[34px] h-[34px]" />,
       text: "Saatghumti, Thamel, Kathmandu, Nepal",
     },
+    
   ];
 
   return (

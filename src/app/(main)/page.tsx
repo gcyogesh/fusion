@@ -26,6 +26,7 @@ import StatCard from "@/components/molecules/StatCard";
 import FAQAccordion from "@/components/organisms/faq";
 import TestimonialsSection from "@/components/organisms/testimonial/arrowtestimonial"
 import { Destination , Activities  , TourPackages } from "@/types";
+import { FaQ } from "react-icons/fa6";
 const stats = [
   {
     iconSrc: "/images/stat1.png",
@@ -86,18 +87,29 @@ const socialLinks = [
 export default async function Home() {
   const partnersdata: any = await fetchAPI({ endpoint: "partners" });
   const blogsdata: any = await fetchAPI({ endpoint: "blogs" });
+  const FaqdataRaw: any = await fetchAPI({ endpoint: "faqs" });
+
   const destinationdata: any = await fetchAPI({ endpoint: "destinations" });
-  const packagesdata = await fetchAPI<TourPackages>({ endpoint: "tour/tour-packages" });
-  const activitiesdata = await fetchAPI<Activities>({ endpoint: "category/activities" });
-  const activities: Activities = activitiesdata?.data || [];
-const testimonialData = await fetchAPI({ endpoint: "testimonials" }) || [];
+  const packagesdata: any = await fetchAPI({ endpoint: "tour/tour-packages" });
+  const activitiesdata: any = await fetchAPI({ endpoint: "category/activities" });
+  // Handle possible API response shapes
+  const activities: Activities = (Array.isArray(activitiesdata) ? activitiesdata : (activitiesdata?.data || [])).map((activity: any) => ({
+    _id: activity._id,
+    title: activity.title,
+    subtitle: activity.subtitle || '',
+    description: activity.description || '',
+    image: activity.image || (activity.imageUrls ? activity.imageUrls[0] : ''),
+    slug: activity.slug
+  }));
+  const testimonialRaw = await fetchAPI({ endpoint: "testimonials" });
+  const testimonialData: any[] = Array.isArray(testimonialRaw) ? testimonialRaw : (testimonialRaw?.data || []);
 
   // Filter packages to exclude activities and destinations
- const filteredPackages = packagesdata?.data?.tours?.filter((card) => {
-  const isActivity = card.type === 'activity' || card.category === 'activity';
-  const isDestination = card.type === 'destination' || card.category === 'destination';
-  return !isActivity && !isDestination;
-}) || [];
+  const filteredPackages = (packagesdata?.data?.tours || packagesdata?.tours || []).filter((card: any) => {
+    const isActivity = card.type === 'activity' || card.category === 'activity';
+    const isDestination = card.type === 'destination' || card.category === 'destination';
+    return !isActivity && !isDestination;
+  }) || [];
 
   const herosectiondata: any = await fetchAPI({ endpoint: "herobanner/home" });
     
@@ -346,16 +358,16 @@ const testimonialData = await fetchAPI({ endpoint: "testimonials" }) || [];
 
 
       {/* Everest Section */}
-      <section className="relative z-0 max-w-7xl mx-auto mt-20 rounded-lg overflow-hidden px-6">
+      <section className="relative z-0 max-w-7xl mx-auto mt-20 rounded-lg overflow-hidden px-6 bg-light-beige">
         {/* Background Image */}
-        <div className="absolute inset-0 ">
+        {/* <div className="absolute inset-0 ">
           <Image
             src="/images/EverestBG.png"
             alt="Everest Background"
             fill
             className="object-cover"
           />
-        </div>
+        </div> */}
 
         {/* Foreground Content */}
         <div className="relative z-10 flex flex-col justify-center items-center text-center px-4 py-4 mb-8">
@@ -372,10 +384,9 @@ const testimonialData = await fetchAPI({ endpoint: "testimonials" }) || [];
             />
 
             {/* Description */}
-            <TextDescription
-              text="Everest Base Camp Trek is a world-renowned adventure that takes you deep into the heart of the Himalayas. Experience breathtaking views."
-              className="mt-4 text-base w-[300px] md:w-[450px]  mx-auto"
-            />
+            <p className="mt-4 text-base w-[300px] md:w-[450px] mx-auto">
+  Everest Base Camp Trek is a world-renowned adventure that takes you deep into the heart of the Himalayas. Experience breathtaking views.
+</p>
 
             {/* Info Row */}
             <div className="flex flex-col sm:flex-row justify-center  gap-4 sm:gap-6 mt-6 font-semibold">
@@ -535,7 +546,7 @@ const testimonialData = await fetchAPI({ endpoint: "testimonials" }) || [];
         width="500px"
         buttonText="FAQ"
       />
-  <FAQAccordion />
+  <FAQAccordion faqdata={FaqdataRaw}/>
   </section>
     
 

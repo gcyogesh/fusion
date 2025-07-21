@@ -81,16 +81,16 @@ export default function MobileDropdownMenu({ name, href, subLinks = [], onClickL
   return (
     <div className="w-full">
       {/* Main Dropdown Toggle */}
-      <div className="flex items-center justify-between cursor-pointer py-3 px-4 hover:bg-gray-50 rounded-lg transition-colors">
+      <div className="flex items-center justify-between cursor-pointer py-3 px-4 hover:bg-[#F28A15] hover:text-white rounded-lg transition-colors">
         <div 
           onClick={handleMainLinkClick}
-          className="cursor-pointer font-medium text-gray-900 flex-1"
+          className="cursor-pointer font-medium text-gray-900 hover:text-white flex-1"
         >
           {name}
         </div>
         {subLinks.length > 0 && (
           <div onClick={toggleDropdown} className="ml-2">
-            {open ? <ChevronUp className="w-5 h-5 text-gray-500" /> : <ChevronDown className="w-5 h-5 text-gray-500" />}
+            {open ? <ChevronUp className="w-5 h-5 text-gray-500 hover:text-white" /> : <ChevronDown className="w-5 h-5 text-gray-500 hover:text-white" />}
           </div>
         )}
       </div>
@@ -101,13 +101,13 @@ export default function MobileDropdownMenu({ name, href, subLinks = [], onClickL
           {subLinks.map((sub, index) => (
             <div key={`${sub.name}-${index}`} className="border-b border-gray-200 last:border-b-0">
               <div 
-                className="flex items-center justify-between cursor-pointer py-3 px-4 hover:bg-white transition-colors"
+                className="flex items-center justify-between cursor-pointer py-3 px-4 hover:bg-[#F28A15] hover:text-white transition-colors"
                 onClick={() => handleSubLinkClick(sub)}
               >
-                <span className="text-sm font-medium text-gray-700">
+                <span className="text-sm font-medium text-gray-700 hover:text-white">
                   {sub.name || sub.title}
                 </span>
-                <ChevronRight className="w-4 h-4 text-gray-400" />
+                <ChevronRight className="w-4 h-4 text-gray-400 hover:text-white" />
               </div>
             </div>
           ))}
@@ -122,9 +122,9 @@ export default function MobileDropdownMenu({ name, href, subLinks = [], onClickL
             <div className="flex items-center gap-3">
               <button
                 onClick={handleBackToSubLinks}
-                className="p-1 hover:bg-gray-200 rounded-full transition-colors"
+                className="p-1 hover:bg-[#F28A15] hover:text-white rounded-full transition-colors"
               >
-                <ArrowLeft className="w-4 h-4 text-gray-600" />
+                <ArrowLeft className="w-4 h-4 text-gray-600 hover:text-white" />
               </button>
               <span className="text-sm font-medium text-gray-900">
                 {activeSubLink.name || activeSubLink.title}
@@ -132,9 +132,9 @@ export default function MobileDropdownMenu({ name, href, subLinks = [], onClickL
             </div>
             <button
               onClick={handleCloseDropdown}
-              className="p-1 hover:bg-gray-200 rounded-full transition-colors"
+              className="p-1 hover:bg-[#F28A15] hover:text-white rounded-full transition-colors"
             >
-              <X className="w-4 h-4 text-gray-600" />
+              <X className="w-4 h-4 text-gray-600 hover:text-white" />
             </button>
           </div>
 
@@ -144,12 +144,12 @@ export default function MobileDropdownMenu({ name, href, subLinks = [], onClickL
             <Link
               href={activeSubLink.href}
               onClick={handleDirectSubLinkClick}
-              className="flex items-center justify-between py-3 px-4 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors mb-4"
+              className="flex items-center justify-between py-3 px-4 bg-[#F28A15] text-white hover:bg-white hover:text-[#F28A15] rounded-lg transition-colors mb-4 group"
             >
-              <span className="text-sm font-medium text-blue-700">
+              <span className="text-sm font-medium text-white group-hover:text-[#F28A15]">
                 View all {activeSubLink.name || activeSubLink.title}
               </span>
-              <ChevronRight className="w-4 h-4 text-blue-500" />
+              <ChevronRight className="w-4 h-4 text-white group-hover:text-[#F28A15]" />
             </Link>
 
             {/* Related Packages Section */}
@@ -160,19 +160,19 @@ export default function MobileDropdownMenu({ name, href, subLinks = [], onClickL
                     <Link
                       href={pkg.href}
                       onClick={handlePackageLinkClick}
-                      className="flex items-center justify-between py-3 px-4 hover:bg-gray-50 rounded-lg transition-colors group"
+                      className="flex items-center justify-between py-3 px-4 hover:bg-[#F28A15] hover:text-white rounded-lg transition-colors group"
                     >
                       <div className="flex-1 min-w-0">
-                        <h4 className="text-sm font-medium text-gray-900 truncate group-hover:text-blue-600">
+                        <h4 className="text-sm font-medium text-gray-900 truncate group-hover:text-white">
                           {pkg.name}
                         </h4>
                         {pkg.duration && (
-                          <p className="text-xs text-gray-500 mt-1">
+                          <p className="text-xs text-gray-500 mt-1 group-hover:text-white">
                             {pkg.duration}
                           </p>
                         )}
                       </div>
-                      <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-blue-500 flex-shrink-0 ml-2" />
+                      <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-white flex-shrink-0 ml-2" />
                     </Link>
                   </div>
                 ))}

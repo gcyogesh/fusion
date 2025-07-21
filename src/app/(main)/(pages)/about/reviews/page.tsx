@@ -2,6 +2,7 @@ import TestimonialCarousel from "@/components/organisms/testimonial/testimonial"
 import Breadcrumb from "@/components/atoms/breadcrumb";
 import { fetchAPI } from "@/utils/apiService"; // Ensure this import is correct
 import TextHeader from "@/components/atoms/headings";
+import HeroSection from "@/components/organisms/HeroSection";
 
 export const metadata = {
   title: "Reviews",
@@ -12,7 +13,8 @@ export default async function Reviews() {
 
   return (
     <>
-      <Breadcrumb currentnavlink="About/Reviews" />
+      <Breadcrumb currentnavlink="About/Testimonials" />
+      
       <main className="mx-auto max-w-7xl px-6 sm:px-8 py-12 sm:py-20">
         <TextHeader
             text="Memorable Journeys, Happy Clients"

@@ -68,7 +68,13 @@ export interface ContactInfo {
     twitter?: string;
   };
 }
-
+export interface Duration {
+  label: string;
+  slug: string;
+  image: string;
+  description: string;
+  tag: string;
+}
 // ✅ Alias Array Types for Easier Usage
 export type Destinations = Destination[];
 export type TourPackages = TourPackage[];

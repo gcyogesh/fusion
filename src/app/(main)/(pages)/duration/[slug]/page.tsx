@@ -6,6 +6,7 @@ import ImageDisplay from "@/components/atoms/ImageCard";
 import Image from "next/image";
 import Link from "next/link";
 
+
 const durationSlugs = {
   "1-3-days": { min: 1, max: 3 },
   "4-7-days": { min: 4, max: 7 },

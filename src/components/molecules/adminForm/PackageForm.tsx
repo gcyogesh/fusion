@@ -1,5 +1,5 @@
-'use client'
-import React, { useState, useEffect } from 'react';
+  'use client'
+import React, { useState, useEffect, useRef } from 'react';
 import { fetchAPI } from '@/utils/apiService';
 import { FiX, FiCamera, FiPlus, FiMapPin, FiDollarSign, FiInfo, FiList, FiFlag, FiImage, FiCalendar, FiUsers, FiActivity, FiHome, FiSun, FiNavigation, FiTag } from 'react-icons/fi';
 import { FaStar } from 'react-icons/fa';
@@ -47,6 +47,7 @@ interface TourPackageFormProps {
   destinationTitle?: string;
   onClose?: () => void;
   type?: string;
+  onSuccess?: () => void; // <-- Add this line
 }
 
 // InputField component without validation
@@ -345,7 +346,103 @@ const CategorySelectField = ({
   </div>
 );
 
-const TourPackageForm = ({ initialData = undefined, onClose, destinationId, destinationTitle, type }: TourPackageFormProps) => {
+// ChipInput component
+const ChipInput = ({ label, value, onChange, placeholder }) => {
+  const [input, setInput] = useState('');
+  const inputRef = useRef(null);
+
+  // Split input on comma, semicolon, or Enter
+  const handleInput = (e) => {
+    const val = e.target.value;
+    if (/[,;\n]$/.test(val)) {
+      const chips = val
+        .split(/[,;\n]+/)
+        .map(s => s.trim())
+        .filter(Boolean);
+      if (chips.length) {
+        onChange([...value, ...chips]);
+        setInput('');
+      } else {
+        setInput('');
+      }
+    } else {
+      setInput(val);
+    }
+  };
+
+  // On paste, split and add chips
+  const handlePaste = (e) => {
+    const text = e.clipboardData.getData('text');
+    const chips = text
+      .split(/[,;\n]+/)
+      .map(s => s.trim())
+      .filter(Boolean);
+    if (chips.length) {
+      e.preventDefault();
+      onChange([...value, ...chips]);
+      setInput('');
+    }
+  };
+
+  // On Enter, add chip
+  const handleKeyDown = (e) => {
+    if ((e.key === 'Enter' || e.key === ',' || e.key === ';') && input.trim()) {
+      e.preventDefault();
+      const chips = input
+        .split(/[,;\n]+/)
+        .map(s => s.trim())
+        .filter(Boolean);
+      if (chips.length) {
+        onChange([...value, ...chips]);
+        setInput('');
+      }
+    } else if (e.key === 'Backspace' && !input && value.length) {
+      // Remove last chip on backspace
+      onChange(value.slice(0, -1));
+    }
+  };
+
+  // Remove chip
+  const removeChip = (idx) => {
+    onChange(value.filter((_, i) => i !== idx));
+  };
+
+  return (
+    <div className="mb-6">
+      <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
+      <div className="flex flex-wrap items-center gap-2 p-2 border border-gray-300 rounded-lg bg-white min-h-[44px] focus-within:ring-2 focus-within:ring-primary">
+        {value.map((chip, idx) => (
+          <span
+            key={idx}
+            className="flex items-center bg-primary/10 text-primary rounded-full px-3 py-1 text-sm font-medium mr-1 mb-1 shadow-sm border border-primary/20"
+          >
+            {chip}
+            <button
+              type="button"
+              className="ml-2 text-primary hover:text-red-500 focus:outline-none"
+              onClick={() => removeChip(idx)}
+              aria-label="Remove"
+            >
+              ×
+            </button>
+          </span>
+        ))}
+        <input
+          ref={inputRef}
+          className="flex-1 min-w-[120px] border-none outline-none bg-transparent py-1 px-2 text-sm"
+          type="text"
+          value={input}
+          onChange={handleInput}
+          onKeyDown={handleKeyDown}
+          onPaste={handlePaste}
+          placeholder={placeholder}
+        />
+      </div>
+    </div>
+  );
+};
+
+const TourPackageForm = ({ initialData = undefined, onClose, destinationId, destinationTitle, type, onSuccess }: TourPackageFormProps) => {
   const [formData, setFormData] = useState<TourPackageFormData>({
     title: '',
     description: '',
@@ -386,6 +483,24 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null);
   const [activeTab, setActiveTab] = useState('basic');
+  const [inclusionsText, setInclusionsText] = useState('');
+  const [exclusionsText, setExclusionsText] = useState('');
+  const [highlightsText, setHighlightsText] = useState('');
+  const [quickfactsText, setQuickfactsText] = useState('');
+
+  const splitToArray = (input: string) =>
+    input
+      .split(/[,;\n]+/)
+      .map(s => s.trim())
+      .filter(Boolean);
+
+  // Sync textareas with arrays on initialData or formData change
+  useEffect(() => {
+    setInclusionsText(formData.inclusions.join(', '));
+    setExclusionsText(formData.exclusions.join(', '));
+    setHighlightsText(formData.highlights.join(', '));
+    setQuickfactsText(formData.quickfacts.join(', '));
+  }, [formData.inclusions, formData.exclusions, formData.highlights, formData.quickfacts]);
 
   // Fetch categories on component mount
   useEffect(() => {
@@ -598,93 +713,6 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
     });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-
-
-    // Validate all tabs before submission
-
-
-
-
-    setIsSubmitting(true);
-
-    try {
-      const form = new FormData();
-      form.append('title', formData.title);
-      form.append('description', formData.description);
-      form.append('overview', formData.overview);
-      form.append('basePrice', formData.basePrice);
-      form.append('currency', formData.currency);
-      form.append('type', formData.type);
-      form.append('rating', formData.rating);
-      form.append('destination', formData.destination);
-      form.append('activitiescategory', formData.activitiescategory);
-      form.append('tag', formData.tag);
-
-      // JSON fields
-      const jsonFields = {
-        location: formData.location,
-        duration: formData.duration,
-        feature: formData.feature,
-        itinerary: formData.itinerary.map(day => ({
-          day: day.day,
-          title: day.title,
-          description: day.description,
-          activities: day.activities
-          // DO NOT include image here!
-        })),
-        inclusions: formData.inclusions,
-        exclusions: formData.exclusions,
-        highlights: formData.highlights,
-        quickfacts: formData.quickfacts,
-      };
-      Object.entries(jsonFields).forEach(([key, value]) => {
-        form.append(key, JSON.stringify(value));
-      });
-
-      // Gallery images
-      galleryFiles.forEach(file => form.append('gallery', file));
-
-      // Google Map image
-      if (googleMapImage) form.append('googleMapImage', googleMapImage);
-
-
-
-      itineraryImages.forEach((file, index) => {
-        if (file) {
-          form.append('itineraryImages', file);
-        }
-      });
-
-      // Console log all FormData
-      for (let pair of form.entries()) {
-        console.log(pair[0] + ':', pair[1]);
-      }
-
-      await fetchAPI({
-        endpoint: 'tour/tour-packages',
-        method: 'POST',
-        data: form,
-      });
-
-      setSubmitStatus({ type: 'success', message: 'Tour Package Created Successfully!' });
-      setAlert({ show: true, type: 'success', message: 'Tour Package Created Successfully!' });
-      resetForm();
-    } catch (err) {
-      let errorMessage = 'Failed to create tour package.';
-      if (err instanceof Error) {
-        errorMessage = err.message;
-      }
-      // Show alert for backend validation errors
-      setAlert({ show: true, type: 'error', message: errorMessage });
-      setSubmitStatus({ type: 'error', message: errorMessage });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
   const resetForm = () => {
     setFormData({
       title: '',
@@ -718,6 +746,92 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
     });
     setGalleryFiles([]);
     setGoogleMapImage(null);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    try {
+      const form = new FormData();
+      form.append('title', formData.title);
+      form.append('description', formData.description);
+      form.append('overview', formData.overview);
+      form.append('basePrice', formData.basePrice);
+      form.append('currency', formData.currency);
+      form.append('type', formData.type);
+      form.append('rating', formData.rating);
+      form.append('destination', formData.destination);
+      form.append('activitiescategory', formData.activitiescategory);
+      form.append('tag', formData.tag);
+      // JSON fields
+      const jsonFields = {
+        location: formData.location,
+        duration: formData.duration,
+        feature: formData.feature,
+        itinerary: formData.itinerary.map(day => ({
+          day: day.day,
+          title: day.title,
+          description: day.description,
+          activities: day.activities
+        })),
+        inclusions: formData.inclusions,
+        exclusions: formData.exclusions,
+        highlights: formData.highlights,
+        quickfacts: formData.quickfacts,
+      };
+      Object.entries(jsonFields).forEach(([key, value]) => {
+        form.append(key, JSON.stringify(value));
+      });
+      galleryFiles.forEach(file => form.append('gallery', file));
+      if (googleMapImage) form.append('googleMapImage', googleMapImage);
+      itineraryImages.forEach((file, index) => {
+        if (file) {
+          form.append('itineraryImages', file);
+        }
+      });
+      // Console log all FormData
+      for (let pair of form.entries()) {
+        console.log(pair[0] + ':', pair[1]);
+      }
+      // --- NEW: Detect edit vs add ---
+      let isEdit = false;
+      let id = undefined;
+      if (initialData && (initialData as any)._id) {
+        isEdit = true;
+        id = (initialData as any)._id;
+      }
+      if (isEdit && id) {
+        await fetchAPI({
+          endpoint: `tour/tour-packages/${id}`,
+          method: 'PUT',
+          data: form,
+        });
+        setSubmitStatus({ type: 'success', message: 'Tour Package Updated Successfully!' });
+        setAlert({ show: true, type: 'success', message: 'Tour Package Updated Successfully!' });
+      } else {
+        await fetchAPI({
+          endpoint: 'tour/tour-packages',
+          method: 'POST',
+          data: form,
+        });
+        setSubmitStatus({ type: 'success', message: 'Tour Package Created Successfully!' });
+        setAlert({ show: true, type: 'success', message: 'Tour Package Created Successfully!' });
+        resetForm();
+      }
+      // --- NEW: Call onSuccess if provided ---
+      if (typeof onSuccess === 'function') {
+        onSuccess();
+      }
+    } catch (err) {
+      let errorMessage = (initialData && (initialData as any)._id) ? 'Failed to update tour package.' : 'Failed to create tour package.';
+      if (err instanceof Error) {
+        errorMessage = err.message;
+      }
+      setAlert({ show: true, type: 'error', message: errorMessage });
+      setSubmitStatus({ type: 'error', message: errorMessage });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const renderStatus = () => {
@@ -905,49 +1019,36 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
 
   const renderDetailsTab = () => (
     <div className="space-y-4">
-      <ArrayField
+      <ChipInput
         label="Inclusions"
-        name="inclusions"
         value={formData.inclusions}
-        onChange={(val) => setFormData({ ...formData, inclusions: val })}
-        placeholder="Add inclusion"
-
+        onChange={val => setFormData({ ...formData, inclusions: val })}
+        placeholder="Type or paste, press Enter or comma to add"
       />
-
-      <ArrayField
+      <ChipInput
         label="Exclusions"
-        name="exclusions"
         value={formData.exclusions}
-        onChange={(val) => setFormData({ ...formData, exclusions: val })}
-        placeholder="Add exclusion"
-
+        onChange={val => setFormData({ ...formData, exclusions: val })}
+        placeholder="Type or paste, press Enter or comma to add"
       />
-
-      <ArrayField
+      <ChipInput
         label="Highlights"
-        name="highlights"
         value={formData.highlights}
-        onChange={(val) => setFormData({ ...formData, highlights: val })}
-        placeholder="Add highlight"
-
+        onChange={val => setFormData({ ...formData, highlights: val })}
+        placeholder="Type or paste, press Enter or comma to add"
       />
-
-      <ArrayField
+      <ChipInput
         label="Quick Facts"
-        name="quickfacts"
         value={formData.quickfacts}
-        onChange={(val) => setFormData({ ...formData, quickfacts: val })}
-        placeholder="Add quick fact"
-
+        onChange={val => setFormData({ ...formData, quickfacts: val })}
+        placeholder="Type or paste, press Enter or comma to add"
       />
-
       <InputField
         label="Tag  (If it is Special tour then write 'special')"
         name="tag"
         value={formData.tag}
         onChange={handleChange}
         placeholder="Enter tag"
-
         icon={<FiTag />}
         min={undefined}
         max={undefined}

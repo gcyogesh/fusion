@@ -131,6 +131,7 @@ function PackageCard({
 // Helper to map Package to TourPackageFormData shape
 function mapPackageToFormData(pkg: Package, destinationId: string): TourPackageFormData {
   return {
+    _id: pkg._id, // <-- Add this line
     title: pkg.title || '',
     description: pkg.description || '',
     overview: pkg.overview || '',
@@ -254,6 +255,7 @@ export default function Page({ params }: { params: Promise<{ type: string; slug:
   const [errorMessage, setErrorMessage] = useState("");
   const [showForm, setShowForm] = useState(false);
   const [editingPackage, setEditingPackage] = useState<Partial<TourPackageFormData> | null>(null);
+  const [isEditing, setIsEditing] = useState(false); // <-- Add this line
   const [loading, setLoading] = useState(false);
   const [alert, setAlert] = useState<{
     show: boolean;
@@ -266,54 +268,53 @@ export default function Page({ params }: { params: Promise<{ type: string; slug:
   const [selectedPackage, setSelectedPackage] = useState<Package | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const packagesPerPage = 8;
+  const [successMessage, setSuccessMessage] = useState<string | null>(null); // <-- Add this line
+
+  // Move fetchData out of useEffect so it can be called from onSuccess
+  async function fetchData() {
+    try {
+      setLoading(true);
+      let endpoint = '';
+      if (type === 'destinations') {
+        endpoint = `destinations/${slug}`;
+      } else if (type === 'activities') {
+        endpoint = `activities/${slug}`;
+      } else {
+        setErrorMessage('Unknown type.');
+        setLoading(false);
+        return;
+      }
+      const res: any = await fetchAPI({ endpoint });
+      const entity = res.data.destination || res.data.activity || res.data;
+      setEntity(entity);
+      const relatedIds = res.data.relatedPackages?.map((pkg: { _id: string }) => pkg._id) || [];
+      const packages = await Promise.all(
+        relatedIds.map(async (id: string) => {
+          const pkgRes: any = await fetchAPI({ endpoint: `tour/tour-packages/${id}` });
+          return pkgRes.data;
+        })
+      );
+      setRelatedPackages(packages);
+    } catch (error: any) {
+      setErrorMessage(error.message || "Failed to fetch data.");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   useEffect(() => {
-    async function fetchData() {
-      try {
-        setLoading(true);
-        let endpoint = '';
-        if (type === 'destinations') {
-          endpoint = `destinations/${slug}`;
-        } else if (type === 'activities') {
-          endpoint = `activities/${slug}`;
-        } else {
-          setErrorMessage('Unknown type.');
-          setLoading(false);
-          return;
-        }
-        const res: any = await fetchAPI({ endpoint });
-        const entity = res.data.destination || res.data.activity || res.data;
-        setEntity(entity);
-        const relatedIds = res.data.relatedPackages?.map((pkg: { _id: string }) => pkg._id) || [];
-        const packages = await Promise.all(
-          relatedIds.map(async (id: string) => {
-            const pkgRes: any = await fetchAPI({ endpoint: `tour/tour-packages/${id}` });
-            return pkgRes.data;
-          })
-        );
-        setRelatedPackages(packages);
-      } catch (error: any) {
-        setErrorMessage(error.message || "Failed to fetch data.");
-      } finally {
-        setLoading(false);
-      }
-    }
     if (slug && type) fetchData();
   }, [slug, type]);
 
   const handleEdit = (pkg: Package) => {
     setEditingPackage(mapPackageToFormData(pkg, entity?._id || ''));
+    setIsEditing(true); // <-- Set editing state
     setShowForm(true);
-    setAlert({
-      show: true,
-      type: 'success',
-      message: `Editing package: ${pkg.title}`,
-      onConfirm: () => setAlert((a) => ({ ...a, show: false })),
-    });
   };
 
   const handleAdd = () => {
     setEditingPackage(null);
+    setIsEditing(false); // <-- Not editing
     setShowForm(true);
   };
 
@@ -372,6 +373,12 @@ export default function Page({ params }: { params: Promise<{ type: string; slug:
         <PackageDetailsModal pkg={selectedPackage} onClose={() => setSelectedPackage(null)} />
       )}
       <div className="max-w-6xl mx-auto">
+        {successMessage && (
+          <div className="mb-6 p-4 bg-green-100 border-l-4 border-green-500 text-green-800 rounded flex items-center justify-between">
+            <span>{successMessage}</span>
+            <button onClick={() => setSuccessMessage(null)} className="ml-4 text-green-700 hover:underline">Dismiss</button>
+          </div>
+        )}
         {/* Entity Info */}
         {entity && (
           <div className="mb-8">
@@ -404,12 +411,22 @@ export default function Page({ params }: { params: Promise<{ type: string; slug:
         {/* Show Form (inline, right after header) */}
         {showForm && (
           <div className="max-w-2xl mx-auto mb-8">
+            {isEditing && (
+              <div className="mb-4 p-3 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 rounded">
+                <strong>Editing Package:</strong> You are editing an existing package. Make your changes and click Update Package.
+              </div>
+            )}
             <TourPackageForm 
               onClose={() => setShowForm(false)} 
               initialData={editingPackage || undefined} 
               destinationId={entity?._id || ''}
               destinationTitle={entity?.title || ''}
               type={type}
+              onSuccess={() => {
+                setShowForm(false);
+                fetchData();
+                setSuccessMessage(isEditing ? 'Package updated successfully!' : 'Package created successfully!');
+              }}
             />
           </div>
         )}

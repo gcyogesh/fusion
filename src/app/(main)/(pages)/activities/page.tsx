@@ -3,6 +3,7 @@ import ImageDisplay from "@/components/atoms/ImageCard";
 import Breadcrumb from "@/components/atoms/breadcrumb";
 import { fetchAPI } from "@/utils/apiService";
 import TextHeader from "@/components/atoms/headings";
+import HeroBanner from "@/components/organisms/Banner/HeroBanner";
 
 interface Category {
   _id: string;
@@ -14,10 +15,15 @@ interface Category {
 export default async function CategoriesPage() {
   const response = await fetchAPI<{ data: Category[] }>({ endpoint: "category/activities" });
   const categories = response?.data || [];
+  
+  const herodata = await fetchAPI({ endpoint: "herobanner/activities" });
+
+
 
   return (
     <>
       <Breadcrumb currentnavlink="Activities" />
+      <HeroBanner herodata={herodata?.data || []} />
       <section className="max-w-7xl mx-auto px-6 py-12">
         <TextHeader
           text="Explore by Categories"
