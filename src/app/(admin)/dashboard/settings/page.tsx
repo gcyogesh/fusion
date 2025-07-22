@@ -470,7 +470,7 @@ const handlePageTitleChange = (value) => {
       setAlert({
         show: true,
         type: 'warning',
-        message: 'Address, primary phone, and email are required.',
+        message: 'Address, and email are required.',
       });
       return;
     }
@@ -686,19 +686,8 @@ const handlePageTitleChange = (value) => {
                 <FiMapPin className="w-4 h-4" />
                 Address
               </label>
-              <input 
-                type="text" 
-                name="address"
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-primary outline-none text-base bg-white transition hover:bg-gray-50" 
-                placeholder="Business Address" 
-                value={contactData.address}
-                onChange={handleContactChange}
-              />
-              
-              <label className="text-sm font-semibold text-gray-700 flex items-center gap-1">
-                <FiPhone className="w-4 h-4" />
-                Primary Phone
-              </label>
+            
+           
               <input 
                 type="text" 
                 name="phone"
