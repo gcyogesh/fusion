@@ -27,6 +27,11 @@ interface ImageDisplayProps<T = string> {
   showOverlayContent?: boolean;
   totalTrips?: number;
   createdAt?: string;
+  /**
+   * If true, this image is the LCP (Largest Contentful Paint) image and will be loaded eagerly with high fetch priority.
+   * Use only for the main hero/banner image above the fold.
+   */
+  isLCP?: boolean;
 }
 
 const aspectRatios = {
@@ -60,6 +65,13 @@ const containerVariants = {
   exit: { opacity: 0, y: 20, scale: 0.95, transition: { duration: 0.3 } },
 };
 
+// Skeleton Loader for Suspense fallback
+const ImageSkeleton = () => (
+  <div className="w-full h-full bg-gray-200 animate-pulse rounded-xl flex items-center justify-center">
+    <div className="w-1/2 h-1/2 bg-gray-300 rounded-lg" />
+  </div>
+);
+
 const ImageDisplay = <T extends string>({
   src,
   alt = 'Image',
@@ -78,9 +90,13 @@ const ImageDisplay = <T extends string>({
   totalTrips,
   createdAt,
   showOverlayContent = true,
+  isLCP = false,
 }: ImageDisplayProps<T>) => {
   const [isError, setIsError] = useState(false);
   const shouldShowPlaceholder = isError || !src;
+
+  const mainFetchPriority = isLCP ? 'high' : 'low';
+  const mainLoading = isLCP ? 'eager' : 'lazy';
 
   return (
     <motion.div
@@ -98,14 +114,14 @@ const ImageDisplay = <T extends string>({
       {shouldShowPlaceholder ? (
         <div className="w-full h-full bg-gray-200 flex items-center justify-center">
           {placeholderSrc ? (
-            <Suspense fallback={<span className="text-gray-400 text-sm md:text-base">Loading image...</span>}>
+            <Suspense fallback={<ImageSkeleton />}>
               <Image
                 src={placeholderSrc}
                 alt="Placeholder"
                 fill
                 style={{ objectFit: 'cover' }}
-                fetchPriority="low"
-                loading="lazy"
+                fetchPriority={mainFetchPriority}
+                loading={mainLoading}
                 onError={() => setIsError(true)}
               />
             </Suspense>
@@ -114,14 +130,14 @@ const ImageDisplay = <T extends string>({
           )}
         </div>
       ) : (
-        <Suspense fallback={<span className="text-gray-400 text-sm md:text-base">Loading image...</span>}>
+        <Suspense fallback={<ImageSkeleton />}>
           <Image
             src={src as string}
             alt={alt}
             fill
             style={{ objectFit: 'cover' }}
-            fetchPriority="high"
-            loading="eager"
+            fetchPriority={mainFetchPriority}
+            loading={mainLoading}
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
             onError={() => setIsError(true)}
           />
