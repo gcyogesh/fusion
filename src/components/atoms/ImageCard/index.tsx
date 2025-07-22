@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, Suspense } from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import ArrowIcon from '../arrowIcon';
 import Button from '../button';
@@ -27,11 +27,6 @@ interface ImageDisplayProps<T = string> {
   showOverlayContent?: boolean;
   totalTrips?: number;
   createdAt?: string;
-  /**
-   * If true, this image is the LCP (Largest Contentful Paint) image and will be loaded eagerly with high fetch priority.
-   * Use only for the main hero/banner image above the fold.
-   */
-  isLCP?: boolean;
 }
 
 const aspectRatios = {
@@ -65,13 +60,6 @@ const containerVariants = {
   exit: { opacity: 0, y: 20, scale: 0.95, transition: { duration: 0.3 } },
 };
 
-// Skeleton Loader for Suspense fallback
-const ImageSkeleton = () => (
-  <div className="w-full h-full bg-gray-200 animate-pulse rounded-xl flex items-center justify-center">
-    <div className="w-1/2 h-1/2 bg-gray-300 rounded-lg" />
-  </div>
-);
-
 const ImageDisplay = <T extends string>({
   src,
   alt = 'Image',
@@ -90,13 +78,9 @@ const ImageDisplay = <T extends string>({
   totalTrips,
   createdAt,
   showOverlayContent = true,
-  isLCP = false,
 }: ImageDisplayProps<T>) => {
   const [isError, setIsError] = useState(false);
   const shouldShowPlaceholder = isError || !src;
-
-  const mainFetchPriority = isLCP ? 'high' : 'low';
-  const mainLoading = isLCP ? 'eager' : 'lazy';
 
   return (
     <motion.div
@@ -114,35 +98,36 @@ const ImageDisplay = <T extends string>({
       {shouldShowPlaceholder ? (
         <div className="w-full h-full bg-gray-200 flex items-center justify-center">
           {placeholderSrc ? (
-            <Suspense fallback={<ImageSkeleton />}>
-              <Image
-                src={placeholderSrc}
-                alt="Placeholder"
-                fill
-                style={{ objectFit: 'cover' }}
-                fetchPriority={mainFetchPriority}
-                loading={mainLoading}
-                onError={() => setIsError(true)}
-              />
-            </Suspense>
+            <img
+              src={placeholderSrc}
+              alt="Placeholder"
+              className="w-full h-full object-cover"
+            />
           ) : (
             <span className="text-gray-400 text-sm md:text-base">Image not available</span>
+
+
+
           )}
         </div>
       ) : (
-        <Suspense fallback={<ImageSkeleton />}>
-          <Image
-            src={src as string}
-            alt={alt}
-            fill
-            style={{ objectFit: 'cover' }}
-            fetchPriority={mainFetchPriority}
-            loading={mainLoading}
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-            onError={() => setIsError(true)}
-          />
-        </Suspense>
+        <img
+          src={src}
+          alt={alt}
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          onError={() => setIsError(true)}
+        />
+
+
+
+
+
+
+
       )}
+
+
+
 
       {showOverlayContent && (
         <motion.div
@@ -165,11 +150,11 @@ const ImageDisplay = <T extends string>({
       )}
 
       {createdAt && (
-        <div className="absolute bottom-2 left-2  flex   items-center  backdrop-blur-md bg-white/20  text-md text-gray-200 px-6 py-2 m-3 border border-white/40 rounded-full">
-          <Image src="/images/calender.png" width={25} height={25} alt="Image nnot found" className='mr-1.5 ' fetchPriority="low" loading="lazy" />
-          {new Date(createdAt).toLocaleDateString()}
-        </div>
-      )}
+            <div className="absolute bottom-2 left-2  flex   items-center  backdrop-blur-md bg-white/20  text-md text-gray-200 px-6 py-2 m-3 border border-white/40 rounded-full">
+              <Image src="/images/calender.png" width={25} height={25} alt="Image nnot found" className='mr-1.5 ' />
+              {new Date(createdAt).toLocaleDateString()}
+            </div>
+          )}
 
       {typeof totalTrips === 'number' && (
         <div className="absolute top-8 left-1/2 -translate-x-1/2 z-10">
@@ -180,6 +165,7 @@ const ImageDisplay = <T extends string>({
           </button>
         </div>
       )}
+
 
       {title && showDefaultTitle && (
         <div className="absolute bottom-4 left-0 w-full text-center px-4 py-3  from-black/70 to-transparent group-hover:opacity-0 transition-opacity duration-300 text-lg ">
