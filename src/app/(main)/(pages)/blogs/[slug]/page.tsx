@@ -6,6 +6,7 @@ import { FaInstagram, FaFacebookF, FaYoutube } from "react-icons/fa";
 import Link from "next/link";
 import ImageDisplay from "@/components/atoms/ImageCard";
 import ArrowIcon from "@/components/atoms/arrowIcon";
+import Breadcrumb from "@/components/atoms/breadcrumb";
 
 const socialLinks = [
   {
@@ -73,6 +74,8 @@ export default async function Page({ params }: { params: { slug: string } }) {
     const secondaryBlogs = relatedBlogs.slice(1, 3);
 
     return (
+      <>
+       <Breadcrumb currentnavlink={`Blogs / ${blogdata.data.title}`} />
       <section>
         <div className="mx-auto max-w-7xl py-18 flex flex-col md:flex-row justify-between gap-8">
           {/* Main Content */}
@@ -224,7 +227,9 @@ export default async function Page({ params }: { params: { slug: string } }) {
           </section>
         )}
       </section>
+      </>
     );
+    
   } catch (error) {
     console.error('Error in blog page:', error);
     
