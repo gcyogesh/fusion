@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import ArrowIcon from '../arrowIcon';
 import Button from '../button';
@@ -98,36 +98,35 @@ const ImageDisplay = <T extends string>({
       {shouldShowPlaceholder ? (
         <div className="w-full h-full bg-gray-200 flex items-center justify-center">
           {placeholderSrc ? (
-            <img
-              src={placeholderSrc}
-              alt="Placeholder"
-              className="w-full h-full object-cover"
-            />
+            <Suspense fallback={<span className="text-gray-400 text-sm md:text-base">Loading image...</span>}>
+              <Image
+                src={placeholderSrc}
+                alt="Placeholder"
+                fill
+                style={{ objectFit: 'cover' }}
+                fetchPriority="low"
+                loading="lazy"
+                onError={() => setIsError(true)}
+              />
+            </Suspense>
           ) : (
             <span className="text-gray-400 text-sm md:text-base">Image not available</span>
-
-
-
           )}
         </div>
       ) : (
-        <img
-          src={src}
-          alt={alt}
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-          onError={() => setIsError(true)}
-        />
-
-
-
-
-
-
-
+        <Suspense fallback={<span className="text-gray-400 text-sm md:text-base">Loading image...</span>}>
+          <Image
+            src={src as string}
+            alt={alt}
+            fill
+            style={{ objectFit: 'cover' }}
+            fetchPriority="high"
+            loading="eager"
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            onError={() => setIsError(true)}
+          />
+        </Suspense>
       )}
-
-
-
 
       {showOverlayContent && (
         <motion.div
@@ -150,11 +149,11 @@ const ImageDisplay = <T extends string>({
       )}
 
       {createdAt && (
-            <div className="absolute bottom-2 left-2  flex   items-center  backdrop-blur-md bg-white/20  text-md text-gray-200 px-6 py-2 m-3 border border-white/40 rounded-full">
-              <Image src="/images/calender.png" width={25} height={25} alt="Image nnot found" className='mr-1.5 ' />
-              {new Date(createdAt).toLocaleDateString()}
-            </div>
-          )}
+        <div className="absolute bottom-2 left-2  flex   items-center  backdrop-blur-md bg-white/20  text-md text-gray-200 px-6 py-2 m-3 border border-white/40 rounded-full">
+          <Image src="/images/calender.png" width={25} height={25} alt="Image nnot found" className='mr-1.5 ' fetchPriority="low" loading="lazy" />
+          {new Date(createdAt).toLocaleDateString()}
+        </div>
+      )}
 
       {typeof totalTrips === 'number' && (
         <div className="absolute top-8 left-1/2 -translate-x-1/2 z-10">
@@ -165,7 +164,6 @@ const ImageDisplay = <T extends string>({
           </button>
         </div>
       )}
-
 
       {title && showDefaultTitle && (
         <div className="absolute bottom-4 left-0 w-full text-center px-4 py-3  from-black/70 to-transparent group-hover:opacity-0 transition-opacity duration-300 text-lg ">
