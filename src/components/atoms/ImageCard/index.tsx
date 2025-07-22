@@ -27,6 +27,11 @@ interface ImageDisplayProps<T = string> {
   showOverlayContent?: boolean;
   totalTrips?: number;
   createdAt?: string;
+  /**
+   * If true, this image is the LCP (Largest Contentful Paint) image and will be loaded eagerly with high fetch priority.
+   * Use only for the main hero/banner image above the fold.
+   */
+  isLCP?: boolean;
 }
 
 const aspectRatios = {
@@ -78,9 +83,13 @@ const ImageDisplay = <T extends string>({
   totalTrips,
   createdAt,
   showOverlayContent = true,
+  isLCP = false,
 }: ImageDisplayProps<T>) => {
   const [isError, setIsError] = useState(false);
   const shouldShowPlaceholder = isError || !src;
+
+  const mainFetchPriority = isLCP ? 'high' : 'low';
+  const mainLoading = isLCP ? 'eager' : 'lazy';
 
   return (
     <motion.div
@@ -98,32 +107,30 @@ const ImageDisplay = <T extends string>({
       {shouldShowPlaceholder ? (
         <div className="w-full h-full bg-gray-200 flex items-center justify-center">
           {placeholderSrc ? (
-            <img
+            <Image
               src={placeholderSrc}
               alt="Placeholder"
-              className="w-full h-full object-cover"
+              fill
+              style={{ objectFit: 'cover' }}
+              fetchPriority={mainFetchPriority}
+              loading={mainLoading}
+              onError={() => setIsError(true)}
             />
           ) : (
             <span className="text-gray-400 text-sm md:text-base">Image not available</span>
-
-
-
           )}
         </div>
       ) : (
-        <img
-          src={src}
+        <Image
+          src={src as string}
           alt={alt}
+          fill
+          style={{ objectFit: 'cover' }}
+          fetchPriority={mainFetchPriority}
+          loading={mainLoading}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           onError={() => setIsError(true)}
         />
-
-
-
-
-
-
-
       )}
 
 

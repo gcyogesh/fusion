@@ -399,7 +399,7 @@ export default async function Home() {
                 <h1>Everest (Khumbu), Nepal</h1>
               </div>
               <div className="flex items-center justify-center gap-2  text-[16px] md:text-[18px]">
-                <Image src={"/images/treks.svg"} alt="Location" width={25} height={22}/>
+                <Image src={blogsdata.imageUrl} alt="Location" width={25} height={22}/>
                 <h1 className="font-sans">Moderate to Challenging</h1>
               </div>
             </div>
