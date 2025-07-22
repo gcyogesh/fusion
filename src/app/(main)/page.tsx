@@ -138,7 +138,7 @@ export default async function Home() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10 "> {/* Consistent gap */}
 
 {filteredPackages.slice(0, 3).map((card, index) => (
-  <Link href={`/itinerary/${card._id}`} key={index} className="flex flex-col gap-4">
+  <Link href={`/itinerary/${card.slug}`} key={index} className="flex flex-col gap-4">
     <div className="aspect-video ">
       <ImageDisplay
         src={card.gallery[0]}

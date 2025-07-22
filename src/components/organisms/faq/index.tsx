@@ -10,7 +10,7 @@
   }
 
   export default function FAQSection({ faqdata }: { faqdata: any[] }) {
-    console.log('faqdata:', faqdata);
+  
     // Use _id, question, or index as id
     const getId = (faq: any, idx: number) => faq.id || faq._id || faq.question || String(idx);
     const [openId, setOpenId] = useState<string | null>(getId(faqdata[0], 0));

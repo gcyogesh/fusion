@@ -364,60 +364,37 @@ const handlePageTitleChange = (value) => {
     }
   };
 
-  // Save handlers
+  // 
   const handleSaveHero = async () => {
-    if (
-      !heroData.title.trim() ||
-      !heroData.subTitle.trim() ||
-      !heroData.description.trim() ||
-      !heroData.buttonText.trim() ||
-      !heroData.buttonLink.trim()
-    ) {
-      setAlert({
-        show: true,
-        type: 'warning',
-        message: 'Please fill in all required hero section fields.',
-      });
-      return;
-    }
-
     setHeroSaving(true);
     try {
-      let bannerImageUrl = heroData.bannerImage;
-
+      const formData = new FormData();
+  
+      // Always include all required fields
+      formData.append('page', selectedHeroPage);
+      formData.append('title', heroData.title);
+      formData.append('subTitle', heroData.subTitle);
+      formData.append('description', heroData.description);
+      formData.append('buttonText', heroData.buttonText);
+      formData.append('buttonLink', heroData.buttonLink);
+  
+      // Only append the file if it exists
       if (heroImageFile) {
-        const formData = new FormData();
-        formData.append('file', heroImageFile);
-
-        const uploadRes: any = await fetchAPI({
-          endpoint: 'herobanner',
-          method: 'POST',
-          data: formData,
-        });
-
-        bannerImageUrl = uploadRes?.url || bannerImageUrl;
+        formData.append('bannerImage', heroImageFile);
       }
-
+  
       await fetchAPI({
-        endpoint: `herobanner/${selectedHeroPage}`,
-        method: 'POST',
-        data: {
-          _id: heroData._id,
-          page: selectedHeroPage,
-          title: heroData.title,
-          subTitle: heroData.subTitle,
-          description: heroData.description,
-          buttonText: heroData.buttonText,
-          buttonLink: heroData.buttonLink,
-          bannerImage: bannerImageUrl,
-        },
+        endpoint: `herobanner/${selectedHeroPage}`, // ✅ Template literal fixed here
+        method: 'PUT',
+        data: formData,
       });
-
+  
       setAlert({
         show: true,
         type: 'success',
         message: 'Hero banner updated successfully!',
       });
+  
       setHeroImageFile(null);
     } catch (e: any) {
       setAlert({
@@ -429,7 +406,18 @@ const handlePageTitleChange = (value) => {
       setHeroSaving(false);
     }
   };
+  
 
+
+
+
+
+
+
+
+
+
+  
   const handleSaveLogos = async () => {
     if (!logoFiles[0] || !logoFiles[1]) {
       setAlert({ show: true, type: 'warning', message: 'Please select both primary and secondary logos to upload.' });
@@ -470,7 +458,7 @@ const handlePageTitleChange = (value) => {
       setAlert({
         show: true,
         type: 'warning',
-        message: 'Address, primary phone, and email are required.',
+        message: 'Address, and email are required.',
       });
       return;
     }
@@ -686,19 +674,8 @@ const handlePageTitleChange = (value) => {
                 <FiMapPin className="w-4 h-4" />
                 Address
               </label>
-              <input 
-                type="text" 
-                name="address"
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-primary outline-none text-base bg-white transition hover:bg-gray-50" 
-                placeholder="Business Address" 
-                value={contactData.address}
-                onChange={handleContactChange}
-              />
-              
-              <label className="text-sm font-semibold text-gray-700 flex items-center gap-1">
-                <FiPhone className="w-4 h-4" />
-                Primary Phone
-              </label>
+            
+           
               <input 
                 type="text" 
                 name="phone"

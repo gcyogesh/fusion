@@ -1,15 +1,11 @@
+
+"use client"
+
 import Image from "next/image";
-import { FaInstagram, FaFacebookF, FaYoutube, FaCcVisa, FaCcMastercard, FaCcAmex, FaWhatsapp } from "react-icons/fa";
+import { FaInstagram, FaFacebookF, FaYoutube, FaCcVisa, FaCcMastercard, FaCcAmex, FaWhatsapp , FaTwitter} from "react-icons/fa";
 import Logo from "@/components/atoms/Logo";
 import ContactDetails from "../ContactDetails";
 import { ContactInfo } from "@/types";
-
-const socialLinks = [
-  { Icon: FaInstagram, link: "#", label: "Instagram" },
-  { Icon: FaFacebookF, link: "#", label: "Facebook" },
-  { Icon: FaYoutube, link: "#", label: "YouTube" },
- 
-];
 
 const companyLinks = [
   { label: "About Us", href: "/about" },
@@ -37,7 +33,16 @@ interface FooterProps {
   contactInfo: ContactInfo;
 }
 
-export default function Footer({ destinations = [], activities = [] , ContactInfo =[]}: FooterProps) {
+export default function Footer({ destinations = [], activities = [] , contactInfo}: FooterProps) {
+  
+const socialLinks = [
+  { Icon: FaInstagram, link: contactInfo.socialLinks.instagram , label: "Instagram" },
+
+  { Icon: FaFacebookF, link: contactInfo.socialLinks.facebook,  label: "Facebook" },
+  { Icon: FaYoutube, link:  contactInfo.socialLinks.twitter, label: "YouTube" },
+ 
+];
+
   return (
     <footer className="bg-gradient-to-t from-[#85cdf4] to-[#F5F5F5]">
       <Image

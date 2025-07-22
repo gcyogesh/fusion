@@ -1,5 +1,6 @@
 // Core Entity Interfaces
 export interface Destination {
+  _id: any;
   title: string;
   slug: string;
   subtitle?: string;
