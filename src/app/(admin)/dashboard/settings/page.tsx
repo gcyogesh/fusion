@@ -391,7 +391,7 @@ const handlePageTitleChange = (value) => {
 
         const uploadRes: any = await fetchAPI({
           endpoint: 'herobanner',
-          method: 'POST',
+          method: 'PUT',
           data: formData,
         });
 
@@ -400,7 +400,7 @@ const handlePageTitleChange = (value) => {
 
       await fetchAPI({
         endpoint: `herobanner/${selectedHeroPage}`,
-        method: 'POST',
+        method: 'PUT',
         data: {
           _id: heroData._id,
           page: selectedHeroPage,

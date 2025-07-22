@@ -26,7 +26,7 @@ interface Destination {
 
 function CategorySelect({ value, onChange, endpoint, allowAdd = true, label = "Category" }) {
   const [categories, setCategories] = useState<Category[]>([]);
-  const [newCategory, setNewCategory] = useState("");
+const [newCategory, setNewCategory] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [justAddedId, setJustAddedId] = useState<string | null>(null);
@@ -273,7 +273,7 @@ function DestinationSelect({ value, onChange }) {
     const exists = destinations.some(dest => String(dest._id) === String(valueId));
     if (!exists) {
       return [
-        { _id: valueId, title: `Current: ${getCurrentDestinationLabel(value)}` },
+      { _id: valueId, title: `Current: ${getCurrentDestinationLabel(value)}` },
         ...destinations,
       ];
     }

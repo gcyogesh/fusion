@@ -6,36 +6,7 @@ import TextDescription from "@/components/atoms/description";
 import Breadcrumb from "@/components/atoms/breadcrumb";
 import Link from "next/link";
 import Image from "next/image";
-
-interface Destination {
-  _id: string;
-  title: string;
-  subtitle: string;
-  description?: string;
-  image: string;
-  imageUrls?: string[];
-  slug: string;
-}
-
-interface TourPackage {
-  _id: string;
-  title: string;
-  description: string;
-  overview: string;
-  location: {
-    city: string;
-    country: string;
-  };
-  basePrice: number;
-  currency: string;
-  gallery: string;
-  duration: {
-    days: number;
-    nights: number;
-  };
-  imageUrls?: string[];
-}
-
+import { Destination , TourPackage } from "@/types";
 
 interface Params {
   params: { slug: string };
