@@ -51,14 +51,14 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
   };
 }
 
-export default async function Page({ params }: { params: { id: string } }) {
-  const endpoint = `tour/tour-packages/${params.id}`;
+export default async function Page({ params }: { params: { slug: string } }) {
+  const endpoint = `tour/tour-packages/${params.slug}`;
   const response = await fetchAPI<TourPackage>({ endpoint });
   const packages = response?.data;
 
   if (!packages) notFound();
   
-
+ 
  
 
   const featureData = [
@@ -108,10 +108,12 @@ export default async function Page({ params }: { params: { id: string } }) {
       icon: "/images/iterate/kathmandu.png",
     },
   ];
-
+  const isActivity = packages.activitiescategory?._id;
+const categoryType = isActivity ? "Activities" : "Destinations";
+console.log(isActivity)
   return (
     <>
-      <Breadcrumb currentnavlink={`Activities / ${packages?.title || "Destination"}`} />
+      <Breadcrumb currentnavlink={`${categoryType} / ${packages?.title || "Destination"}`} />
       <section className="mx-auto max-w-7xl mt-5 px-4 md:px-6">
         
 
