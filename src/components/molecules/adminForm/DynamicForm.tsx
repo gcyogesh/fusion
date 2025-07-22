@@ -131,6 +131,10 @@ function CategorySelect({ value, onChange, endpoint, allowAdd = true, label = "C
   );
 
 
+  function handleArrayChange(key: any, idx: number, value: string): void {
+    throw new Error("Function not implemented.");
+  }
+
   return (
     <div className="flex flex-col gap-2">
       <div className="relative">

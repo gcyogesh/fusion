@@ -42,12 +42,12 @@ const Sidebar = ({
     { icon: FaWallet, text: "Blog Collection", link: "/dashboard/customise-blogs" },
     {
       icon: FaChartLine,
-      text: "Contact Form",
+      text: "Enquiry Form",
       link: "/dashboard/contact-form",
       submenu: [
         {
           icon: FaChartLine,
-          text: "Contact Messages",
+          text: "Enquiry  Messages",
           link: "/dashboard/contact-form/contact",
         },
         {
@@ -58,18 +58,15 @@ const Sidebar = ({
       ],
     },
     { icon: FaBox, text: "Activities", link: "/dashboard/customise-activities" },
+    // Add Review Customisation menu item
+    { icon: FaStar, text: "Review   ", link: "/dashboard/reviews" },
     {
       icon: FaChartLine,
-      text: "Testimonaials & Reviews",
-      link: "/dashboard/testimonial-reviews",
-      submenu: [
-        { icon: FaStar, text: "Testimonials", link: "/dashboard/testimonial-reviews/customise-testimonials" },
-        { icon: FaCog, text: "Reviews", link: "/dashboard/testimonial-reviews/reviews" },
-      ],
+      text: "Testimonaials",
+      link: "/dashboard/customise-testimonials",
+
     },
-   
     { icon: FaUserFriends, text: "Team", link: "/dashboard/customise-team" },
-    
     { icon: FaCog, text: "Settings", link: "/dashboard/settings" },
   ];
 
@@ -103,7 +100,7 @@ const Sidebar = ({
                     router.push(link);
                   }
                 }}
-                className="w-full flex items-center justify-between px-4 py-3 rounded-lg hover:bg-slate-800/50 transition-all duration-200 group border-l-4 border-transparent hover:border-blue-400 text-left"
+                className="w-full flex items-center justify-between px-4 py-3 rounded-lg hover:bg-slate-800/50 transition-all duration-200 group border-l-4 border-transparent hover:border-blue-400 text-left cursor-pointer"
               >
                 <div className="flex items-center space-x-3">
                   <Icon className="text-lg text-slate-300 group-hover:text-blue-400 transition-colors" />
@@ -129,7 +126,7 @@ const Sidebar = ({
       <Link
         key={subIdx}
         href={subLink}
-        className="flex items-center justify-between px-4 py-3 rounded-lg hover:bg-slate-800/50 transition-all duration-200 group border-l-4 border-transparent hover:border-blue-400 ml-4"
+        className="flex items-center justify-between px-4 py-3 rounded-lg hover:bg-slate-800/50 transition-all duration-200 group border-l-4 border-transparent hover:border-blue-400 ml-4 cursor-pointer"
       >
         <div className="flex items-center space-x-3">
           <SubIcon className="text-lg text-slate-300 group-hover:text-blue-400 transition-colors" />

@@ -87,20 +87,29 @@ const socialLinks = [
 export default async function Home() {
   const partnersdata: any = await fetchAPI({ endpoint: "partners" });
   const blogsdata: any = await fetchAPI({ endpoint: "blogs" });
-    const Faqdata: any = await fetchAPI({ endpoint: "faqs" });
+  const FaqdataRaw: any = await fetchAPI({ endpoint: "faqs" });
 
   const destinationdata: any = await fetchAPI({ endpoint: "destinations" });
-  const packagesdata = await fetchAPI<TourPackages>({ endpoint: "tour/tour-packages" });
-  const activitiesdata = await fetchAPI<Activities>({ endpoint: "category/activities" });
-  const activities: Activities = activitiesdata?.data || [];
-const testimonialData = await fetchAPI({ endpoint: "testimonials" }) || [];
+  const packagesdata: any = await fetchAPI({ endpoint: "tour/tour-packages" });
+  const activitiesdata: any = await fetchAPI({ endpoint: "category/activities" });
+  // Handle possible API response shapes
+  const activities: Activities = (Array.isArray(activitiesdata) ? activitiesdata : (activitiesdata?.data || [])).map((activity: any) => ({
+    _id: activity._id,
+    title: activity.title,
+    subtitle: activity.subtitle || '',
+    description: activity.description || '',
+    image: activity.image || (activity.imageUrls ? activity.imageUrls[0] : ''),
+    slug: activity.slug
+  }));
+  const testimonialRaw = await fetchAPI({ endpoint: "testimonials" });
+  const testimonialData: any[] = Array.isArray(testimonialRaw) ? testimonialRaw : (testimonialRaw?.data || []);
 
   // Filter packages to exclude activities and destinations
- const filteredPackages = packagesdata?.data?.tours.filter((card) => {
-  const isActivity = card.type === 'activity' || card.category === 'activity';
-  const isDestination = card.type === 'destination' || card.category === 'destination';
-  return !isActivity && !isDestination;
-}) || [];
+  const filteredPackages = (packagesdata?.data?.tours || packagesdata?.tours || []).filter((card: any) => {
+    const isActivity = card.type === 'activity' || card.category === 'activity';
+    const isDestination = card.type === 'destination' || card.category === 'destination';
+    return !isActivity && !isDestination;
+  }) || [];
 
   const herosectiondata: any = await fetchAPI({ endpoint: "herobanner/home" });
     
@@ -529,7 +538,7 @@ const testimonialData = await fetchAPI({ endpoint: "testimonials" }) || [];
         width="500px"
         buttonText="FAQ"
       />
-  <FAQAccordion faqdata={Faqdata}/>
+  <FAQAccordion faqdata={FaqdataRaw}/>
   </section>
     
 

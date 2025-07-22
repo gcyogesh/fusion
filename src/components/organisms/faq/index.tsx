@@ -2,7 +2,6 @@
 
   import { useState } from 'react';
   import { Minus, Plus } from 'lucide-react';
-  import TextHeader from '@/components/atoms/headings';
 
   interface FAQ {
     id: string;
@@ -10,8 +9,11 @@
     answer: string;
   }
 
-  export default function FAQSection({ faqdata }: { faqdata: FAQ[] }) {
-    const [openId, setOpenId] = useState<string | null>(faqdata[0]?.id || null);
+  export default function FAQSection({ faqdata }: { faqdata: any[] }) {
+    console.log('faqdata:', faqdata);
+    // Use _id, question, or index as id
+    const getId = (faq: any, idx: number) => faq.id || faq._id || faq.question || String(idx);
+    const [openId, setOpenId] = useState<string | null>(getId(faqdata[0], 0));
 
     const toggleFAQ = (id: string) => {
       setOpenId(openId === id ? null : id);
@@ -19,17 +21,18 @@
 
     return (
       <div className="w-full max-w-[400px] md:max-w-[710px] px-2 md:px-0 space-y-4">
-        {faqdata.map((faq) => {
-          const isOpen = openId === faq.id;
+        {faqdata.map((faq, idx) => {
+          const id = getId(faq, idx);
+          const isOpen = openId === id;
           return (
             <div
-              key={faq.id}
+              key={id}
               className={`rounded-xl p-6 text-black border border-gray-200 shadow-sm transition-all duration-300 ease-in-out ${
                 isOpen ? 'bg-[#FCE1AC]' : ''
               }`}
             >
               <button
-                onClick={() => toggleFAQ(faq.id)}
+                onClick={() => toggleFAQ(id)}
                 className="w-full flex justify-between items-center text-left"
               >
                 <span className="text-xl font-semibold">{faq.question}</span>

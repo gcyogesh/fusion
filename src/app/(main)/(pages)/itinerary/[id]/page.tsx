@@ -306,16 +306,7 @@ export default async function Page({ params }: { params: { id: string } }) {
 </div>
             
       <div className="w-full max-w-4xl  py-6 mx-auto " id="FAQs">
-        <TextHeader
-        text="Need Help? We've Got Answers!"
-        specialWordsIndices="4"
-        align="left"
-        size="large"
-        width="500px"
-        buttonText="FAQ"
-        className="mb-2"
-      />
-        <FAQAccordion />
+
         </div>
       <section id="Reviews" className="mx-auto max-w-7xl px-4">
         <ReviewSection tourId={params.id} />

@@ -2,8 +2,6 @@ import Cookies from "js-cookie";
 import { APIResponse } from "@/types";
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "https://yogeshbhai.ddns.net/api";
 
-
-
 interface FetchAPIOptions<T = unknown> {
   endpoint: string;
   method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
@@ -14,17 +12,17 @@ interface FetchAPIOptions<T = unknown> {
 }
 
 // ✅ Strongly typed fetchAPI with generic return
-export const fetchAPI = async <T>({
+export const fetchAPI = async <TResponse = any, TData = unknown>({
   endpoint = "",
   method = "GET",
   data,
   id,
   slug,
   revalidateSeconds = 10,
-}: FetchAPIOptions): Promise<APIResponse<T>> => {
+}: FetchAPIOptions<TData>): Promise<APIResponse<TResponse>> => {
   const token = Cookies.get("token");
 
-  const urlParts = [API_BASE, endpoint];
+  const urlParts: string[] = [API_BASE, endpoint];
   if (slug) urlParts.push(slug);
   else if (id !== undefined) urlParts.push(String(id));
   const url = urlParts.join("/");
@@ -70,11 +68,11 @@ export const fetchAPI = async <T>({
       throw new Error(userMessage);
     }
 
-    return response.json();
+    return response.json() as Promise<APIResponse<TResponse>>;
   } catch (error) {
     if (error instanceof Error) throw error;
     throw new Error(String(error));
   }
 };
 
-export { APIResponse };
+export type { APIResponse };

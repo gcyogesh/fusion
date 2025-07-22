@@ -3,6 +3,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { FiMail, FiPhone, FiUser, FiMapPin, FiMessageCircle, FiClock, FiTrash2, FiCheckCircle, FiXCircle, FiSearch, FiInbox, FiEye, FiX, FiCalendar, FiActivity, FiMap } from "react-icons/fi";
 import { fetchAPI } from "@/utils/apiService";
 import Pagination from "@/components/atoms/pagination";
+import Alert from "@/components/atoms/alert";
 
 function formatDate(dateString: string) {
   const date = new Date(dateString);
@@ -24,6 +25,7 @@ export default function PrivateInquiriesClient({ inquiries: initialInquiries }: 
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [viewInquiry, setViewInquiry] = useState<any | null>(null);
+  const [alert, setAlert] = useState({ show: false, id: null });
 
   useEffect(() => {
     const handler = setTimeout(() => setDebouncedSearch(search), 300);
@@ -55,7 +57,11 @@ export default function PrivateInquiriesClient({ inquiries: initialInquiries }: 
   const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   async function handleDelete(id: string) {
-    if (!confirm("Are you sure you want to delete this private trip inquiry?")) return;
+    setAlert({ show: true, id });
+  }
+  async function confirmDelete() {
+    const id = alert.id;
+    setAlert({ show: false, id: null });
     try {
       await fetchAPI({ endpoint: `privatetrip/${id}`, method: "DELETE" });
       setInquiries((prev) => prev.filter((inq) => inq._id !== id));
@@ -294,6 +300,14 @@ export default function PrivateInquiriesClient({ inquiries: initialInquiries }: 
           </div>
         </div>
       )}
+      {/* Render the Alert for delete confirmation */}
+      <Alert
+        show={alert.show}
+        type="confirm"
+        message="Are you sure you want to delete this private trip inquiry?"
+        onConfirm={confirmDelete}
+        onCancel={() => setAlert({ show: false, id: null })}
+      />
     </div>
   );
 }
