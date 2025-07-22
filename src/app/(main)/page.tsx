@@ -421,14 +421,6 @@ export default async function Home() {
      
  <TestimonialsSection testimonialData={testimonialData} />
 
-
-
-  
-
-
-
-
-
       {/* Share the joy of your journey */}
       <section className=" bg-[#0e334f]">
         <div className="max-w-7xl mx-auto text-white space-y-4 md:px-0 px-6 mb-12 mt-3.5">
