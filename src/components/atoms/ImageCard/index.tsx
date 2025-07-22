@@ -5,9 +5,9 @@ import { motion } from 'framer-motion';
 import ArrowIcon from '../arrowIcon';
 import Button from '../button';
 import Image from 'next/image';
-
 type Variant = 'rectangle' | 'square' | 'smallsquare' | 'smallrectangle';
 type SnippetPosition = 'center' | 'start' | 'end';
+
 
 interface ImageDisplayProps<T = string> {
   src?: T;
@@ -29,6 +29,13 @@ interface ImageDisplayProps<T = string> {
   createdAt?: string;
 }
 
+const aspectRatios = {
+  rectangle: 820 / 590,
+  square: 408 / 430,
+  smallsquare: 450 / 370,
+  smallrectangle: 408 / 236,
+};
+
 const getSnippetPositionClasses = (position: SnippetPosition) => {
   switch (position) {
     case 'start':
@@ -40,6 +47,7 @@ const getSnippetPositionClasses = (position: SnippetPosition) => {
       return 'top-2 left-1/2 -translate-x-1/2 md:top-4';
   }
 };
+
 
 const containerVariants = {
   hidden: { opacity: 0, y: 30, scale: 0.95 },
@@ -74,23 +82,18 @@ const ImageDisplay = <T extends string>({
   const [isError, setIsError] = useState(false);
   const shouldShowPlaceholder = isError || !src;
 
-  const aspectClass = {
-    rectangle: 'aspect-[820/590]',
-    square: 'aspect-[408/430]',
-    smallsquare: 'aspect-[450/370]',
-    smallrectangle: 'aspect-[408/236]',
-  }[variant];
-
   return (
     <motion.div
       initial="hidden"
       animate="visible"
       exit="exit"
       whileHover={{ scale: 1.02 }}
-      className={`
-        relative overflow-hidden rounded-xl group w-full cursor-pointer 
-        ${className} ${aspectClass}
-      `}
+      className={`relative overflow-hidden rounded-xl group w-full cursor-pointer ${className}`}
+      style={{
+        aspectRatio: `${aspectRatios[variant].toFixed(3)}`,
+        maxWidth: width || '100%',
+        maxHeight: height || 'none',
+      }}
     >
       {shouldShowPlaceholder ? (
         <div className="w-full h-full bg-gray-200 flex items-center justify-center">
@@ -101,9 +104,10 @@ const ImageDisplay = <T extends string>({
               className="w-full h-full object-cover"
             />
           ) : (
-            <span className="text-gray-400 text-sm md:text-base">
-              Image not available
-            </span>
+            <span className="text-gray-400 text-sm md:text-base">Image not available</span>
+
+
+
           )}
         </div>
       ) : (
@@ -113,7 +117,17 @@ const ImageDisplay = <T extends string>({
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           onError={() => setIsError(true)}
         />
+
+
+
+
+
+
+
       )}
+
+
+
 
       {showOverlayContent && (
         <motion.div
@@ -136,35 +150,32 @@ const ImageDisplay = <T extends string>({
       )}
 
       {createdAt && (
-        <div className="absolute bottom-2 left-2 flex items-center backdrop-blur-md bg-white/20 text-sm md:text-md text-gray-200 px-3 py-1.5 md:px-6 md:py-2 m-2 md:m-3 border border-white/40 rounded-full">
-          <Image
-            src="/images/calender.png"
-            width={20}
-            height={20}
-            alt="Calendar"
-            className="mr-1.5"
-          />
-          {new Date(createdAt).toLocaleDateString()}
-        </div>
-      )}
+            <div className="absolute bottom-2 left-2  flex   items-center  backdrop-blur-md bg-white/20  text-md text-gray-200 px-6 py-2 m-3 border border-white/40 rounded-full">
+              <Image src="/images/calender.png" width={25} height={25} alt="Image nnot found" className='mr-1.5 ' />
+              {new Date(createdAt).toLocaleDateString()}
+            </div>
+          )}
 
       {typeof totalTrips === 'number' && (
         <div className="absolute top-8 left-1/2 -translate-x-1/2 z-10">
-          <button className="text-white text-sm md:text-base font-semibold px-4 md:px-6 py-1.5 md:py-2 bg-primary rounded-lg">
+          <button
+            className=" text-[#ffffff] text-base font-semibold px-6 py-2 bg-primary rounded-lg"
+          >
             {`${totalTrips} Trips`}
           </button>
         </div>
       )}
 
+
       {title && showDefaultTitle && (
-        <div className="absolute bottom-4 left-0 w-full text-center px-4 py-3 group-hover:opacity-0 transition-opacity duration-300 text-sm md:text-lg">
-          <h1 className="text-white font-semibold">{title}</h1>
+        <div className="absolute bottom-4 left-0 w-full text-center px-4 py-3  from-black/70 to-transparent group-hover:opacity-0 transition-opacity duration-300 text-lg ">
+          <h1 className="text-white text-sm md:text-lg font-semibold">{title}</h1>
         </div>
       )}
 
       {snippet && (
         <div
-          className={`absolute z-10 text-white text-xs md:text-sm font-semibold px-3 py-2 md:px-4 md:py-2 bg-primary rounded-lg ${getSnippetPositionClasses(
+          className={`absolute z-10 text-[#ffffff] text-xs md:text-sm font-semibold px-6 py-4 md:px-4 md:py-2 bg-primary rounded-lg ${getSnippetPositionClasses(
             snippetPosition
           )}`}
         >
@@ -174,7 +185,7 @@ const ImageDisplay = <T extends string>({
 
       {secondSnippet && (
         <div
-          className={`absolute z-10 text-white text-xs md:text-sm font-medium ${getSnippetPositionClasses(
+          className={`absolute z-10 text-[#ffffff] text-xs md:text-sm font-medium ${getSnippetPositionClasses(
             secondSnippetPosition
           )}`}
         >
