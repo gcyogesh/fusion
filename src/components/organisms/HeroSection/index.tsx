@@ -218,7 +218,7 @@ const HeroSection = ({ herodata }: { herodata: HeroData }) => {
                         <div className="flex items-center gap-1">
                           <FaMapMarkerAlt className="w-3 h-3" />
                           <span className="truncate">
-                            {tour.location?.city}, {tour.location?.country}
+                            {tour.location?.city.split(' ').slice(0, 2).join(' ')}, {tour.location?.country}
                           </span>
                         </div>
                         <div className="flex items-center gap-1">

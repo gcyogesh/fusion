@@ -152,11 +152,11 @@ export default async function Home() {
 
     <div className="flex flex-col gap-3">
       <div className="flex justify-between text-sm ">
-        <span className="flex items-center gap-1 font-medium text-[20px] text-[#7E7E7E]">
+        <span className="flex items-center gap-1 font-medium text-[20px] text-[#7E7E7E] ">
           <Image src={"/images/Location.svg"} alt="Clock" width={20} height={20}/>
-          {card.location?.city}, {card.location?.country}
+          {card.location?.city.split(' ')[0]}, {card.location?.country}
         </span>
-        <span className="flex items-center gap-2 font-medium text-[20px]  text-[#7E7E7E]  ">
+        <span className="flex items-center gap-2 font-medium text-[20px]  text-[#7E7E7E]">
           <Image src={"/images/clock.svg"} alt="Clock" width={20} height={20}/>
           {card.duration?.days} Days
         </span>

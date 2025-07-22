@@ -150,7 +150,7 @@ const TextHeader = <TSpecialIndices extends string = string>({
       className={`flex flex-col ${alignmentClass} ${
         align === 'center' ? 'mx-auto' : ''
       } ${className} 
-      max-w-[90%] sm:max-w-[500px] md:max-w-[650px] lg:max-w-[800px]`}
+      max-w-[100%] sm:max-w-[550px] md:max-w-[650px] lg:max-w-[800px] hyphens-auto text-justify`}
       style={{
         width: typeof width === 'number' ? `${width}px` : width,
       }}

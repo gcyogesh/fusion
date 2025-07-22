@@ -78,6 +78,7 @@ function ReviewSection({ tourId }: { tourId: string }) {
           errorMessage={''}
           phone={false}
           isError={false}
+          
         />
         <Input
           label="Your Email"
@@ -93,7 +94,7 @@ function ReviewSection({ tourId }: { tourId: string }) {
           isError={false}
         />
         <div>
-          <label className="text-[11px] font-medium text-gray-500 uppercase tracking-widest mb-1 block">
+          <label className="text-base font-semibold  tracking-widest mb-2 block">
             Rating<span className="text-red-500"> *</span>
           </label>
           <div className="flex items-center gap-2 mb-2">

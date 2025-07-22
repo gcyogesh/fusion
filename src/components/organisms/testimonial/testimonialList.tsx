@@ -32,7 +32,7 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({
     </div>
     <TextDescription
       text={message}
-      className="w-full h-[150px] font-semibold text-sm !text-[#1A1E21]"
+      className="w-full h-[150px] font-semibold text-sm !text-[#1A1E21] line-clamp-6 "
     />
     <div className="flex items-center gap-4 mt-auto">
       <img

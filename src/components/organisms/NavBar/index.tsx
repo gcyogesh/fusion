@@ -260,7 +260,7 @@ export default function Navbar({
 
   return (
     <nav className={navbarClasses}>
-      <div className="max-w-7xl mx-auto flex justify-between items-center px-4 py-4 h-20">
+      <div className="max-w-7xl mx-auto flex justify-between items-center px-4 py-4 h-15 md:h-18 lg:h-20">
         <Link href="/" className="cursor-pointer">
           <Logo />
         </Link>

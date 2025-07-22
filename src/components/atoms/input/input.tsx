@@ -13,6 +13,7 @@ const Input = ({
   errorMessage,
   phone = false,
   isError = false,
+  className =''
 }) => {
   const [isTouched, setIsTouched] = useState(false);
 
@@ -31,7 +32,7 @@ const Input = ({
         <select
           value={value}
           onChange={(e) => handleChange(e.target.value)}
-          className="w-full bg-transparent outline-none text-base text-gray-700"
+          className={`w-full bg-transparent outline-none text-base text-gray-700 ${className}`}
         >
           <option value="" disabled>
             {placeholder}
@@ -64,14 +65,14 @@ const Input = ({
   return (
     <div className="w-full flex flex-col gap-1">
       {label && (
-        <label className="text-[11px] font-medium text-gray-500 uppercase tracking-widest mb-1">
+        <label className="text-base font-semibold tracking-widest ">
           {label}
           {required && <span className="text-red-500"> *</span>}
         </label>
       )}
 
       <div
-        className={`px-1 pt-2 pb-1 bg-white rounded-none border-b transition-all duration-200 focus-within:border-blue-400 focus-within:ring-0 hover:border-blue-300 ${isError ? 'border-red-500' : 'border-slate-200'}`}
+        className={`px-1 pt-2 pb-1 bg-white rounded-none border-b transition-all duration-200 focus-within:border-[#0e334f] focus-within:ring-0 hover:border-[#0e334f] ${isError ? 'border-red-500' : 'border-slate-200'}`}
       >
         {renderInputField()}
       </div>

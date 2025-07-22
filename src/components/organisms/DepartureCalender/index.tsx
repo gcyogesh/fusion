@@ -44,7 +44,7 @@ export default function DepartureCalendar() {
   };
 
   return (
-    <div className="p-5 space-y-6 bg-white border border-[#0E334F] rounded-xl shadow-md">
+    <div className="p-2 md:p-5 lg:p-6 space-y-6 bg-white border border-[#0E334F] rounded-xl shadow-md">
       <TextHeader
         text="Select Dates"
         align="left"
@@ -52,8 +52,8 @@ export default function DepartureCalendar() {
         width={400}
         className="text-[#1A1E21]"
       />
-      <div className="grid grid-cols-1 md:grid-cols-2 justify-between gap-8">
-        <div>
+      <div className="grid grid-cols-1 md:grid-cols-2 justify-between ">
+        <div className="">
           <h3 className="text-lg font-semibold mb-2 text-[#0E334F]">Booking Date</h3>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DateCalendar value={bookingDate ? dayjs(bookingDate) : null} onChange={handleBookingDateChange} />

@@ -19,7 +19,7 @@ const TextArea: React.FC<TextAreaProps> = ({
 }) => {
   return (
     <div className="self-stretch flex-col justify-start items-start gap-0.5 flex overflow-hidden">
-      <div className="self-stretch text-stone-800 text-sm font-normal font-['Inter'] leading-[21px]">
+      <div className="self-stretch text-stone-800 text-base font-medium">
         {label}
       </div>
       <textarea

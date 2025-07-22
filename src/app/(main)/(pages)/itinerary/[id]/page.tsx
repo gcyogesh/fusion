@@ -119,9 +119,9 @@ export default async function Page({ params }: { params: { id: string } }) {
 
       
   {/* Mobile View - Single image with horizontal scroll */}
-  <div className="block lg:hidden mb-4">
+  <div className="block lg:hidden mb-4 mt-10">
     <div className="overflow-x-auto">
-      <div className="flex gap-4 pb-4" style={{ width: 'max-content' }}>
+      <div className="flex gap-4 " style={{ width: 'max-content' }}>
         {packages.gallery?.map((img, i) => (
           <div key={i} className="flex-shrink-0">
             <ImageDisplay 
@@ -138,7 +138,7 @@ export default async function Page({ params }: { params: { id: string } }) {
   </div>
 
   {/* Desktop View - Original grid layout */}
-  <div className="hidden lg:block">
+  <div className="hidden lg:block mt-4">
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
       <div className="lg:col-span-2">
         <div className="aspect-video w-full">
@@ -198,7 +198,9 @@ export default async function Page({ params }: { params: { id: string } }) {
               <ul className="list-disc pl-6 space-y-2 text-base text-[#535556] ">
                 {packages.highlights?.map((item, i) => <li key={i}>{item}</li>)}
               </ul>
+              </div>
 
+             <div className="rounded-2xl p-6 bg-white shadow-sm mb-4 py-2">
               <TextHeader text="Quick Facts" align="left" size="large" width={855} className="py-2" />
               <ul className="list-disc pl-6 space-y-2 text-base text-[#535556] ">
                {packages.quickfacts?.map((item, i) => <li key={i}>{item}</li>)}
@@ -241,7 +243,7 @@ export default async function Page({ params }: { params: { id: string } }) {
                   alt="Google Map"
                   width={800}
                   height={600}
-                  className="h-[600px] object-cover rounded-lg shadow"
+                  className=" object-cover rounded-lg shadow"
                 />
               )}
             </div>
@@ -269,7 +271,7 @@ export default async function Page({ params }: { params: { id: string } }) {
 
   {/* Desktop View - Original grid layout */}
   <div className="hidden lg:block">
-    <div className="grid grid-cols-3 gap-4 mb-4">
+    <div className="grid grid-cols-3 gap-4 ">
       <div className="col-span-2">
         {packages.gallery[0] && (
           <ImageDisplay 
@@ -305,10 +307,8 @@ export default async function Page({ params }: { params: { id: string } }) {
   </div>
 </div>
             
-      <div className="w-full max-w-4xl  py-6 mx-auto " id="FAQs">
-
-        </div>
-      <section id="Reviews" className="mx-auto max-w-7xl px-4">
+     
+      <section id="Reviews" className="mx-auto max-w-7xl ">
         <ReviewSection tourId={params.id} />
       </section>
           </div>
