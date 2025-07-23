@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { FaInstagram, FaFacebookF, FaYoutube } from "react-icons/fa";
 import HeroSection from "@/components/organisms/HeroSection";
-// Atom Components
+// Atom Components for github
 import ImageDisplay from "@/components/atoms/ImageCard";
 import Button from "@/components/atoms/button";
 import TextHeader from "@/components/atoms/headings";
