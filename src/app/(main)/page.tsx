@@ -138,7 +138,7 @@ export default async function Home() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10 "> {/* Consistent gap */}
 
 {filteredPackages.slice(0, 3).map((card, index) => (
-  <Link href={`/itinerary/${card.slug}`} key={index} className="flex flex-col gap-4">
+  <Link href={`/itinerary/${card._id}`} key={index} className="flex flex-col gap-4">
     <div className="aspect-video ">
       <ImageDisplay
         src={card.gallery[0]}
@@ -399,7 +399,7 @@ export default async function Home() {
                 <h1>Everest (Khumbu), Nepal</h1>
               </div>
               <div className="flex items-center justify-center gap-2  text-[16px] md:text-[18px]">
-                <Image src={"/images/treks.svg"} alt="Location" width={25} height={22}/>
+                <Image src={blogsdata.imageUrl} alt="Location" width={25} height={22}/>
                 <h1 className="font-sans">Moderate to Challenging</h1>
               </div>
             </div>

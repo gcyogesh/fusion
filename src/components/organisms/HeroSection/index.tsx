@@ -95,7 +95,8 @@ const HeroSection = ({ herodata }: { herodata: HeroData }) => {
           alt="Hero Background"
           layout="fill"
           objectFit="cover"
-          priority
+          fetchPriority="high"
+          loading="eager"
         />
       )}
 
@@ -105,6 +106,8 @@ const HeroSection = ({ herodata }: { herodata: HeroData }) => {
           alt="Text Background"
           fill
           className="object-cover"
+          fetchPriority="high"
+          loading="eager"
         />
         <TextHeader
           text={title}
