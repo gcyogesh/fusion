@@ -32,7 +32,7 @@ export default async function About() {
                 />
                 <TextDescription
                   text="Fusion Expeditions is a dynamic tour operator company based in the vibrant city of Kathmandu, Nepal. Established in 2017 by a group of seasoned travel professionals with nearly a decade of hands-on experience in the tourism industry, the company was born out of a shared passion for exploration and a deep love for the unparalleled beauty and cultural richness of Nepal. Our founders envisioned a travel company that would not only deliver exciting and authentic adventures but also foster meaningful connections between travelers and the places they visit."
-                  className="text-[#535556] w-full max-w-[530px] h-auto font-semibold mt-4"
+                  className="text-[#535556] w-full max-w-[530px] h-auto font-semibold "
                 />
               </div>
 
@@ -68,62 +68,86 @@ export default async function About() {
         </div>
       </section>
 
-      {/* MISSION & VISION SECTION */}
-      <section className="bg-[#0e334f] w-full h-auto py-2 md:py-12">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-center gap-1 md:gap-8 px-4">
-          {/* MISSION */}
-          <div className="relative w-full max-w-[570px]">
-            <Image
-              src="/images/Mission.svg"
-              alt="Hikers on a trail"
-              width={561}
-              height={325}
-              className="w-full h-auto"
+  <section className="bg-[#0e334f] w-full py-6 sm:py-8 md:py-12">
+  <div className="max-w-7xl mx-auto px-4 sm:px-6">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      
+      {/* Mission */}
+      <div className="relative w-full max-w-full group">
+        {/* Image - Only for tablets and up */}
+        <div className="hidden sm:block">
+          <Image
+            src="/images/Mission.svg"
+            alt="Adventure seekers on their journey"
+            width={561}
+            height={325}
+            className="w-full h-auto rounded-lg"
+            priority
+          />
+        </div>
+
+        {/* Content Overlay for large screen / Normal for small */}
+        <div className="sm:absolute sm:inset-0 sm:bg-black/40 bg-white/10 sm:bg-transparent rounded-lg sm:rounded-none sm:backdrop-blur-none backdrop-blur-sm">
+          <div className="h-full flex flex-col justify-center p-6 sm:p-8 lg:p-10">
+            <TextHeader
+              text="Adventure with a Purpose"
+              specialWordsIndices=""
+              align="left"
+              size="large"
+              width="auto"
+              textcolor="white"
+              buttonText="Our Mission"
             />
-            <div className="absolute inset-0 h-auto md:h-[200px] w-full mt-0 md:mt-20 p-5">
-              <TextHeader
-                text="Adventure with a Purpose"
-                specialWordsIndices=""
-                align="left"
-                size="large"
-                width="auto"
-                textcolor="white"
-                buttonText="Our Mission"
-              />
+            <div className="mt-3 sm:mt-4">
               <TextDescription
                 text="Our mission is to uncover new touristic gems and craft thrilling, memory-rich experiences for adventure seekers across the globe. From adrenaline-pumping climbs to serene cultural walks — we cater to all."
-                className="text-white w-auto md:w-[550px]"
-              />
-            </div>
-          </div>
-
-          {/* VISION */}
-          <div className="relative w-full max-w-[560px]">
-            <Image
-              src="/images/Mission.svg"
-              alt="Hikers on a trail"
-              width={561}
-              height={325}
-              className="w-full h-auto"
-            />
-            <div className="absolute inset-0 h-full md:h-[200px] w-full mt-4 md:mt-20 p-6">
-              <TextHeader
-                text="Inspiring Transformative Travel"
-                specialWordsIndices=""
-                align="left"
-                size="large"
-                width="auto"
-                textcolor="white"
-                buttonText="Our Vision"
-              />
-              <TextDescription
-                text="To become a leading name in sustainable and immersive travel experiences in Nepal — where every journey fosters deep cultural connection, environmental respect, and unforgettable discovery."
-                className="text-white w-auto md:w-[550px]"
+                className="text-white text-sm sm:text-base leading-relaxed max-w-full sm:max-w-[480px] md:max-w-[520px]"
               />
             </div>
           </div>
         </div>
-      </section>
+      </div>
+
+      {/* Vision */}
+      <div className="relative w-full max-w-full group">
+        {/* Image - Only for tablets and up */}
+        <div className="hidden sm:block">
+          <Image
+            src="/images/Vision.svg"
+            alt="Sustainable travel and cultural connection"
+            width={561}
+            height={325}
+            className="w-full h-auto rounded-lg"
+            priority
+          />
+        </div>
+
+        {/* Content */}
+        <div className="sm:absolute sm:inset-0 sm:bg-black/40 bg-white/10 sm:bg-transparent rounded-lg sm:rounded-none sm:backdrop-blur-none backdrop-blur-sm">
+          <div className="h-full flex flex-col justify-center p-6 sm:p-8 lg:p-10">
+            <TextHeader
+              text="Inspiring Transformative Travel"
+              specialWordsIndices=""
+              align="left"
+              size="large"
+              width="auto"
+              textcolor="white"
+              buttonText="Our Vision"
+            />
+            <div className="mt-3 sm:mt-4">
+              <TextDescription
+                text="To become a leading name in sustainable and immersive travel experiences in Nepal — where every journey fosters deep cultural connection, environmental respect, and unforgettable discovery."
+                className="text-white text-sm sm:text-base leading-relaxed max-w-full sm:max-w-[480px] md:max-w-[520px]"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
 
       {/* VALUES SECTION */}
       <ValuesSection />
