@@ -93,10 +93,7 @@ export default async function Page({ params }: PageProps) {
     const primaryBlog = relatedBlogs[0];
     const secondaryBlogs = relatedBlogs.slice(1, 3);
 
-    console.log("hasRelatedBlogs:", hasRelatedBlogs);
-    console.log("primaryBlog:", primaryBlog);
-    console.log("secondaryBlogs:", secondaryBlogs);
-    console.log("=== END DEBUG INFO ===");
+   
 
     return (
       <>
