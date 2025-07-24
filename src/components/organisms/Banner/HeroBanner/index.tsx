@@ -12,6 +12,8 @@ export interface HeroBannerData {
   buttonLink?: string;
   bannerImage: string;
   image?: string;
+  height?: string | number;
+  width?: string | number;
   createdAt?: string;
   updatedAt?: string;
   __v?: number;
@@ -25,7 +27,7 @@ const HeroBanner: React.FC<HeroBannerProps> = ({ herodata }) => {
   if (!herodata) return null;
 
   return (
-    <div className="relative w-full h-[400px] sm:h-[500px] md:h-[600px] lg:h-[700px] xl:h-[800px]">
+    <div className="relative w-full" style={{ height: herodata.height ? (typeof herodata.height === 'number' ? `${herodata.height}px` : herodata.height) : '400px', width: herodata.width ? (typeof herodata.width === 'number' ? `${herodata.width}px` : herodata.width) : '100%' }}>
       {/* Background Image */}
       <Image
         src={herodata.bannerImage}
@@ -40,7 +42,7 @@ const HeroBanner: React.FC<HeroBannerProps> = ({ herodata }) => {
 
       {/* Optional Foreground Image */}
       {herodata.image && (
-        <div className="absolute bottom-4 right-4 w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 lg:w-48 lg:h-48">
+        <div className="absolute bottom-4 right-4" style={{ width: herodata.width ? (typeof herodata.width === 'number' ? `${herodata.width}px` : herodata.width) : '96px', height: herodata.height ? (typeof herodata.height === 'number' ? `${herodata.height}px` : herodata.height) : '96px' }}>
           <Image
             src={herodata.image}
             alt={herodata.title}
