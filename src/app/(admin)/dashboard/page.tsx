@@ -294,3 +294,5 @@ export default async function Dashboard() {
     </div>
   );
 }
+
+export const dynamic = 'error'; // or 'force-dynamic'
