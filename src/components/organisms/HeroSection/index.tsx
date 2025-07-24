@@ -15,6 +15,8 @@ interface HeroData {
   buttonText: string;
   buttonLink: string;
   bannerImage: string;
+  height?: string | number;
+  width?: string | number;
 }
 
 const HeroSection = ({ herodata }: { herodata: HeroData }) => {
@@ -82,7 +84,7 @@ const HeroSection = ({ herodata }: { herodata: HeroData }) => {
   };
 
   return (
-    <div className="mx-auto relative w-full h-[860px]">
+    <div className="mx-auto relative w-full" style={{ height: herodata.height ? (typeof herodata.height === 'number' ? `${herodata.height}px` : herodata.height) : '860px', width: herodata.width ? (typeof herodata.width === 'number' ? `${herodata.width}px` : herodata.width) : '100%' }}>
       {isGif ? (
         <img
           src={bannerImage}
@@ -99,6 +101,7 @@ const HeroSection = ({ herodata }: { herodata: HeroData }) => {
           loading="eager"
         />
       )}
+
 
       <div className="relative w-auto h-full bg-black/20">
      

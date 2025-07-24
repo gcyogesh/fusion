@@ -44,6 +44,8 @@ export default function SettingsPage() {
     buttonText: "",
     buttonLink: "",
     bannerImage: "",
+    height: "230",
+    width: "200",
   });
   const [heroImageFile, setHeroImageFile] = useState<File | null>(null);
   const [heroSaving, setHeroSaving] = useState(false);
@@ -245,6 +247,8 @@ const handlePageTitleChange = (value) => {
               buttonText: data.buttonText || "",
               buttonLink: data.buttonLink || "",
               bannerImage: data.bannerImage || "",
+              height: data.height || '230',
+              width: data.width || '200',
             });
           }
         })
@@ -377,6 +381,8 @@ const handlePageTitleChange = (value) => {
       formData.append('description', heroData.description);
       formData.append('buttonText', heroData.buttonText);
       formData.append('buttonLink', heroData.buttonLink);
+      formData.append('height', heroData.height.toString());
+      formData.append('width', heroData.width.toString());
   
       // Only append the file if it exists
       if (heroImageFile) {
@@ -624,6 +630,24 @@ const handlePageTitleChange = (value) => {
               value={heroData.description}
               onChange={handleHeroChange}
             />
+            <label className="text-sm font-semibold text-gray-700">Height</label>
+            <input
+              type="text"
+              name="height"
+              placeholder="Height (e.g., 230 or 100%)"
+              className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-primary outline-none text-base bg-white transition hover:bg-gray-50"
+              value={heroData.height}
+              onChange={e => setHeroData({ ...heroData, height: e.target.value })}
+            />
+            <label className="text-sm font-semibold text-gray-700">Width</label>
+            <input
+              type="text"
+              name="width"
+              placeholder="Width (e.g., 200 or 100%)"
+              className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-primary outline-none text-base bg-white transition hover:bg-gray-50"
+              value={heroData.width}
+              onChange={e => setHeroData({ ...heroData, width: e.target.value })}
+            />
             <label className="text-sm font-semibold text-gray-700">Hero Image <span className='text-xs text-gray-400'>(JPG, PNG, max 2MB)</span></label>
             <label className="block cursor-pointer group w-full flex flex-col items-center justify-center mt-1">
               <div className="w-full max-w-xs h-20 bg-neutral-50 border border-gray-200 rounded-lg flex flex-col items-center justify-center gap-2 transition group-hover:border-primary overflow-hidden relative mx-auto">
@@ -632,6 +656,8 @@ const handlePageTitleChange = (value) => {
                     src={heroData.bannerImage}
                     alt="Banner"
                     className="object-cover w-full h-full rounded-lg transition-transform duration-200 group-hover:scale-105"
+                    {...(!isNaN(Number(heroData.height)) && { height: Number(heroData.height) })}
+                    {...(!isNaN(Number(heroData.width)) && { width: Number(heroData.width) })}
                   />
                 ) : (
                   <>
