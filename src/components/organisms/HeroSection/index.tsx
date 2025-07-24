@@ -84,11 +84,7 @@ const HeroSection = ({ herodata }: { herodata: HeroData }) => {
   };
 
   return (
-<<<<<<< HEAD
-    <div className="mx-auto relative w-full h-[860px] ">
-=======
     <div className="mx-auto relative w-full" style={{ height: herodata.height ? (typeof herodata.height === 'number' ? `${herodata.height}px` : herodata.height) : '860px', width: herodata.width ? (typeof herodata.width === 'number' ? `${herodata.width}px` : herodata.width) : '100%' }}>
->>>>>>> 930012615655208fb26095fdf62ab06a02983474
       {isGif ? (
         <img
           src={bannerImage}
