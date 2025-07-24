@@ -186,16 +186,19 @@ export default function Navbar({
     ];
   }, [activities, destinations, durationGroups, relatedActivityPackagesMap, relatedPackagesMap, relatedDurationPackagesMap]);
 
-  const navbarClasses = useMemo(() => {
-    const base = "fixed top-0 left-0 w-full z-60 px-2 transition-all duration-300 ease-linear";
-    const visibility = showNavbar ? "translate-y-0" : "-translate-y-full";
-    const theme =
-      pathname === "/" && scrollY === 0
-        ? "blur-base bg-white/20 text-white shadow-lg"
-        : "bg-[#0e334f] text-white";
+const navbarClasses = useMemo(() => {
+  const base =
+    "fixed top-[-4px]  left-0 w-full z-60 px-2 transition-all duration-300 ease-linear";
+  const visibility = showNavbar ? "translate-y-[4px]" : "-translate-y-full";
 
-    return `${base} ${visibility} ${theme}`;
-  }, [showNavbar, pathname, scrollY]);
+  const isTransparentHome = pathname === "/" && scrollY === 0;
+
+  const theme = isTransparentHome
+    ? "backdrop-blur-md bg-white/20 text-white shadow-lg"
+    : "bg-[#0e334f] text-white";
+
+  return `${base} ${visibility} ${theme}`;
+}, [showNavbar, pathname, scrollY]);
 
   const handleScroll = useMemo(
     () =>
@@ -264,7 +267,7 @@ export default function Navbar({
 
   return (
     <nav className={navbarClasses}>
-      <div className="max-w-7xl mx-auto flex justify-between items-center px-4 py-4 h-15 md:h-18 lg:h-20">
+      <div className="max-w-7xl mx-auto flex justify-between items-center px-4 py-8 md:py-4  lg:py-6 h-15 md:h-18 lg:h-20">
         <Link href="/" className="cursor-pointer">
           <Logo index={logoIndex} />
         </Link>

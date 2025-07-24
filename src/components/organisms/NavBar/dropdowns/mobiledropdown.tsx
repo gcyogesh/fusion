@@ -81,12 +81,17 @@ export default function MobileDropdownMenu({ name, href, subLinks = [], onClickL
     <div className="w-full">
       {/* Main Dropdown Toggle */}
       <div className="flex items-center justify-between cursor-pointer py-3 px-4 hover:bg-[#F28A15] hover:text-white rounded-lg transition-colors">
-        <div 
-          onClick={handleMainLinkClick}
-          className="cursor-pointer font-medium text-gray-900 hover:text-white flex-1"
-        >
-          {name}
-        </div>
+       <Link
+  href={href}
+  onClick={() => {
+    if (onClickLink) onClickLink();
+    setOpen(false);
+    setActiveSubLink(null);
+  }}
+  className="cursor-pointer font-medium text-gray-900 hover:text-white flex-1"
+>
+  {name}
+</Link>
         {subLinks.length > 0 && (
           <div onClick={toggleDropdown} className="ml-2">
             {open ? <ChevronUp className="w-5 h-5 text-gray-500 hover:text-white" /> : <ChevronDown className="w-5 h-5 text-gray-500 hover:text-white" />}

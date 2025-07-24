@@ -439,7 +439,7 @@ export default async function Home() {
             </div>
 
             {/* Right Side: Social Links */}
-            <div className="flex justify-end  space-x-3  ">
+            <div className="flex justify-end  space-x-2 md:space-x-3 lg:space-x-3 ">
               {socialLinks.map((link, index) => (
                 <a key={index} href={link.link} className="hover:scale-110 transition-transform">
                   <span>{link.icon}</span>

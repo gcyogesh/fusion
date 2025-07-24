@@ -82,12 +82,12 @@ const HeroSection = ({ herodata }: { herodata: HeroData }) => {
   };
 
   return (
-    <div className="mx-auto relative w-full h-[860px]">
+    <div className="mx-auto relative w-full h-[860px] ">
       {isGif ? (
         <img
           src={bannerImage}
           alt="Hero Background"
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-cover "
         />
       ) : (
         <Image

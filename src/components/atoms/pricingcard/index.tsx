@@ -30,12 +30,12 @@ const PricingCard: React.FC<PricingCardProps> = ({ basePrice, isCompact = false 
     <>
       <div
         className={`${
-          isCompact ? 'w-[200px] max-w-full px-3 py-2' : 'max-w-xs p-1'
+          isCompact ? 'w-[200px] max-w-full h-[280px] px-3 py-2' : 'max-w-xs p-1'
         } flex flex-col items-center rounded-xl border border-black bg-white shadow text-center space-y-3`}
       >
         <div
           className={`bg-[#002D62] text-white ${
-            isCompact ? 'text-sm h-[25px]' : 'text-xl h-[45px]'
+            isCompact ? 'text-sm h-[35px]' : 'text-xl h-[45px]'
           } w-full font-medium rounded-xl p-2`}
         >
           Best Price
