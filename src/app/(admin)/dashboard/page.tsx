@@ -23,9 +23,7 @@ async function getUser() {
 
 export default async function Dashboard() {
   const user = await getUser();
-  if (!user) {
-    redirect('/login');
-  }
+
 
   const dashboard = await fetchAPI({ endpoint: "stats/dashboard" });
 
