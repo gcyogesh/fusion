@@ -1,5 +1,6 @@
 export const dynamic = "force-dynamic";
 import { fetchAPI } from "@/utils/apiService";
+import { redirect } from "next/navigation";
 import {
   FaMapMarkerAlt,
   FaNewspaper,
@@ -12,7 +13,20 @@ import {
 import Link from "next/link";
 import { FiArrowRight } from 'react-icons/fi';
 
+// Dummy getUser function for demonstration. Replace with your actual auth logic.
+async function getUser() {
+  // Implement your authentication/session logic here.
+  // Return user object if authenticated, otherwise return null/undefined.
+  // For example, you might use cookies, headers, or a session library.
+  return null; // <-- Replace this with real logic
+}
+
 export default async function Dashboard() {
+  const user = await getUser();
+  if (!user) {
+    redirect('/login');
+  }
+
   const dashboard = await fetchAPI({ endpoint: "stats/dashboard" });
 
   const {
