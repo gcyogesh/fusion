@@ -317,7 +317,7 @@ export default async function Page({ params }: { params: { id: string } }) {
 
           <aside className="w-full md:w-auto md:px-0 lg:px-0">
   {/* Mobile Sticky Footer */}
-  <div className="block md:hidden fixed bottom-14 left-40 shadow-md z-50">
+  <div className="block md:hidden fixed bottom-14 left-32 shadow-md z-50">
     <div className="max-w-md mx-auto p-2">
       <PricingCard basePrice={packages.basePrice} isCompact />
     </div>
