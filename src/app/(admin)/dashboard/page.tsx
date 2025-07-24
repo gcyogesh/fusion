@@ -1,5 +1,6 @@
-
+export const dynamic = "force-dynamic";
 import { fetchAPI } from "@/utils/apiService";
+import { redirect } from "next/navigation";
 import {
   FaMapMarkerAlt,
   FaNewspaper,
@@ -11,11 +12,17 @@ import {
 } from "react-icons/fa";
 import Link from "next/link";
 import { FiArrowRight } from 'react-icons/fi';
-import { ReactElement, JSXElementConstructor, ReactNode, ReactPortal, Key } from "react";
 
 // Dummy getUser function for demonstration. Replace with your actual auth logic.
+async function getUser() {
+  // Implement your authentication/session logic here.
+  // Return user object if authenticated, otherwise return null/undefined.
+  // For example, you might use cookies, headers, or a session library.
+  return null; // <-- Replace this with real logic
+}
 
 export default async function Dashboard() {
+  const user = await getUser();
 
 
   const dashboard = await fetchAPI({ endpoint: "stats/dashboard" });
@@ -209,7 +216,7 @@ export default async function Dashboard() {
             </h2>
             {recent?.bookings?.filter(Boolean).length > 0 ? (
               <div className="space-y-3">
-                {recent.bookings.filter(Boolean).slice(0, 5).map((item: string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<string | number | bigint | boolean | ReactPortal | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode>>, index: Key) => (
+                {recent.bookings.filter(Boolean).slice(0, 5).map((item, index) => (
                   <div key={index} className="flex items-center space-x-3 p-3 bg-gray-50 rounded">
                     <FaUsers className="text-indigo-500" />
                     <p className="font-medium text-gray-900">
@@ -294,5 +301,3 @@ export default async function Dashboard() {
     </div>
   );
 }
-
-export const dynamic = 'error'; // or 'force-dynamic'
