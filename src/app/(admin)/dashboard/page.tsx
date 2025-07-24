@@ -1,4 +1,4 @@
-"use client"
+
 import { fetchAPI } from "@/utils/apiService";
 import {
   FaMapMarkerAlt,
