@@ -315,14 +315,23 @@ export default async function Page({ params }: { params: { id: string } }) {
 
           
 
-          <aside className="w-auto px-6 mb-6 md:mb-0 lg:mb-0 md:px-0 lg:px-0 ">
-            <div className="sticky top-24 w-full">
-              <PricingCard basePrice={packages.basePrice} />
-                  <div className="mt-5">
+          <aside className="w-full md:w-auto md:px-0 lg:px-0">
+  {/* Mobile Sticky Footer */}
+  <div className="block md:hidden fixed bottom-14 left-40 shadow-md z-50">
+    <div className="max-w-md mx-auto p-2">
+      <PricingCard basePrice={packages.basePrice} isCompact />
+    </div>
+  </div>
+
+  {/* Desktop Sidebar */}
+  <div className="hidden md:block sticky top-24 w-full">
+    <PricingCard basePrice={packages.basePrice} />
+    <div className="mt-5">
       <DownloadPdfButton packageId={packages._id} />
     </div>
-            </div>
-          </aside>
+  </div>
+</aside>
+
         </div>
       </section>
       

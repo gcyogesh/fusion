@@ -19,7 +19,7 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({
   profileImage,
   rating,
 }) => (
-  <div className="flex flex-col w-[90vw] sm:w-[300px] md:w-[365px] lg:w-[360px] h-[250px] bg-[#FCE1AC] rounded-xl p-6 snap-center flex-shrink-0 shadow-md relative">
+  <div className="flex flex-col w-[90vw] sm:w-[300px] md:w-[365px] lg:w-[360px] h-[250px] bg-light-beige rounded-xl p-6 snap-center flex-shrink-0 shadow-md relative">
     <div className="text-yellow-500 flex mb-5">
       {Array.from({ length: rating }).map((_, i) => (
         <FaStar key={i} />

@@ -12,7 +12,7 @@ import Logo from "@/components/atoms/Logo";
 import MobileDropdownMenu from "./dropdowns/mobiledropdown";
 import ImageDisplay from "@/components/atoms/ImageCard";
 import TextHeader from "@/components/atoms/headings";
-import { Destination, TourPackage, Activity, ContactInfo ,Duration } from "@/types";
+import { Destination, TourPackage, Activity, ContactInfo, Duration } from "@/types";
 
 type NavLink = {
   name: string;
@@ -38,9 +38,9 @@ interface NavbarProps {
   activities: Activity[];
   relatedPackagesMap: { [slug: string]: TourPackage[] };
   relatedActivityPackagesMap: { [slug: string]: TourPackage[] };
-   relatedDurationPackagesMap: { [slug: string]: TourPackage[] };
+  relatedDurationPackagesMap: { [slug: string]: TourPackage[] };
   contactInfo: ContactInfo;
-   durationGroups: Duration[];
+  durationGroups: Duration[];
 }
 
 const throttle = (func: Function, limit: number) => {
@@ -60,10 +60,8 @@ export default function Navbar({
   durationGroups = [],
   relatedPackagesMap = {},
   relatedActivityPackagesMap = {},
-  relatedDurationPackagesMap={},
-  
+  relatedDurationPackagesMap = {},
   contactInfo,
-  
 }: NavbarProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<NavLink | null>(null);
@@ -74,6 +72,15 @@ export default function Navbar({
   const [hoverTimeout, setHoverTimeout] = useState<NodeJS.Timeout | null>(null);
 
   const pathname = usePathname();
+
+  const logoIndex = useMemo(() => {
+
+    if (pathname === "/" && scrollY === 0) {
+      return 1;
+    }
+  
+    return 0;
+  }, [pathname, scrollY]);
 
   const navLinks = useMemo(() => {
     const formattedActivities = activities.map((item) => ({
@@ -104,20 +111,19 @@ export default function Navbar({
       })),
     }));
 
-      const formattedDurations = durationGroups.map((item) => ({
+    const formattedDurations = durationGroups.map((item) => ({
       name: item.label,
       href: `/duration/${item.slug}`,
       subtitle: item.description,
       title: item.label,
       image: item.image,
-      relatedPackages: ( relatedDurationPackagesMap[item.slug] || []).map((pkg) => ({
+      relatedPackages: (relatedDurationPackagesMap[item.slug] || []).map((pkg) => ({
         name: pkg.title,
         href: `/itinerary/${pkg._id}`,
         duration: `${pkg.duration?.days || 0} Days`,
         title: pkg.title,
       })),
     }));
-
 
     return [
       {
@@ -132,14 +138,13 @@ export default function Navbar({
         hasDropdown: true,
         subLinks: formattedActivities,
       },
-     
-    {
-      name: "Duration",
-      href: "/duration",
-      hasDropdown: true,
-      subLinks: formattedDurations,
-    },
-       { name: "Blogs", href: "/blogs", hasDropdown: false },
+      {
+        name: "Duration",
+        href: "/duration",
+        hasDropdown: true,
+        subLinks: formattedDurations,
+      },
+      { name: "Blogs", href: "/blogs", hasDropdown: false },
       {
         name: "About",
         href: "/about",
@@ -177,10 +182,9 @@ export default function Navbar({
           },
         ],
       },
-      
       { name: "Deals", href: "/deals", hasDropdown: false },
     ];
-  }, [activities, destinations, durationGroups, relatedActivityPackagesMap, relatedPackagesMap,  relatedDurationPackagesMap]);
+  }, [activities, destinations, durationGroups, relatedActivityPackagesMap, relatedPackagesMap, relatedDurationPackagesMap]);
 
   const navbarClasses = useMemo(() => {
     const base = "fixed top-0 left-0 w-full z-60 px-2 transition-all duration-300 ease-linear";
@@ -262,7 +266,7 @@ export default function Navbar({
     <nav className={navbarClasses}>
       <div className="max-w-7xl mx-auto flex justify-between items-center px-4 py-4 h-15 md:h-18 lg:h-20">
         <Link href="/" className="cursor-pointer">
-          <Logo />
+          <Logo index={logoIndex} />
         </Link>
 
         <ul className="relative hidden md:flex gap-8 font-medium text-base">
@@ -400,8 +404,6 @@ export default function Navbar({
             href={link.href}
             subLinks={link.subLinks}
             onClickLink={handleMenuItemClick}
-            
-            
           />
         ) : (
           <li key={link.name}>

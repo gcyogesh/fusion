@@ -1,23 +1,22 @@
 "use client";
 import Button from '@/components/atoms/button';
-import Link from 'next/link';
-import React, { useState } from 'react';
 import PrivateRequestPopup from '@/components/molecules/PrivateRequestPopup';
-
+import React, { useState } from 'react';
 
 interface PricingCardProps {
   basePrice: number;
+  isCompact?: boolean;
 }
 
-const PricingCard: React.FC<PricingCardProps> = ({ basePrice }) => {
+const PricingCard: React.FC<PricingCardProps> = ({ basePrice, isCompact = false }) => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
-  function handleBookNowClick() {
+  const handleBookNowClick = () => {
     const el = document.getElementById('user-form-section');
     if (el) {
       el.scrollIntoView({ behavior: 'smooth' });
     }
-  }
+  };
 
   const handlePrivateRequestClick = () => {
     setIsPopupOpen(true);
@@ -29,35 +28,58 @@ const PricingCard: React.FC<PricingCardProps> = ({ basePrice }) => {
 
   return (
     <>
-      <aside className="w-auto px-6 mb-6 md:mb-0 lg:mb-0 md:px-0 lg:px-0 ">
-        <div className="sticky top-24 w-full">
-          <div className="max-w-xs flex flex-col items-center rounded-xl border border-black bg-white shadow p-1 text-center space-y-3">
-            <div className="bg-[#002D62] text-white p-2 h-[45px] w-[300px] text-xl font-medium rounded-xl">Best Price</div>
-            <div className="flex items-center gap-4 mt-4">
-              <p className="text-gray-700 font-semibold text-xl">USD</p>
-              <p className="text-4xl font-bold text-gray-800">{basePrice}</p>
-              <p className="text-sm leading-tight">
-                <span>Per</span>
-                <span>Person</span>
-              </p>
-            </div>
-            <hr className="border-t border-dashed border-gray-300 w-full" />
-            <p className="text-base text-gray-500">
-              Price May Vary According<br />To The Group Size.
-            </p>
-            <div className="py-4 space-y-2 pb-4 items-center flex flex-col">
-              <Button text="Book this Trip" variant="primary" className="text-xs sm:text-sm w-[175px] h-[42px] font-semibold" onClick={handleBookNowClick} />
-              <Button 
-                text="Private Request" 
-                variant="secondary" 
-                className="text-xs sm:text-sm border border-black text-[#0E334F] !p-[10px] w-[175px] h-[42px] font-medium" 
-                onClick={handlePrivateRequestClick}
-              />
-            </div>
-          </div>
-             
+      <div
+        className={`${
+          isCompact ? 'w-[200px] max-w-full px-3 py-2' : 'max-w-xs p-1'
+        } flex flex-col items-center rounded-xl border border-black bg-white shadow text-center space-y-3`}
+      >
+        <div
+          className={`bg-[#002D62] text-white ${
+            isCompact ? 'text-sm h-[25px]' : 'text-xl h-[45px]'
+          } w-full font-medium rounded-xl p-2`}
+        >
+          Best Price
         </div>
-      </aside>
+
+        <div className="flex items-center justify-center gap-2 mt-3">
+          <p className="text-sm font-semibold text-gray-700">USD</p>
+          <p className={`font-bold text-gray-800 ${isCompact ? 'text-2xl' : 'text-4xl'}`}>
+            {basePrice}
+          </p>
+          <p className="text-xs leading-tight text-gray-600 text-left">
+            <span>Per</span>
+            <br />
+            <span>Person</span>
+          </p>
+        </div>
+
+        <hr className="border-t border-dashed border-gray-300 w-full" />
+
+        <p className={`text-gray-500 ${isCompact ? 'text-sm' : 'text-base'}`}>
+          Price May Vary According
+          <br />
+          To The Group Size.
+        </p>
+
+        <div className="py-2 space-y-2 items-center flex flex-col">
+          <Button
+            text="Book this Trip"
+            variant="primary"
+            className={`w-full font-semibold ${
+              isCompact ? 'text-xs h-9' : 'text-sm w-[175px] h-[42px]'
+            }`}
+            onClick={handleBookNowClick}
+          />
+          <Button
+            text="Private Request"
+            variant="secondary"
+            className={`w-full border border-black text-[#0E334F] font-medium ${
+              isCompact ? 'text-xs h-9' : 'text-sm w-[175px] h-[42px]'
+            }`}
+            onClick={handlePrivateRequestClick}
+          />
+        </div>
+      </div>
 
       {/* Private Request Popup */}
       <PrivateRequestPopup isOpen={isPopupOpen} onClose={handleClosePopup} />

@@ -108,7 +108,7 @@ const MidNavbar = ({ tabs, isBlogPage = false, blogCategories = [] }: MidNavbarP
       {/* Mobile Bottom Navbar */}
       <div
         ref={navRef}
-        className="fixed bottom-0 left-0 z-50 w-full bg-[#FDE3B0] border-t border-[#DEBC7E] md:hidden"
+        className="fixed bottom-0 left-0 z-50 w-full bg-light-beige  md:hidden"
       >
         <div className="max-w-7xl mx-auto overflow-x-auto scroll-smooth">
           <div ref={navListRef} className="flex flex-nowrap overflow-x-auto scrollbar-none py-2 px-3">
@@ -120,7 +120,7 @@ const MidNavbar = ({ tabs, isBlogPage = false, blogCategories = [] }: MidNavbarP
                   id={`nav-${tab.value}`}
                   onClick={() => handleTabClick(tab.value)}
                   className={`text-sm font-semibold px-5 py-2 transition-all whitespace-nowrap rounded-full ${
-                    isActive ? 'bg-[#F7931E] text-white' : 'text-black hover:bg-[#fcd59d]'
+                    isActive ? 'bg-[#F7931E] text-white' : 'text-black'
                   }`}
                 >
                   {tab.label}
@@ -132,7 +132,7 @@ const MidNavbar = ({ tabs, isBlogPage = false, blogCategories = [] }: MidNavbarP
       </div>
 
       {/* Desktop Top Navbar */}
-      <div className="hidden md:block sticky top-0 z-40 bg-[#FDE3B0] border-b border-[#DEBC7E]">
+      <div className="hidden md:block sticky top-0 z-40 bg-light-beige">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-wrap justify-start overflow-x-auto">
             {normalizedTabs.map(tab => {
@@ -142,7 +142,7 @@ const MidNavbar = ({ tabs, isBlogPage = false, blogCategories = [] }: MidNavbarP
                   key={tab.value}
                   onClick={() => handleTabClick(tab.value)}
                   className={`text-sm sm:text-base md:text-lg font-semibold px-7 py-3 transition-all whitespace-nowrap rounded-full ${
-                    isActive ? 'bg-[#F7931E] text-white' : 'text-black hover:bg-[#fcd59d]'
+                    isActive ? 'bg-[#F7931E] text-white' : 'text-black '
                   }`}
                 >
                   {tab.label}

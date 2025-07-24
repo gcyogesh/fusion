@@ -28,7 +28,7 @@
             <div
               key={id}
               className={`rounded-xl p-6 text-black border border-gray-200 shadow-sm transition-all duration-300 ease-in-out ${
-                isOpen ? 'bg-[#FCE1AC]' : ''
+                isOpen ? 'bg-light-beige' : ''
               }`}
             >
               <button
