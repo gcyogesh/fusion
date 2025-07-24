@@ -1,3 +1,5 @@
+'use client'
+
 export const dynamic = "force-dynamic";
 import { fetchAPI } from "@/utils/apiService";
 import { redirect } from "next/navigation";
