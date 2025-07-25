@@ -91,7 +91,7 @@ export default async function ActivityCategoryPage({ params }: { params: Params 
                       width={20}
                       height={20}
                     />
-                    {card.location?.city}, {card.location?.country}
+                    {card.location?.city.split(' ')[0]}, {card.location?.country}
                   </span>
                   <span className="flex items-center gap-2 font-medium text-[20px] text-[#7E7E7E]">
                     <Image
