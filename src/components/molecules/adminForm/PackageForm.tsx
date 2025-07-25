@@ -1070,7 +1070,7 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
           placeholder="Enter each highlight on a new line"
           rows={4}
           className="w-full border border-gray-300 rounded-lg p-2"
-        />
+      />
         {highlightsText.trim() && (
           <ul className="list-disc pl-6 mt-2 text-gray-600 text-sm">
             {highlightsText.split('\n').map((item, idx) => item.trim() && <li key={idx}>{item.trim()}</li>)}
@@ -1177,7 +1177,7 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
           placeholder="Enter each meal on a new line"
           rows={3}
           className="w-full border border-gray-300 rounded-lg p-2"
-        />
+      />
         {formData.feature.meals.length > 0 && (
           <ul className="list-disc pl-6 mt-2 text-gray-600 text-sm">
             {formData.feature.meals.map((item, idx) => item && <li key={idx}>{item}</li>)}
@@ -1196,7 +1196,7 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
           placeholder="Enter each activity on a new line"
           rows={3}
           className="w-full border border-gray-300 rounded-lg p-2"
-        />
+      />
         {formData.feature.activities.length > 0 && (
           <ul className="list-disc pl-6 mt-2 text-gray-600 text-sm">
             {formData.feature.activities.map((item, idx) => item && <li key={idx}>{item}</li>)}
@@ -1215,7 +1215,7 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
           placeholder="Enter each accommodation on a new line"
           rows={3}
           className="w-full border border-gray-300 rounded-lg p-2"
-        />
+      />
         {formData.feature.accommodation.length > 0 && (
           <ul className="list-disc pl-6 mt-2 text-gray-600 text-sm">
             {formData.feature.accommodation.map((item, idx) => item && <li key={idx}>{item}</li>)}
@@ -1361,12 +1361,10 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
             {renderStatus()}
             <form
               onKeyDown={e => {
-                if (e.key === 'Enter' && e.target && (e.target as HTMLElement).tagName !== 'TEXTAREA') {
+                if (e.key === 'Enter' && !(e.target instanceof HTMLTextAreaElement)) {
                   if (activeTab === tabOrder[tabOrder.length - 1]) {
-                    // On last tab, submit
                     handleSubmit(e);
                   } else {
-                    // Otherwise, go to next tab
                     e.preventDefault();
                     goToNextTab();
                   }
