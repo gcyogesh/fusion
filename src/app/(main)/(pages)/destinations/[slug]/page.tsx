@@ -108,7 +108,7 @@ export default async function Page({ params }: Params) {
                 <div className="flex justify-between text-sm text-[#7E7E7E] text-[20px] font-medium">
                   <span className="flex items-center gap-1">
                     <Image src={"/images/Location.svg"} alt="Location" width={20} height={20} />
-                    {card.location?.city}, {card.location?.country}
+                    {card.location?.city.split(' ')[0]}, {card.location?.country}
                   </span>
                   <span className="flex items-center gap-1">
                     <Image src={"/images/clock.svg"} alt="Clock" width={20} height={20} />
