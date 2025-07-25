@@ -62,7 +62,8 @@ const InputField = ({
   icon = null,
   min,
   max,
-  readOnly = false
+  readOnly = false,
+  autoFocus = false
 }) => (
   <div className={`mb-4 ${className}`}>
     <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -84,6 +85,7 @@ const InputField = ({
         max={max}
         className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg shadow-sm"
         readOnly={readOnly}
+        autoFocus={autoFocus}
       />
     </div>
   </div>
@@ -496,10 +498,10 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
 
   // Sync textareas with arrays on initialData or formData change
   useEffect(() => {
-    setInclusionsText(formData.inclusions.join(', '));
-    setExclusionsText(formData.exclusions.join(', '));
-    setHighlightsText(formData.highlights.join(', '));
-    setQuickfactsText(formData.quickfacts.join(', '));
+    setInclusionsText(formData.inclusions.join('\n'));
+    setExclusionsText(formData.exclusions.join('\n'));
+    setHighlightsText(formData.highlights.join('\n'));
+    setQuickfactsText(formData.quickfacts.join('\n'));
   }, [formData.inclusions, formData.exclusions, formData.highlights, formData.quickfacts]);
 
   // Fetch categories on component mount
@@ -535,16 +537,16 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
         itinerary: initialData.itinerary ?? [],
         inclusions: Array.isArray(initialData.inclusions)
           ? initialData.inclusions
-          : (typeof initialData.inclusions === 'string' && !!initialData.inclusions ? (initialData.inclusions as string).split(',').map(s => s.trim()).filter(Boolean) : []),
+          : (typeof initialData.inclusions === 'string' && !!initialData.inclusions ? (initialData.inclusions as string).split('\n').map(s => s.trim()).filter(Boolean) : []),
         exclusions: Array.isArray(initialData.exclusions)
           ? initialData.exclusions
-          : (typeof initialData.exclusions === 'string' && !!initialData.exclusions ? (initialData.exclusions as string).split(',').map(s => s.trim()).filter(Boolean) : []),
+          : (typeof initialData.exclusions === 'string' && !!initialData.exclusions ? (initialData.exclusions as string).split('\n').map(s => s.trim()).filter(Boolean) : []),
         highlights: Array.isArray(initialData.highlights)
           ? initialData.highlights
-          : (typeof initialData.highlights === 'string' && !!initialData.highlights ? (initialData.highlights as string).split(',').map(s => s.trim()).filter(Boolean) : []),
+          : (typeof initialData.highlights === 'string' && !!initialData.highlights ? (initialData.highlights as string).split('\n').map(s => s.trim()).filter(Boolean) : []),
         quickfacts: Array.isArray(initialData.quickfacts)
           ? initialData.quickfacts
-          : (typeof initialData.quickfacts === 'string' && !!initialData.quickfacts ? (initialData.quickfacts as string).split(',').map(s => s.trim()).filter(Boolean) : []),
+          : (typeof initialData.quickfacts === 'string' && !!initialData.quickfacts ? (initialData.quickfacts as string).split('\n').map(s => s.trim()).filter(Boolean) : []),
         tag: Array.isArray(initialData.tag)
           ? initialData.tag[0] || ''
           : (typeof initialData.tag === 'string' && initialData.tag.startsWith('[')
@@ -861,11 +863,10 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
         value={formData.title}
         onChange={handleChange}
         placeholder="Enter tour title"
-
         icon={<FiInfo />}
-
         min={undefined}
         max={undefined}
+        autoFocus
       />
 
       <TextareaField
@@ -935,9 +936,10 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
           value={formData.location.city}
           onChange={(e) => handleNestedChange('location', 'city', e.target.value)}
           placeholder="Enter city"
-
           icon={<FiMapPin />}
-          min={undefined} max={undefined} />
+          min={undefined} max={undefined}
+          autoFocus
+        />
         <InputField
           label="Country"
           name="country"
@@ -967,10 +969,11 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
           value={formData.basePrice}
           onChange={handleChange}
           placeholder="Enter base price"
-
           type="number"
           icon={<FiDollarSign />}
-          min={undefined} max={undefined} />
+          min={undefined} max={undefined}
+          autoFocus
+        />
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Currency</label>
           <div className="relative">
@@ -1019,30 +1022,79 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
 
   const renderDetailsTab = () => (
     <div className="space-y-4">
-      <ChipInput
-        label="Inclusions"
-        value={formData.inclusions}
-        onChange={val => setFormData({ ...formData, inclusions: val })}
-        placeholder="Type or paste, press Enter or comma to add"
-      />
-      <ChipInput
-        label="Exclusions"
-        value={formData.exclusions}
-        onChange={val => setFormData({ ...formData, exclusions: val })}
-        placeholder="Type or paste, press Enter or comma to add"
-      />
-      <ChipInput
-        label="Highlights"
-        value={formData.highlights}
-        onChange={val => setFormData({ ...formData, highlights: val })}
-        placeholder="Type or paste, press Enter or comma to add"
-      />
-      <ChipInput
-        label="Quick Facts"
-        value={formData.quickfacts}
-        onChange={val => setFormData({ ...formData, quickfacts: val })}
-        placeholder="Type or paste, press Enter or comma to add"
-      />
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Inclusions</label>
+        <textarea
+          value={inclusionsText}
+          onChange={e => {
+            setInclusionsText(e.target.value);
+            setFormData({ ...formData, inclusions: e.target.value.split('\n').map(s => s.trim()).filter(Boolean) });
+          }}
+          placeholder="Enter each inclusion on a new line"
+          rows={4}
+          className="w-full border border-gray-300 rounded-lg p-2"
+        />
+        {/* Live preview as bullets */}
+        {inclusionsText.trim() && (
+          <ul className="list-disc pl-6 mt-2 text-gray-600 text-sm">
+            {inclusionsText.split('\n').map((item, idx) => item.trim() && <li key={idx}>{item.trim()}</li>)}
+          </ul>
+        )}
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Exclusions</label>
+        <textarea
+          value={exclusionsText}
+          onChange={e => {
+            setExclusionsText(e.target.value);
+            setFormData({ ...formData, exclusions: e.target.value.split('\n').map(s => s.trim()).filter(Boolean) });
+          }}
+          placeholder="Enter each exclusion on a new line"
+          rows={4}
+          className="w-full border border-gray-300 rounded-lg p-2"
+        />
+        {exclusionsText.trim() && (
+          <ul className="list-disc pl-6 mt-2 text-gray-600 text-sm">
+            {exclusionsText.split('\n').map((item, idx) => item.trim() && <li key={idx}>{item.trim()}</li>)}
+          </ul>
+        )}
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Highlights</label>
+        <textarea
+          value={highlightsText}
+          onChange={e => {
+            setHighlightsText(e.target.value);
+            setFormData({ ...formData, highlights: e.target.value.split('\n').map(s => s.trim()).filter(Boolean) });
+          }}
+          placeholder="Enter each highlight on a new line"
+          rows={4}
+          className="w-full border border-gray-300 rounded-lg p-2"
+        />
+        {highlightsText.trim() && (
+          <ul className="list-disc pl-6 mt-2 text-gray-600 text-sm">
+            {highlightsText.split('\n').map((item, idx) => item.trim() && <li key={idx}>{item.trim()}</li>)}
+          </ul>
+        )}
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Quick Facts</label>
+        <textarea
+          value={quickfactsText}
+          onChange={e => {
+            setQuickfactsText(e.target.value);
+            setFormData({ ...formData, quickfacts: e.target.value.split('\n').map(s => s.trim()).filter(Boolean) });
+          }}
+          placeholder="Enter each quick fact on a new line"
+          rows={4}
+          className="w-full border border-gray-300 rounded-lg p-2"
+        />
+        {quickfactsText.trim() && (
+          <ul className="list-disc pl-6 mt-2 text-gray-600 text-sm">
+            {quickfactsText.split('\n').map((item, idx) => item.trim() && <li key={idx}>{item.trim()}</li>)}
+          </ul>
+        )}
+      </div>
       <InputField
         label="Tag  (If it is Special tour then write 'special')"
         name="tag"
@@ -1074,17 +1126,7 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
           type="number"
           icon={<FiUsers />}
           min={undefined} max={undefined} />
-
-        <InputField
-          label="Trip Duration"
-          name="tripDuration"
-          value={formData.feature.tripDuration}
-          onChange={(e) => handleNestedChange('feature', 'tripDuration', e.target.value)}
-          placeholder="Enter trip duration"
-          icon={<FiCalendar />}
-          min={undefined} max={undefined} />
       </div>
-
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Trip Difficulty</label>
@@ -1105,7 +1147,6 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
             </select>
           </div>
         </div>
-
         <InputField
           label="Max Altitude"
           name="maxAltitude"
@@ -1116,7 +1157,6 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"></path>
           </svg>} min={undefined} max={undefined} />
       </div>
-
       <InputField
         label="Start/End Point"
         name="startEndPoint"
@@ -1125,37 +1165,82 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
         placeholder="Enter start and end point"
         icon={<FiNavigation />} min={undefined} max={undefined} />
 
-      <ArrayField
-        label="Meals"
-        name="meals"
-        value={formData.feature.meals}
-        onChange={(val) => handleNestedChange('feature', 'meals', val)}
-        placeholder="Add meal"
-      />
-
-      <ArrayField
-        label="Activities"
-        name="activities"
-        value={formData.feature.activities}
-        onChange={(val) => handleNestedChange('feature', 'activities', val)}
-        placeholder="Add activity"
-      />
-
-      <ArrayField
-        label="Accommodation"
-        name="accommodation"
-        value={formData.feature.accommodation}
-        onChange={(val) => handleNestedChange('feature', 'accommodation', val)}
-        placeholder="Add accommodation"
-      />
-
-      <ArrayField
-        label="Best Season"
-        name="bestSeason"
-        value={formData.feature.bestSeason}
-        onChange={(val) => handleNestedChange('feature', 'bestSeason', val)}
-        placeholder="Add season"
-      />
+      {/* Meals textarea with bullets */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Meals</label>
+        <textarea
+          value={formData.feature.meals.join('\n')}
+          onChange={e => {
+            const lines = e.target.value.split('\n').map(s => s.trim()).filter(Boolean);
+            setFormData(prev => ({ ...prev, feature: { ...prev.feature, meals: lines } }));
+          }}
+          placeholder="Enter each meal on a new line"
+          rows={3}
+          className="w-full border border-gray-300 rounded-lg p-2"
+        />
+        {formData.feature.meals.length > 0 && (
+          <ul className="list-disc pl-6 mt-2 text-gray-600 text-sm">
+            {formData.feature.meals.map((item, idx) => item && <li key={idx}>{item}</li>)}
+          </ul>
+        )}
+      </div>
+      {/* Activities textarea with bullets */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Activities</label>
+        <textarea
+          value={formData.feature.activities.join('\n')}
+          onChange={e => {
+            const lines = e.target.value.split('\n').map(s => s.trim()).filter(Boolean);
+            setFormData(prev => ({ ...prev, feature: { ...prev.feature, activities: lines } }));
+          }}
+          placeholder="Enter each activity on a new line"
+          rows={3}
+          className="w-full border border-gray-300 rounded-lg p-2"
+        />
+        {formData.feature.activities.length > 0 && (
+          <ul className="list-disc pl-6 mt-2 text-gray-600 text-sm">
+            {formData.feature.activities.map((item, idx) => item && <li key={idx}>{item}</li>)}
+          </ul>
+        )}
+      </div>
+      {/* Accommodation textarea with bullets */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Accommodation</label>
+        <textarea
+          value={formData.feature.accommodation.join('\n')}
+          onChange={e => {
+            const lines = e.target.value.split('\n').map(s => s.trim()).filter(Boolean);
+            setFormData(prev => ({ ...prev, feature: { ...prev.feature, accommodation: lines } }));
+          }}
+          placeholder="Enter each accommodation on a new line"
+          rows={3}
+          className="w-full border border-gray-300 rounded-lg p-2"
+        />
+        {formData.feature.accommodation.length > 0 && (
+          <ul className="list-disc pl-6 mt-2 text-gray-600 text-sm">
+            {formData.feature.accommodation.map((item, idx) => item && <li key={idx}>{item}</li>)}
+          </ul>
+        )}
+      </div>
+      {/* Best Season textarea with bullets */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Best Season</label>
+        <textarea
+          value={formData.feature.bestSeason.join('\n')}
+          onChange={e => {
+            const lines = e.target.value.split('\n').map(s => s.trim()).filter(Boolean);
+            setFormData(prev => ({ ...prev, feature: { ...prev.feature, bestSeason: lines } }));
+          }}
+          placeholder="Enter each season on a new line"
+          rows={3}
+          className="w-full border border-gray-300 rounded-lg p-2"
+        />
+        {formData.feature.bestSeason.length > 0 && (
+          <ul className="list-disc pl-6 mt-2 text-gray-600 text-sm">
+            {formData.feature.bestSeason.map((item, idx) => item && <li key={idx}>{item}</li>)}
+          </ul>
+        )}
+      </div>
     </div>
   );
 
@@ -1174,6 +1259,7 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
               placeholder="Day number"
               min={1}
               max={365}
+              autoFocus={idx === 0}
             />
             <InputField
               label="Title"
@@ -1274,10 +1360,16 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
           <div className="flex-1 overflow-y-auto p-6">
             {renderStatus()}
             <form
-              onSubmit={e => e.preventDefault()}
               onKeyDown={e => {
-                if (e.key === 'Enter') {
-                  e.preventDefault();
+                if (e.key === 'Enter' && e.target && (e.target as HTMLElement).tagName !== 'TEXTAREA') {
+                  if (activeTab === tabOrder[tabOrder.length - 1]) {
+                    // On last tab, submit
+                    handleSubmit(e);
+                  } else {
+                    // Otherwise, go to next tab
+                    e.preventDefault();
+                    goToNextTab();
+                  }
                 }
               }}
               autoComplete="off" className="space-y-6">

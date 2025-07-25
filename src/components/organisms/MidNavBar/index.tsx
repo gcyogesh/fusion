@@ -119,8 +119,8 @@ const MidNavbar = ({ tabs, isBlogPage = false, blogCategories = [] }: MidNavbarP
                   key={tab.value}
                   id={`nav-${tab.value}`}
                   onClick={() => handleTabClick(tab.value)}
-                  className={`text-sm font-semibold px-5 py-2 transition-all whitespace-nowrap rounded-full ${
-                    isActive ? 'bg-[#F7931E] text-white' : 'text-black'
+                  className={`text-sm font-semibold px-5 py-2 whitespace-nowrap rounded-full ${
+                    isActive ? ' text-primary' : 'text-black'
                   }`}
                 >
                   {tab.label}
@@ -141,8 +141,8 @@ const MidNavbar = ({ tabs, isBlogPage = false, blogCategories = [] }: MidNavbarP
                 <button
                   key={tab.value}
                   onClick={() => handleTabClick(tab.value)}
-                  className={`text-sm sm:text-base md:text-lg font-semibold px-7 py-3 transition-all whitespace-nowrap rounded-full ${
-                    isActive ? 'bg-[#F7931E] text-white' : 'text-black '
+                  className={`text-sm sm:text-base md:text-lg font-semibold px-7 py-3 whitespace-nowrap rounded-full ${
+                    isActive ? ' text-primary' : 'text-black'
                   }`}
                 >
                   {tab.label}

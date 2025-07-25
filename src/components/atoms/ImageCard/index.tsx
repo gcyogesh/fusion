@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import ArrowIcon from '../arrowIcon';
 import Button from '../button';
 import Image from 'next/image';
+import { IoMdClose } from 'react-icons/io';
 type Variant = 'rectangle' | 'square' | 'smallsquare' | 'smallrectangle';
 type SnippetPosition = 'center' | 'start' | 'end';
 
@@ -25,6 +26,9 @@ interface ImageDisplayProps<T = string> {
   showDefaultTitle?: boolean;
   description?: string;
   showOverlayContent?: boolean;
+  showArrowIcon?: boolean;
+  showImagePopup?: boolean;
+  showOverlayText?: boolean;
   totalTrips?: number;
   createdAt?: string;
 }
@@ -78,74 +82,76 @@ const ImageDisplay = <T extends string>({
   totalTrips,
   createdAt,
   showOverlayContent = true,
+  showArrowIcon = true,
+  showImagePopup = false,
+  showOverlayText = true,
 }: ImageDisplayProps<T>) => {
   const [isError, setIsError] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const shouldShowPlaceholder = isError || !src;
 
+  // Determine if overlay should show
+  const shouldShowOverlay = !!(
+    (showOverlayText && (title || description)) || showArrowIcon
+  );
+
   return (
-    <motion.div
-      initial="hidden"
-      animate="visible"
-      exit="exit"
-      whileHover={{ scale: 1.02 }}
-      className={`relative overflow-hidden rounded-xl group w-full cursor-pointer ${className}`}
-      style={{
-        aspectRatio: `${aspectRatios[variant].toFixed(3)}`,
-        maxWidth: width || '100%',
-        maxHeight: height || 'none',
-      }}
-    >
-      {shouldShowPlaceholder ? (
-        <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-          {placeholderSrc ? (
-            <img
-              src={placeholderSrc}
-              alt="Placeholder"
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            <span className="text-gray-400 text-sm md:text-base">Image not available</span>
-
-
-
-          )}
-        </div>
-      ) : (
-        <img
-          src={src}
-          alt={alt}
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-          onError={() => setIsError(true)}
-        />
-
-
-
-
-
-
-
-      )}
+    <>
+      <motion.div
+        initial="hidden"
+        animate="visible"
+        exit="exit"
+        whileHover={{ scale: 1.02 }}
+        className={`relative overflow-hidden rounded-xl group w-full cursor-pointer ${className}`}
+        style={{
+          aspectRatio: `${aspectRatios[variant].toFixed(3)}`,
+          maxWidth: width || '100%',
+          maxHeight: height || 'none',
+        }}
+        onClick={() => src && showImagePopup && setShowModal(true)}
+      >
+        {shouldShowPlaceholder ? (
+          <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+            {placeholderSrc ? (
+              <img
+                src={placeholderSrc}
+                alt="Placeholder"
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <span className="text-gray-400 text-sm md:text-base">Image not available</span>
+            )}
+          </div>
+        ) : (
+          <img
+            src={src}
+            alt={alt}
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            onError={() => setIsError(true)}
+          />
+        )}
 
 
 
 
-      {showOverlayContent && (
+      {showOverlayContent && shouldShowOverlay && (
         <motion.div
           initial={{ opacity: 0 }}
           whileHover={{ opacity: 1 }}
           transition={{ duration: 0.4 }}
           className="absolute inset-0 bg-black/70 flex flex-col justify-center items-center text-white opacity-0 group-hover:opacity-100 cursor-pointer px-4 text-center"
         >
-          {title && <h1 className="text-lg font-semibold">{title}</h1>}
-          {description && (
+          {showOverlayText && title && <h1 className="text-lg font-semibold">{title}</h1>}
+          {showOverlayText && description && (
             <p className="text-sm mt-1 line-clamp-3">
               {description}
             </p>
           )}
-
-          <div className="mt-4 w-8 h-8 flex items-center justify-center rounded-full bg-orange-500">
-            <ArrowIcon size={15} />
-          </div>
+          {showArrowIcon && (
+            <div className="mt-4 w-8 h-8 flex items-center justify-center rounded-full bg-orange-500">
+              <ArrowIcon size={15} />
+            </div>
+          )}
         </motion.div>
       )}
 
@@ -193,6 +199,26 @@ const ImageDisplay = <T extends string>({
         </div>
       )}
     </motion.div>
+      {/* Image Popup Modal */}
+      {showModal && showImagePopup && src && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70" onClick={() => setShowModal(false)}>
+          <div className="relative max-w-3xl w-full mx-4" onClick={e => e.stopPropagation()}>
+            <button
+              className="absolute top-2 right-2 text-white text-2xl bg-black/60 rounded-full p-1 hover:bg-black/80 z-10"
+              onClick={() => setShowModal(false)}
+              aria-label="Close image preview"
+            >
+              <IoMdClose />
+            </button>
+            <img
+              src={src as string}
+              alt={alt}
+              className="w-full h-auto max-h-[80vh] rounded-xl object-contain bg-white"
+            />
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 

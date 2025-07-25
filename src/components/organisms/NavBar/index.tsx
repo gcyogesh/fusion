@@ -151,22 +151,16 @@ export default function Navbar({
         hasDropdown: true,
         subLinks: [
           {
-            name: "Our Teams",
-            href: "/about/ourteams",
-            subtitle: "Meet the passionate people behind our mission",
-            title: "Our Teams",
-          },
-          {
             name: "Fusion",
             href: "/about",
             subtitle: "Explore our story, values, and what drives us forward",
             title: "Fusion",
           },
           {
-            name: "Contact",
-            href: "/about/contact",
-            subtitle: "We'd love to hear from you!",
-            title: "Contact",
+            name: "Our Teams",
+            href: "/about/ourteams",
+            subtitle: "Meet the passionate people behind our mission",
+            title: "Our Teams",
           },
           {
             name: "Testimonials",
@@ -174,12 +168,23 @@ export default function Navbar({
             subtitle: "Feedback from our clients",
             title: "Reviews",
           },
+      
+       
+             
           {
             name: "Terms and Conditions",
             href: "/about/terms",
             subtitle: "Read our policies",
             title: "Terms and Conditions",
           },
+        
+          {
+            name: "Contact",
+            href: "/about/contact",
+            subtitle: "We'd love to hear from you!",
+            title: "Contact",
+          },
+      
         ],
       },
       { name: "Deals", href: "/deals", hasDropdown: false },
@@ -277,7 +282,7 @@ const navbarClasses = useMemo(() => {
             <li
               key={link.name}
               onMouseEnter={() => handleMouseEnter(link)}
-              className="relative group flex items-center gap-1 hover:text-[#F28A15] transition-colors"
+              className={`relative group flex items-center gap-1 transition-colors ${pathname.startsWith(link.href) ? 'text-primary' : 'hover:text-[#F28A15]'}`}
             >
               <Link href={link.href} className="">
                 {link.name}

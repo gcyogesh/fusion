@@ -41,7 +41,21 @@ const durationGroups: Duration[] = [
     tag: "Long",
   },
   {
-    label: "10+ Days",
+    label: "10-15 Days",
+    slug: "10-plus-days",
+    image: "/images/duration/extended-trip.png",
+    description: "The ultimate travel experience",
+    tag: "Extended",
+  },
+  {
+    label: "15-21 Days",
+    slug: "10-plus-days",
+    image: "/images/duration/extended-trip.png",
+    description: "The ultimate travel experience",
+    tag: "Extended",
+  },
+  {
+    label: "21-above Days",
     slug: "10-plus-days",
     image: "/images/duration/extended-trip.png",
     description: "The ultimate travel experience",

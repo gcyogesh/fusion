@@ -52,13 +52,8 @@ export default function DepartureCalendar() {
         width={400}
         className="text-[#1A1E21]"
       />
-      <div className="grid grid-cols-1 md:grid-cols-2 justify-between ">
-        <div className="">
-          <h3 className="text-lg font-semibold mb-2 text-[#0E334F]">Booking Date</h3>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DateCalendar value={bookingDate ? dayjs(bookingDate) : null} onChange={handleBookingDateChange} />
-          </LocalizationProvider>
-        </div>
+      <div className="grid grid-cols-1 md:grid-cols-2  ">
+
         <div>
           <h3 className="text-lg font-semibold mb-2 text-[#0E334F]">Travel Date</h3>
           <LocalizationProvider dateAdapter={AdapterDayjs}>

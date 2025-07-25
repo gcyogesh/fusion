@@ -3,25 +3,14 @@
 import React, { useState, useEffect } from "react";
 import { X } from "lucide-react";
 import { fetchAPI } from "@/utils/apiService";
+import { Destination } from "@/types";
+import { Activity } from "@/types";
 
 type PrivateRequestPopupProps = {
   isOpen: boolean;
   onClose: () => void;
 };
 
-type Destination = {
-  _id: string;
-  title: string;
-  subtitle: string;
-  slug: string;
-};
-
-type Activity = {
-  _id: string;
-  name: string;
-  image: string;
-  slug: string;
-};
 
 const PrivateRequestPopup: React.FC<PrivateRequestPopupProps> = ({ isOpen, onClose }) => {
   const [formData, setFormData] = useState({

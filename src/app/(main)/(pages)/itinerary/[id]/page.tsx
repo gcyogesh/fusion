@@ -20,9 +20,9 @@ import DownloadPdfButton from '@/components/atoms/pdfbutton';
 const trekTabs = [
   "Overview",
   "Itinerary",
-  "Includes/Excludes",
-  "Book Now",
-  "Trip Map",
+  "Pricing",
+
+  "Route ",
   "FAQs",
   "Reviews"
 ];
@@ -130,6 +130,9 @@ export default async function Page({ params }: { params: { id: string } }) {
               title={packages.title}
               description={packages.description}
               className="h-[300px] w-[400px]"
+              showOverlayText={false}
+              showArrowIcon={false}
+              showImagePopup={true}
             />
           </div>
         ))}
@@ -144,10 +147,12 @@ export default async function Page({ params }: { params: { id: string } }) {
         <div className="aspect-video w-full">
           <ImageDisplay
             src={packages.gallery?.[0] || "/fallback.jpg"}
-            variant="rectangle"
             title={packages.title}
             description={packages.description}
             className="h-[550px] w-full"
+            showOverlayText={false}
+            showArrowIcon={false}
+            showImagePopup={true}
           />
         </div>
       </div>
@@ -160,6 +165,9 @@ export default async function Page({ params }: { params: { id: string } }) {
               title={packages.title}
               description={packages.description}
               className="h-[265px]"
+              showOverlayText={false}
+              showArrowIcon={false}
+              showImagePopup={true}
             />
           </div>
         )}
@@ -171,6 +179,9 @@ export default async function Page({ params }: { params: { id: string } }) {
               title={packages.title}
               description={packages.description}
               className="h-[265px]"
+              showOverlayText={false}
+              showArrowIcon={false}
+              showImagePopup={true}
             />
           </div>
         )}
@@ -184,14 +195,14 @@ export default async function Page({ params }: { params: { id: string } }) {
         <div className="flex flex-col md:flex-row justify-between gap-6">
           <div className="flex-1 max-w-4xl pr-2">
             
-            <TextDescription text={packages.description} />
-          
-             <FeatureGrid featureData={featureData} />
-
-            <div className="max-w-5xl mx-auto py-4">
+          <div className="max-w-5xl mx-auto py-4">
               <TextHeader text={packages.title} align="left" size="large" width={855} className="mb-1" />
               <TextDescription className="mb-4" text={packages.overview} />
             </div>
+        
+          
+             <FeatureGrid featureData={featureData} />
+
 
             <div className="rounded-2xl p-6 bg-white shadow-sm mb-4 py-2">
               <TextHeader text="Trip Highlights" align="left" size="large" width={855} className="py-2" />
@@ -200,12 +211,7 @@ export default async function Page({ params }: { params: { id: string } }) {
               </ul>
               </div>
 
-             <div className="rounded-2xl p-6 bg-white shadow-sm mb-4 py-2">
-              <TextHeader text="Quick Facts" align="left" size="large" width={855} className="py-2" />
-              <ul className="list-disc pl-6 space-y-2 text-base text-[#535556] ">
-               {packages.quickfacts?.map((item, i) => <li key={i}>{item}</li>)}
-               </ul>
-            </div>
+        
              {/* Itinerary */}
             <div className="space-y-6 py-10">
               
@@ -217,7 +223,7 @@ export default async function Page({ params }: { params: { id: string } }) {
 
               <div id="Includes-Excludes" className="w-auto md:w-[875px] h-[1px] bg-black opacity-20 mt-2 mb-6" />
             {/* iclusion& exclusions */}
-              <div className="max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="max-w-4xl grid grid-cols-2 gap-8">
                 <InclusionExclusion title="Cost Includes" items={packages.inclusions} icon="/images/right.png" />
                 <InclusionExclusion title="Cost Excludes" items={packages.exclusions} icon="/images/cross.png" />
               </div>
@@ -231,12 +237,11 @@ export default async function Page({ params }: { params: { id: string } }) {
             <div className="py-6" id="Book-Now">
               <UserForm 
                 availableBookingDates={["2024-07-01", "2024-07-10", "2024-07-15"]}
-                availableTravelDates={["2024-07-05", "2024-07-12", "2024-07-20"]}
               />
             </div>
           {/*trips maps */}
             <div id="Trip-Map" className="py-6">
-              <TextHeader text="Trek Map" align="left" size="large" width={855} className=" mb-2" />
+              <TextHeader text=" Route" align="left" size="large" width={855} className=" mb-2" />
               {packages.googleMapUrl && (
                 <Image
                   src={packages.googleMapUrl}
@@ -249,60 +254,53 @@ export default async function Page({ params }: { params: { id: string } }) {
             </div>
 {/*equipments */}
             <div className="max-w-4xl py-6">
-  <TextHeader text="Trek Gallery" align="left" size="large" width={855} className="mb-2" />
+  <TextHeader text="" align="left" size="large" width={855} className="mb-2" />
   
-  {/* Mobile View - Single image with horizontal scroll */}
-  <div className="block lg:hidden mb-4">
-    <div className="overflow-x-auto">
-      <div className="flex gap-4 pb-4" style={{ width: 'max-content' }}>
-        {packages.gallery.map((img, i) => (
-          <div key={i} className="flex-shrink-0">
-            <ImageDisplay 
-              src={img} 
-              variant="rectangle" 
-              width={300} 
-              height={200} 
-            />
-          </div>
-        ))}
-      </div>
-    </div>
-  </div>
+  
 
   {/* Desktop View - Original grid layout */}
   <div className="hidden lg:block">
     <div className="grid grid-cols-3 gap-4 ">
       <div className="col-span-2">
-        {packages.gallery[0] && (
+        {/* {packages.gallery[0] && (
           <ImageDisplay 
             src={packages.gallery[0]} 
             variant="rectangle" 
             width={840} 
             height={290} 
+            showOverlayText={false}
+            showArrowIcon={false}
+            showImagePopup={true}
           />
-        )}
+        )} */}
       </div>
       <div>
-        {packages.gallery[1] && (
-          <ImageDisplay 
-            src={packages.gallery[1]} 
-            variant="square" 
-            width={400} 
-            height={400} 
-          />
-        )}
+        {/* {packages.gallery[1] && (
+          // <ImageDisplay 
+          //   src={packages.gallery[1]} 
+          //   variant="square" 
+          //   width={400} 
+          //   height={400} 
+          //   showOverlayText={false}
+          //   showArrowIcon={false}
+          //   showImagePopup={true}
+          // />
+        )} */}
       </div>
     </div>
     <div className="grid grid-cols-3 gap-4">
-      {packages.gallery.slice(2, 5).map((img, i) => (
+      {/* {packages.gallery.slice(2, 5).map((img, i) => (
         <ImageDisplay 
           key={i} 
           src={img} 
           variant="square" 
           width={400} 
           height={400} 
+          showOverlayText={false}
+          showArrowIcon={false}
+          showImagePopup={true}
         />
-      ))}
+      ))} */}
     </div>
   </div>
 </div>

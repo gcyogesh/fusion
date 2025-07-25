@@ -22,7 +22,7 @@ const ItinerarySection = ({ itinerary }) => {
 
   return (
     <div className="space-y-6 px-4 sm:px-6 lg:px-8">
-      {itinerary.map((item) => {
+      {itinerary?.map((item) => {
         const isOpen = openDay === item.day;
         return (
           <div
@@ -81,29 +81,30 @@ const ItinerarySection = ({ itinerary }) => {
                     />
                   </div>
                 )}
-
                 {/* Activities */}
-                <div className="bg-white p-4 sm:p-6 border border-black rounded-xl shadow-sm">
-                  <div className="flex flex-wrap gap-3 sm:gap-4">
-                    {item.activities.map((activityText, idx) => (
-                      <div
-                        key={idx}
-                        className="flex items-center gap-2 text-gray-700 text-sm sm:text-base bg-gray-50 px-3 py-2 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors flex-shrink-0"
-                      >
-                        <Image
-                          src={icons[idx % icons.length]}
-                          alt="activity icon"
-                          width={20}
-                          height={20}
-                          className="w-5 h-5 sm:w-6 sm:h-6 object-contain"
-                        />
-                        <div className="max-w-[230px] md:max-w-full">
-                        <TextDescription text={activityText} />
+                {item.activities && item.activities.length > 1 && (
+                  <div className="bg-white p-4 sm:p-6 border border-black rounded-xl shadow-sm">
+                    <div className="flex flex-wrap gap-3 sm:gap-4">
+                      {item.activities.map((activityText, idx) => (
+                        <div
+                          key={idx}
+                          className="flex items-center gap-2 text-gray-700 text-sm sm:text-base bg-gray-50 px-3 py-2 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors flex-shrink-0"
+                        >
+                          <Image
+                            src={icons[idx % icons.length]}
+                            alt="activity icon"
+                            width={20}
+                            height={20}
+                            className="w-5 h-5 sm:w-6 sm:h-6 object-contain"
+                          />
+                          <div className="max-w-[230px] md:max-w-full">
+                            <TextDescription text={activityText} />
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
             )}
           </div>

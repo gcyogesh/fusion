@@ -7,6 +7,7 @@ import { loadStripe } from '@stripe/stripe-js';
 import { fetchAPI } from '@/utils/apiService';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import ReCAPTCHA from 'react-google-recaptcha';
 
 interface TourPackage {
   _id: string;
@@ -41,9 +42,9 @@ const UserForm: React.FC<UserFormProps> = ({ availableBookingDates = [], availab
   const [showModal, setShowModal] = useState(false);
   const [payLoading, setPayLoading] = useState(false);
   const [payError, setPayError] = useState<string | null>(null);
+  const [captcha, setCaptcha] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
-    bookingDate: "",
     date: "",
     name: "",
     email: "",
@@ -54,7 +55,6 @@ const UserForm: React.FC<UserFormProps> = ({ availableBookingDates = [], availab
     agree: false,
   });
 
-  const [showBookingDatePicker, setShowBookingDatePicker] = useState(false);
   const [showTravelDatePicker, setShowTravelDatePicker] = useState(false);
 
   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://yourdomain.com';
@@ -91,15 +91,11 @@ const UserForm: React.FC<UserFormProps> = ({ availableBookingDates = [], availab
     fetchTourPackage();
   }, [tourPackageId]);
 
-  // Sync formData.date and formData.bookingDate with URL params
+  // Sync formData.date with URL params
   useEffect(() => {
     const urlDate = searchParams.get('date') || searchParams.get('travelDate');
-    const urlBookingDate = searchParams.get('bookingDate');
     if (urlDate && urlDate !== formData.date) {
       setFormData((prev) => ({ ...prev, date: urlDate }));
-    }
-    if (urlBookingDate && urlBookingDate !== formData.bookingDate) {
-      setFormData((prev) => ({ ...prev, bookingDate: urlBookingDate }));
     }
   }, [searchParams]);
 
@@ -109,6 +105,10 @@ const UserForm: React.FC<UserFormProps> = ({ availableBookingDates = [], availab
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
+    if (!captcha) {
+      alert('Please complete the captcha.');
+      return;
+    }
     setShowModal(true);
   };
 
@@ -142,13 +142,6 @@ const UserForm: React.FC<UserFormProps> = ({ availableBookingDates = [], availab
   };
 
   // Helper to get dropdown options including custom date from searchParams
-  const getBookingDateOptions = () => {
-    const options = [...availableBookingDates];
-    if (formData.bookingDate && !options.includes(formData.bookingDate)) {
-      options.push(formData.bookingDate);
-    }
-    return options;
-  };
   const getTravelDateOptions = () => {
     const options = [...availableTravelDates];
     if (formData.date && !options.includes(formData.date)) {
@@ -156,6 +149,11 @@ const UserForm: React.FC<UserFormProps> = ({ availableBookingDates = [], availab
     }
     return options;
   };
+
+  // Helper for DatePicker to handle both null and Date
+  function getDateValue(val: string) {
+    return val ? new Date(val) : null;
+  }
 
   return (
     <div className="max-w-6xl mx-auto ">
@@ -269,44 +267,9 @@ const UserForm: React.FC<UserFormProps> = ({ availableBookingDates = [], availab
             </div>
             {/* RIGHT: Booking Details */}
             <div className="flex-1 p-8 flex flex-col justify-center min-w-[250px]">
-              <h2 className="text-xl font-bold mb-4 text-[#0E334F]">Booking Details</h2>
+              <h2 className="text-xl font-bold mb-4 text-[#0E334F]">Travel Details</h2>
               <div className="grid md:grid-cols-2 gap-4 mb-4">
-                <div className="relative">
-                  <label className="block text-gray-700 font-semibold mb-1">Booking Date</label>
-                  <select
-                    required
-                    value={formData.bookingDate}
-                    onChange={e => {
-                      if (e.target.value === '__custom__') {
-                        setShowBookingDatePicker(true);
-                      } else {
-                        setShowBookingDatePicker(false);
-                        handleChange('bookingDate', e.target.value);
-                      }
-                    }}
-                    className="border border-gray-300 p-2 rounded w-full bg-white text-gray-700 h-[44px]"
-                  >
-                    <option value="">Select Booking Date</option>
-                    {getBookingDateOptions().map(date => (
-                      <option key={date} value={date}>{date}</option>
-                    ))}
-                    <option value="__custom__">Pick a custom date...</option>
-                  </select>
-                  {showBookingDatePicker && (
-                    <div className="absolute z-50 bg-white p-2 rounded shadow border mt-2">
-                      <DatePicker
-                        selected={formData.bookingDate ? new Date(formData.bookingDate) : null}
-                        onChange={date => {
-                          setShowBookingDatePicker(false);
-                          handleChange('bookingDate', date ? date.toISOString().split('T')[0] : '');
-                        }}
-                        inline
-                        minDate={new Date()}
-                      />
-                    </div>
-                  )}
-                </div>
-                <div className="relative">
+                <div className="relative col-span-2">
                   <label className="block text-gray-700 font-semibold mb-1">Travel Date</label>
                   <select
                     required
@@ -330,8 +293,8 @@ const UserForm: React.FC<UserFormProps> = ({ availableBookingDates = [], availab
                   {showTravelDatePicker && (
                     <div className="absolute z-50 bg-white p-2 rounded shadow border mt-2">
                       <DatePicker
-                        selected={formData.date ? new Date(formData.date) : null}
-                        onChange={date => {
+                        selected={getDateValue(formData.date)}
+                        onChange={(date: Date | null) => {
                           setShowTravelDatePicker(false);
                           handleChange('date', date ? date.toISOString().split('T')[0] : '');
                         }}
@@ -371,44 +334,9 @@ const UserForm: React.FC<UserFormProps> = ({ availableBookingDates = [], availab
           className="w-full max-w-[850px] mb-10 text-left"
         />
 
-        {/* Booking Date and Travel Date side by side */}
+        {/* Travel Date selection only */}
         <div className="grid md:grid-cols-2 gap-4 mb-4">
-          <div className="relative">
-            <label className="block text-gray-700 font-semibold mb-1">Booking Date</label>
-            <select
-              required
-              value={formData.bookingDate}
-              onChange={e => {
-                if (e.target.value === '__custom__') {
-                  setShowBookingDatePicker(true);
-                } else {
-                  setShowBookingDatePicker(false);
-                  handleChange('bookingDate', e.target.value);
-                }
-              }}
-              className="border border-gray-300 p-2 rounded w-full bg-white text-gray-700 h-[44px]"
-            >
-              <option value="">Select Booking Date</option>
-              {getBookingDateOptions().map(date => (
-                <option key={date} value={date}>{date}</option>
-              ))}
-              <option value="__custom__">Pick a custom date...</option>
-            </select>
-            {showBookingDatePicker && (
-              <div className="absolute z-50 bg-white p-2 rounded shadow border mt-2">
-                <DatePicker
-                  selected={formData.bookingDate ? new Date(formData.bookingDate) : null}
-                  onChange={date => {
-                    setShowBookingDatePicker(false);
-                    handleChange('bookingDate', date ? date.toISOString().split('T')[0] : '');
-                  }}
-                  inline
-                  minDate={new Date()}
-                />
-              </div>
-            )}
-          </div>
-          <div className="relative">
+          <div className="relative col-span-2">
             <label className="block text-gray-700 font-semibold mb-1">Travel Date</label>
             <select
               required
@@ -432,8 +360,8 @@ const UserForm: React.FC<UserFormProps> = ({ availableBookingDates = [], availab
             {showTravelDatePicker && (
               <div className="absolute z-50 bg-white p-2 rounded shadow border mt-2">
                 <DatePicker
-                  selected={formData.date ? new Date(formData.date) : null}
-                  onChange={date => {
+                  selected={getDateValue(formData.date)}
+                  onChange={(date: Date | null) => {
                     setShowTravelDatePicker(false);
                     handleChange('date', date ? date.toISOString().split('T')[0] : '');
                   }}
@@ -509,6 +437,13 @@ const UserForm: React.FC<UserFormProps> = ({ availableBookingDates = [], availab
           className="border border-gray-300 p-2 rounded w-full h-[185px] mb-4 resize-none"
         />
 
+        {/* Captcha must be before submit button */}
+        <ReCAPTCHA
+          sitekey="YOUR_RECAPTCHA_SITE_KEY"
+          onChange={setCaptcha}
+          className="mb-4"
+        />
+
         <div className="flex items-start mb-6">
           <input
             id="terms"
@@ -519,7 +454,7 @@ const UserForm: React.FC<UserFormProps> = ({ availableBookingDates = [], availab
             required
           />
           <label htmlFor="terms" className="text-sm text-gray-700">
-            I agree to Fusion Expeditions Terms and Conditions
+            I agree to Fusion Expeditions <a href="/about/terms" target="_blank" rel="noopener noreferrer" className="text-primary underline hover:text-primary/80">Terms and Conditions</a>
           </label>
         </div>
 

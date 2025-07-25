@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, FormEvent } from "react";
+import ReCAPTCHA from 'react-google-recaptcha';
 
 type ContactFormProps = {
   padding?: number | string;
@@ -26,6 +27,7 @@ const ContactForm: React.FC<ContactFormProps> = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [captcha, setCaptcha] = useState<string | null>(null);
 
   const handleChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -36,6 +38,11 @@ const ContactForm: React.FC<ContactFormProps> = ({
     setLoading(true);
     setError(null);
     setSuccess(null);
+    if (!captcha) {
+      setError('Please complete the captcha.');
+      setLoading(false);
+      return;
+    }
 
     try {
       // Prepare the payload matching your backend structure
@@ -189,6 +196,13 @@ const ContactForm: React.FC<ContactFormProps> = ({
               disabled={loading}
             />
           </div>
+
+          {/* Captcha must be before submit button */}
+          <ReCAPTCHA
+            sitekey="YOUR_RECAPTCHA_SITE_KEY"
+            onChange={setCaptcha}
+            className="mb-4"
+          />
 
           {/* Submit Button */}
           <button
