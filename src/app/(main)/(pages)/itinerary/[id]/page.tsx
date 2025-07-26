@@ -155,6 +155,7 @@ export default async function Page({ params }: { params: { id: string } }) {
             showImagePopup={true}
           />
         </div>
+        
       </div>
       <div className="flex flex-col gap-4">
         {packages.gallery?.[1] && (
