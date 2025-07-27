@@ -7,14 +7,7 @@ import ImageDisplay from "@/components/atoms/ImageCard";
 import Button from "@/components/atoms/button";
 import TextHeader from "@/components/atoms/headings";
 import { fetchAPI } from "@/utils/apiService";
-
-
- 
 import PartnerSection from "@/components/organisms/partners";
-
-
-
-
 import TextDescription from "@/components/atoms/description";
 import Link from "next/link";
 
