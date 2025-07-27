@@ -415,59 +415,78 @@ export default async function Home() {
  <TestimonialsSection testimonialData={testimonialData} />
 
       {/* Share the joy of your journey */}
-      <section className=" bg-[#0e334f]">
-        <div className="max-w-7xl mx-auto text-white space-y-4 md:px-0 px-6 mb-12 mt-3.5">
-          <div className="grid grid-cols-1 md:grid-cols-2 items-end mb-10 ">
-            {/* Left Side: Header and Paragraph */}
-            <div className="flex flex-col items-start space-y-2">
+<section className=" bg-[#0e334f]">
+  <div className="max-w-7xl mx-auto text-white space-y-4 md:px-0 px-6 mb-12 mt-3.5">
+    <div className="grid grid-cols-1 md:grid-cols-2 items-end mb-10 ">
+      {/* Left Side: Header and Paragraph */}
+      <div className="flex flex-col items-start space-y-2">
+        <TextHeader
+          text="Share the joy of your journey"
+          specialWordsIndices="2"
+          align="start"
+          width="400px"
+          textcolor="white"
+        />
+
+        <TextDescription text="Show us your #BestFamilyMoments by tagging us @Fusion Expeditions for a chance to be featured!" className="w-[350px] md:w-[400px] lg:w-[400px] text-[#FFFFFF] opacity-90" />
+      </div>
+
+      {/* Right Side: Social Links */}
+      <div className="flex justify-end  space-x-2 md:space-x-3 lg:space-x-3 ">
+        {socialLinks.map((link, index) => (
+          <a key={index} href={link.link} className="hover:scale-110 transition-transform">
+            <span>{link.icon}</span>
+          </a>
+        ))}
+      </div>
+    </div>
+
+    {/* Mobile View - Horizontal scroll slider */}
+    <div className="block md:hidden">
+      <div className="overflow-x-auto">
+        <div className="flex gap-4 pb-4" style={{ width: 'max-content' }}>
+          {journeyCards.map((card, index) => (
+            <div key={index} className="flex flex-col items-center flex-shrink-0">
+              <ImageDisplay
+                src={card.src}
+                variant="smallsquare"
+                secondSnippet={
+                  <TextHeader
+                    text={card.title}
+                    size="small"
+                    align="end"
+                    textcolor="white"
+                  />
+                }
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    {/* Desktop View - Original grid layout */}
+    <div className="hidden md:flex flex-cols-1 gap-2 m-2 md:gap-6 lg:gap-6">
+      {journeyCards.map((card, index) => (
+        <div key={index} className="flex flex-col items-center  ">
+          <ImageDisplay
+            src={card.src}
+            variant="smallsquare"
+            secondSnippet={
               <TextHeader
-                text="Share the joy of your journey"
-                specialWordsIndices="2"
-                align="start"
-                width="400px"
+                text={card.title}
+                size="small"
+                align="end"
+                className="md:show hidden"
                 textcolor="white"
               />
-
-              <TextDescription text="Show us your #BestFamilyMoments by tagging us @Fusion Expeditions for a chance to be featured!" className="w-[300px] md:w-[400px] lg:w-[400px] text-[#FFFFFF] opacity-90" />
-            </div>
-
-            {/* Right Side: Social Links */}
-            <div className="flex justify-end  space-x-2 md:space-x-3 lg:space-x-3 ">
-              {socialLinks.map((link, index) => (
-                <a key={index} href={link.link} className="hover:scale-110 transition-transform">
-                  <span>{link.icon}</span>
-                </a>
-              ))}
-            </div>
-          </div>
-
-
-
-
-          <div className=" flex flex-cols-1 gap-2 m-2 md:gap-6 lg:gap-6 ">
-
-            {journeyCards.map((card, index) => (
-              <div key={index} className="flex flex-col items-center  ">
-                <ImageDisplay
-                  src={card.src}
-                  variant="smallsquare"
-                  secondSnippet={
-                    <TextHeader
-                      text={card.title}
-                      size="small"
-                      align="end"
-                      className="md:show hidden"
-                      textcolor="white"
-                    />
-                  }
-                />
-              </div>
-
-            ))}
-
-          </div>
+            }
+          />
         </div>
-      </section>
+      ))}
+    </div>
+  </div>
+</section>
 
       <section className="max-w-7xl mx-auto px-4 ">
         <TextHeader
