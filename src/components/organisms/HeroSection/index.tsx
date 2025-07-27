@@ -89,7 +89,7 @@ const HeroSection = ({ herodata }: { herodata: HeroData }) => {
     : '100vh';
   
   const containerWidth = herodata.width 
-    ? (typeof herodata.width === 'number' ? `${herodata.width}px` : herodata.width) 
+    ? (typeof herodata.width === 'number' ? `100%` : herodata.width) 
     : '100%';
 
   return (

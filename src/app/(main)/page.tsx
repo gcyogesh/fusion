@@ -232,7 +232,7 @@ export default async function Home() {
                     </div>
 
                     <div className="flex justify-start sm:justify-end items-end mr-0 md:mr-25 mt-4 md:mt-0 lg:mt-0 ">
-                      <Button text="Book Now" variant="primary" className="text-base text-[#FFFFFF]"  buttonLink={filteredPackages?.[3]?._id ? `/itinerary/${filteredPackages[3]._id}` : "/itinary"} />
+                      <Button text="Book Now" variant="primary" className="text-base text-[#FFFFFF]"  buttonLink={filteredPackages?.[3]?._id ? `/itinerary/${filteredPackages[3]._id}` : "/itinerary"} />
                     </div>
                   </div>
                 </div>

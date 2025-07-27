@@ -54,6 +54,7 @@ export interface Activity {
   title: string;
   slug: string;
   subtitle?: string;
+  description?: string;
   imageUrls?: string[];
   image?: string;
   name?: string;
