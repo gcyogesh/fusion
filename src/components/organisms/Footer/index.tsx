@@ -136,7 +136,7 @@ const socialLinks = [
             <div className="flex flex-col space-y-4">
               
               <h1 className="text-2xl font-semibold">Contact Detail</h1>
-                 <ContactDetails showDivider={false} />
+                 <ContactDetails showDivider={false} contactInfo={contactInfo} />
 
               <div className="mt-6">
                 <p className="text-2xl font-bold">We Accept</p>
