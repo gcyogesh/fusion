@@ -119,9 +119,9 @@ const HeroSection = ({ herodata }: { herodata: HeroData }) => {
       {/* Content Container */}
       <div className="relative max-w-7xl mx-auto z-10 flex flex-col justify-center items-center h-full px-4 sm:px-6 lg:px-8">
         {/* Centered Title and Search Section */}
-        <div className="text-center w-full max-w-4xl">
+        <div className="text-center w-full max-w-4xl py-4 sm:py-6 lg:py-8">
           {/* Title with responsive spacing */}
-          <div className="pt-6 pb-4 sm:pt-8 sm:pb-6 md:pt-10 md:pb-8 lg:pt-12 lg:pb-10">
+          <div className="py-6 sm:py-8 lg:py-10">
             <TextHeader
               text={title}
               specialWordsIndices="2"
@@ -266,7 +266,7 @@ const HeroSection = ({ herodata }: { herodata: HeroData }) => {
         </div>
 
         {/* Description - Left aligned at bottom */}
-        <div className="absolute bottom-8 left-0 max-w-2xl px-2 ">
+        <div className="absolute bottom-8 left-0 max-w-2xl px-4 sm:px-6 lg:px-8">
           <p className="text-white text-sm sm:text-base lg:text-lg leading-relaxed opacity-90 text-left">
             {description}
           </p>
