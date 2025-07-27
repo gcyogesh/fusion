@@ -107,7 +107,7 @@ const ReviewsPage = () => {
 
   return (
     <div className="min-h-screen py-8">
-      <div className="max-w-7xl px-4 ml-64">
+      <div className="max-w-7xl px-4 ">
         <div className="flex items-center gap-3 mb-8">
           <FaStar className="text-3xl text-yellow-400" />
           <h1 className="text-3xl font-bold text-gray-900">Review Management</h1>

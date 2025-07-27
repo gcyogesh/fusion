@@ -80,3 +80,10 @@ body {
 .text-justify {
   text-align: justify;
 }
+
+.scrollbar-hidden {
+  scrollbar-width: none; /* Firefox */
+}
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}
