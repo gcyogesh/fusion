@@ -2,6 +2,7 @@
 export interface Destination {
   _id: any;
   title: string;
+  description?: string;
   slug: string;
   subtitle?: string;
   imageUrls?: string[];

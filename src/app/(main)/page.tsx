@@ -490,7 +490,7 @@ export default async function Home() {
               <div className="mt-3">
                 <TextHeader size="small" text={String(blogsdata.data[0].subtitle)} align="left" />
                 
-               <TextDescription text={blogsdata.data[0].description} className="text-justify line-clamp-4" />
+               <TextDescription text={blogsdata.data[0].description} className=" line-clamp-4" />
               
                 
               </div>
