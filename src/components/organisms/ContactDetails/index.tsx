@@ -1,33 +1,33 @@
 import React from 'react';
 import { MdCall, MdEmail, MdLocationOn, MdWhatsapp } from "react-icons/md";
+import { ContactInfo } from '@/types';
 
 interface ContactDetailsProps {
-  contactInfo: {
-    phone?: string;
-    whatsappNumber?: string;
-    email?: string;
-    address?: string;
-  };
+  contactInfo: ContactInfo;
   showDivider?: boolean;
 }
 
 const ContactDetails: React.FC<ContactDetailsProps> = ({ contactInfo, showDivider = true }) => {
+  if (!contactInfo) return null;
+
   const contactDetails = [
     {
       icon: <MdCall className="text-white bg-[#F28A15] rounded-full text-xl p-2 w-[34px] h-[34px]" />,
-      text: contactInfo.phone || "",
+      text: Array.isArray(contactInfo.phones) && contactInfo.phones.length > 0
+        ? contactInfo.phones.join(", ")
+        : contactInfo.phone || "Not available",
     },
     {
       icon: <MdWhatsapp className="text-white bg-[#F28A15] rounded-full text-xl p-2 w-[34px] h-[34px]" />,
-      text: contactInfo.whatsappNumber || "",
+      text: contactInfo.whatsappNumber || "Not available",
     },
     {
       icon: <MdEmail className="text-white bg-[#F28A15] rounded-full text-xl p-2 w-[34px] h-[34px]" />,
-      text: contactInfo.email || "",
+      text: contactInfo.email || "Not available",
     },
     {
       icon: <MdLocationOn className="text-white bg-[#F28A15] rounded-full text-xl p-2 w-[34px] h-[34px]" />,
-      text: contactInfo.address || "",
+      text: contactInfo.address || "Not available",
     },
   ];
 
@@ -49,4 +49,3 @@ const ContactDetails: React.FC<ContactDetailsProps> = ({ contactInfo, showDivide
 };
 
 export default ContactDetails;
-

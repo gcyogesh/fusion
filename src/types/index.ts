@@ -60,15 +60,24 @@ export interface Activity {
   _id?: string;
 }
 
+export interface SocialLinks {
+  facebook?: string;
+  instagram?: string;
+  linkedin?: string;
+  twitter?: string;
+}
+
 export interface ContactInfo {
+  _id: string;
+  address: string;    
+  phone?: string;               // Primary phone
+  phones?: string[];                 // Array of additional phones
   whatsappNumber: string;
-  phones: string[];
-  socialLinks?: {
-    facebook?: string;
-    instagram?: string;
-    linkedin?: string;
-    twitter?: string;
-  };
+  email: string;
+  socialLinks?: SocialLinks;
+  createdAt: string;
+  updatedAt: string;
+  __v?: number;
 }
 export interface Duration {
   label: string;

@@ -1,5 +1,3 @@
-
-
 import React from "react";
 import { fetchAPI } from "@/utils/apiService";
 import Image from "next/image";
@@ -10,52 +8,66 @@ import TextHeader from "@/components/atoms/headings";
 import TextDescription from "@/components/atoms/description";
 import Breadcrumb from "@/components/atoms/breadcrumb";
 import ContactForm from "@/components/organisms/Form/Contactform";
+import { ContactInfo } from "@/types";
 
 const socialLinks = [
-  { icon: <FaFacebookF className="text-white backdrop-blur-[12.6px] border border-white/16 bg-white/15 p-2 rounded-xl w-9.5 h-9.5 " />, link: "https://www.facebook.com/FusionExpeditions" },
-  { icon: <FaInstagram className="text-white backdrop-blur-[12.6px] border border-white/16 bg-white/15 p-2 rounded-xl w-9.5 h-9.5" />, link: "https://www.instagram.com/fusionexpeditions/" },
-  { icon: <FaYoutube className="text-white backdrop-blur-[12.6px] border border-white/16 bg-white/15 p-2 rounded-xl w-9.5 h-9.5 " />, link: "#" },
+  {
+    icon: <FaFacebookF className="text-white backdrop-blur-[12.6px] border border-white/16 bg-white/15 p-2 rounded-xl w-9.5 h-9.5 " />,
+    link: "https://www.facebook.com/FusionExpeditions",
+  },
+  {
+    icon: <FaInstagram className="text-white backdrop-blur-[12.6px] border border-white/16 bg-white/15 p-2 rounded-xl w-9.5 h-9.5" />,
+    link: "https://www.instagram.com/fusionexpeditions/",
+  },
+  {
+    icon: <FaYoutube className="text-white backdrop-blur-[12.6px] border border-white/16 bg-white/15 p-2 rounded-xl w-9.5 h-9.5 " />,
+    link: "#",
+  },
 ];
 
 export default async function Contact() {
+  // ✅ Fetch hero banner data
   const herosectiondata = await fetchAPI({ endpoint: "herobanner/contact" });
+
+  // ✅ Fetch contact info
+  const contactInfoRes = await fetchAPI({ endpoint: "info" });
+  const contactInfo: ContactInfo = contactInfoRes.data;
 
   return (
     <>
       <Breadcrumb currentnavlink="About/Contact" />
       <HeroBanner herodata={herosectiondata.data} />
 
-
       <div className="mx-auto max-w-7xl px-4 sm:px-8 py-12 sm:py-20">
         {/* First Section */}
         <div className="flex flex-col lg:flex-row justify-between items-center w-full">
-  {/* Left Content */}
-  <div className="w-full lg:w-auto max-w-[550px]">
-    <TextHeader
-      text="Get in Touch"
-      align="left"
-      size="large"
-      width="auto"
-      textcolor="black"
-    />
-    <TextDescription
-      text="We’d love to hear from you! Whether you have a question, feedback, or a project in mind — feel free to reach out."
-      className="text-[#535556] mb-10"
-    />
-    <ContactDetails />
-  </div>
+          {/* Left Content */}
+          <div className="w-full lg:w-auto max-w-[550px]">
+            <TextHeader
+              text="Get in Touch"
+              align="left"
+              size="large"
+              width="auto"
+              textcolor="black"
+            />
+            <TextDescription
+              text="We’d love to hear from you! Whether you have a question, feedback, or a project in mind — feel free to reach out."
+              className="text-[#535556] mb-10"
+            />
+            <ContactDetails contactInfo={contactInfo} />
+          </div>
 
-  {/* Right Image */}
-  <div className="w-full lg:w-auto flex justify-end mt-10 lg:mt-0">
-    <Image
-      src="/images/contactphoto.png"
-      alt="Hikers on a trail"
-      width={600}
-      height={500}
-      className="w-full max-w-md sm:max-w-[520px] h-[420px] rounded-2xl object-cover"
-    />
-  </div>
-</div>
+          {/* Right Image */}
+          <div className="w-full lg:w-auto flex justify-end mt-10 lg:mt-0">
+            <Image
+              src="/images/contactphoto.png"
+              alt="Hikers on a trail"
+              width={600}
+              height={500}
+              className="w-full max-w-md sm:max-w-[520px] h-[420px] rounded-2xl object-cover"
+            />
+          </div>
+        </div>
 
         {/* Second Section */}
         <section className="flex flex-col md:flex-row gap-0 md:gap-10 lg:gap-10">
@@ -66,14 +78,14 @@ export default async function Contact() {
               align="left"
               size="large"
               width="auto"
-              textcolor="black" 
+              textcolor="black"
               className="mb-2"
             />
             <ContactForm />
           </div>
 
           {/* Right: Conversation Prompt */}
-          <div className="py-8 md:py-25 mt-4 ">
+          <div className="py-8 md:py-25 mt-4">
             <TextHeader
               text="Let's Start a Conversation"
               align="left"
@@ -109,6 +121,8 @@ export default async function Contact() {
                   <a
                     key={index}
                     href={link.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="hover:scale-110 transition-transform"
                   >
                     {link.icon}
