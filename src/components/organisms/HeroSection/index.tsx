@@ -117,7 +117,7 @@ const HeroSection = ({ herodata }: { herodata: HeroData }) => {
       </div>
 
       {/* Content Container */}
-      <div className="relative z-10 flex flex-col justify-center items-center h-full px-4 sm:px-6 lg:px-8">
+      <div className="relative max-w-7xl mx-auto z-10 flex flex-col justify-center items-center h-full px-4 sm:px-6 lg:px-8">
         {/* Centered Title and Search Section */}
         <div className="text-center w-full max-w-4xl">
           {/* Title with responsive spacing */}
@@ -142,7 +142,7 @@ const HeroSection = ({ herodata }: { herodata: HeroData }) => {
                   <input
                     id="location"
                     type="text"
-                    placeholder="Search Trips"
+                    placeholder="Search Destination, Duration or Interest"
                     value={location}
                     onChange={(e) => setLocation(e.target.value)}
                     className="text-gray-700 px-4 bg-transparent border-none outline-none placeholder-gray-400 w-full text-sm sm:text-base"
@@ -266,7 +266,7 @@ const HeroSection = ({ herodata }: { herodata: HeroData }) => {
         </div>
 
         {/* Description - Left aligned at bottom */}
-        <div className="absolute bottom-8 left-4 md:left-30 lg:left-30 max-w-2xl px-2">
+        <div className="absolute bottom-8 left-0 max-w-2xl px-2 ">
           <p className="text-white text-sm sm:text-base lg:text-lg leading-relaxed opacity-90 text-left">
             {description}
           </p>
