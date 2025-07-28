@@ -4,34 +4,48 @@ import ImageDisplay from "@/components/atoms/ImageCard";
 import Breadcrumb from "@/components/atoms/breadcrumb";
 
 const durationGroups = [
-  {
+ {
     label: "1–3 Days",
     slug: "1-3-days",
-    image: "images/duration/short-trip.png",
+    image: "/images/duration/short-trip.png",
     description: "Perfect for a weekend getaway",
-    tag: "Short"
+    tag: "Short",
   },
   {
     label: "4–7 Days",
     slug: "4-7-days",
     image: "/images/duration/medium-trip.png",
     description: "Explore a little more",
-    tag: "Medium"
+    tag: "Medium",
   },
   {
     label: "7–10 Days",
     slug: "7-10-days",
     image: "/images/duration/long-trip.png",
     description: "Dive deep into the journey",
-    tag: "Long"
+    tag: "Long",
   },
   {
-    label: "10+ Days",
-    slug: "10-plus-days",
+    label: "10-15 Days",
+    slug: "10-15 days",
     image: "/images/duration/extended-trip.png",
     description: "The ultimate travel experience",
-    tag: "Extended"
-  }
+    tag: "Extended",
+  },
+  {
+    label: "15-21 Days",
+    slug: "15-21 days",
+    image: "/images/duration/extended-trip.png",
+    description: "The ultimate travel experience",
+    tag: "Extended",
+  },
+  {
+    label: "21-above Days",
+    slug: "21-plus days",
+    image: "/images/duration/extended-trip.png",
+    description: "The ultimate travel experience",
+    tag: "Extended",
+  },
 ];
 
 export default function DurationPage() {

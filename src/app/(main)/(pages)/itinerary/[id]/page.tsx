@@ -234,6 +234,15 @@ export default async function Page({ params }: { params: { id: string } }) {
               </div>
             </div>
 
+             <div className="rounded-2xl p-6 bg-white shadow-sm mb-4 py-2">
+              <TextHeader text="Cancellation Policy" align="left" size="large" width={855} className="py-2" />
+              <ul className="list-disc pl-6 space-y-2 text-base text-[#535556] ">
+                {packages.cancellation?.map((item, i) => <li key={i}>{item}</li>)}
+              </ul>
+            </div>
+            
+
+
             <div className="w-full max-w-xl  py-6 ">
               <DepartureCalendar />
             </div>

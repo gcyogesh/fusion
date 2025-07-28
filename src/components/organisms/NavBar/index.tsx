@@ -70,15 +70,14 @@ export default function Navbar({
   const [showNavbar, setShowNavbar] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [hoverTimeout, setHoverTimeout] = useState<NodeJS.Timeout | null>(null);
+  const [showAllPackages, setShowAllPackages] = useState(false);
 
   const pathname = usePathname();
 
   const logoIndex = useMemo(() => {
-
     if (pathname === "/" && scrollY === 0) {
       return 1;
     }
-  
     return 0;
   }, [pathname, scrollY]);
 
@@ -168,42 +167,37 @@ export default function Navbar({
             subtitle: "Feedback from our clients",
             title: "Reviews",
           },
-      
-       
-             
           {
             name: "Terms and Conditions",
             href: "/about/terms",
             subtitle: "Read our policies",
             title: "Terms and Conditions",
           },
-        
           {
             name: "Contact",
             href: "/about/contact",
             subtitle: "We'd love to hear from you!",
             title: "Contact",
           },
-      
         ],
       },
       { name: "Deals", href: "/deals", hasDropdown: false },
     ];
   }, [activities, destinations, durationGroups, relatedActivityPackagesMap, relatedPackagesMap, relatedDurationPackagesMap]);
 
-const navbarClasses = useMemo(() => {
-  const base =
-    "fixed top-[-4px]  left-0 w-full z-60 px-2 transition-all duration-300 ease-linear";
-  const visibility = showNavbar ? "translate-y-[4px]" : "-translate-y-full";
+  const navbarClasses = useMemo(() => {
+    const base =
+      "fixed top-[-4px] left-0 w-full z-60 px-2 transition-all duration-300 ease-linear";
+    const visibility = showNavbar ? "translate-y-[4px]" : "-translate-y-full";
 
-  const isTransparentHome = pathname === "/" && scrollY === 0;
+    const isTransparentHome = pathname === "/" && scrollY === 0;
 
-  const theme = isTransparentHome
-    ? "backdrop-blur-md bg-white/20 text-white shadow-lg"
-    : "bg-[#0e334f] text-white";
+    const theme = isTransparentHome
+      ? "backdrop-blur-md bg-white/20 text-white shadow-lg"
+      : "bg-[#0e334f] text-white";
 
-  return `${base} ${visibility} ${theme}`;
-}, [showNavbar, pathname, scrollY]);
+    return `${base} ${visibility} ${theme}`;
+  }, [showNavbar, pathname, scrollY]);
 
   const handleScroll = useMemo(
     () =>
@@ -230,6 +224,7 @@ const navbarClasses = useMemo(() => {
       if (link.hasDropdown) {
         setActiveDropdown(link);
         setHoveredSub(link.subLinks?.[0] || null);
+        setShowAllPackages(false); // Reset when hovering new item
       }
     },
     [hoverTimeout]
@@ -243,6 +238,7 @@ const navbarClasses = useMemo(() => {
   const closeDropdown = useCallback(() => {
     setActiveDropdown(null);
     setHoveredSub(null);
+    setShowAllPackages(false);
     if (hoverTimeout) {
       clearTimeout(hoverTimeout);
       setHoverTimeout(null);
@@ -255,6 +251,10 @@ const navbarClasses = useMemo(() => {
 
   const handleMenuItemClick = useCallback(() => {
     setIsMenuOpen(false);
+  }, []);
+
+  const toggleShowAllPackages = useCallback(() => {
+    setShowAllPackages(prev => !prev);
   }, []);
 
   useEffect(() => {
@@ -270,9 +270,50 @@ const navbarClasses = useMemo(() => {
     };
   }, [handleScroll, hoverTimeout]);
 
+  // Helper function to display packages with show more/less functionality
+  const renderRelatedPackages = (packages: any[]) => {
+    if (!packages?.length) {
+      return (activeDropdown?.name === "Destinations" || activeDropdown?.name === "Activities" || activeDropdown?.name === "Duration") && (
+        <p className="text-sm text-gray-500 italic mt-4">No related packages available</p>
+      );
+    }
+
+    const displayPackages = showAllPackages ? packages : packages.slice(0, 8);
+    const hasMorePackages = packages.length > 8;
+
+    return (
+      <div className="mt-4">
+        <ul className="space-y-1 text-gray-700 font-medium text-base divide-y divide-gray-200 max-h-80 overflow-y-auto">
+          {displayPackages.map((pkg, idx) => (
+            <li key={idx} className="py-1">
+              <Link href={pkg.href} className="hover:text-[#f28a15] block">
+                {pkg?.name} - {pkg?.duration}
+              </Link>
+            </li>
+          ))}
+        </ul>
+        
+        {hasMorePackages && (
+          <button
+            onClick={toggleShowAllPackages}
+            className="mt-3 text-sm font-medium text-primary hover:text-[#f28a15] underline transition-colors"
+          >
+            {showAllPackages ? `Show Less (${packages.length} total)` : `Show All ${packages.length} Packages`}
+          </button>
+        )}
+
+        {showAllPackages && packages.length > 8 && (
+          <p className="text-xs text-gray-500 mt-2">
+            Showing all {packages.length} packages
+          </p>
+        )}
+      </div>
+    );
+  };
+
   return (
     <nav className={navbarClasses}>
-      <div className="max-w-7xl mx-auto flex justify-between items-center px-4 py-8 md:py-4  lg:py-6 h-15 md:h-18 lg:h-20">
+      <div className="max-w-7xl mx-auto flex justify-between items-center px-4 py-8 md:py-4 lg:py-6 h-15 md:h-18 lg:h-20">
         <Link href="/" className="cursor-pointer">
           <Logo index={logoIndex} />
         </Link>
@@ -341,21 +382,21 @@ const navbarClasses = useMemo(() => {
       {activeDropdown && (
         <div className="absolute top-[80px] left-0 w-full text-black z-50 hidden md:block" onMouseLeave={handleMouseLeave}>
           <div className="max-w-6xl mx-auto flex bg-white shadow-lg rounded-md overflow-hidden border border-gray-200 px-8">
-            <div className="w-[300px] text-base px-4 py-6 ">
-              <ul className="divide-y divide-gray-200 ">
+            <div className="w-[300px] text-base px-4 py-6">
+              <ul className="divide-y divide-gray-200">
                 {activeDropdown.subLinks?.map((sub, index) => (
-                  <li key={`${sub.name}-${index}`} onMouseEnter={() => setHoveredSub(sub)} >
+                  <li key={`${sub.name}-${index}`} onMouseEnter={() => setHoveredSub(sub)}>
                     <Link
                       href={sub.href}
-                      className={`flex justify-between items-center px-5 py-3  ${
-                        hoveredSub?.name === sub.name ? "bg-primary  text-white" : "text-gray-400"
+                      className={`flex justify-between items-center px-5 py-3 ${
+                        hoveredSub?.name === sub.name ? "bg-primary text-white" : "text-gray-400"
                       }`}
                     >
-                       <span className={`text-sm font-medium ${
-      hoveredSub?.name === sub.name ? "text-white" : "text-gray-800 hover:text-white"
-    }`}>
-      {sub.name || sub.title || "Unknown"}
-    </span>
+                      <span className={`text-sm font-medium ${
+                        hoveredSub?.name === sub.name ? "text-white" : "text-gray-800 hover:text-white"
+                      }`}>
+                        {sub.name || sub.title || "Unknown"}
+                      </span>
                       <ChevronRight size={16} className={hoveredSub?.name === sub.name ? "text-white" : "text-gray-400"} />
                     </Link>
                   </li>
@@ -366,21 +407,7 @@ const navbarClasses = useMemo(() => {
             <div className="flex-1 px-4 py-6 flex gap-6 items-start">
               <div className="flex-1">
                 <TextHeader text={hoveredSub?.name || hoveredSub?.title} align="left" size="small" />
-                {hoveredSub?.relatedPackages?.length ? (
-                  <ul className="mt-4 space-y-1 text-gray-700 font-medium text-base divide-y divide-gray-200">
-                    {hoveredSub?.relatedPackages.map((pkg, idx) => (
-                      <li key={idx} className="py-1">
-                        <Link href={pkg.href} className="hover:text-[#f28a15] ">
-                          {pkg?.name} - {pkg?.duration}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  (activeDropdown.name === "Destinations" || activeDropdown.name === "Activities") && (
-                    <p className="text-sm text-gray-500 italic mt-4">No related packages available</p>
-                  )
-                )}
+                {renderRelatedPackages(hoveredSub?.relatedPackages || [])}
               </div>
               {hoveredSub?.image && (
                 <div className="flex flex-col">
@@ -401,82 +428,81 @@ const navbarClasses = useMemo(() => {
       )}
 
       {/* Mobile Dropdown */}
-     {isMenuOpen && (
-  <div className="md:hidden bg-white text-black px-2 py-4 absolute top-20 left-0 w-full z-50 shadow-lg">
-    <ul className="space-y-4">
-      {navLinks.map((link) =>
-        link.hasDropdown ? (
-          <MobileDropdownMenu
-            key={link.name}
-            name={link.name}
-            href={link.href}
-            subLinks={link.subLinks}
-            onClickLink={handleMenuItemClick}
-          />
-        ) : (
-          <li key={link.name}>
-            <Link
-              href={link.href}
-              onClick={handleMenuItemClick}
-              className="block px-4 py-2 hover:bg-[#F28A15] hover:text-white"
-            >
-              {link.name}
-            </Link>
-          </li>
-        )
-      )}
-      <div className="px-4">
-      <li>
-        <Link
-          href="/contact"
-          onClick={handleMenuItemClick}
-          className="block bg-primary text-white text-lg text-center  px-4 py-3 rounded-full hover:bg-gradient-to-r from-[#D35400] to-[#A84300] transition-all duration-300"
-        >
-          Contact
-        </Link>
-      </li>
-      </div>
+      {isMenuOpen && (
+        <div className="md:hidden bg-white text-black px-2 py-4 absolute top-20 left-0 w-full z-50 shadow-lg">
+          <ul className="space-y-4">
+            {navLinks.map((link) =>
+              link.hasDropdown ? (
+                <MobileDropdownMenu
+                  key={link.name}
+                  name={link.name}
+                  href={link.href}
+                  subLinks={link.subLinks}
+                  onClickLink={handleMenuItemClick}
+                />
+              ) : (
+                <li key={link.name}>
+                  <Link
+                    href={link.href}
+                    onClick={handleMenuItemClick}
+                    className="block px-4 py-2 hover:bg-[#F28A15] hover:text-white"
+                  >
+                    {link.name}
+                  </Link>
+                </li>
+              )
+            )}
+            <div className="px-4">
+              <li>
+                <Link
+                  href="/contact"
+                  onClick={handleMenuItemClick}
+                  className="block bg-primary text-white text-lg text-center px-4 py-3 rounded-full hover:bg-gradient-to-r from-[#D35400] to-[#A84300] transition-all duration-300"
+                >
+                  Contact
+                </Link>
+              </li>
+            </div>
 
-      {/* Social icons inside mobile dropdown */}
-      <li className="flex justify-center gap-6 mt-6">
-        {contactInfo?.socialLinks?.instagram && (
-          <Link
-            href={contactInfo.socialLinks.instagram}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Instagram"
-            className="text-pink-500 hover:text-pink-700 text-3xl"
-          >
-            <FaInstagram />
-          </Link>
-        )}
-        {contactInfo?.socialLinks?.facebook && (
-          <Link
-            href={contactInfo.socialLinks.facebook}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Facebook"
-            className="text-blue-600 hover:text-blue-800 text-3xl"
-          >
-            <FaFacebook />
-          </Link>
-        )}
-        {contactInfo?.whatsappNumber && (
-          <Link
-            href={`https://wa.me/${contactInfo.whatsappNumber.replace(/\D/g, "")}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="WhatsApp"
-            className="text-green-500 hover:text-green-700 text-3xl"
-          >
-            <FaWhatsapp />
-          </Link>
-        )}
-      </li>
-    </ul>
-  </div>
-)}
-    
+            {/* Social icons inside mobile dropdown */}
+            <li className="flex justify-center gap-6 mt-6">
+              {contactInfo?.socialLinks?.instagram && (
+                <Link
+                  href={contactInfo.socialLinks.instagram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Instagram"
+                  className="text-pink-500 hover:text-pink-700 text-3xl"
+                >
+                  <FaInstagram />
+                </Link>
+              )}
+              {contactInfo?.socialLinks?.facebook && (
+                <Link
+                  href={contactInfo.socialLinks.facebook}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Facebook"
+                  className="text-blue-600 hover:text-blue-800 text-3xl"
+                >
+                  <FaFacebook />
+                </Link>
+              )}
+              {contactInfo?.whatsappNumber && (
+                <Link
+                  href={`https://wa.me/${contactInfo.whatsappNumber.replace(/\D/g, "")}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="WhatsApp"
+                  className="text-green-500 hover:text-green-700 text-3xl"
+                >
+                  <FaWhatsapp />
+                </Link>
+              )}
+            </li>
+          </ul>
+        </div>
+      )}
     </nav>
   );
 }

@@ -42,21 +42,21 @@ const durationGroups: Duration[] = [
   },
   {
     label: "10-15 Days",
-    slug: "10-plus-days",
+    slug: "10-15-days",
     image: "/images/duration/extended-trip.png",
     description: "The ultimate travel experience",
     tag: "Extended",
   },
   {
     label: "15-21 Days",
-    slug: "10-plus-days",
+    slug: "15-21-days",
     image: "/images/duration/extended-trip.png",
     description: "The ultimate travel experience",
     tag: "Extended",
   },
   {
     label: "21-above Days",
-    slug: "10-plus-days",
+    slug: "21-plus-days",
     image: "/images/duration/extended-trip.png",
     description: "The ultimate travel experience",
     tag: "Extended",
@@ -154,7 +154,9 @@ export default async function RootLayout({
               case "1-3-days": return { min: 1, max: 3 };
               case "4-7-days": return { min: 4, max: 7 };
               case "7-10-days": return { min: 7, max: 10 };
-              case "10-plus-days": return { min: 10, max: 999 };
+              case "10-15-days": return { min: 10, max: 15 };
+              case "15-21-days": return { min: 15, max: 21 };
+              case "21-plus-days": return { min: 21, max: 999 };
               default: return { min: 1, max: 999 };
             }
           };

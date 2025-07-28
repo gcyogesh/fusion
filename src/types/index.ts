@@ -48,6 +48,8 @@ export interface TourPackage {
     description: string;
     image?: string;
   }[];
+  cancellation?: string[];
+  
 }
 
 export interface Activity {

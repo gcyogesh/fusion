@@ -11,14 +11,19 @@ const durationSlugs = {
   "1-3-days": { min: 1, max: 3 },
   "4-7-days": { min: 4, max: 7 },
   "7-10-days": { min: 7, max: 10 },
-  "10-plus-days": { min: 10, max: 99 },
+  "10-15-days": { min: 10, max: 15 },
+  "15-21-days": { min: 15, max: 21 },
+  "21-plus-days": { min: 21, max: 99 },
 };
 
 const slugLabelMap: Record<string, string> = {
   "1-3-days": "1–3 Days",
   "4-7-days": "4–7 Days",
   "7-10-days": "7–10 Days",
-  "10-plus-days": "10+ Days",
+  "10-15-days": "10–15 Days",
+  "15-21-days":  "15–21 Days",
+  "21-plus-days": "21+ Days",
+  
 };
 
 interface Package {
