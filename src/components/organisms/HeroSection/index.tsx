@@ -109,7 +109,7 @@ const HeroSection = ({ herodata }: { herodata: HeroData }) => {
             className="object-cover"
           />
         )}
-        <div className="absolute inset-0 bg-black/30 backdrop-blur-sm z-0" />
+        <div className="absolute inset-0 bg-black/20 backdrop-blur-sm z-0" />
       </div>
 
       {/* Content */}
