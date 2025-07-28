@@ -21,7 +21,7 @@ const trekTabs = [
   "Overview",
   "Itinerary",
   "Pricing",
-  "Route ",
+  "Route",
   "FAQs",
   "Reviews"
 ];
@@ -245,7 +245,7 @@ export default async function Page({ params }: { params: { id: string } }) {
               />
             </div>
             {/*trips maps */}
-            <div id="Trip-Map" className="max-w-7xl py-6">
+            <div id="Route" className="max-w-7xl py-6">
               <TextHeader text=" Route" align="left" size="large" width={855} className=" mb-2" />
               {packages.googleMapUrl && (
                 <Image

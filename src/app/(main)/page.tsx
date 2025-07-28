@@ -268,10 +268,6 @@ export default async function Home() {
           />
         ))}
       </div>
-   
-
-
-
 
       {/*Best destination */}
 
@@ -288,8 +284,8 @@ export default async function Home() {
  
   <div className="lg:col-span-2">
      <Link
-              href={`/destinations/${destinationdata.data[0].slug}`}
-              className="lg:col-span-2 block"  >
+       href={`/destinations/${destinationdata.data[0].slug}`}
+       className="lg:col-span-2 block"  >
     <ImageDisplay 
       src={destinationdata.data[0].imageUrls[0]} 
       variant="rectangle" 
@@ -392,7 +388,7 @@ export default async function Home() {
                 <h1>Everest (Khumbu), Nepal</h1>
               </div>
               <div className="flex items-center justify-center gap-2  text-[16px] md:text-[18px]">
-                <Image src={blogsdata.imageUrl} alt="Location" width={25} height={22}/>
+                <Image src={"/images/treks.svg"} alt="Location" width={25} height={22}/>
                 <h1 className="font-sans">Moderate to Challenging</h1>
               </div>
             </div>

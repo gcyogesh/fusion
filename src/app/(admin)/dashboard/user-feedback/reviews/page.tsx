@@ -59,7 +59,7 @@ const ReviewCard = ({ review, onDelete, deleting, onView }) => (
 );
 
 const EmptyState = () => (
-  <div className="flex flex-col items-center justify-center py-24">
+  <div className="flex flex-col items-center justify-center py-24 ">
     <FaStar className="text-6xl text-gray-300 mb-4" />
     <div className="text-xl font-semibold text-gray-500 mb-2">No reviews available</div>
     <div className="text-gray-400">Once you receive reviews, they'll appear here for management.</div>
@@ -107,7 +107,7 @@ const ReviewsPage = () => {
 
   return (
     <div className="min-h-screen py-8">
-      <div className="max-w-7xl px-4 ">
+      <div className="max-w-7xl px-6 md:px-8 lg:px-8 mx-auto">
         <div className="flex items-center gap-3 mb-8">
           <FaStar className="text-3xl text-yellow-400" />
           <h1 className="text-3xl font-bold text-gray-900">Review Management</h1>
@@ -135,30 +135,31 @@ const ReviewsPage = () => {
       </div>
       {/* Modal for viewing full review */}
       {viewing && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-          <div className="bg-white rounded-2xl shadow-xl p-8 max-w-lg w-full relative">
-            <button onClick={closeModal} className="absolute top-3 right-3 text-gray-400 hover:text-gray-700 text-xl">&times;</button>
-            <div className="flex flex-col items-center mb-4">
-              <span className="inline-block rounded-full ring-4 ring-primary/30 mb-2">
-                <img src="/images/Avtar.png" alt="avatar" className="w-20 h-20 rounded-full object-cover" />
-              </span>
-              <span className="font-bold text-xl text-gray-900">{viewing.guestInfo?.name || 'Anonymous'}</span>
-              {viewing.guestInfo?.email && (
-                <span className="mt-1 px-3 py-0.5 bg-primary/10 text-primary text-xs rounded-full font-medium">{viewing.guestInfo.email}</span>
-              )}
-              <div className="flex items-center gap-1 mt-2">
-                {Array.from({ length: viewing.rating }).map((_, i) => (
-                  <FaStar key={i} className="text-yellow-400 text-xl drop-shadow" />
-                ))}
-              </div>
-            </div>
-            <blockquote className="relative text-gray-700 text-base italic px-4 py-3 border-l-4 border-primary bg-gray-50 rounded w-full">
-              <FaQuoteLeft className="absolute -left-3 -top-2 text-primary/30 text-lg" />
-              {viewing.comment}
-            </blockquote>
-          </div>
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+    <div className="bg-white rounded-2xl shadow-xl p-6 max-w-lg w-full relative max-h-[90vh] overflow-y-auto">
+      <button onClick={closeModal} className="absolute top-3 right-3 text-gray-400 hover:text-gray-700 text-xl">&times;</button>
+      <div className="flex flex-col items-center mb-4">
+        <span className="inline-block rounded-full ring-4 ring-primary/30 mb-2">
+          <img src="/images/Avtar.png" alt="avatar" className="w-20 h-20 rounded-full object-cover" />
+        </span>
+        <span className="font-bold text-xl text-gray-900">{viewing.guestInfo?.name || 'Anonymous'}</span>
+        {viewing.guestInfo?.email && (
+          <span className="mt-1 px-3 py-0.5 bg-primary/10 text-primary text-xs rounded-full font-medium">{viewing.guestInfo.email}</span>
+        )}
+        <div className="flex items-center gap-1 mt-2">
+          {Array.from({ length: viewing.rating }).map((_, i) => (
+            <FaStar key={i} className="text-yellow-400 text-xl drop-shadow" />
+          ))}
         </div>
-      )}
+      </div>
+      <blockquote className="relative text-gray-700 text-base italic px-4 py-3 border-l-4 border-primary bg-gray-50 rounded w-full">
+        <FaQuoteLeft className="absolute -left-3 -top-2 text-primary/30 text-lg" />
+        {viewing.comment}
+      </blockquote>
+    </div>
+  </div>
+)}
+
       {/* Custom Alert for delete confirmation */}
       <Alert
         show={alert.show}

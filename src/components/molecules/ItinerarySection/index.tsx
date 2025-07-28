@@ -82,7 +82,7 @@ const ItinerarySection = ({ itinerary }) => {
                   </div>
                 )}
                 {/* Activities */}
-                {item.activities && item.activities.length > 1 && (
+                {item.activities && item.activities.length > 0 && (
                 <div className="bg-white p-4 sm:p-6 border border-black rounded-xl shadow-sm">
                   <div className="flex flex-wrap gap-3 sm:gap-4">
                     {item.activities.map((activityText, idx) => (
@@ -97,7 +97,7 @@ const ItinerarySection = ({ itinerary }) => {
                           height={20}
                           className="w-5 h-5 sm:w-6 sm:h-6 object-contain"
                         />
-                        <div className="max-w-[230px] md:max-w-full">
+                        <div className="max-w-[250px] md:max-w-2xl lg:max-2xl">
                         <TextDescription text={activityText} />
                         </div>
                       </div>
