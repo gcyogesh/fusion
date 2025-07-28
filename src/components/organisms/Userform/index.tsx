@@ -156,7 +156,7 @@ const UserForm: React.FC<UserFormProps> = ({ availableBookingDates = [], availab
   }
 
   return (
-    <div className="max-w-6xl mx-auto ">
+    <div className="max-w-3xl  ">
       {/* Loading Spinner */}
       {loading && (
         <div className="mb-8 text-center">
