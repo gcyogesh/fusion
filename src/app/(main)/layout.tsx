@@ -1,3 +1,4 @@
+// layout.tsx changes
 import { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
 import { fetchAPI } from "@/utils/apiService";
@@ -72,10 +73,16 @@ export default async function RootLayout({
   const destinationsRes = await fetchAPI({ endpoint: "destinations" });
   const activitiesRes = await fetchAPI({ endpoint: "category/activities" });
   const contactInfoRes = await fetchAPI({ endpoint: "info" });
+  const heroBannerRes = await fetchAPI({ endpoint: "herobanner/about" });
+  
+  // Add the contact hero banner fetch
+  const contactHeroBannerRes = await fetchAPI({ endpoint: "herobanner/contact" });
 
   const destinations = destinationsRes?.data || [];
   const activities = activitiesRes?.data || [];
-  const contactInfo = contactInfoRes?.data ;
+  const contactInfo = contactInfoRes?.data;
+  const heroBanner = heroBannerRes?.data || null;
+  const contactHeroBanner = contactHeroBannerRes?.data || null;
 
   const relatedPackagesMap: { [slug: string]: any[] } = {};
   const relatedActivityPackagesMap: { [slug: string]: any[] } = {};
@@ -199,6 +206,8 @@ export default async function RootLayout({
           relatedDurationPackagesMap={relatedDurationPackagesMap}
           contactInfo={contactInfo}
           durationGroups={durationGroups}
+          heroBanner={heroBanner}
+          contactHeroBanner={contactHeroBanner}
         />
         {children}
         <Footer

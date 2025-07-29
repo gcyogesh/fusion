@@ -99,16 +99,16 @@ export default async function Page({ params }: Params) {
                 </div>
 
                 <div className="flex flex-col gap-4">
-                  <div className="flex justify-between text-sm text-[#7E7E7E] text-[20px] font-medium">
-                    <span className="flex items-center gap-1">
-                      <Image src="/images/Location.svg" alt="Location" width={20} height={20} />
-                      {card.location?.city.split(' ')[0]}, {card.location?.country}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Image src="/images/clock.svg" alt="Clock" width={20} height={20} />
-                      {card.duration?.days} Days
-                    </span>
-                  </div>
+                  <div className="flex justify-between text-sm ">
+        <span className="flex items-center gap-2 font-medium text-[20px] text-[#7E7E7E] ">
+          {card.title}
+          
+        </span>
+                    <span className="flex items-center gap-2 font-medium text-[20px]  text-[#7E7E7E]">
+                              <Image src={"/images/clock.svg"} alt="Clock" width={20} height={20}/>
+                              {card.duration?.days} Days
+                            </span>
+                          </div>
 
                   <TextHeader
                     text={card.overview}

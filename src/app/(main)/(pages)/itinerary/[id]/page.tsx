@@ -187,7 +187,7 @@ export default async function Page({ params }: { params: { id: string } }) {
       </section>
       <MidNavbar tabs={trekTabs} />
 
-      <section id="Overview" className="mx-auto max-w-7xl px-4 md:px-6">
+      <div id="Overview" className="mx-auto max-w-7xl py-4 md:py-6 px-4 md:px-6">
         <div className="flex flex-col md:flex-row justify-between gap-6">
           <div className="flex-1 max-w-4xl pr-2">
 
@@ -226,7 +226,7 @@ export default async function Page({ params }: { params: { id: string } }) {
               </div>
               <div id="Itinerary"><ItinerarySection itinerary={packages.itinerary} /></div>
 
-              <div id="Includes-Excludes" className="w-auto md:w-[875px] h-[1px] bg-black opacity-20 mt-2 mb-6" />
+              <div id="Pricing" className="w-auto md:w-[875px] h-[1px] bg-black opacity-20 mt-2 mb-6" />
               {/* iclusion& exclusions */}
               <div className="max-w-4xl grid grid-cols-1 gap-8">
                 <InclusionExclusion title="Cost Includes" items={packages.inclusions} icon="/images/right.png" />
@@ -336,7 +336,7 @@ export default async function Page({ params }: { params: { id: string } }) {
             </div>
 
             {/* Desktop Sidebar */}
-            <div className="hidden md:block sticky top-24 w-full">
+            <div className="hidden md:block sticky top-30 py-4 md:py-6 lg:py-6 w-full">
               <PricingCard basePrice={packages.basePrice} />
               <div className="mt-5">
                 <DownloadPdfButton packageId={packages._id} />
@@ -345,7 +345,7 @@ export default async function Page({ params }: { params: { id: string } }) {
           </aside>
 
         </div>
-      </section>
+      </div>
 
 
     </>

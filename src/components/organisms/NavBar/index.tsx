@@ -7,6 +7,7 @@ import { IoMdClose } from "react-icons/io";
 import { FiMenu } from "react-icons/fi";
 import { FaWhatsapp, FaFacebook, FaInstagram } from "react-icons/fa";
 import { ChevronDown, ChevronUp, ChevronRight, CloudCog } from "lucide-react";
+import Image from "next/image";
 
 import Logo from "@/components/atoms/Logo";
 import MobileDropdownMenu from "./dropdowns/mobiledropdown";
@@ -24,6 +25,9 @@ type NavLink = {
     subtitle?: string;
     image?: string;
     title?: string;
+    isHeroBanner?: boolean;
+    isContentDisplay?: boolean;
+    heroBannerData?: HeroBanner;
     relatedPackages?: {
       duration: any;
       name: string;
@@ -33,6 +37,20 @@ type NavLink = {
   }[];
 };
 
+interface HeroBanner {
+  _id: string;
+  page: string;
+  title: string;
+  subTitle: string;
+  description: string;
+  buttonText: string;
+  buttonLink: string;
+  bannerImage: string;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
+
 interface NavbarProps {
   destinations: Destination[];
   activities: Activity[];
@@ -41,6 +59,8 @@ interface NavbarProps {
   relatedDurationPackagesMap: { [slug: string]: TourPackage[] };
   contactInfo: ContactInfo;
   durationGroups: Duration[];
+  heroBanner?: HeroBanner | null;
+  contactHeroBanner?: HeroBanner | null;
 }
 
 const throttle = (func: Function, limit: number) => {
@@ -62,6 +82,8 @@ export default function Navbar({
   relatedActivityPackagesMap = {},
   relatedDurationPackagesMap = {},
   contactInfo,
+  heroBanner,
+  contactHeroBanner,
 }: NavbarProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<NavLink | null>(null);
@@ -154,36 +176,45 @@ export default function Navbar({
             href: "/about",
             subtitle: "Explore our story, values, and what drives us forward",
             title: "Fusion",
+            image: heroBanner?.bannerImage,
+            isHeroBanner: true,
+            heroBannerData: heroBanner,
           },
           {
             name: "Our Teams",
             href: "/about/ourteams",
-            subtitle: "Meet the passionate people behind our mission",
-            title: "Our Teams",
+            subtitle: "Meet our expert guides and local partners who make every journey unforgettable",
+            title: "Fusion Expeditions – Crafted in the Heart of Nepal",
+            isContentDisplay: true,
           },
           {
             name: "Testimonials",
             href: "/about/reviews",
             subtitle: "Feedback from our clients",
-            title: "Reviews",
+            title: "Memorable Journeys, Happy Clients",
+            isContentDisplay: true,
           },
           {
             name: "Terms and Conditions",
             href: "/about/terms",
-            subtitle: "Read our policies",
-            title: "Terms and Conditions",
+            subtitle: "These terms and conditions form a legally binding agreement between Fusion and you (the Client) regarding the use of our services and platform. Please read them carefully before proceeding with any engagement, booking, or interaction.",
+            title: "Fusion Terms and Conditions",
+            isContentDisplay: true,
           },
           {
             name: "Contact",
             href: "/about/contact",
             subtitle: "We'd love to hear from you!",
             title: "Contact",
+            image: contactHeroBanner?.bannerImage,
+            isHeroBanner: true,
+            heroBannerData: contactHeroBanner,
           },
         ],
       },
       { name: "Deals", href: "/deals", hasDropdown: false },
     ];
-  }, [activities, destinations, durationGroups, relatedActivityPackagesMap, relatedPackagesMap, relatedDurationPackagesMap]);
+  }, [activities, destinations, durationGroups, relatedActivityPackagesMap, relatedPackagesMap, relatedDurationPackagesMap, heroBanner, contactHeroBanner]);
 
   const navbarClasses = useMemo(() => {
     const base =
@@ -311,6 +342,34 @@ export default function Navbar({
     );
   };
 
+  // Function to render dropdown content based on item type
+  const renderDropdownContent = (hoveredSub: any) => {
+    // For Fusion and Contact - show hero banner content
+    if (hoveredSub?.isHeroBanner && hoveredSub?.heroBannerData) {
+      const bannerData = hoveredSub.heroBannerData;
+      return (
+        <div className="mt-4">
+          <h3 className="text-lg font-semibold text-gray-800 mb-2">{bannerData.title}</h3>
+          <p className="text-sm text-gray-600 mb-3">{bannerData.subTitle}</p>
+          <p className="text-sm text-gray-700 leading-relaxed mb-4">{bannerData.description}</p>
+        </div>
+      );
+    }
+    
+    // For Our Teams, Testimonials, Terms - show title and subtitle
+    if (hoveredSub?.isContentDisplay) {
+      return (
+        <div className="mt-4">
+          <h3 className="text-lg font-semibold text-gray-800 mb-2">{hoveredSub.title}</h3>
+          <p className="text-sm text-gray-700 leading-relaxed">{hoveredSub.subtitle}</p>
+        </div>
+      );
+    }
+    
+    // For other sections (Destinations, Activities, Duration) - show related packages
+    return renderRelatedPackages(hoveredSub?.relatedPackages || []);
+  };
+
   return (
     <nav className={navbarClasses}>
       <div className="max-w-7xl mx-auto flex justify-between items-center px-4 py-8 md:py-4 lg:py-6 h-15 md:h-18 lg:h-20">
@@ -338,8 +397,10 @@ export default function Navbar({
           ))}
         </ul>
 
-        {/* Contact Icons */}
+        {/* Right section with hero banner info and contact icons */}
         <div className="flex items-center gap-4">
+          
+          {/* Contact Icons */}
           {contactInfo?.whatsappNumber && (
             <Link
               href={`https://wa.me/${contactInfo.whatsappNumber.replace(/\D/g, "")}`}
@@ -407,7 +468,7 @@ export default function Navbar({
             <div className="flex-1 px-4 py-6 flex gap-6 items-start">
               <div className="flex-1">
                 <TextHeader text={hoveredSub?.name || hoveredSub?.title} align="left" size="small" />
-                {renderRelatedPackages(hoveredSub?.relatedPackages || [])}
+                {renderDropdownContent(hoveredSub)}
               </div>
               {hoveredSub?.image && (
                 <div className="flex flex-col">

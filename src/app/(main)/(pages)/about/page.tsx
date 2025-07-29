@@ -87,7 +87,7 @@ export default async function About() {
         </div>
 
         {/* Content Overlay for large screen / Normal for small */}
-        <div className="sm:absolute sm:inset-0 sm:bg-black/40 bg-white/10 sm:bg-transparent rounded-lg sm:rounded-none sm:backdrop-blur-none backdrop-blur-sm">
+        <div className="sm:absolute sm:inset-0 sm:bg-black/40 bg-white/10  rounded-lg sm:rounded-none sm:backdrop-blur-none backdrop-blur-sm">
           <div className="h-full flex flex-col justify-center p-6 sm:p-8 lg:p-10">
             <TextHeader
               text="Adventure with a Purpose"
@@ -123,7 +123,7 @@ export default async function About() {
         </div>
 
         {/* Content */}
-        <div className="sm:absolute sm:inset-0 sm:bg-black/40 bg-white/10 sm:bg-transparent rounded-lg sm:rounded-none sm:backdrop-blur-none backdrop-blur-sm">
+        <div className="sm:absolute sm:inset-0 sm:bg-black/40 bg-white/10  rounded-lg sm:rounded-none sm:backdrop-blur-none backdrop-blur-sm">
           <div className="h-full flex flex-col justify-center p-6 sm:p-8 lg:p-10">
             <TextHeader
               text="Inspiring Transformative Travel"
