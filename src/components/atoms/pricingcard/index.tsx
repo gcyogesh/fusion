@@ -2,13 +2,18 @@
 import Button from '@/components/atoms/button';
 import PrivateRequestPopup from '@/components/molecules/PrivateRequestPopup';
 import React, { useState } from 'react';
+import { TourPackage } from '@/types';
+
 
 interface PricingCardProps {
   basePrice: number;
   isCompact?: boolean;
+  tourPackage?: TourPackage; // Add tour package data
 }
 
-const PricingCard: React.FC<PricingCardProps> = ({ basePrice, isCompact = false }) => {
+
+
+const PricingCard: React.FC<PricingCardProps> = ({ basePrice, isCompact = false, tourPackage }) => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   const handleBookNowClick = () => {
@@ -81,8 +86,11 @@ const PricingCard: React.FC<PricingCardProps> = ({ basePrice, isCompact = false 
         </div>
       </div>
 
-      {/* Private Request Popup */}
-      <PrivateRequestPopup isOpen={isPopupOpen} onClose={handleClosePopup} />
+     <PrivateRequestPopup
+        isOpen={isPopupOpen}
+        onClose={handleClosePopup}
+        tourPackage={tourPackage} // Pass tour package data
+      />
     </>
   );
 };

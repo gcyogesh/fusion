@@ -49,6 +49,7 @@ export interface TourPackage {
     image?: string;
   }[];
   cancellation?: string[];
+  destination?: Destination;
   
 }
 

@@ -8,6 +8,7 @@ import Footer from "@/components/organisms/Footer";
 import Navbar from "@/components/organisms/NavBar";
 import { TourPackage, Duration } from "@/types";
 
+
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",
   subsets: ["latin"],
@@ -214,6 +215,8 @@ export default async function RootLayout({
           destinations={destinations.slice(0, 5)}
           contactInfo={contactInfo}
         />
+        
+        
       </body>
     </html>
   );

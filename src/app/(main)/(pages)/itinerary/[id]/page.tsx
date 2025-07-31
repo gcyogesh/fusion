@@ -337,7 +337,7 @@ export default async function Page({ params }: { params: { id: string } }) {
 
             {/* Desktop Sidebar */}
             <div className="hidden md:block sticky top-30 py-4 md:py-6 lg:py-6 w-full">
-              <PricingCard basePrice={packages.basePrice} />
+              <PricingCard basePrice={packages.basePrice} tourPackage={packages} />
               <div className="mt-5">
                 <DownloadPdfButton packageId={packages._id} />
               </div>
