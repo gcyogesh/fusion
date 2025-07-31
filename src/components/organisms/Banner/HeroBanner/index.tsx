@@ -26,15 +26,37 @@ interface HeroBannerProps {
 const HeroBanner: React.FC<HeroBannerProps> = ({ herodata }) => {
   if (!herodata) return null;
 
+  // Helper function to validate and convert dimensions
+  const getFixedDimension = (value: string | number | undefined, defaultValue: string) => {
+    if (typeof value === 'number') return `${value}px`;
+    if (typeof value === 'string' && /^[\d.]+px$/.test(value)) return value;
+    return defaultValue;
+  };
+
+  const containerHeight = getFixedDimension(herodata.height, '400px');
+  // Always use full screen width regardless of settings
+  const containerWidth = '100vw'; // Force full viewport width
+
   return (
-    <div className="relative w-full" style={{ height: herodata.height ? (typeof herodata.height === 'number' ? `${herodata.height}px` : herodata.height) : '400px', width: herodata.width ? (typeof herodata.width === 'number' ? `${herodata.width}px` : herodata.width) : '100%' }}>
+    <div 
+      className="relative mx-auto w-full" 
+      style={{ 
+        height: containerHeight, 
+        width: containerWidth,
+        maxWidth: '100vw' // Ensure full screen coverage
+      }}
+    >
       {/* Background Image */}
       <Image
         src={herodata.bannerImage}
         alt="Hero Background"
         fill
         priority
-        className="absolute inset-0 object-cover object-center w-full h-full"
+        className="absolute inset-0 object-cover object-center"
+        style={{
+          objectFit: 'cover',
+          objectPosition: 'center'
+        }}
       />
 
       {/* Overlay */}
@@ -42,7 +64,13 @@ const HeroBanner: React.FC<HeroBannerProps> = ({ herodata }) => {
 
       {/* Optional Foreground Image */}
       {herodata.image && (
-        <div className="absolute bottom-4 right-4" style={{ width: herodata.width ? (typeof herodata.width === 'number' ? `${herodata.width}px` : herodata.width) : '96px', height: herodata.height ? (typeof herodata.height === 'number' ? `${herodata.height}px` : herodata.height) : '96px' }}>
+        <div 
+          className="absolute bottom-4 right-4" 
+          style={{ 
+            width: getFixedDimension(herodata.width, '96px'), 
+            height: getFixedDimension(herodata.height, '96px') 
+          }}
+        >
           <Image
             src={herodata.image}
             alt={herodata.title}
