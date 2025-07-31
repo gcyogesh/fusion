@@ -10,6 +10,7 @@ interface PricingCardProps {
   isCompact?: boolean;
   tourPackage?: TourPackage;
 }
+// PricingCard component displays the pricing details and handles booking actions
 
 const PricingCard: React.FC<PricingCardProps> = ({
   basePrice,
