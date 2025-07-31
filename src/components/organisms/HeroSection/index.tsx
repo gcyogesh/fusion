@@ -29,16 +29,19 @@ const HeroSection = ({ herodata }: { herodata: HeroData }) => {
 
   const isValidSize = (value: string | number | undefined) => {
     if (typeof value === 'number') return value >= 100 && value <= 2000;
-    if (typeof value === 'string' && /^[\d.]+(px|vh|vw|%)$/.test(value)) return true;
+    if (typeof value === 'string' && /^[\d.]+px$/.test(value)) return true;
     return false;
   };
 
-  const containerHeight =
-    isValidSize(herodata.height)
-      ? typeof herodata.height === 'number'
-        ? `${herodata.height}px`
-        : herodata.height
-      : '100vh';
+  // Use fixed dimensions - don't use responsive units like vh, vw, %
+  const containerHeight = isValidSize(herodata.height)
+    ? typeof herodata.height === 'number'
+      ? `${herodata.height}px`
+      : herodata.height
+    : '600px'; // Default fixed height
+
+  // Always use full screen width regardless of settings
+  const containerWidth = '100vw'; // Force full viewport width
 
   const handleSearch = async () => {
     if (!location.trim()) {
@@ -93,13 +96,27 @@ const HeroSection = ({ herodata }: { herodata: HeroData }) => {
 
   return (
     <div
-      className="relative w-full overflow-hidden"
-      style={{ height: containerHeight, width: '100%' }}
+      className="relative overflow-hidden mx-auto w-full"
+      style={{ 
+        height: containerHeight, 
+        width: containerWidth,
+        maxWidth: '100vw' // Ensure full screen coverage
+      }}
     >
       {/* Background Image */}
       <div className="absolute inset-0">
         {isGif ? (
-          <img src={bannerImage} alt="Hero Background" className="w-full h-full object-cover" />
+          <img 
+            src={bannerImage} 
+            alt="Hero Background" 
+            className="w-full h-full object-cover"
+            style={{
+              width: '100vw',
+              height: containerHeight,
+              objectFit: 'cover',
+              objectPosition: 'center'
+            }}
+          />
         ) : (
           <Image
             src={bannerImage}
@@ -107,6 +124,10 @@ const HeroSection = ({ herodata }: { herodata: HeroData }) => {
             fill
             priority
             className="object-cover"
+            style={{
+              objectFit: 'cover',
+              objectPosition: 'center'
+            }}
           />
         )}
         <div className="absolute inset-0 bg-black/20  z-0" />
