@@ -97,7 +97,7 @@ const ItinerarySection = ({ itinerary }) => {
                           height={20}
                           className="w-5 h-5 sm:w-6 sm:h-6 object-contain"
                         />
-                        <div className="max-w-[250px] md:max-w-2xl lg:max-2xl">
+                        <div className="max-w-[200px] md:max-w-2xl lg:max-2xl">
                         <TextDescription text={activityText} />
                         </div>
                       </div>

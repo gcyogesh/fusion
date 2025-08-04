@@ -9,21 +9,37 @@ interface PricingCardProps {
   basePrice: number;
   isCompact?: boolean;
   tourPackage?: TourPackage;
+  showMobilePricing?: boolean;
+  onToggleMobile?: () => void;
 }
-// PricingCard component displays the pricing details and handles booking actions
 
 const PricingCard: React.FC<PricingCardProps> = ({
   basePrice,
   isCompact = false,
   tourPackage,
+  showMobilePricing,
+  onToggleMobile,
 }) => {
   const { isOpen, openPopup, closePopup } = usePopup();
 
   const handleBookNowClick = () => {
+    // Close mobile pricing when booking
+    if (isCompact && onToggleMobile && showMobilePricing) {
+      onToggleMobile();
+    }
+    
     const el = document.getElementById("user-form-section");
     if (el) {
       el.scrollIntoView({ behavior: "smooth" });
     }
+  };
+
+  const handlePrivateRequestClick = () => {
+    // Close mobile pricing when opening popup
+    if (isCompact && onToggleMobile && showMobilePricing) {
+      onToggleMobile();
+    }
+    openPopup();
   };
 
   return (
@@ -76,7 +92,7 @@ const PricingCard: React.FC<PricingCardProps> = ({
             className={`w-full border border-black text-[#0E334F] font-medium ${
               isCompact ? "text-xs h-9" : "text-sm w-[175px] h-[42px]"
             }`}
-            onClick={openPopup}
+            onClick={handlePrivateRequestClick}
           />
         </div>
       </div>

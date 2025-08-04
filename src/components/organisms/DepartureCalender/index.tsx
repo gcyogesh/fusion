@@ -80,9 +80,9 @@ export default function DepartureCalendar() {
           </div>
 
           {/* Calendar Container */}
-          <div className="flex justify-center">
-            <div className="bg-white/80 rounded-3xl p-6  border border-black">
-              <div className="transform scale-110 origin-center">
+          <div className="flex justify-center ">
+            <div className="bg-white/80 rounded-3xl  p-0 md:p-6 border border-black">
+              <div className="transform scale-90 md:scale-110 origin-center">
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DateCalendar
                     value={travelDate ? dayjs(travelDate) : null}

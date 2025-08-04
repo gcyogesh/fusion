@@ -108,9 +108,9 @@ const MidNavbar = ({ tabs, isBlogPage = false, blogCategories = [] }: MidNavbarP
       {/* Mobile Bottom Navbar */}
       <div
         ref={navRef}
-        className="fixed inset-0 bottom-0 left-0 z-40 w-full bg-light-beige  md:hidden"
+        className="fixed inset-0 bottom-0 left-0 z-40 w-full md:hidden"
       >
-        <div className="max-w-7xl mx-auto overflow-x-auto scroll-smooth">
+        <div className="max-w-7xl mx-auto overflow-x-auto bg-light-beige scroll-smooth">
           <div ref={navListRef} className="flex flex-nowrap overflow-x-auto scrollbar-none py-2 px-3">
             {normalizedTabs.map(tab => {
               const isActive = activeKey === tab.value;

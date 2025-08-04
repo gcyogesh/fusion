@@ -17,6 +17,8 @@ import React from 'react';
 import PricingCard from '@/components/atoms/pricingcard';
 import ReviewSection from '@/components/organisms/testimonial/review';
 import DownloadPdfButton from '@/components/atoms/pdfbutton';
+import MobilePricingToggle from '@/components/atoms/pricingcard/mobilepricingtoggle';
+
 const trekTabs = [
   "Overview",
   "Itinerary",
@@ -234,12 +236,15 @@ export default async function Page({ params }: { params: { id: string } }) {
               </div>
             </div>
 
+
+{packages.cancellation && packages.cancellation?.length > 0 && (
              <div className="rounded-2xl p-6 bg-white shadow-sm mb-4 py-2">
               <TextHeader text="Cancellation Policy" align="left" size="large" width={855} className="py-2" />
               <ul className="list-disc pl-6 space-y-2 text-base text-[#535556] ">
                 {packages.cancellation?.map((item, i) => <li key={i}>{item}</li>)}
               </ul>
             </div>
+)}
             
 
 
@@ -328,12 +333,8 @@ export default async function Page({ params }: { params: { id: string } }) {
 
 
           <aside className="w-full md:w-auto md:px-0 lg:px-0">
-            {/* Mobile Sticky Footer */}
-            <div className="block md:hidden fixed bottom-14 right-2 shadow-md z-50">
-              <div className="max-w-md mx-auto p-2">
-                <PricingCard basePrice={packages.basePrice} isCompact />
-              </div>
-            </div>
+            {/* Mobile Pricing Toggle - Client Component */}
+            <MobilePricingToggle packages={packages} />
 
             {/* Desktop Sidebar */}
             <div className="hidden md:block sticky top-30 py-4 md:py-6 lg:py-6 w-full">

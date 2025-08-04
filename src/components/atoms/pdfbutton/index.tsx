@@ -14,7 +14,7 @@ const DownloadPdfButton = ({ packageId }: Props) => {
       target="_blank"
       rel="noopener noreferrer"
     >
-      <div className="px-15">
+      <div className="px-0 md:px-15 lg:px-15">
         <Button
           text="Download PDF"
           variant="secondary"
