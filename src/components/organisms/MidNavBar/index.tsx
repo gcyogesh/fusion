@@ -132,7 +132,7 @@ const MidNavbar = ({ tabs, isBlogPage = false, blogCategories = [] }: MidNavbarP
       </div>
 
       {/* Desktop Top Navbar */}
-      <div className="hidden md:block sticky top-0 z-40 bg-light-beige">
+      <div className="hidden md:block sticky top-0 z-[40] bg-light-beige ">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-wrap justify-start overflow-x-auto">
             {normalizedTabs.map(tab => {

@@ -438,8 +438,8 @@ const UserForm: React.FC<UserFormProps> = ({ availableBookingDates = [], availab
         />
 
         {/* Captcha must be before submit button */}
-        <div className="w-full flex justify-center">
-  <div className="transform scale-90 sm:scale-100 md:scale-100 lg:scale-100 origin-center">
+        <div className="w-full flex justify-left">
+  <div className="transform scale-60 md:scale-80 lg:scale-80 origin-center">
     <ReCAPTCHA
       sitekey="YOUR_RECAPTCHA_SITE_KEY"
       onChange={setCaptcha}

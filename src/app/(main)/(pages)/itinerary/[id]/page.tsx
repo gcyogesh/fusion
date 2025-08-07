@@ -17,7 +17,7 @@ import React from 'react';
 import PricingCard from '@/components/atoms/pricingcard';
 import ReviewSection from '@/components/organisms/testimonial/review';
 import DownloadPdfButton from '@/components/atoms/pdfbutton';
-import MobilePricingToggle from '@/components/atoms/pricingcard/mobilepricingtoggle';
+import MobilePricingController from '@/components/atoms/pricingcard/mobilepricingcontroller';
 
 const trekTabs = [
   "Overview",
@@ -258,6 +258,18 @@ export default async function Page({ params }: { params: { id: string } }) {
                 availableBookingDates={["2024-07-01", "2024-07-10", "2024-07-15"]}
               />
             </div>
+
+             <div id="mobile-pricing-section" className="block md:hidden py-6">
+              <div className="w-auto md:w-[875px] h-[1px] bg-black opacity-20 mt-2 mb-6" />
+              <TextHeader text="Pricing" align="left" size="large" width={855} className="mb-4" />
+              <div className="w-full">
+                <PricingCard basePrice={packages.basePrice} tourPackage={packages} />
+                <div className="mt-4">
+                  <DownloadPdfButton packageId={packages._id} />
+                </div>
+              </div>
+            </div> 
+            
             {/*trips maps */}
             <div id="Route" className="max-w-7xl py-6">
               <TextHeader text=" Route" align="left" size="large" width={855} className=" mb-2" />
@@ -333,8 +345,10 @@ export default async function Page({ params }: { params: { id: string } }) {
 
 
           <aside className="w-full md:w-auto md:px-0 lg:px-0">
-            {/* Mobile Pricing Toggle - Client Component */}
-            <MobilePricingToggle packages={packages} />
+             <MobilePricingController 
+              packages={packages} 
+              targetSectionId="mobile-pricing-section"
+            />
 
             {/* Desktop Sidebar */}
             <div className="hidden md:block sticky top-30 py-4 md:py-6 lg:py-6 w-full">

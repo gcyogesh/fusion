@@ -28,7 +28,7 @@ const PricingCard: React.FC<PricingCardProps> = ({
       onToggleMobile();
     }
     
-    const el = document.getElementById("user-form-section");
+    const el = document.getElementById("Book-Now");
     if (el) {
       el.scrollIntoView({ behavior: "smooth" });
     }
