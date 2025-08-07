@@ -72,9 +72,9 @@ const journeyCards = [
 ];
 
 const socialLinks = [
-  { icon: <FaInstagram className="text-white backdrop-blur-[12.6px] border border-white/16 bg-white/15 p-2 rounded-xl w-9.5 h-9.5" />, link: "#" },
-  { icon: <FaFacebookF className="text-white backdrop-blur-[12.6px] border border-white/16 bg-white/15 p-2 rounded-xl w-9.5 h-9.5 " />, link: "#" },
-  { icon: <FaYoutube className="text-white backdrop-blur-[12.6px] border border-white/16 bg-white/15 p-2 rounded-xl w-9.5 h-9.5 " />, link: "#" },
+  { icon: <FaInstagram className="text-white backdrop-blur-[12.6px] border border-white/16 bg-white/15 p-2 rounded-xl w-9.5 h-9.5" />, link: "#" ,label: "Instagram"},
+  { icon: <FaFacebookF className="text-white backdrop-blur-[12.6px] border border-white/16 bg-white/15 p-2 rounded-xl w-9.5 h-9.5 " />, link: "#", label: "Facebook" },
+  { icon: <FaYoutube className="text-white backdrop-blur-[12.6px] border border-white/16 bg-white/15 p-2 rounded-xl w-9.5 h-9.5 " />, link: "#", label: "YouTube" },
 ];
 
 export default async function Home() {
@@ -430,7 +430,7 @@ export default async function Home() {
       {/* Right Side: Social Links */}
       <div className="flex justify-end  space-x-2 md:space-x-3 lg:space-x-3 ">
         {socialLinks.map((link, index) => (
-          <a key={index} href={link.link} className="hover:scale-110 transition-transform">
+          <a key={index} href={link.link} className="hover:scale-110 transition-transform" aria-label={link.label}>
             <span>{link.icon}</span>
           </a>
         ))}

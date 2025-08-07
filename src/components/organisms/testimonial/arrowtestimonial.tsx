@@ -23,7 +23,7 @@ const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
       </div>
 
       <div className="hidden md:block absolute top-[63%] left-4 md:left-32 -translate-y-1/2 z-20">
-        <button onClick={() => carouselRef.current?.scrollPrev()}>
+        <button onClick={() => carouselRef.current?.scrollPrev()} aria-label="Previous slide">
           <ArrowIcon direction="left" variant="primary" />
         </button>
       </div>
@@ -36,7 +36,8 @@ const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
       </div>
 
       <div className="hidden md:block absolute top-[63%] right-4 md:right-32 -translate-y-1/2 z-20">
-        <button onClick={() => carouselRef.current?.scrollNext()}>
+        <button onClick={() => carouselRef.current?.scrollNext()} aria-label="Next slide">
+          
           <ArrowIcon direction="right" variant="primary" />
         </button>
       </div>
