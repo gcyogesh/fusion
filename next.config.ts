@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ['yogeshbhai.ddns.net'],
+    domains: ['newapi.fusionexpeditions.com'],
   },
   typescript: {
     ignoreBuildErrors: true, // ⛔️ Skips TypeScript type checking during build
