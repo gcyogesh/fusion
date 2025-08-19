@@ -1,5 +1,5 @@
 
-
+export const dynamic = "force-dynamic";
 import { fetchAPI } from "@/utils/apiService";
 import React from "react";
 import PrivateInquiriesClient from "./PrivateQuiriesClient";

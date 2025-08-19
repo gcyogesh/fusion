@@ -1,4 +1,4 @@
-
+export const dynamic = "force-dynamic";
 import { AdminTable } from "@/components/organisms/ListingCard"
 import { fetchAPI } from "@/utils/apiService"
 export default async function dashboard() {

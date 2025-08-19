@@ -66,6 +66,7 @@ interface AdminTableProps<T> {
   columns: Column<T>[];
   endpoint: string;
   destinationId?: string;
+  
 }
 
 // Helper: recursively blank out all values but keep structure

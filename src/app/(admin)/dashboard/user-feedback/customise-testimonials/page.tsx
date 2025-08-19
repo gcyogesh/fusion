@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { AdminTable } from "@/components/organisms/ListingCard";
 import { fetchAPI, APIResponse } from "@/utils/apiService";
 import React from "react";
@@ -19,7 +20,7 @@ export default async function CustomiseTestimonials() {
           { label: "Location", accessor: "location" },
           { label: "Position", accessor: "position" },
         ]}
-        endpoint={"testimonials"}
+        endpoint="testimonials"
       />
     </>
   );
