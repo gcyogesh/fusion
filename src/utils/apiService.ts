@@ -1,6 +1,6 @@
 import Cookies from "js-cookie";
 import { APIResponse } from "@/types";
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "https://newapi.fusionexpeditions.com";
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "https://newapi.fusionexpeditions.com/";
 
 interface FetchAPIOptions<T = unknown> {
   endpoint: string;
