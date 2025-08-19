@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { notFound } from "next/navigation";
 import { fetchAPI , APIResponse} from "@/utils/apiService";
 import TextDescription from "@/components/atoms/description";

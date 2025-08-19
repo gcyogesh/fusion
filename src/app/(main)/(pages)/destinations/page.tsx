@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import Link from "next/link";
 import ImageDisplay from "@/components/atoms/ImageCard";
 import Breadcrumb from "@/components/atoms/breadcrumb";

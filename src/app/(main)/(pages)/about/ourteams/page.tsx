@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { fetchAPI } from "@/utils/apiService";
 import Breadcrumb from "@/components/atoms/breadcrumb";
 import TeamList from "@/components/molecules/teamlist/page"; 

@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import TestimonialCarousel from "@/components/organisms/testimonial/testimonial";
 import Breadcrumb from "@/components/atoms/breadcrumb";
 import { fetchAPI } from "@/utils/apiService"; // Ensure this import is correct

@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import Breadcrumb from "@/components/atoms/breadcrumb";
 import { fetchAPI } from "@/utils/apiService";
 

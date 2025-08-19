@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import React from "react";
 import { fetchAPI } from "@/utils/apiService";
 import Image from "next/image";

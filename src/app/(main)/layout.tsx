@@ -1,4 +1,5 @@
 // layout.tsx changes
+export const dynamic = "force-dynamic";
 import { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
 import { fetchAPI } from "@/utils/apiService";

@@ -1,4 +1,4 @@
-
+export const dynamic = "force-dynamic";
 import Image from "next/image";
 import { FaInstagram, FaFacebookF, FaYoutube } from "react-icons/fa";
 import HeroSection from "@/components/organisms/HeroSection";

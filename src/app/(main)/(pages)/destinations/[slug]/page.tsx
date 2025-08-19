@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { fetchAPI } from "@/utils/apiService";
 import HeroBanner from "@/components/organisms/Banner/HeroBanner";
 import ImageDisplay from "@/components/atoms/ImageCard";
