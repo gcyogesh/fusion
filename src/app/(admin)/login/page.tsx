@@ -26,7 +26,7 @@ export default function AdminLoginPage() {
   try {
  
 
-    const response = await fetch(`https://newapi.fusionexpeditions.com/api/login`, {
+    const response = await fetch(`https://newapi.fusionexpeditions.com/api/admin/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
