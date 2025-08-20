@@ -509,7 +509,7 @@ const TourPackageForm = ({ initialData = undefined, onClose, destinationId, dest
     const fetchCategories = async () => {
       try {
         setLoadingCategories(true);
-        const response = await fetch('https://yogeshbhai.ddns.net/api/category/activities');
+        const response = await fetch('https://newapi.fusionexpeditions.com/api/activities');
         const json = await response.json();
         setCategories(json.data || []);
       } catch (error) {
