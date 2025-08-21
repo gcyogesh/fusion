@@ -155,7 +155,7 @@ const BookingInfoCard: React.FC<BookingInfoCardProps> = ({ booking, onStatusChan
               </div>
             </div>
             {/* Right: Status & Payment */}
-            <div className="flex flex-col gap-3 min-w-[200px] items-start justify-between h-full py-2 min-w-0">
+            <div className="flex flex-col gap-3  items-start justify-between h-full py-2 min-w-0">
               <div className="flex flex-col gap-1 w-full min-w-0">
                 <label className="block text-xs font-semibold text-gray-500 mb-1">Status</label>
                 <div className="relative w-full min-w-0">

@@ -851,7 +851,7 @@ const handleSaveCancellation = async () => {
               disabled
             />
             <p className="text-xs text-gray-500 mt-1">Width is automatically set to full screen coverage</p>
-            <label className="text-sm font-semibold text-gray-700">Hero Image <span className='text-xs text-gray-400'>(JPG, PNG, max 2MB)</span></label>
+            <label className="text-sm font-semibold text-gray-700">Hero Image <span className='text-xs text-gray-400'>(JPG, PNG, max 50MB)</span></label>
             
             {/* Image Upload and Cropper Controls */}
             <div className="space-y-3">

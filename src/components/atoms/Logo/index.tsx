@@ -22,7 +22,7 @@ const LogoComponent = ({ width = 180, height, index }: LogoProps) => {
   useEffect(() => {
     const fetchLogo = async () => {
       try {
-        const response = await fetch(`https://yogeshbhai.ddns.net/api/logo`);
+        const response = await fetch(`https://newapi.fusionexpeditions.com/api/logo`);
         if (!response.ok) throw new Error("Network response was not ok");
         const result = await response.json();
         const imageData = result.data.image;

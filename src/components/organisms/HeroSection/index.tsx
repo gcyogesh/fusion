@@ -56,7 +56,7 @@ const HeroSection = ({ herodata }: { herodata: HeroData }) => {
 
     try {
       const res = await fetch(
-        `https://yogeshbhai.ddns.net/api/tour/tour-packages/search?${params.toString()}`
+        `https://newapi.fusionexpeditions.com/api/tour/tour-packages/search?${params.toString()}`
       );
       const data = await res.json();
 
